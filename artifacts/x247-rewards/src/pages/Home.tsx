@@ -84,7 +84,7 @@ export default function Home() {
 
       <main className="relative z-10 pt-24">
         {/* HERO SECTION */}
-        <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-20 pb-32 px-4 overflow-hidden">
+        <section id="register" className="relative min-h-[90vh] flex flex-col items-center justify-center pt-20 pb-32 px-4 overflow-hidden">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -322,7 +322,7 @@ export default function Home() {
                   </li>
                 </ul>
                 <Button className="font-display font-bold px-8 h-12 w-full sm:w-auto" variant="secondary" asChild>
-                  <a href="#register">START TRACKING <ArrowRight className="ml-2 w-4 h-4" /></a>
+                  <a href="#how-it-works">START TRACKING <ArrowRight className="ml-2 w-4 h-4" /></a>
                 </Button>
               </div>
 
@@ -418,7 +418,7 @@ export default function Home() {
         </section>
 
         {/* VERIFICATION POLICY */}
-        <section className="py-20 relative">
+        <section id="verify" className="py-20 relative">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto glass-card rounded-2xl p-8 md:p-12 border border-destructive/20 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-2 h-full bg-destructive"></div>
