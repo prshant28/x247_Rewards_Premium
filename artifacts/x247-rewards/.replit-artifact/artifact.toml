@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "X247 Rewards"
+version = "1.0.0"
+id = "artifacts/x247-rewards"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26167
+
+[services.development]
+run = "pnpm --filter @workspace/x247-rewards run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/x247-rewards", "run", "build" ]
+publicDir = "artifacts/x247-rewards/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26167"
+BASE_PATH = "/"
