@@ -245,9 +245,14 @@ export default function Home() {
               Unlocking Exclusive Google Event Rewards
             </motion.div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light mb-8 leading-[1.05] tracking-tight text-white whitespace-pre-line">
-              <span className="text-gradient">Rewards that you</span>{"\n"}<span className="text-gradient">need Indeed</span>
-            </h1>
+            <div className="relative mb-8">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light leading-[1.05] tracking-tight text-white whitespace-pre-line relative z-[1]">
+                <span className="text-gradient">Rewards that you</span>{"\n"}<span className="text-gradient">need Indeed</span>
+              </h1>
+              <div aria-hidden="true" className="hero-text-stroke text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light leading-[1.05] tracking-tight whitespace-pre-line">
+                Rewards that you{"\n"}need Indeed
+              </div>
+            </div>
             
             <p className="text-base sm:text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide">
               Elevate your rewards with verified referrals and exclusive access. Join the premier Google event program for daily swag, gift cards, and hackathon invites.
