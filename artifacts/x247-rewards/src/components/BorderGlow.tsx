@@ -1,12 +1,50 @@
-import { useRef, useCallback, type ReactNode, type CSSProperties, type ElementType } from "react";
+import { useRef, useCallback, useEffect, type ReactNode, type CSSProperties, type ElementType } from "react";
+
+function parseHSL(hslStr: string) {
+  const match = hslStr.match(/([\d.]+)\s*([\d.]+)%?\s*([\d.]+)%?/);
+  if (!match) return { h: 40, s: 80, l: 80 };
+  return { h: parseFloat(match[1]), s: parseFloat(match[2]), l: parseFloat(match[3]) };
+}
+
+function buildGlowVars(glowColor: string, intensity: number) {
+  const { h, s, l } = parseHSL(glowColor);
+  const base = `${h}deg ${s}% ${l}%`;
+  const opacities = [100, 60, 50, 40, 30, 20, 10];
+  const keys = ["", "-60", "-50", "-40", "-30", "-20", "-10"];
+  const vars: Record<string, string> = {};
+  for (let i = 0; i < opacities.length; i++) {
+    vars[`--glow-color${keys[i]}`] = `hsl(${base} / ${Math.min(opacities[i] * intensity, 100)}%)`;
+  }
+  return vars;
+}
+
+const GRADIENT_POSITIONS = ["80% 55%", "69% 34%", "8% 6%", "41% 38%", "86% 85%", "82% 18%", "51% 4%"];
+const GRADIENT_KEYS = ["--gradient-one", "--gradient-two", "--gradient-three", "--gradient-four", "--gradient-five", "--gradient-six", "--gradient-seven"];
+const COLOR_MAP = [0, 1, 2, 0, 1, 2, 1];
+
+function buildGradientVars(colors: string[]) {
+  const vars: Record<string, string> = {};
+  for (let i = 0; i < 7; i++) {
+    const c = colors[Math.min(COLOR_MAP[i], colors.length - 1)];
+    vars[GRADIENT_KEYS[i]] = `radial-gradient(at ${GRADIENT_POSITIONS[i]}, ${c} 0px, transparent 50%)`;
+  }
+  vars["--gradient-base"] = `linear-gradient(${colors[0]} 0 100%)`;
+  return vars;
+}
 
 interface BorderGlowProps {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
-  borderRadius?: string;
-  glowPadding?: string;
+  borderRadius?: number;
+  glowRadius?: number;
   cardBg?: string;
+  glowColor?: string;
+  glowIntensity?: number;
+  coneSpread?: number;
+  edgeSensitivity?: number;
+  fillOpacity?: number;
+  colors?: string[];
   as?: ElementType;
   [key: string]: unknown;
 }
@@ -15,60 +53,84 @@ export default function BorderGlow({
   children,
   className = "",
   style,
-  borderRadius = "16px",
-  glowPadding = "20px",
+  borderRadius = 16,
+  glowRadius = 20,
   cardBg = "#060010",
+  glowColor = "0 60 55",
+  glowIntensity = 1.0,
+  coneSpread = 25,
+  edgeSensitivity = 30,
+  fillOpacity = 0.5,
+  colors = ["#8b2030", "#1e3a6e", "#a0a0a0"],
   as: Tag = "div",
   ...rest
 }: BorderGlowProps) {
   const ref = useRef<HTMLElement>(null);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const el = ref.current;
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
-
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const distToLeft = mouseX;
-    const distToRight = rect.width - mouseX;
-    const distToTop = mouseY;
-    const distToBottom = rect.height - mouseY;
-    const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
-
-    const maxInset = Math.min(rect.width, rect.height) / 2;
-    const proximity = Math.max(0, Math.min(100, 100 - (minDist / maxInset) * 100));
-
-    el.style.setProperty("--edge-proximity", String(proximity));
-    el.style.setProperty("--cursor-angle", `${angle}deg`);
+  const getCenterOfElement = useCallback((el: HTMLElement) => {
+    const { width, height } = el.getBoundingClientRect();
+    return [width / 2, height / 2];
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty("--edge-proximity", "0");
+  const getEdgeProximity = useCallback((el: HTMLElement, x: number, y: number) => {
+    const [cx, cy] = getCenterOfElement(el);
+    const dx = x - cx;
+    const dy = y - cy;
+    let kx = Infinity;
+    let ky = Infinity;
+    if (dx !== 0) kx = cx / Math.abs(dx);
+    if (dy !== 0) ky = cy / Math.abs(dy);
+    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+  }, [getCenterOfElement]);
+
+  const getCursorAngle = useCallback((el: HTMLElement, x: number, y: number) => {
+    const [cx, cy] = getCenterOfElement(el);
+    const dx = x - cx;
+    const dy = y - cy;
+    if (dx === 0 && dy === 0) return 0;
+    const radians = Math.atan2(dy, dx);
+    let degrees = radians * (180 / Math.PI) + 90;
+    if (degrees < 0) degrees += 360;
+    return degrees;
+  }, [getCenterOfElement]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    const card = ref.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const edge = getEdgeProximity(card, x, y);
+    const angle = getCursorAngle(card, x, y);
+    card.style.setProperty("--edge-proximity", `${(edge * 100).toFixed(3)}`);
+    card.style.setProperty("--cursor-angle", `${angle.toFixed(3)}deg`);
+  }, [getEdgeProximity, getCursorAngle]);
+
+  const handlePointerLeave = useCallback(() => {
+    const card = ref.current;
+    if (!card) return;
+    card.style.setProperty("--edge-proximity", "0");
   }, []);
+
+  const glowVars = buildGlowVars(glowColor, glowIntensity);
 
   return (
     <Tag
       ref={ref as any}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
       className={`border-glow-card ${className}`}
       style={{
-        "--border-radius": borderRadius,
-        "--glow-padding": glowPadding,
         "--card-bg": cardBg,
+        "--edge-sensitivity": edgeSensitivity,
+        "--border-radius": `${borderRadius}px`,
+        "--glow-padding": `${glowRadius}px`,
+        "--cone-spread": coneSpread,
+        "--fill-opacity": fillOpacity,
+        ...glowVars,
+        ...buildGradientVars(colors),
         ...style,
       } as CSSProperties}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       {...rest}
     >
       <span className="edge-light" />
