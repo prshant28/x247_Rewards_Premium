@@ -170,6 +170,17 @@
 
 @layer utilities {
 
+  .scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(30, 40, 120, 0.8), rgba(255, 255, 255, 0.6), rgba(200, 40, 50, 0.8));
+    transform-origin: left;
+    z-index: 9999;
+  }
+
   .glass-card {
     @apply relative overflow-hidden transition-all duration-700;
     backdrop-filter: blur(24px);
@@ -293,6 +304,79 @@
       );
   }
 
+  .card-header-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .card-header-sm {
+    min-height: 120px;
+  }
+
+  .card-header-xs {
+    min-height: 100px;
+  }
+
+  .card-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card-icon-sm {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  .card-icon-xs {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  .group:hover .card-icon-wrap {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.08);
+  }
+
+  @keyframes icon-spin-y {
+    0% { transform: scale(1.08) rotateY(0deg); }
+    100% { transform: scale(1.08) rotateY(360deg); }
+  }
+
+  .group:hover .animate-icon-rotate {
+    animation: icon-spin-y 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1;
+  }
+
+  .card-step-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: 'Syne', var(--font-display), sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.15);
+    letter-spacing: 0.05em;
+    transition: color 0.5s ease;
+  }
+
+  .group:hover .card-step-badge {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
   .premium-btn {
     @apply relative inline-flex items-center justify-center text-white cursor-pointer;
     font-family: 'Syne', var(--font-display), sans-serif;
@@ -307,6 +391,22 @@
       22px 0 30px -14px rgba(255, 255, 255, 0.10),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
     overflow: hidden;
+  }
+
+  .glass-btn-effect {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%),
+      rgba(6, 6, 6, 0.85);
+  }
+
+  .glass-btn-effect:hover {
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%),
+      rgba(12, 12, 12, 0.9);
   }
 
   .premium-btn::before {
@@ -338,7 +438,6 @@
   }
 
   .premium-btn:hover {
-    background: rgba(12, 12, 12, 1);
     transform: translateY(-2px);
     box-shadow:
       -28px 0 40px -14px rgba(255, 255, 255, 0.16),
@@ -380,6 +479,12 @@
     box-shadow:
       -16px 0 24px -14px rgba(255, 255, 255, 0.06),
       16px 0 24px -14px rgba(255, 255, 255, 0.06);
+  }
+
+  .premium-btn-ghost.glass-btn-effect {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
 
   .premium-btn-ghost::before {
@@ -498,6 +603,7 @@
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
   }
 
   .stat-card {
@@ -557,6 +663,12 @@
     letter-spacing: 0.02em;
     position: relative;
     overflow: hidden;
+  }
+
+  .nav-cta-btn.glass-btn-effect {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255, 255, 255, 0.06);
   }
 
   .nav-cta-btn::before {
@@ -804,18 +916,34 @@
     }
   }
 
+  .shimmer-bar {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    animation: shimmer 2s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
   .cursor-dot {
     position: fixed;
     top: 0;
     left: 0;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: white;
-    z-index: 9999;
+    z-index: 10001;
     pointer-events: none;
     mix-blend-mode: difference;
     will-change: transform;
+    transition: width 0.2s, height 0.2s;
   }
 
   .cursor-ring {
@@ -826,7 +954,7 @@
     height: 40px;
     border-radius: 50%;
     border: 1.5px solid transparent;
-    z-index: 9998;
+    z-index: 10000;
     pointer-events: none;
     will-change: transform;
     background: transparent;
@@ -858,8 +986,44 @@
     100% { --cursor-ring-angle: 360deg; }
   }
 
+  .cursor-glass {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    z-index: 9997;
+    pointer-events: none;
+    will-change: transform;
+    backdrop-filter: blur(1px) brightness(1.15) saturate(1.2);
+    -webkit-backdrop-filter: blur(1px) brightness(1.15) saturate(1.2);
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.015) 0%,
+      rgba(255, 255, 255, 0.008) 40%,
+      transparent 70%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    mask: radial-gradient(circle, black 30%, transparent 70%);
+    -webkit-mask: radial-gradient(circle, black 30%, transparent 70%);
+    mix-blend-mode: screen;
+  }
+
   @media (hover: none) {
-    .cursor-dot, .cursor-ring { display: none; }
+    .cursor-dot, .cursor-ring, .cursor-glass { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-dot, .cursor-ring, .cursor-glass { display: none; }
+    .glass-card::before, .glass-card::after,
+    .premium-btn::before, .premium-btn::after,
+    .nav-cta-btn::before, .nav-cta-btn::after,
+    .cursor-ring::before { animation: none; }
+    .marquee-content { animation: none; }
+    .shimmer-bar { animation: none; }
+    .floating-particle { animation: none; }
+    .scroll-progress-bar { display: none; }
   }
 
 }
