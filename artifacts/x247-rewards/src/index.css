@@ -143,30 +143,74 @@
   }
 }
 
+@property --card-border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 @layer utilities {
 
   .glass-card {
     @apply relative overflow-hidden transition-all duration-700;
     backdrop-filter: blur(20px);
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
     border-radius: 24px;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(
+      var(--card-border-angle, 0deg),
+      rgba(20, 30, 80, 0.5),
+      rgba(255, 255, 255, 0.06),
+      rgba(140, 20, 30, 0.4),
+      rgba(255, 255, 255, 0.06),
+      rgba(20, 30, 80, 0.5)
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+    z-index: 1;
+    animation: card-border-rotate 6s linear infinite;
+  }
+
+  @keyframes card-border-rotate {
+    0%   { --card-border-angle: 0deg; }
+    100% { --card-border-angle: 360deg; }
   }
   
   .glass-card:hover {
     backdrop-filter: blur(28px);
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     transform: translateY(-2px);
     box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.5);
   }
 
-  .glass-card-featured {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+  .glass-card:hover::before {
+    background: linear-gradient(
+      var(--card-border-angle, 0deg),
+      rgba(30, 45, 120, 0.7),
+      rgba(255, 255, 255, 0.1),
+      rgba(180, 30, 40, 0.6),
+      rgba(255, 255, 255, 0.1),
+      rgba(30, 45, 120, 0.7)
+    );
+    animation-duration: 3s;
   }
 
-  .glass-card-featured::before {
+  .glass-card-featured {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .glass-card-featured::after {
     content: '';
     position: absolute;
     inset: 0;
