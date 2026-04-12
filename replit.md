@@ -25,3 +25,12 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+
+## X247 Rewards (artifacts/x247-rewards)
+
+- **Framework**: React + Vite + Tailwind CSS v4
+- **Design**: Portfolite Framer template style — pure black background, Syne + Inter fonts, glassmorphism cards, pill-shaped glass buttons, background video hero, scrolling marquee ticker
+- **Sections**: Hero (with video bg), How it Works, Rewards Showcase, Dashboard Preview, Verification Policy, Community/Ecosystem, FAQ, Footer
+- **Animations**: Framer Motion fade-up scroll animations
+- **Route**: Serves at root path `/`
+- **CSS Theme**: Pure monochrome (black/white/gray), custom glass utility classes in index.css
