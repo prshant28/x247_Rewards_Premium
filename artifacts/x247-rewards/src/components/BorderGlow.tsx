@@ -114,9 +114,10 @@ export default function BorderGlow({
 
   const glowVars = buildGlowVars(glowColor, glowIntensity);
 
+  const Component = Tag as any;
   return (
-    <Tag
-      ref={ref as any}
+    <Component
+      ref={ref}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       className={`border-glow-card ${className}`}
@@ -135,6 +136,6 @@ export default function BorderGlow({
     >
       <span className="edge-light" />
       <span className="border-glow-inner">{children}</span>
-    </Tag>
+    </Component>
   );
 }
