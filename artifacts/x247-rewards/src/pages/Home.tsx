@@ -25,7 +25,7 @@ import {
   Package
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
-import heroVideo from "@assets/4954770_Coll_halloween_Realistic_3840x2160_1775967998660.mp4";
+import heroVideo from "@assets/silk-1775994597756_1775995162513.webm";
 
 function SmokeCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
