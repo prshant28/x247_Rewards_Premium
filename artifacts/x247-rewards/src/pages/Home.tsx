@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { 
-  Zap, 
-  Trophy, 
-  Gift, 
-  ShieldCheck, 
-  Users, 
   ArrowRight, 
-  CheckCircle2, 
-  AlertTriangle, 
-  TerminalSquare, 
-  Cpu, 
-  Activity, 
-  Gamepad2,
-  Check,
-  ChevronRight,
-  Target
+  Check, 
+  ChevronRight, 
+  Mouse,
+  Gift,
+  Target,
+  Cpu,
+  TerminalSquare,
+  Activity,
+  Trophy,
+  Users,
+  CheckCircle2,
+  ShieldCheck,
+  Zap,
+  Globe
 } from "lucide-react";
 import { SiGoogle, SiWhatsapp } from "react-icons/si";
 
@@ -30,7 +26,6 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
   
-  // Animated Counter Logic
   const [winnerCount, setWinnerCount] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,9 +34,9 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const fadeIn = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
   };
 
   const staggerContainer = {
@@ -55,520 +50,521 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden selection:bg-primary/30">
-      {/* Dynamic Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
-        <div className="absolute inset-0 bg-grid-pattern" />
-        <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary/20 via-transparent to-transparent blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-t from-secondary/20 via-transparent to-transparent blur-3xl rounded-full" />
-      </div>
-
-      {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 glass-card border-b border-white/5 py-4">
-        <div className="container mx-auto px-4 flex justify-between items-center">
+    <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans">
+      
+      {/* NAVBAR */}
+      <nav className="fixed top-0 w-full z-50 transition-all duration-300 bg-black/40 backdrop-blur-xl border-b border-white/[0.06]">
+        <div className="container mx-auto px-6 h-20 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Zap className="w-6 h-6 text-primary" />
-            <span className="font-display font-bold text-xl tracking-wider">X247<span className="text-primary">REWARDS</span></span>
+            <span className="font-display font-light text-xl tracking-wide text-white">X247 Rewards</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-            <a href="#how-it-works" className="hover:text-primary transition-colors">How it Works</a>
-            <a href="#rewards" className="hover:text-primary transition-colors">Rewards</a>
-            <a href="#dashboard" className="hover:text-primary transition-colors">Dashboard</a>
-            <a href="#faq" className="hover:text-primary transition-colors">FAQ</a>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+            <a href="#how-it-works" className="hover:text-white transition-colors duration-300">How it Works</a>
+            <a href="#rewards" className="hover:text-white transition-colors duration-300">Rewards</a>
+            <a href="#dashboard" className="hover:text-white transition-colors duration-300">Dashboard</a>
+            <a href="#faq" className="hover:text-white transition-colors duration-300">FAQ</a>
           </div>
-          <Button variant="outline" className="border-primary/50 hover:bg-primary/10 hover:text-primary font-display tracking-widest text-xs h-9">
-            LOGIN
-          </Button>
+          <a href="#register" className="glass-button h-10 px-6 text-sm">
+            Get Started
+          </a>
         </div>
       </nav>
 
-      <main className="relative z-10 pt-24">
+      <main className="relative z-10">
+        
         {/* HERO SECTION */}
-        <section id="register" className="relative min-h-[90vh] flex flex-col items-center justify-center pt-20 pb-32 px-4 overflow-hidden">
+        <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
+          {/* Background Video */}
+          <div className="absolute inset-0 z-0 overflow-hidden bg-black">
+            <div className="absolute inset-0 bg-black/60 z-10"></div>
+            <video 
+              autoPlay 
+              muted 
+              loop 
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-screen"
+              src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4"
+            >
+              <div className="w-full h-full bg-gradient-to-b from-black via-zinc-900 to-black"></div>
+            </video>
+          </div>
+
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center max-w-4xl mx-auto z-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
+            className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center"
           >
-            <Badge variant="outline" className="mb-6 border-primary/30 text-primary bg-primary/5 px-4 py-1.5 font-display tracking-widest text-xs uppercase">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse mr-2 inline-block"></span>
-              Live Event Season
-            </Badge>
+            <div className="glass-pill-badge mb-8 mt-12 font-display">
+              <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse mr-3 inline-block"></span>
+              Unlocking Exclusive Google Event Rewards
+            </div>
             
-            <h1 className="text-6xl md:text-8xl font-black mb-6 leading-tight tracking-tighter">
-              REGISTER. VERIFY.<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-secondary text-glow">REFER. EARN.</span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-light mb-8 leading-[1.1] tracking-tight text-white whitespace-pre-line">
+              Rewards that you{"\n"}need Indeed
             </h1>
             
-            <p className="text-lg md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto font-light">
-              Join the premier Google event referral program. Unlock daily swag, gift cards, and exclusive invite-only hackathon access.
+            <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+              Elevate your rewards with verified referrals and exclusive access. Join the premier Google event program for daily swag, gift cards, and hackathon invites.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-              <Button 
-                size="lg" 
-                className="w-full sm:w-auto h-14 px-8 text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)] rounded-lg transition-all hover:scale-105"
-                asChild
-              >
-                <a href="#register" data-testid="btn-referral-1">
-                  <SiGoogle className="mr-2 h-5 w-5" />
-                  Register via Referral Link 1
-                </a>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="w-full sm:w-auto h-14 px-8 text-base font-bold border-secondary/50 hover:bg-secondary/10 hover:text-secondary rounded-lg transition-all hover:scale-105"
-                asChild
-              >
-                <a href="#register" data-testid="btn-referral-2">
-                  <TerminalSquare className="mr-2 h-5 w-5" />
-                  Register via Referral Link 2
-                </a>
-              </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24 w-full sm:w-auto">
+              <a href="#register" className="glass-button h-14 px-8 text-base w-full sm:w-auto" data-testid="btn-hero-start">
+                Get Started Now
+              </a>
+              <a href="#rewards" className="glass-button h-14 px-8 text-base w-full sm:w-auto bg-transparent" data-testid="btn-hero-rewards">
+                See Rewards
+              </a>
             </div>
+          </motion.div>
 
-            {/* Trust Badges */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-3xl mx-auto border-t border-white/5 pt-8">
-              <div className="flex flex-col items-center justify-center">
-                <div className="text-3xl font-display font-bold text-white mb-1 flex items-center">
-                  <span className="text-accent mr-1"></span>{winnerCount}<span className="text-accent text-xl ml-1">+</span>
-                </div>
-                <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Daily Winners</span>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <div className="text-3xl font-display font-bold text-white mb-1">
-                  $50
-                </div>
-                <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Swag Value Daily</span>
-              </div>
-              <div className="flex flex-col items-center justify-center col-span-2 md:col-span-1">
-                <div className="text-3xl font-display font-bold text-white mb-1 flex items-center">
-                  <ShieldCheck className="w-8 h-8 text-primary mr-2" />
-                </div>
-                <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Verified Program</span>
-              </div>
+          {/* Scroll Down Indicator */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="absolute bottom-12 z-10 flex items-center gap-4 text-xs font-medium text-muted-foreground uppercase tracking-widest font-display"
+          >
+            <span>Scroll down</span>
+            <div className="w-8 h-12 rounded-full border border-white/20 flex justify-center pt-2">
+              <motion.div 
+                animate={{ y: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                className="w-1 h-1.5 rounded-full bg-white/60"
+              />
             </div>
+            <span>to see rewards</span>
           </motion.div>
         </section>
 
         {/* HOW IT WORKS */}
-        <section id="how-it-works" className="py-24 relative bg-black/40">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4">THE PROTOCOL</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">Follow the sequence to unlock your rewards and secure your position.</p>
-            </div>
-
+        <section id="how-it-works" className="py-32 relative bg-black">
+          <div className="container mx-auto px-4 max-w-6xl">
             <motion.div 
-              variants={staggerContainer}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              className="grid grid-cols-1 md:grid-cols-4 gap-6 relative"
+              variants={fadeUp}
+              className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 gap-8"
             >
-              <div className="hidden md:block absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent -translate-y-1/2 z-0" />
-              
+              <div className="max-w-2xl">
+                <div className="glass-pill-badge mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                  The Process
+                </div>
+                <h2 className="text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">How it Works</h2>
+                <p className="text-muted-foreground text-lg font-light leading-relaxed">
+                  A streamlined protocol to secure your position and unlock premium tiers. Follow the sequence precisely.
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <a href="#register" className="glass-button h-12 px-6">Get Started</a>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
               {[
-                { step: "01", title: "REGISTER", desc: "Click both referral links and complete your Google event registration.", icon: <SiGoogle className="w-8 h-8" /> },
-                { step: "02", title: "VERIFY", desc: "Submit the official form with your details and unique referral code.", icon: <ShieldCheck className="w-8 h-8" /> },
-                { step: "03", title: "JOIN", desc: "Get added to the private WhatsApp network for live drops.", icon: <SiWhatsapp className="w-8 h-8" /> },
-                { step: "04", title: "CLAIM", desc: "Earn swag, unlock milestones, and claim exclusive access.", icon: <Trophy className="w-8 h-8" /> }
+                { step: "01", title: "Register", desc: "Click both referral links and complete your Google event registration with precise details.", icon: <SiGoogle className="w-6 h-6" /> },
+                { step: "02", title: "Verify", desc: "Submit the official form with your details and unique referral code for validation.", icon: <ShieldCheck className="w-6 h-6" /> },
+                { step: "03", title: "Join Community", desc: "Get added to the private WhatsApp network for live drops and insider alpha.", icon: <SiWhatsapp className="w-6 h-6" /> },
+                { step: "04", title: "Claim Rewards", desc: "Earn swag, unlock milestones, and claim your exclusive event access passes.", icon: <Trophy className="w-6 h-6" /> }
               ].map((item, i) => (
-                <motion.div key={i} variants={fadeIn} className="relative z-10 group">
-                  <div className="glass-card p-8 rounded-2xl border-white/5 relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:border-primary/50 box-glow h-full">
-                    <div className="absolute -right-4 -top-4 text-7xl font-display font-black text-white/5 transition-colors group-hover:text-primary/10">
-                      {item.step}
-                    </div>
-                    <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 ring-1 ring-primary/30 group-hover:bg-primary group-hover:text-white transition-all">
+                <motion.div 
+                  key={i} 
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={fadeUp}
+                  className="glass-card p-8 md:p-10 group"
+                >
+                  <div className="flex justify-between items-start mb-12">
+                    <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/80 group-hover:bg-white/10 transition-colors">
                       {item.icon}
                     </div>
-                    <h3 className="text-xl font-bold mb-3 font-display">{item.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+                    <span className="text-2xl font-display font-light text-white/20 group-hover:text-white/40 transition-colors">{item.step}</span>
                   </div>
+                  <h3 className="text-2xl font-display font-light text-white mb-4">{item.title}</h3>
+                  <p className="text-muted-foreground font-light leading-relaxed text-lg">
+                    {item.desc}
+                  </p>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* REWARDS SHOWCASE */}
-        <section id="rewards" className="py-32 relative">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
-              <Badge variant="outline" className="mb-4 border-secondary/30 text-secondary bg-secondary/5 font-display tracking-widest text-xs uppercase">
-                Achievement Unlocked
-              </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-glow">REWARD TIERS</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">Real rewards for real influence. Level up your referrals to unlock premium tiers.</p>
-            </div>
+        <section id="rewards" className="py-32 relative bg-black">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="text-center mb-24"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Reward Tiers
+              </div>
+              <h2 className="text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">Rewards</h2>
+              <p className="text-muted-foreground text-lg font-light leading-relaxed max-w-2xl mx-auto">
+                Real rewards for real influence. Level up your referrals to unlock premium tiers and exclusive opportunities.
+              </p>
+            </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
               {/* Card 1 */}
               <motion.div 
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="glass-card rounded-2xl overflow-hidden border border-white/10 relative group"
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                className="glass-card p-10 flex flex-col justify-between group h-full"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="p-6">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 text-primary">
+                <div>
+                  <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white mb-8">
                     <Gift />
                   </div>
-                  <h4 className="text-sm font-semibold text-primary mb-1 uppercase tracking-wider">Daily Drop</h4>
-                  <h3 className="text-2xl font-bold mb-2">$50 Swag</h3>
-                  <p className="text-muted-foreground text-sm mb-4">21 winners selected daily. Premium hoodies, bottles, and tech accessories.</p>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-primary" /> Daily drawings</li>
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-primary" /> Shipped worldwide</li>
-                  </ul>
+                  <h4 className="text-xs font-medium text-white/50 mb-3 uppercase tracking-widest font-display">Daily Drop</h4>
+                  <h3 className="text-3xl font-display font-light text-white mb-4">$50 Daily Swag</h3>
+                  <p className="text-muted-foreground font-light mb-8">21 winners selected daily. Premium hoodies, bottles, and tech accessories shipped worldwide.</p>
                 </div>
+                <ul className="space-y-3 text-sm text-white/70">
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> Daily randomized drawings</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> No minimum referral required</li>
+                </ul>
               </motion.div>
 
               {/* Card 2 */}
               <motion.div 
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="glass-card rounded-2xl overflow-hidden border border-white/10 relative group"
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                className="glass-card p-10 flex flex-col justify-between group h-full"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="p-6">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 text-blue-400">
+                <div>
+                  <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white mb-8">
                     <Target />
                   </div>
-                  <h4 className="text-sm font-semibold text-blue-400 mb-1 uppercase tracking-wider">Milestone I</h4>
-                  <h3 className="text-2xl font-bold mb-2">$50 Gift Card</h3>
-                  <p className="text-muted-foreground text-sm mb-4">Guaranteed reward for every 10 verified referrals. No limits.</p>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-blue-400" /> 10 Verified = Unlock</li>
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-blue-400" /> Amazon / Steam / Xbox</li>
-                  </ul>
+                  <h4 className="text-xs font-medium text-white/50 mb-3 uppercase tracking-widest font-display">Milestone I</h4>
+                  <h3 className="text-3xl font-display font-light text-white mb-4">$50 Gift Card</h3>
+                  <p className="text-muted-foreground font-light mb-8">Guaranteed reward for every 10 verified referrals. No limits. Choose from Amazon, Steam, or Xbox.</p>
                 </div>
+                <ul className="space-y-3 text-sm text-white/70">
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> 10 Verified = Unlock</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> Unlimited redemptions</li>
+                </ul>
               </motion.div>
 
               {/* Card 3 */}
               <motion.div 
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="glass-card rounded-2xl overflow-hidden border border-secondary/30 relative group shadow-[0_0_30px_-10px_rgba(168,85,247,0.3)]"
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                className="glass-card p-10 flex flex-col justify-between group h-full relative overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 to-transparent opacity-100" />
-                <div className="absolute top-0 right-0 p-3">
-                  <Badge className="bg-secondary text-white border-none">PREMIUM</Badge>
+                <div className="absolute inset-0 bg-white/[0.02] pointer-events-none" />
+                <div className="absolute top-0 right-0 p-6">
+                  <div className="glass-pill-badge text-[10px]">PREMIUM</div>
                 </div>
-                <div className="p-6 relative z-10">
-                  <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mb-4 text-secondary">
+                <div className="relative z-10">
+                  <div className="w-14 h-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white mb-8">
                     <Cpu />
                   </div>
-                  <h4 className="text-sm font-semibold text-secondary mb-1 uppercase tracking-wider">Milestone II</h4>
-                  <h3 className="text-2xl font-bold mb-2">$99 AI Voucher</h3>
-                  <p className="text-muted-foreground text-sm mb-4">Hit 50 verified referrals to unlock the exclusive Gen AI Leader package.</p>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-secondary" /> 50 Verified = Unlock</li>
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-secondary" /> Cloud credits included</li>
-                  </ul>
+                  <h4 className="text-xs font-medium text-white/50 mb-3 uppercase tracking-widest font-display">Milestone II</h4>
+                  <h3 className="text-3xl font-display font-light text-white mb-4">$99 AI Voucher</h3>
+                  <p className="text-muted-foreground font-light mb-8">Hit 50 verified referrals to unlock the exclusive Gen AI Leader package with premium cloud credits.</p>
                 </div>
+                <ul className="space-y-3 text-sm text-white/70 relative z-10">
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> 50 Verified = Unlock</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> Premium cloud infrastructure</li>
+                </ul>
               </motion.div>
 
               {/* Card 4 */}
               <motion.div 
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="glass-card rounded-2xl overflow-hidden border border-white/10 relative group"
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                className="glass-card p-10 flex flex-col justify-between group h-full"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="p-6">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 text-accent">
+                <div>
+                  <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white mb-8">
                     <TerminalSquare />
                   </div>
-                  <h4 className="text-sm font-semibold text-accent mb-1 uppercase tracking-wider">Exclusive Access</h4>
-                  <h3 className="text-2xl font-bold mb-2">Hackathons</h3>
-                  <p className="text-muted-foreground text-sm mb-4">Free entry to invite-only technical events. ₹499 equivalent value.</p>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-accent" /> VIP Registration</li>
-                    <li className="flex items-center text-white/80"><Check className="w-4 h-4 mr-2 text-accent" /> Mentorship priority</li>
-                  </ul>
+                  <h4 className="text-xs font-medium text-white/50 mb-3 uppercase tracking-widest font-display">Exclusive Access</h4>
+                  <h3 className="text-3xl font-display font-light text-white mb-4">Hackathons</h3>
+                  <p className="text-muted-foreground font-light mb-8">Free entry to invite-only technical events. Mentorship priority and VIP registration lanes.</p>
                 </div>
+                <ul className="space-y-3 text-sm text-white/70">
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> VIP Registration</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/40" /> ₹499 equivalent value</li>
+                </ul>
               </motion.div>
+            </div>
+
+            {/* Ticker / Marquee */}
+            <div className="w-full overflow-hidden py-8 border-y border-white/[0.06] bg-white/[0.01]">
+              <div className="marquee-container">
+                <div className="marquee-content">
+                  {["Exclusive Access", "Daily Swag Drops", "Google Event Invites", "Verified Influence", "Global Leaderboard", "$50 Gift Cards", "Premium Cloud Credits", "VIP Hackathons"].map((text, i) => (
+                    <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
+                      <span className="text-2xl font-display font-light text-white/60 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/20 text-xl font-light">*</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="marquee-content">
+                  {["Exclusive Access", "Daily Swag Drops", "Google Event Invites", "Verified Influence", "Global Leaderboard", "$50 Gift Cards", "Premium Cloud Credits", "VIP Hackathons"].map((text, i) => (
+                    <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
+                      <span className="text-2xl font-display font-light text-white/60 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/20 text-xl font-light">*</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* DASHBOARD PREVIEW */}
-        <section id="dashboard" className="py-24 relative overflow-hidden bg-black/60 border-y border-white/5">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col lg:flex-row gap-12 items-center">
-              <div className="lg:w-1/3">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 font-display">LIVE TRACKING <span className="text-primary block mt-2">DASHBOARD</span></h2>
-                <p className="text-muted-foreground mb-8 text-lg">
+        <section id="dashboard" className="py-32 relative bg-black">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="flex flex-col lg:flex-row gap-16 items-center">
+              <motion.div 
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                className="lg:w-5/12"
+              >
+                <div className="glass-pill-badge mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                  Analytics
+                </div>
+                <h2 className="text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight">Live Tracking Dashboard</h2>
+                <p className="text-muted-foreground text-lg font-light mb-10 leading-relaxed">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-start">
-                    <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center mr-3 shrink-0 mt-0.5">
-                      <Activity className="w-3 h-3 text-primary" />
-                    </div>
-                    <span className="text-white/80">Real-time referral validation status</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center mr-3 shrink-0 mt-0.5">
-                      <Trophy className="w-3 h-3 text-primary" />
-                    </div>
-                    <span className="text-white/80">Automated milestone unlocking</span>
-                  </li>
-                  <li className="flex items-start">
-                    <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center mr-3 shrink-0 mt-0.5">
-                      <Users className="w-3 h-3 text-primary" />
-                    </div>
-                    <span className="text-white/80">Competitive global leaderboard ranking</span>
-                  </li>
+                <ul className="space-y-6 mb-12">
+                  {[
+                    { icon: <Activity className="w-4 h-4" />, text: "Real-time referral validation status" },
+                    { icon: <Trophy className="w-4 h-4" />, text: "Automated milestone unlocking" },
+                    { icon: <Users className="w-4 h-4" />, text: "Competitive global leaderboard ranking" }
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center">
+                      <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center mr-4 text-white/80 shrink-0">
+                        {item.icon}
+                      </div>
+                      <span className="text-white/80 font-light">{item.text}</span>
+                    </li>
+                  ))}
                 </ul>
-                <Button className="font-display font-bold px-8 h-12 w-full sm:w-auto" variant="secondary" asChild>
-                  <a href="#how-it-works">START TRACKING <ArrowRight className="ml-2 w-4 h-4" /></a>
-                </Button>
-              </div>
+                <a href="#register" className="glass-button h-14 px-8 text-base">
+                  Start Tracking
+                </a>
+              </motion.div>
 
-              <div className="lg:w-2/3 w-full">
-                <div className="glass-card rounded-xl border border-white/10 p-6 shadow-2xl relative">
-                  {/* Fake UI Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none z-10 rounded-xl" />
-                  
-                  <div className="flex justify-between items-center mb-6">
+              <motion.div 
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: "easeOut" }}
+                className="lg:w-7/12 w-full"
+              >
+                <div className="glass-card p-8 shadow-2xl relative">
+                  {/* Dashboard Header */}
+                  <div className="flex justify-between items-center mb-8 pb-6 border-b border-white/10">
                     <div>
-                      <h3 className="font-display font-bold text-xl">Agent_X24</h3>
-                      <p className="text-xs text-muted-foreground">ID: X247-9982</p>
+                      <h3 className="font-display font-light text-xl text-white">Agent_X24</h3>
+                      <p className="text-sm text-muted-foreground font-light">ID: X247-9982</p>
                     </div>
-                    <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 mr-2 animate-pulse" /> STATUS: ACTIVE
-                    </Badge>
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <div className="bg-white/5 rounded-lg p-4 border border-white/5">
-                      <div className="text-muted-foreground text-xs font-semibold mb-1">TOTAL CLICKS</div>
-                      <div className="text-2xl font-display font-bold">247</div>
-                    </div>
-                    <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
-                      <div className="text-primary text-xs font-semibold mb-1">VERIFIED</div>
-                      <div className="text-2xl font-display font-bold text-white">18</div>
-                    </div>
-                    <div className="bg-white/5 rounded-lg p-4 border border-white/5">
-                      <div className="text-muted-foreground text-xs font-semibold mb-1">YOUR RANK</div>
-                      <div className="text-2xl font-display font-bold">#34</div>
-                    </div>
-                    <div className="bg-white/5 rounded-lg p-4 border border-white/5">
-                      <div className="text-muted-foreground text-xs font-semibold mb-1">NEXT REWARD</div>
-                      <div className="text-2xl font-display font-bold text-secondary">2 LEFT</div>
+                    <div className="glass-pill-badge !text-[10px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white mr-2 animate-pulse" /> ACTIVE
                     </div>
                   </div>
 
-                  <div className="mb-8">
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-muted-foreground">Milestone I Progress</span>
-                      <span className="font-bold text-primary">18 / 20</span>
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-4 mb-10">
+                    <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-6">
+                      <div className="text-muted-foreground text-xs uppercase tracking-widest font-display mb-2">Verified</div>
+                      <div className="text-4xl font-display font-light text-white">18</div>
                     </div>
-                    <Progress value={90} className="h-2 bg-white/10" />
+                    <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-6">
+                      <div className="text-muted-foreground text-xs uppercase tracking-widest font-display mb-2">Total Clicks</div>
+                      <div className="text-4xl font-display font-light text-white">247</div>
+                    </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6 relative z-20">
-                    <div>
-                      <h4 className="text-sm font-semibold mb-3 border-b border-white/10 pb-2">RECENT ACTIVITY</h4>
-                      <div className="space-y-3">
-                        <div className="flex items-center text-sm">
-                          <CheckCircle2 className="w-4 h-4 text-green-400 mr-2" />
-                          <span className="text-white/80">User ***891 verified</span>
-                          <span className="ml-auto text-xs text-muted-foreground">2m ago</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <CheckCircle2 className="w-4 h-4 text-green-400 mr-2" />
-                          <span className="text-white/80">User ***342 verified</span>
-                          <span className="ml-auto text-xs text-muted-foreground">15m ago</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <Activity className="w-4 h-4 text-blue-400 mr-2" />
-                          <span className="text-white/80">Link 2 click recorded</span>
-                          <span className="ml-auto text-xs text-muted-foreground">1h ago</span>
-                        </div>
-                      </div>
+                  {/* Progress Section */}
+                  <div className="mb-10">
+                    <div className="flex justify-between text-sm mb-3">
+                      <span className="text-muted-foreground font-light">Milestone I Progress</span>
+                      <span className="text-white font-light">18 / 20</span>
                     </div>
-                    
-                    <div>
-                      <h4 className="text-sm font-semibold mb-3 border-b border-white/10 pb-2 flex justify-between">
-                        <span>LEADERBOARD</span>
-                        <span className="text-xs text-primary">GLOBAL</span>
-                      </h4>
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center text-sm bg-white/5 p-2 rounded">
-                          <span className="font-bold text-yellow-400 flex items-center"><span className="w-4 inline-block">1.</span> SarahK_Dev</span>
-                          <span className="font-mono">142</span>
+                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-white/80 w-[90%] rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* Feed */}
+                  <div>
+                    <h4 className="text-xs uppercase tracking-widest font-display text-muted-foreground mb-4">Recent Activity</h4>
+                    <div className="space-y-4">
+                      {[
+                        { text: "User ***891 verified", time: "2m ago", icon: <CheckCircle2 className="w-4 h-4" /> },
+                        { text: "User ***342 verified", time: "15m ago", icon: <CheckCircle2 className="w-4 h-4" /> },
+                        { text: "Link 2 click recorded", time: "1h ago", icon: <Activity className="w-4 h-4" /> }
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center text-sm">
+                          <div className="text-white/60 mr-3">{item.icon}</div>
+                          <span className="text-white/80 font-light">{item.text}</span>
+                          <span className="ml-auto text-xs text-muted-foreground">{item.time}</span>
                         </div>
-                        <div className="flex justify-between items-center text-sm p-2 rounded">
-                          <span className="text-zinc-300 flex items-center"><span className="w-4 inline-block">2.</span> DevRahul01</span>
-                          <span className="font-mono">128</span>
-                        </div>
-                        <div className="flex justify-between items-center text-sm p-2 rounded">
-                          <span className="text-zinc-400 flex items-center"><span className="w-4 inline-block">3.</span> AlexBuilds</span>
-                          <span className="font-mono">105</span>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
 
         {/* VERIFICATION POLICY */}
-        <section id="verify" className="py-20 relative">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto glass-card rounded-2xl p-8 md:p-12 border border-destructive/20 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-2 h-full bg-destructive"></div>
-              
-              <div className="flex items-center gap-4 mb-6">
-                <AlertTriangle className="w-8 h-8 text-destructive" />
-                <h2 className="text-2xl md:text-3xl font-bold font-display">VERIFICATION PROTOCOL</h2>
-              </div>
-              
-              <p className="text-muted-foreground mb-8 text-lg">
-                We maintain a strict zero-tolerance policy for fraudulent activity to protect the integrity of the reward pool.
+        <section id="verify" className="py-24 relative bg-black">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="glass-card p-10 border-white/10 relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-1 h-full bg-white/20"></div>
+              <h3 className="text-2xl font-display font-light mb-6 text-white">Verification Protocol</h3>
+              <p className="text-muted-foreground font-light leading-relaxed mb-8">
+                To maintain the integrity of the ecosystem, strict verification measures are in place. Fraudulent referrals will result in permanent disqualification.
               </p>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-black/40 rounded-lg p-5 border border-white/5">
-                  <h4 className="font-bold text-white mb-2 flex items-center"><CheckCircle2 className="w-4 h-4 text-green-400 mr-2"/> Authorized</h4>
-                  <p className="text-sm text-zinc-400">Only fully completed registrations through the official referral links and verified via the Google Form are counted toward milestones.</p>
+              
+              <div className="grid md:grid-cols-2 gap-8 pt-6 border-t border-white/[0.06]">
+                <div>
+                  <h4 className="text-sm font-display uppercase tracking-widest text-white mb-4 flex items-center">
+                    <CheckCircle2 className="w-4 h-4 mr-2" /> Authorized
+                  </h4>
+                  <ul className="space-y-3 text-sm text-white/70 font-light">
+                    <li>• Real attendees</li>
+                    <li>• Completed registrations</li>
+                    <li>• Valid contact details</li>
+                  </ul>
                 </div>
-                <div className="bg-destructive/10 rounded-lg p-5 border border-destructive/20">
-                  <h4 className="font-bold text-white mb-2 flex items-center"><AlertTriangle className="w-4 h-4 text-destructive mr-2"/> Disqualified</h4>
-                  <p className="text-sm text-zinc-400">External registrations, automated bot submissions, and fake details will result in immediate system block and forfeiture of all accumulated rewards.</p>
+                <div>
+                  <h4 className="text-sm font-display uppercase tracking-widest text-white/50 mb-4 flex items-center">
+                    <ShieldCheck className="w-4 h-4 mr-2" /> Disqualified
+                  </h4>
+                  <ul className="space-y-3 text-sm text-muted-foreground font-light">
+                    <li>• Bot/Script traffic</li>
+                    <li>• Duplicate IPs</li>
+                    <li>• Fake registrations</li>
+                  </ul>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* COMMUNITY & FUTURE */}
-        <section id="join" className="py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-transparent to-primary/10"></div>
-          
-          <div className="container mx-auto px-4 relative z-10 text-center max-w-4xl">
-            <Badge variant="outline" className="mb-6 border-green-500/30 text-green-400 bg-green-500/5 px-4 py-1.5 font-display tracking-widest text-xs uppercase">
-              Restricted Access
-            </Badge>
-            
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">THE INNER <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">CIRCLE</span></h2>
-            
-            <p className="text-xl text-muted-foreground mb-12">
-              Beyond the rewards lies the network. Verified participants gain entry to our private WhatsApp hub for elite Google ecosystem opportunities.
-            </p>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 text-left">
-              <div className="glass-card p-4 rounded-xl border border-white/5">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mb-3">
-                  <TerminalSquare className="w-4 h-4 text-zinc-300" />
-                </div>
-                <div className="font-bold text-sm">Hackathons</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl border border-white/5">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mb-3">
-                  <SiGoogle className="w-4 h-4 text-zinc-300" />
-                </div>
-                <div className="font-bold text-sm">Workshops</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl border border-white/5">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mb-3">
-                  <Cpu className="w-4 h-4 text-zinc-300" />
-                </div>
-                <div className="font-bold text-sm">Gen AI Events</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl border border-white/5">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mb-3">
-                  <Users className="w-4 h-4 text-zinc-300" />
-                </div>
-                <div className="font-bold text-sm">Mentorship</div>
-              </div>
-            </div>
-
-            <Button 
-              size="lg" 
-              className="h-16 px-10 text-lg font-bold bg-[#25D366] hover:bg-[#20b858] text-white shadow-[0_0_40px_-10px_rgba(37,211,102,0.6)] rounded-xl transition-all hover:scale-105"
-              asChild
+        <section className="py-32 relative bg-black">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="text-center mb-24"
             >
-              <a href="#join" data-testid="btn-whatsapp">
-                <SiWhatsapp className="mr-3 h-6 w-6" />
-                Join WhatsApp Community
-              </a>
-            </Button>
-          </div>
-        </section>
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Inner Circle
+              </div>
+              <h2 className="text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">The Ecosystem</h2>
+              <p className="text-muted-foreground text-lg font-light leading-relaxed max-w-2xl mx-auto">
+                Beyond individual rewards lies a network of top-tier developers and event access.
+              </p>
+            </motion.div>
 
-        {/* FAQ */}
-        <section id="faq" className="py-24 relative bg-black/30">
-          <div className="container mx-auto px-4 max-w-3xl">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">INTEL</h2>
-              <p className="text-muted-foreground">Common queries about the platform protocol.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+              {[
+                { title: "Hackathons", desc: "Access to private building sessions." },
+                { title: "Workshops", desc: "Expert-led technical deep dives." },
+                { title: "Mentorship", desc: "Direct access to industry leaders." }
+              ].map((item, i) => (
+                <motion.div 
+                  key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                  className="glass-card p-8 text-center"
+                >
+                  <h3 className="text-xl font-display font-light text-white mb-3">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground font-light">{item.desc}</p>
+                </motion.div>
+              ))}
             </div>
 
-            <Accordion type="single" collapsible className="w-full">
-              {[
-                { q: "Who can participate?", a: "Any active student interested in Google community events, technology, and AI can register and start referring." },
-                { q: "How do I verify my registration?", a: "After registering through both referral links, you must fill out the Verification Form with your details and referral code. This is mandatory to track your progress." },
-                { q: "When are winners announced?", a: "Daily swag winners are announced every 24 hours in the private WhatsApp group. Milestone rewards are processed automatically upon reaching the required verified count." },
-                { q: "How are referrals tracked?", a: "We use a combination of unique referral codes and cross-referencing with official Google event registration logs to ensure 100% accuracy." },
-                { q: "What happens if I use fake details?", a: "Our system detects duplicate IPs, bot patterns, and invalid emails. Any fake submission results in a permanent ban from the X247 Rewards platform." },
-                { q: "How do I claim my reward?", a: "Once a milestone is reached or you win a daily drop, our team will contact you via your registered email or WhatsApp to arrange delivery or digital transfer." }
-              ].map((faq, i) => (
-                <AccordionItem key={i} value={`item-${i}`} className="border-white/10">
-                  <AccordionTrigger className="text-left font-bold text-lg hover:text-primary transition-colors data-[state=open]:text-primary">
-                    {faq.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground text-base leading-relaxed">
-                    {faq.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="flex justify-center"
+            >
+              <a href="#register" className="glass-button h-14 px-8 text-base">
+                <SiWhatsapp className="mr-3 w-5 h-5" /> Join the Network
+              </a>
+            </motion.div>
           </div>
         </section>
+
+        {/* FAQ SECTION */}
+        <section id="faq" className="py-32 relative bg-black border-t border-white/[0.06]">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="text-center mb-16"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Intel
+              </div>
+              <h2 className="text-4xl md:text-5xl font-display font-light text-white tracking-tight">FAQ</h2>
+            </motion.div>
+
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="glass-card p-8 md:p-12"
+            >
+              <Accordion type="single" collapsible className="w-full">
+                {[
+                  { q: "How do I ensure my referrals are counted?", a: "Make sure your network uses both links to register and submits the verification form with your unique code." },
+                  { q: "When are daily winners announced?", a: "Winners are drawn randomly at 18:00 UTC and announced in the community channel." },
+                  { q: "How long does verification take?", a: "Manual verification typically takes 24-48 hours after form submission." },
+                  { q: "Can I earn multiple gift cards?", a: "Yes. Milestone I ($50 Gift Card) unlocks for every 10 verified referrals." },
+                  { q: "What is the Gen AI Leader Package?", a: "An exclusive tier for 50+ referrals including premium cloud credits, VIP event access, and custom merch." },
+                  { q: "Are international participants eligible?", a: "Yes, the program and shipping are global." }
+                ].map((faq, i) => (
+                  <AccordionItem key={i} value={`item-${i}`} className="border-b border-white/10 last:border-0 px-2">
+                    <AccordionTrigger className="text-left font-display font-light text-lg text-white hover:text-white/80 py-6">
+                      {faq.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground font-light leading-relaxed pb-6">
+                      {faq.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </motion.div>
+          </div>
+        </section>
+
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/10 bg-black pt-16 pb-8 relative z-10">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Zap className="w-6 h-6 text-primary" />
-                <span className="font-display font-bold text-2xl tracking-wider">X247<span className="text-primary">REWARDS</span></span>
-              </div>
-              <p className="text-muted-foreground text-sm font-medium">Register. Verify. Refer. Earn.</p>
+      <footer className="border-t border-white/[0.06] bg-black py-16">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16">
+            <div className="text-2xl font-display font-light text-white">X247 Rewards</div>
+            <div className="flex gap-6 text-sm font-light text-muted-foreground">
+              <a href="#" className="hover:text-white transition-colors">Terms</a>
+              <a href="#" className="hover:text-white transition-colors">Privacy</a>
+              <a href="#" className="hover:text-white transition-colors">Contact</a>
             </div>
-            
-            <div className="flex gap-6 text-sm font-medium">
-              <a href="#how-it-works" className="text-muted-foreground hover:text-white transition-colors">Protocol</a>
-              <a href="#rewards" className="text-muted-foreground hover:text-white transition-colors">Tiers</a>
-              <a href="#dashboard" className="text-muted-foreground hover:text-white transition-colors">Dashboard</a>
-              <a href="#faq" className="text-muted-foreground hover:text-white transition-colors">Intel</a>
-            </div>
-
-            <Button variant="default" className="font-display font-bold tracking-widest text-xs" asChild>
-              <a href="#verify" data-testid="btn-verify-form">
-                Submit Verification Form
-              </a>
-            </Button>
           </div>
-          
-          <Separator className="bg-white/5 mb-8" />
-          
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} X247 Rewards Ecosystem. Not officially affiliated with Google LLC.</p>
-            <div className="flex gap-4 mt-4 md:mt-0">
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            </div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-white/40">
+            <p>© 2024 X247 Rewards Protocol. All rights reserved.</p>
+            <p className="flex items-center gap-2">
+              <Globe className="w-3 h-3" /> System Status: Operational
+            </p>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
