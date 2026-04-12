@@ -31,7 +31,6 @@ import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
 import BorderGlow from "@/components/BorderGlow";
 import CardNav from "@/components/CardNav";
-import "@/components/CardNav.css";
 import DotGrid from "@/components/DotGrid";
 import "@/components/DotGrid.css";
 import ProfileCard from "@/components/ProfileCard";
@@ -580,6 +579,8 @@ export default function Home() {
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
                   <TiltCard className="glass-card p-5 sm:p-6 group h-full">
+                    <div className="card-top-accent" />
+                    <div className="card-shine" />
                     <div className="relative z-[2] flex flex-col h-full">
                       <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
                         {item.icon}
@@ -665,7 +666,9 @@ export default function Home() {
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}
                 className="lg:w-7/12 w-full"
               >
-                <TiltCard className="glass-card p-6 sm:p-8 shadow-2xl relative">
+                <TiltCard className="glass-card glass-card-accent-navy p-6 sm:p-8 shadow-2xl relative">
+                  <div className="card-top-accent card-top-accent-navy" />
+                  <div className="card-shine" />
                   <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10 gap-3 relative z-[2]">
                     <div>
@@ -756,8 +759,9 @@ export default function Home() {
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
             >
               <TiltCard className="glass-card p-6 sm:p-10 border-white/10 relative overflow-hidden">
+                <div className="card-top-accent card-top-accent-red" />
+                <div className="card-shine" />
                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-white/30 via-white/10 to-transparent"></div>
-                <div className="absolute top-0 right-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
                 <div className="relative z-[2]">
                   <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-white">Verification Protocol</h3>
                   <p className="text-white/50 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
@@ -822,8 +826,10 @@ export default function Home() {
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
                   <TiltCard className="glass-card p-6 sm:p-8 text-center group">
+                    <div className="card-top-accent card-top-accent-navy" />
+                    <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mx-auto mb-5">
+                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle icon-circle-navy mx-auto mb-5">
                         {item.icon}
                       </BorderGlow>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
@@ -865,6 +871,8 @@ export default function Home() {
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
             >
               <TiltCard className="glass-card p-5 sm:p-8 md:p-12">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
                 <div className="relative z-[2]">
                   <Accordion type="single" collapsible className="w-full">
                     {[
