@@ -141,7 +141,7 @@
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Syne', var(--font-display), sans-serif;
-    font-weight: 600;
+    font-weight: 300;
     letter-spacing: -0.03em;
   }
 }
@@ -831,6 +831,72 @@
   .text-reveal-line {
     overflow: hidden;
     display: block;
+  }
+
+  .prize-card-large {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 280px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: border-color 0.4s ease;
+  }
+
+  .prize-card-large::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(
+      var(--card-border-angle, 0deg),
+      rgba(20, 30, 80, 0.45),
+      rgba(255, 255, 255, 0.06),
+      rgba(160, 30, 40, 0.4),
+      rgba(255, 255, 255, 0.06),
+      rgba(20, 30, 80, 0.45)
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+    z-index: 1;
+    animation: card-border-rotate 6s linear infinite;
+  }
+
+  .prize-card-large-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .prize-card-large:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .premium-btn.border-glow-card:not(:hover)::before {
+    display: block;
+    opacity: 1;
+    border: 1px solid transparent;
+    padding: 0;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      var(--btn-border-angle, 0deg),
+      rgba(20, 30, 80, 0.5),
+      rgba(255, 255, 255, 0.1),
+      rgba(140, 20, 30, 0.4),
+      rgba(255, 255, 255, 0.1),
+      rgba(20, 30, 80, 0.5)
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    padding: 1px;
+    animation: btn-border-rotate 6s linear infinite;
+    transition: opacity 0.4s ease;
   }
 
   .border-glow-card.premium-btn::before,
