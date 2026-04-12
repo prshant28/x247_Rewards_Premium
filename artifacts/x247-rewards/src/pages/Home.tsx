@@ -3,7 +3,6 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue, type Varian
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   Check, 
-  Gift,
   Target,
   Cpu,
   TerminalSquare,
@@ -19,8 +18,14 @@ import {
   Globe,
   Clock,
   Award,
+  ExternalLink,
+  Headphones,
+  Laptop,
+  CreditCard,
+  Ticket,
+  Package
 } from "lucide-react";
-import { SiGoogle, SiWhatsapp } from "react-icons/si";
+import { SiWhatsapp } from "react-icons/si";
 import heroVideo from "@assets/4954770_Coll_halloween_Realistic_3840x2160_1775967998660.mp4";
 
 function SmokeCanvas() {
@@ -421,7 +426,7 @@ export default function Home() {
               className="glass-pill-badge mb-8 mt-12 font-display"
             >
               <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse mr-3 inline-block"></span>
-              Unlocking Exclusive Google Event Rewards
+              Exclusive Partner Rewards Giveaway
             </motion.div>
             
             <div className="relative mb-8">
@@ -444,7 +449,7 @@ export default function Home() {
               transition={{ delay: 1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="text-base sm:text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide"
             >
-              Elevate your rewards with verified referrals and exclusive access. Join the premier Google event program for daily swag, gift cards, and hackathon invites.
+              Enter our exclusive giveaway by registering with our partner links. Complete the steps, earn entries, and win daily prizes — gift cards, premium swag, cloud credits, and more.
             </motion.p>
 
             <motion.div
@@ -502,9 +507,9 @@ export default function Home() {
                   {
                     step: "01",
                     title: "Register with Partner Link",
-                    desc: "Click the provided partner registration link and complete the full registration on the partner profile. Make sure your registration is successfully completed — this is mandatory to enter the giveaway.",
-                    icon: <SiGoogle className="w-4 h-4" />,
-                    tip: null
+                    desc: "Click the provided partner registration link and complete the full registration on the partner profile. Every partner listed here requires registration — make sure it's successfully completed. This is mandatory to enter the giveaway.",
+                    icon: <ExternalLink className="w-4 h-4" />,
+                    tip: "Required for all partners"
                   },
                   {
                     step: "02",
@@ -595,26 +600,30 @@ export default function Home() {
             >
               <div className="glass-pill-badge mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                Reward Tiers
+                Prizes & Rewards
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Rewards" /></h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
               <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-                Real rewards for real influence. Level up your referrals to unlock premium tiers and exclusive opportunities.
+                Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
             </motion.div>
 
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-16 sm:mb-24"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16 sm:mb-24"
             >
               {[
-                { tier: "Daily Drop", title: "$50 Daily Swag", desc: "21 winners selected daily. Premium hoodies, bottles, and tech accessories shipped worldwide.", checks: ["Daily randomized drawings", "No minimum referral required"], featured: false, icon: <Gift className="w-5 h-5" /> },
-                { tier: "Milestone I", title: "$50 Gift Card", desc: "Guaranteed reward for every 10 verified referrals. No limits. Choose from Amazon, Steam, or Xbox.", checks: ["10 Verified = Unlock", "Unlimited redemptions"], featured: false, icon: <Target className="w-5 h-5" /> },
-                { tier: "Milestone II", title: "$99 AI Voucher", desc: "Hit 50 verified referrals to unlock the exclusive Gen AI Leader package with premium cloud credits.", checks: ["50 Verified = Unlock", "Premium cloud infrastructure"], featured: true, icon: <Cpu className="w-5 h-5" /> },
-                { tier: "Exclusive Access", title: "Hackathons", desc: "Free entry to invite-only technical events. Mentorship priority and VIP registration lanes.", checks: ["VIP Registration", "₹499 equivalent value"], featured: false, icon: <TerminalSquare className="w-5 h-5" /> }
+                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "21 winners every day. Branded hoodies, tech bottles, stickers, and accessories shipped worldwide. Just enter — no minimum required.", checks: ["Daily random draw", "No minimum entries needed"], featured: false, icon: <Package className="w-5 h-5" /> },
+                { tier: "Gift Cards", title: "₹500 – ₹2000 Gift Cards", desc: "Win Amazon, Flipkart, or Google Play gift cards. Multiple gift cards given out daily across different entry pools.", checks: ["Amazon / Flipkart / Google Play", "Multiple winners per day"], featured: false, icon: <CreditCard className="w-5 h-5" /> },
+                { tier: "Tech Gear", title: "Wireless Earbuds & Gadgets", desc: "Premium wireless earbuds, power banks, smart bands, and tech accessories up for grabs in weekly mega draws.", checks: ["Weekly mega draws", "Top-tier brands only"], featured: false, icon: <Headphones className="w-5 h-5" /> },
+                { tier: "Cloud Credits", title: "₹5,000 Cloud Voucher", desc: "Get premium cloud infrastructure credits — AWS, Google Cloud, or Azure. Perfect for developers and builders.", checks: ["AWS / GCP / Azure credits", "For builders & developers"], featured: true, icon: <Cpu className="w-5 h-5" /> },
+                { tier: "Laptop Giveaway", title: "Laptop Grand Prize", desc: "Monthly grand prize — a brand new laptop for the top performer or lucky draw winner. The ultimate reward for our community.", checks: ["Monthly grand draw", "Brand new laptop"], featured: true, icon: <Laptop className="w-5 h-5" /> },
+                { tier: "Event Access", title: "Hackathon & Workshop Passes", desc: "Free entry to invite-only hackathons, workshops, and tech events. VIP registration and mentorship priority included.", checks: ["VIP event access", "Worth ₹499–₹1999"], featured: false, icon: <Ticket className="w-5 h-5" /> },
+                { tier: "Referral Bonus", title: "₹100 Per Referral", desc: "Earn ₹100 for every verified referral who completes registration. No cap — the more you refer, the more you earn.", checks: ["No earning limit", "Paid per verified referral"], featured: false, icon: <Users className="w-5 h-5" /> },
+                { tier: "Partner Exclusive", title: "Partner Program Perks", desc: "Join as an official X247 partner and unlock monthly payouts, exclusive merch, early access to new giveaways, and direct support.", checks: ["Monthly partner payouts", "Exclusive early access"], featured: false, icon: <Star className="w-5 h-5" /> }
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
-                  <TiltCard className={`glass-card ${item.featured ? 'glass-card-featured' : ''} p-6 sm:p-10 group h-full`}>
+                  <TiltCard className={`glass-card ${item.featured ? 'glass-card-featured' : ''} p-5 sm:p-8 group h-full`}>
                     {item.featured && (
                       <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-[5]">
                         <div className="premium-badge">
@@ -628,9 +637,9 @@ export default function Home() {
                         <div className="icon-circle mb-6 sm:mb-8">
                           {item.icon}
                         </div>
-                        <h4 className="text-xs font-medium text-white/30 mb-3 uppercase tracking-widest font-display">{item.tier}</h4>
-                        <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">{item.title}</h3>
-                        <p className="text-white/35 font-light mb-8 text-sm sm:text-base">{item.desc}</p>
+                        <h4 className="text-[10px] sm:text-xs font-medium text-white/30 mb-2 uppercase tracking-widest font-display">{item.tier}</h4>
+                        <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3">{item.title}</h3>
+                        <p className="text-white/35 font-light mb-6 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
                       </div>
                       <ul className="space-y-3 text-xs sm:text-sm text-white/50">
                         {item.checks.map((c, ci) => (
@@ -646,7 +655,7 @@ export default function Home() {
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
               <div className="marquee-container">
                 <div className="marquee-content">
-                  {["Exclusive Access", "Daily Swag Drops", "Google Event Invites", "Verified Influence", "Global Leaderboard", "$50 Gift Cards", "Premium Cloud Credits", "VIP Hackathons"].map((text, i) => (
+                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Cloud Credits", "Laptop Grand Prize", "Hackathon Passes", "Referral Earnings", "Partner Payouts", "Tech Gadgets", "Exclusive Merch"].map((text, i) => (
                     <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
                       <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
                       <span className="text-white/10 text-xl font-light">✦</span>
@@ -654,7 +663,7 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="marquee-content">
-                  {["Exclusive Access", "Daily Swag Drops", "Google Event Invites", "Verified Influence", "Global Leaderboard", "$50 Gift Cards", "Premium Cloud Credits", "VIP Hackathons"].map((text, i) => (
+                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Cloud Credits", "Laptop Grand Prize", "Hackathon Passes", "Referral Earnings", "Partner Payouts", "Tech Gadgets", "Exclusive Merch"].map((text, i) => (
                     <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
                       <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
                       <span className="text-white/10 text-xl font-light">✦</span>
@@ -860,7 +869,7 @@ export default function Home() {
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
               <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-                Beyond individual rewards lies a network of top-tier developers and event access.
+                Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
             </motion.div>
 
@@ -924,12 +933,14 @@ export default function Home() {
                 <div className="relative z-[2]">
                   <Accordion type="single" collapsible className="w-full">
                     {[
-                      { q: "How do I ensure my referrals are counted?", a: "Make sure your network uses both links to register and submits the verification form with your unique code." },
-                      { q: "When are daily winners announced?", a: "Winners are drawn randomly at 18:00 UTC and announced in the community channel." },
-                      { q: "How long does verification take?", a: "Manual verification typically takes 24-48 hours after form submission." },
-                      { q: "Can I earn multiple gift cards?", a: "Yes. Milestone I ($50 Gift Card) unlocks for every 10 verified referrals." },
-                      { q: "What is the Gen AI Leader Package?", a: "An exclusive tier for 50+ referrals including premium cloud credits, VIP event access, and custom merch." },
-                      { q: "Are international participants eligible?", a: "Yes, the program and shipping are global." }
+                      { q: "How do I enter the giveaway?", a: "Register with the partner links provided on this page, then fill the giveaway entry form with your details. You'll receive a confirmation email once your entry is submitted successfully." },
+                      { q: "Can I enter multiple times?", a: "Yes! You can submit multiple entries to increase your chances. Each entry must use a different email address and mobile number — duplicate details will be disqualified." },
+                      { q: "When are daily winners announced?", a: "Winners are selected and announced daily on this page in the Winners Section. Check back regularly — your name could appear anytime." },
+                      { q: "What rewards can I win?", a: "Daily swag kits, gift cards (₹500–₹2000), wireless earbuds & gadgets, cloud credits (₹5,000), hackathon passes, and even a brand new laptop in the monthly grand draw." },
+                      { q: "How does the referral bonus work?", a: "Share your unique referral code with others. For every person who registers and completes their entry using your code, you earn ₹100. There's no earning limit — refer as many as you can." },
+                      { q: "Do I need to register with all partners?", a: "You must register with at least the primary partner link — that's mandatory to enter. The second partner link is optional but recommended to increase your winning chances." },
+                      { q: "Are international participants eligible?", a: "Yes, the program is open globally. Rewards and shipping are available worldwide." },
+                      { q: "How do I become a partner?", a: "Fill the Partner Program form to join as an official X247 partner. Partners get monthly payouts, exclusive merch, early access to new giveaways, and direct support from our team." }
                     ].map((faq, i) => (
                       <AccordionItem key={i} value={`item-${i}`} className="border-b border-white/[0.06] last:border-0 px-0 sm:px-2">
                         <AccordionTrigger className="text-left font-display font-light text-base sm:text-lg text-white/80 hover:text-white py-5 sm:py-6">
@@ -966,7 +977,7 @@ export default function Home() {
                 <span className="text-xl font-display font-light text-white">X247 Rewards</span>
               </div>
               <p className="text-sm text-white/25 font-light leading-relaxed max-w-xs">
-                The premier gamified referral reward platform for Google event participants. Earn real rewards through verified influence.
+                The premier gamified giveaway and referral platform for partner event participants. Register, enter, and win real rewards daily.
               </p>
             </div>
             <div>
