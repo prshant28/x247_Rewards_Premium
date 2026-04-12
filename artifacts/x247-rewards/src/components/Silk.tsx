@@ -158,7 +158,7 @@ export default function Silk({
     if (!container) return;
 
     let renderer: InstanceType<typeof Renderer>;
-    let gl: ReturnType<InstanceType<typeof Renderer>["gl"] & WebGLRenderingContext>;
+    let gl: any;
     let geometry: InstanceType<typeof Triangle>;
     let program: InstanceType<typeof Program>;
     let mesh: InstanceType<typeof Mesh>;

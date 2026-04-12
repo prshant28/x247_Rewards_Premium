@@ -1,4 +1,5 @@
 import React from "react";
+import BorderGlow from "@/components/BorderGlow";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -99,10 +100,10 @@ export default function Offers() {
             <Link href="/" className="nav-link">Home</Link>
             <Link href="/offers" className="nav-link" style={{ color: "rgba(255,255,255,0.9)" }}>Offers</Link>
           </div>
-          <Link href="/" className="nav-cta-btn group glass-btn-effect">
-            <span>Back to Home</span>
-            <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-          </Link>
+          <BorderGlow as={Link} href="/" borderRadius="100px" glowPadding="15px" cardBg="rgba(6,6,6,0.9)" className="nav-cta-btn group" style={{ border: "none" }}>
+            <span className="relative z-[2]">Back to Home</span>
+            <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative z-[2]" />
+          </BorderGlow>
         </div>
       </nav>
 
@@ -208,11 +209,10 @@ export default function Offers() {
                 <p className="text-white/55 font-light mb-8 text-sm leading-relaxed max-w-md mx-auto">
                   Head back to the main page, register with the partner links, and start claiming these offers today.
                 </p>
-                <Link href="/" className="premium-btn premium-btn-lg glass-btn-effect group inline-flex">
-                  <span className="premium-btn-glow" />
-                  <span className="premium-btn-text">Go to Registration</span>
+                <BorderGlow as={Link} href="/" borderRadius="16px" glowPadding="20px" cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg group inline-flex" style={{ border: "none" }}>
+                  <span className="relative z-[2]">Go to Registration</span>
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                </Link>
+                </BorderGlow>
               </div>
             </div>
           </motion.div>
