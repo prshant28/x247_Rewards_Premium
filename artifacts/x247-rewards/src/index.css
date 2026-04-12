@@ -864,7 +864,7 @@
 
   .text-reveal-line {
     overflow: hidden;
-    display: block;
+    display: inline-block;
   }
 
   .prize-card-large {
