@@ -277,6 +277,9 @@
   }
 
   .glass-btn-effect:hover {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%),
+      rgba(14, 14, 14, 0.9);
   }
 
   .premium-btn::before {
@@ -308,10 +311,12 @@
   }
 
   .premium-btn:hover {
+    background: rgba(20, 20, 20, 0.98);
+    border-color: rgba(255, 255, 255, 0.12);
   }
 
   .premium-btn:active {
-    transform: translateY(0);
+    transform: scale(0.98);
   }
 
   .premium-btn-sm {
@@ -351,6 +356,7 @@
   }
 
   .premium-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .premium-btn-text {
@@ -525,6 +531,7 @@
   }
 
   .nav-cta-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .nav-link {
@@ -532,7 +539,7 @@
   }
 
   .nav-link:hover {
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .nav-link::after {
