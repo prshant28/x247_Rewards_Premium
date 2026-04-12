@@ -155,18 +155,37 @@
   }
 
   .glass-button {
-    @apply relative inline-flex items-center justify-center overflow-hidden transition-all duration-300 text-white cursor-pointer;
+    @apply relative inline-flex items-center justify-center overflow-visible transition-all duration-300 text-white cursor-pointer;
     font-weight: 600;
     letter-spacing: 0.01em;
-    background: rgba(10, 10, 10, 0.95);
-    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    font-size: 15px;
+    background: rgba(8, 8, 8, 0.98);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
     border-radius: 14px;
+    box-shadow:
+      -20px 0 25px -12px rgba(255, 255, 255, 0.12),
+      20px 0 25px -12px rgba(255, 255, 255, 0.12),
+      0 0 0 0.5px rgba(255, 255, 255, 0.06);
   }
 
   .glass-button:hover {
-    background: rgba(20, 20, 20, 1);
-    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(15, 15, 15, 1);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-1px);
+    box-shadow:
+      -24px 0 30px -12px rgba(255, 255, 255, 0.18),
+      24px 0 30px -12px rgba(255, 255, 255, 0.18),
+      0 0 0 0.5px rgba(255, 255, 255, 0.1);
+  }
+
+  .section-divider {
+    @apply relative w-full;
+    background: rgba(5, 5, 5, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    box-shadow:
+      -40px 0 50px -20px rgba(255, 255, 255, 0.06),
+      40px 0 50px -20px rgba(255, 255, 255, 0.06);
   }
 
   .glass-pill-badge {

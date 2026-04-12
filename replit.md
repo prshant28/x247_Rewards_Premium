@@ -29,8 +29,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 ## X247 Rewards (artifacts/x247-rewards)
 
 - **Framework**: React + Vite + Tailwind CSS v4
-- **Design**: Portfolite Framer template style — pure black background, Syne + Inter fonts, glassmorphism cards, pill-shaped glass buttons, background video hero, scrolling marquee ticker
-- **Sections**: Hero (with video bg), How it Works, Rewards Showcase, Dashboard Preview, Verification Policy, Community/Ecosystem, FAQ, Footer
-- **Animations**: Framer Motion fade-up scroll animations
+- **Design**: Portfolite Framer template style — pure black background, Syne + Inter fonts, glassmorphism cards, lateral-glow glass buttons, canvas smoke hero, scrolling marquee ticker
+- **Sections**: Hero (with SmokeCanvas procedural smoke bg), How it Works, Rewards Showcase, Dashboard Preview, Verification Policy, Community/Ecosystem, FAQ, Footer
+- **Layout**: Section-divider wrapper (rounded-28px card with lateral white edge glow) wraps all content sections after hero
+- **Animations**: Framer Motion fade-up scroll animations with typed Variants
 - **Route**: Serves at root path `/`
-- **CSS Theme**: Pure monochrome (black/white/gray), custom glass utility classes in index.css
+- **CSS Theme**: Pure monochrome (black/white/gray), custom glass utility classes (glass-card, glass-button, glass-pill-badge, section-divider) in index.css

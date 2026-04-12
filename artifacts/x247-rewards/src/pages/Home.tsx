@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Link } from "wouter";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, type Variants } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
 import { 
-  ArrowRight, 
   Check, 
-  ChevronRight, 
-  Mouse,
   Gift,
   Target,
   Cpu,
@@ -41,6 +37,7 @@ function SmokeCanvas() {
       h = canvas!.clientHeight * window.devicePixelRatio;
       canvas!.width = w;
       canvas!.height = h;
+      ctx!.setTransform(1, 0, 0, 1, 0, 0);
       ctx!.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
@@ -147,30 +144,9 @@ function SmokeCanvas() {
 }
 
 export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  
-  const [winnerCount, setWinnerCount] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setWinnerCount(prev => (prev < 21 ? prev + 1 : prev));
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
   };
 
   return (
@@ -251,8 +227,11 @@ export default function Home() {
           </motion.div>
         </section>
 
+        {/* MAIN CONTENT - Wrapped in section divider card like Portfolite */}
+        <div className="section-divider mx-4 md:mx-6 lg:mx-8 mb-8">
+
         {/* HOW IT WORKS */}
-        <section id="how-it-works" className="py-32 relative bg-black">
+        <section id="how-it-works" className="py-32 relative">
           <div className="container mx-auto px-4 max-w-6xl">
             <motion.div 
               initial="hidden"
@@ -308,7 +287,7 @@ export default function Home() {
         </section>
 
         {/* REWARDS SHOWCASE */}
-        <section id="rewards" className="py-32 relative bg-black">
+        <section id="rewards" className="py-32 relative">
           <div className="container mx-auto px-4 max-w-6xl">
             <motion.div 
               initial="hidden"
@@ -434,7 +413,7 @@ export default function Home() {
         </section>
 
         {/* DASHBOARD PREVIEW */}
-        <section id="dashboard" className="py-32 relative bg-black">
+        <section id="dashboard" className="py-32 relative">
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="flex flex-col lg:flex-row gap-16 items-center">
               <motion.div 
@@ -534,7 +513,7 @@ export default function Home() {
         </section>
 
         {/* VERIFICATION POLICY */}
-        <section id="verify" className="py-24 relative bg-black">
+        <section id="verify" className="py-24 relative">
           <div className="container mx-auto px-4 max-w-4xl">
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
@@ -573,7 +552,7 @@ export default function Home() {
         </section>
 
         {/* COMMUNITY & FUTURE */}
-        <section className="py-32 relative bg-black">
+        <section className="py-32 relative">
           <div className="container mx-auto px-4 max-w-6xl">
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
@@ -617,7 +596,7 @@ export default function Home() {
         </section>
 
         {/* FAQ SECTION */}
-        <section id="faq" className="py-32 relative bg-black border-t border-white/[0.06]">
+        <section id="faq" className="py-32 relative border-t border-white/[0.06]">
           <div className="container mx-auto px-4 max-w-4xl">
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
@@ -656,6 +635,8 @@ export default function Home() {
             </motion.div>
           </div>
         </section>
+
+        </div>{/* end section-divider */}
 
       </main>
 
