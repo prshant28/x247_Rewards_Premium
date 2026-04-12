@@ -25,7 +25,7 @@ import {
   Package
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
-import heroVideo from "@assets/silk-1775994597756_1775998482844.webm";
+import Silk from "@/components/Silk";
 
 
 function AnimatedCursor() {
@@ -282,16 +282,14 @@ export default function Home() {
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-              src={heroVideo}
+            <Silk
+              speed={5}
+              scale={1}
+              color="#212121"
+              noiseIntensity={1.5}
+              rotation={0}
             />
-            <div className="absolute inset-0 bg-black/30 z-[1]" />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black z-[2]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-[1]" />
           </div>
 
           <motion.div 
