@@ -25,120 +25,8 @@ import {
   Package
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
-import heroVideo from "@assets/silk-1775994597756_1775995162513.webm";
+import Silk from "@/components/Silk";
 
-function SmokeCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let w = 0;
-    let h = 0;
-    let t = 0;
-
-    function resize() {
-      w = canvas!.clientWidth * window.devicePixelRatio;
-      h = canvas!.clientHeight * window.devicePixelRatio;
-      canvas!.width = w;
-      canvas!.height = h;
-      ctx!.setTransform(1, 0, 0, 1, 0, 0);
-      ctx!.scale(window.devicePixelRatio, window.devicePixelRatio);
-    }
-
-    function noise(x: number, y: number, z: number) {
-      const n = Math.sin(x * 12.9898 + y * 78.233 + z * 45.164) * 43758.5453;
-      return n - Math.floor(n);
-    }
-
-    function smoothNoise(x: number, y: number, z: number) {
-      const ix = Math.floor(x), iy = Math.floor(y);
-      const fx = x - ix, fy = y - iy;
-      const sx = fx * fx * (3 - 2 * fx);
-      const sy = fy * fy * (3 - 2 * fy);
-      const a = noise(ix, iy, z);
-      const b = noise(ix + 1, iy, z);
-      const c = noise(ix, iy + 1, z);
-      const d = noise(ix + 1, iy + 1, z);
-      return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
-    }
-
-    function draw() {
-      const cw = canvas!.clientWidth;
-      const ch = canvas!.clientHeight;
-      ctx!.clearRect(0, 0, cw, ch);
-      t += 0.003;
-
-      const cx = cw * 0.45;
-      const cy = ch * 0.58;
-
-      for (let i = 0; i < 18; i++) {
-        const phase = i * 0.7 + t * 2;
-        const spread = 0.3 + i * 0.06;
-        const noiseX = smoothNoise(i * 0.3, t * 0.8, 0) - 0.5;
-        const noiseY = smoothNoise(i * 0.3, t * 0.8, 10) - 0.5;
-        const px = cx + noiseX * cw * spread * 0.9 + Math.sin(phase) * 60;
-        const py = cy + noiseY * ch * spread * 0.5 + Math.cos(phase * 0.7) * 40;
-        const baseRadius = 80 + i * 18 + Math.sin(phase * 0.5) * 30;
-        const alphaWave = 0.5 + 0.5 * Math.sin(phase * 0.3 + i);
-        const baseAlpha = (0.04 + (1 - i / 18) * 0.09) * alphaWave;
-        const rx = baseRadius * (1.2 + 0.4 * Math.sin(phase * 0.4));
-        const ry = baseRadius * (0.6 + 0.3 * Math.cos(phase * 0.3));
-        ctx!.save();
-        ctx!.translate(px, py);
-        ctx!.rotate(Math.sin(phase * 0.2) * 0.4 + i * 0.2);
-        ctx!.scale(1, ry / rx);
-        const grad = ctx!.createRadialGradient(0, 0, 0, 0, 0, rx);
-        grad.addColorStop(0, `rgba(220, 220, 220, ${baseAlpha * 1.8})`);
-        grad.addColorStop(0.3, `rgba(200, 200, 200, ${baseAlpha * 1.2})`);
-        grad.addColorStop(0.6, `rgba(180, 180, 180, ${baseAlpha * 0.5})`);
-        grad.addColorStop(1, "rgba(150, 150, 150, 0)");
-        ctx!.fillStyle = grad;
-        ctx!.beginPath();
-        ctx!.arc(0, 0, rx, 0, Math.PI * 2);
-        ctx!.fill();
-        ctx!.restore();
-      }
-
-      for (let i = 0; i < 12; i++) {
-        const phase = i * 1.1 + t * 1.5;
-        const nx = smoothNoise(i * 0.5, t * 0.6, 20) - 0.5;
-        const ny = smoothNoise(i * 0.5, t * 0.6, 30) - 0.5;
-        const px = cx + nx * cw * 0.5 + Math.sin(phase) * 80;
-        const py = cy + ny * ch * 0.35 + Math.cos(phase * 0.6) * 50;
-        const r = 40 + i * 12 + Math.sin(phase * 0.4) * 20;
-        const a = 0.02 + (1 - i / 12) * 0.04;
-        ctx!.save();
-        ctx!.translate(px, py);
-        ctx!.rotate(phase * 0.15);
-        ctx!.scale(1.5, 0.7);
-        const grad = ctx!.createRadialGradient(0, 0, 0, 0, 0, r);
-        grad.addColorStop(0, `rgba(255, 255, 255, ${a * 1.5})`);
-        grad.addColorStop(0.5, `rgba(230, 230, 230, ${a * 0.6})`);
-        grad.addColorStop(1, "rgba(200, 200, 200, 0)");
-        ctx!.fillStyle = grad;
-        ctx!.beginPath();
-        ctx!.arc(0, 0, r, 0, Math.PI * 2);
-        ctx!.fill();
-        ctx!.restore();
-      }
-
-      animId = requestAnimationFrame(draw);
-    }
-
-    resize();
-    draw();
-    const onResize = () => resize();
-    window.addEventListener("resize", onResize);
-    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", onResize); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ filter: "blur(8px)" }} />;
-}
 
 function AnimatedCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
@@ -353,7 +241,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans">
+    <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans overflow-x-hidden">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
       
@@ -394,18 +282,8 @@ export default function Home() {
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-30"
-              src={heroVideo}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black z-[1]" />
-            <div className="absolute inset-0 z-[2]">
-              <SmokeCanvas />
-            </div>
+            <Silk speed={5} scale={1} color="#212121" noiseIntensity={1.5} rotation={0} />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-[1]" />
           </div>
           <FloatingParticles />
 
@@ -441,7 +319,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-base sm:text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide"
+              className="text-base sm:text-lg md:text-xl text-white/60 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide"
             >
               Enter our exclusive giveaway by registering with our partner links. Complete the steps, earn entries, and win daily prizes — gift cards, premium swag, cloud credits, and more.
             </motion.p>
@@ -487,8 +365,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
-              <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="How to Enter" /></h2>
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
             </motion.div>
@@ -569,7 +447,7 @@ export default function Home() {
                         )}
                       </div>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                      <p className="text-white/35 font-light leading-relaxed text-sm">
+                      <p className="text-white/50 font-light leading-relaxed text-sm">
                         {item.desc}
                       </p>
                     </div>
@@ -597,7 +475,7 @@ export default function Home() {
                 Prizes & Rewards
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
-              <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
             </motion.div>
@@ -631,7 +509,7 @@ export default function Home() {
                         </div>
                         <h4 className="text-[10px] sm:text-xs font-medium text-white/30 mb-2 uppercase tracking-widest font-display">{item.tier}</h4>
                         <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3">{item.title}</h3>
-                        <p className="text-white/35 font-light mb-6 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
+                        <p className="text-white/50 font-light mb-6 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
                       </div>
                       <ul className="space-y-3 text-xs sm:text-sm text-white/50">
                         {item.checks.map((c, ci) => (
@@ -682,7 +560,7 @@ export default function Home() {
                   Analytics
                 </div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
-                <p className="text-white/40 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
+                <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
                 <ul className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
@@ -814,7 +692,7 @@ export default function Home() {
                 <div className="absolute top-0 right-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
                 <div className="relative z-[2]">
                   <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-white">Verification Protocol</h3>
-                  <p className="text-white/40 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
+                  <p className="text-white/50 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
                     To maintain the integrity of the ecosystem, strict verification measures are in place. Fraudulent referrals will result in permanent disqualification.
                   </p>
                   
@@ -860,7 +738,7 @@ export default function Home() {
                 Inner Circle
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
-              <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
             </motion.div>
@@ -881,7 +759,7 @@ export default function Home() {
                         {item.icon}
                       </div>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
-                      <p className="text-xs sm:text-sm text-white/30 font-light">{item.desc}</p>
+                      <p className="text-xs sm:text-sm text-white/45 font-light">{item.desc}</p>
                     </div>
                   </TiltCard>
                 </motion.div>
@@ -938,7 +816,7 @@ export default function Home() {
                         <AccordionTrigger className="text-left font-display font-light text-base sm:text-lg text-white/80 hover:text-white py-5 sm:py-6">
                           {faq.q}
                         </AccordionTrigger>
-                        <AccordionContent className="text-white/40 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
+                        <AccordionContent className="text-white/50 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
                           {faq.a}
                         </AccordionContent>
                       </AccordionItem>
@@ -982,7 +860,7 @@ export default function Home() {
                   { label: "FAQ", href: "#faq" },
                 ].map((link, i) => (
                   <li key={i}>
-                    <a href={link.href} className="text-sm text-white/30 font-light hover:text-white/60 transition-colors duration-300 flex items-center gap-2 group">
+                    <a href={link.href} className="text-sm text-white/45 font-light hover:text-white/70 transition-colors duration-300 flex items-center gap-2 group">
                       <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                       {link.label}
                     </a>
@@ -992,7 +870,7 @@ export default function Home() {
             </div>
             <div>
               <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/40 mb-5">Program Info</h4>
-              <ul className="space-y-3 text-sm text-white/30 font-light">
+              <ul className="space-y-3 text-sm text-white/45 font-light">
                 <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/20" /> Global Availability</li>
                 <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/20" /> 24/7 Tracking</li>
                 <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-white/20" /> Verified Referrals Only</li>

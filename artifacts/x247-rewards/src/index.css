@@ -128,14 +128,15 @@
     @apply border-border;
   }
 
-  html {
+  html, body {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
     @apply antialiased bg-background text-foreground selection:bg-white/20 selection:text-white;
     font-family: 'Syne', var(--font-display), sans-serif;
-    overflow-x: hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
