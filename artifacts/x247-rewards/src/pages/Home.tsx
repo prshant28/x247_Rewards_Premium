@@ -36,7 +36,6 @@ import DotGrid from "@/components/DotGrid";
 import "@/components/DotGrid.css";
 import ProfileCard from "@/components/ProfileCard";
 import "@/components/ProfileCard.css";
-import CircularText from "@/components/CircularText";
 
 
 function AnimatedCursor() {
@@ -258,7 +257,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247 Rewards</span>
+            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">x247</span>
           </div>
         }
         baseColor="rgba(6, 6, 6, 0.92)"
@@ -402,7 +401,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-2xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="How to Enter" /></h2>
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
@@ -511,7 +510,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Prizes & Rewards
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="What You Can Win" /></h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
@@ -631,7 +630,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                   Analytics
                 </div>
-                <h2 className="text-xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="Live Tracking Dashboard" /></h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
                 <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
@@ -806,7 +805,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Inner Circle
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="The Ecosystem" /></h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
@@ -859,7 +858,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Intel
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight whitespace-nowrap">FAQ</h2>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight">FAQ</h2>
             </motion.div>
 
             <motion.div 
@@ -905,22 +904,11 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 mb-14 sm:mb-20"
           >
             <div>
-              <div className="flex items-center gap-5 mb-5">
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
-                  <CircularText
-                    text="  X247 REWARDS • PREMIUM • GIVEAWAY • "
-                    spinDuration={25}
-                    onHover="speedUp"
-                    className="!w-full !h-full"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-white/50" />
-                  </div>
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
                 </div>
-                <div>
-                  <span className="text-xl font-display font-light text-white block mb-1">X247 Rewards</span>
-                  <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.2em]">Premium Protocol</span>
-                </div>
+                <span className="text-xl font-display font-light text-white">X247 Rewards</span>
               </div>
               <p className="text-sm text-white/25 font-light leading-relaxed max-w-xs">
                 The premier gamified giveaway and referral platform for partner event participants. Register, enter, and win real rewards daily.
