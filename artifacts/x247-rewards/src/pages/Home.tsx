@@ -283,7 +283,7 @@ export default function Home() {
           </motion.div>
         </section>
 
-        <div className="section-divider mx-3 sm:mx-4 md:mx-6 lg:mx-8 mb-8">
+        <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-8">
 
         <GlowLine />
 
