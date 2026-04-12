@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "wouter";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -21,6 +21,77 @@ import {
   Globe
 } from "lucide-react";
 import { SiGoogle, SiWhatsapp } from "react-icons/si";
+
+function SmokeCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let w = 0;
+    let h = 0;
+
+    const particles: { x: number; y: number; r: number; vx: number; vy: number; alpha: number; pulse: number; speed: number }[] = [];
+
+    function resize() {
+      w = canvas!.clientWidth;
+      h = canvas!.clientHeight;
+      canvas!.width = w;
+      canvas!.height = h;
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      const count = 8;
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: 150 + Math.random() * 200,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.3,
+          alpha: 0.03 + Math.random() * 0.06,
+          pulse: Math.random() * Math.PI * 2,
+          speed: 0.003 + Math.random() * 0.005,
+        });
+      }
+    }
+
+    function draw() {
+      ctx!.clearRect(0, 0, w, h);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.pulse += p.speed;
+        const a = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+        if (p.x < -p.r) p.x = w + p.r;
+        if (p.x > w + p.r) p.x = -p.r;
+        if (p.y < -p.r) p.y = h + p.r;
+        if (p.y > h + p.r) p.y = -p.r;
+        const grad = ctx!.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+        grad.addColorStop(0, `rgba(255,255,255,${a})`);
+        grad.addColorStop(0.5, `rgba(255,255,255,${a * 0.4})`);
+        grad.addColorStop(1, "rgba(255,255,255,0)");
+        ctx!.fillStyle = grad;
+        ctx!.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+      }
+      animId = requestAnimationFrame(draw);
+    }
+
+    resize();
+    initParticles();
+    draw();
+
+    window.addEventListener("resize", () => { resize(); initParticles(); });
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
+}
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -74,11 +145,9 @@ export default function Home() {
         
         {/* HERO SECTION */}
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
-          {/* Background - Pure black with subtle white fluid motion */}
+          {/* Background - Pure black with animated white smoke */}
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <div className="hero-smoke-layer-1 absolute inset-0"></div>
-            <div className="hero-smoke-layer-2 absolute inset-0"></div>
-            <div className="hero-smoke-layer-3 absolute inset-0"></div>
+            <SmokeCanvas />
           </div>
 
           <motion.div 
