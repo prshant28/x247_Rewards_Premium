@@ -247,20 +247,17 @@ export default function Home() {
     <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans overflow-x-hidden">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
-      
-      
       <motion.div 
         className="scroll-progress-bar"
         style={{ scaleX: smoothProgress }}
       />
-
       <CardNav
         logo={
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display font-light text-base sm:text-lg tracking-wide text-white">X247 Rewards</span>
+            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247 Rewards</span>
           </div>
         }
         baseColor="rgba(6, 6, 6, 0.92)"
@@ -304,7 +301,6 @@ export default function Home() {
           },
         ]}
       />
-
       <main className="relative z-10">
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
@@ -900,7 +896,6 @@ export default function Home() {
         </div>
 
       </main>
-
       <footer className="bg-black pt-0 pb-8 sm:pb-12 relative">
         <div className="footer-gradient-line mb-12 sm:mb-16" />
         <div className="container mx-auto px-4 sm:px-6">
@@ -963,7 +958,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
