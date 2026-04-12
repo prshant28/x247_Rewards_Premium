@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, type Variants } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useInView, type Variants } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   Check, 
@@ -15,7 +15,10 @@ import {
   Zap,
   ArrowRight,
   Sparkles,
-  Star
+  Star,
+  Globe,
+  Clock,
+  Award,
 } from "lucide-react";
 import { SiGoogle, SiWhatsapp } from "react-icons/si";
 import heroVideo from "@assets/4954770_Coll_halloween_Realistic_3840x2160_1775967998660.mp4";
@@ -211,6 +214,58 @@ function GlowLine() {
   );
 }
 
+function AnimatedCounter({ value, suffix = "", prefix = "", duration = 2 }: { value: number; suffix?: string; prefix?: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const step = Math.ceil(value / (duration * 60));
+    const interval = setInterval(() => {
+      start += step;
+      if (start >= value) {
+        start = value;
+        clearInterval(interval);
+      }
+      setDisplay(start);
+    }, 1000 / 60);
+    return () => clearInterval(interval);
+  }, [inView, value, duration]);
+
+  return (
+    <span ref={ref}>
+      {prefix}{inView ? display.toLocaleString() : "0"}{suffix}
+    </span>
+  );
+}
+
+function TextReveal({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) {
+  const words = text.split(" ");
+  return (
+    <span className={className}>
+      {words.map((word, i) => (
+        <span key={i} className="text-reveal-line inline-block">
+          <motion.span
+            className="inline-block"
+            initial={{ y: "100%", opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.6,
+              delay: delay + i * 0.04,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            {word}&nbsp;
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 function MagneticWrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const rawX = useMotionValue(0);
@@ -328,6 +383,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans cursor-none">
+      <div className="noise-overlay" />
+      <div className="vignette-overlay" />
       <AnimatedCursor />
       
       <motion.div 
@@ -440,6 +497,35 @@ export default function Home() {
 
         </section>
 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="trust-bar py-6 sm:py-8"
+        >
+          <div className="container mx-auto px-4 max-w-5xl">
+            <div className="flex items-center justify-center gap-6 sm:gap-10 md:gap-16 flex-wrap">
+              {[
+                { value: 12400, suffix: "+", label: "Active Users" },
+                { value: 847, suffix: "K", label: "Referrals Made" },
+                { value: 156, suffix: "+", label: "Countries" },
+                { value: 98, suffix: "%", label: "Satisfaction" },
+              ].map((stat, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <div className="trust-stat-divider hidden sm:block" />}
+                  <div className="trust-stat">
+                    <div className="trust-stat-number text-2xl sm:text-3xl md:text-4xl">
+                      <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                    </div>
+                    <div className="trust-stat-label">{stat.label}</div>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
         <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-8">
 
         <GlowLine />
@@ -459,7 +545,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                   The Process
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">How it Works</h2>
+                <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How it Works" /></h2>
                 <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide">
                   A streamlined protocol to secure your position and unlock premium tiers. Follow the sequence precisely.
                 </p>
@@ -521,7 +607,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Reward Tiers
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">Rewards</h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Rewards" /></h2>
               <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards for real influence. Level up your referrals to unlock premium tiers and exclusive opportunities.
               </p>
@@ -604,7 +690,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                   Analytics
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight">Live Tracking Dashboard</h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
                 <p className="text-white/40 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
@@ -782,7 +868,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Inner Circle
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">The Ecosystem</h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
               <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond individual rewards lies a network of top-tier developers and event access.
               </p>
@@ -875,30 +961,65 @@ export default function Home() {
 
       </main>
 
-      <footer className="border-t border-white/[0.04] bg-black py-12 sm:py-16">
+      <footer className="bg-black pt-0 pb-8 sm:pb-12 relative">
+        <div className="footer-gradient-line mb-12 sm:mb-16" />
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8 mb-12 sm:mb-16"
+            className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 mb-14 sm:mb-20"
           >
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
+            <div>
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-xl font-display font-light text-white">X247 Rewards</span>
               </div>
-              <span className="text-xl sm:text-2xl font-display font-light text-white">X247 Rewards</span>
+              <p className="text-sm text-white/25 font-light leading-relaxed max-w-xs">
+                The premier gamified referral reward platform for Google event participants. Earn real rewards through verified influence.
+              </p>
             </div>
-            <div className="flex gap-6 text-xs sm:text-sm font-light text-white/30">
-              <a href="#" className="hover:text-white/60 transition-colors duration-300">Terms</a>
-              <a href="#" className="hover:text-white/60 transition-colors duration-300">Privacy</a>
-              <a href="#" className="hover:text-white/60 transition-colors duration-300">Contact</a>
+            <div>
+              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/40 mb-5">Quick Links</h4>
+              <ul className="space-y-3">
+                {[
+                  { label: "How it Works", href: "#how-it-works" },
+                  { label: "Rewards", href: "#rewards" },
+                  { label: "Dashboard", href: "#dashboard" },
+                  { label: "FAQ", href: "#faq" },
+                ].map((link, i) => (
+                  <li key={i}>
+                    <a href={link.href} className="text-sm text-white/30 font-light hover:text-white/60 transition-colors duration-300 flex items-center gap-2 group">
+                      <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/40 mb-5">Program Info</h4>
+              <ul className="space-y-3 text-sm text-white/30 font-light">
+                <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/20" /> Global Availability</li>
+                <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/20" /> 24/7 Tracking</li>
+                <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-white/20" /> Verified Referrals Only</li>
+                <li className="flex items-center gap-2"><Award className="w-3.5 h-3.5 text-white/20" /> Real Rewards, No Gimmicks</li>
+              </ul>
             </div>
           </motion.div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light text-white/20">
-            <p>&copy; 2024 X247 Rewards Protocol. All rights reserved.</p>
-            <p className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500/60 animate-pulse" />
-              System Status: Operational
-            </p>
+          <div className="border-t border-white/[0.04] pt-6 sm:pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light text-white/20">
+              <p>&copy; 2025 X247 Rewards Protocol. All rights reserved.</p>
+              <div className="flex gap-5">
+                <a href="#" className="hover:text-white/40 transition-colors duration-300">Terms</a>
+                <a href="#" className="hover:text-white/40 transition-colors duration-300">Privacy</a>
+                <a href="#" className="hover:text-white/40 transition-colors duration-300">Contact</a>
+              </div>
+              <p className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500/60 animate-pulse" />
+                System Status: Operational
+              </p>
+            </div>
           </div>
         </div>
       </footer>
