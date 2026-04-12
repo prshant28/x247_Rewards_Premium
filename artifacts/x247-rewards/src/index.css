@@ -207,48 +207,4 @@
     background-clip: text;
   }
 
-  .hero-smoke-layer-1 {
-    background: 
-      radial-gradient(ellipse 80% 60% at 30% 40%, rgba(255,255,255,0.06), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,255,255,0.04), transparent 55%);
-    filter: blur(100px);
-    animation: smoke-1 18s ease-in-out infinite alternate;
-  }
-
-  .hero-smoke-layer-2 {
-    background: 
-      radial-gradient(ellipse 60% 50% at 60% 55%, rgba(255,255,255,0.05), transparent 55%),
-      radial-gradient(ellipse 40% 35% at 25% 65%, rgba(255,255,255,0.03), transparent 50%);
-    filter: blur(120px);
-    animation: smoke-2 22s ease-in-out infinite alternate-reverse;
-  }
-
-  .hero-smoke-layer-3 {
-    background: 
-      radial-gradient(ellipse 70% 45% at 50% 45%, rgba(255,255,255,0.04), transparent 50%),
-      radial-gradient(ellipse 35% 30% at 80% 70%, rgba(255,255,255,0.03), transparent 45%);
-    filter: blur(90px);
-    animation: smoke-3 14s ease-in-out infinite alternate;
-  }
-
-  @keyframes smoke-1 {
-    0% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(60px, -30px) scale(1.1); }
-    66% { transform: translate(-40px, 20px) scale(0.95); }
-    100% { transform: translate(30px, -15px) scale(1.05); }
-  }
-
-  @keyframes smoke-2 {
-    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-    50% { transform: translate(-50px, 25px) scale(1.08) rotate(2deg); }
-    100% { transform: translate(40px, -20px) scale(0.97) rotate(-1deg); }
-  }
-
-  @keyframes smoke-3 {
-    0% { transform: translate(0, 0) scale(1); }
-    25% { transform: translate(35px, 15px) scale(1.06); }
-    50% { transform: translate(-25px, -20px) scale(0.98); }
-    75% { transform: translate(20px, 10px) scale(1.03); }
-    100% { transform: translate(-15px, -5px) scale(1.01); }
-  }
 }
