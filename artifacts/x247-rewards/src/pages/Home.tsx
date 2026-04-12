@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useInView, type Variants } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, type Variants } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   Check, 
@@ -211,33 +211,6 @@ function GlowLine() {
     <div className="section-glow-line">
       <div className="section-glow-line-inner" />
     </div>
-  );
-}
-
-function AnimatedCounter({ value, suffix = "", prefix = "", duration = 2 }: { value: number; suffix?: string; prefix?: string; duration?: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
-  const [display, setDisplay] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const step = Math.ceil(value / (duration * 60));
-    const interval = setInterval(() => {
-      start += step;
-      if (start >= value) {
-        start = value;
-        clearInterval(interval);
-      }
-      setDisplay(start);
-    }, 1000 / 60);
-    return () => clearInterval(interval);
-  }, [inView, value, duration]);
-
-  return (
-    <span ref={ref}>
-      {prefix}{inView ? display.toLocaleString() : "0"}{suffix}
-    </span>
   );
 }
 
@@ -497,97 +470,114 @@ export default function Home() {
 
         </section>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="trust-bar py-6 sm:py-8"
-        >
-          <div className="container mx-auto px-4 max-w-5xl">
-            <div className="flex items-center justify-center gap-6 sm:gap-10 md:gap-16 flex-wrap">
-              {[
-                { value: 12400, suffix: "+", label: "Active Users" },
-                { value: 847, suffix: "K", label: "Referrals Made" },
-                { value: 156, suffix: "+", label: "Countries" },
-                { value: 98, suffix: "%", label: "Satisfaction" },
-              ].map((stat, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && <div className="trust-stat-divider hidden sm:block" />}
-                  <div className="trust-stat">
-                    <div className="trust-stat-number text-2xl sm:text-3xl md:text-4xl">
-                      <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                    </div>
-                    <div className="trust-stat-label">{stat.label}</div>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
         <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-8">
 
         <GlowLine />
 
         <section id="how-it-works" className="py-20 sm:py-32 relative">
           <FloatingParticles />
-          <div className="container mx-auto px-4 max-w-6xl">
+          <div className="container mx-auto px-4 max-w-4xl">
             <motion.div 
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
               variants={fadeUp}
-              className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 sm:mb-20 gap-8"
+              className="text-center mb-16 sm:mb-20"
             >
-              <div className="max-w-2xl">
-                <div className="glass-pill-badge mb-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                  The Process
-                </div>
-                <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How it Works" /></h2>
-                <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide">
-                  A streamlined protocol to secure your position and unlock premium tiers. Follow the sequence precisely.
-                </p>
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Step-by-Step Guide
               </div>
-              <div className="flex gap-4">
-                <MagneticWrap>
-                  <a href="#register" className="premium-btn premium-btn-md glass-btn-effect group">
-                    <span className="premium-btn-text">Get Started</span>
-                    <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                  </a>
-                </MagneticWrap>
-              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
+              <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
+                Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
+              </p>
             </motion.div>
 
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 relative"
-            >
-              {[
-                { step: "01", title: "Register", desc: "Click both referral links and complete your Google event registration with precise details.", icon: <SiGoogle className="w-5 h-5" /> },
-                { step: "02", title: "Verify", desc: "Submit the official form with your details and unique referral code for validation.", icon: <ShieldCheck className="w-5 h-5" /> },
-                { step: "03", title: "Join Community", desc: "Get added to the private WhatsApp network for live drops and insider alpha.", icon: <SiWhatsapp className="w-5 h-5" /> },
-                { step: "04", title: "Claim Rewards", desc: "Earn swag, unlock milestones, and claim your exclusive event access passes.", icon: <Trophy className="w-5 h-5" /> }
-              ].map((item, i) => (
-                <motion.div key={i} variants={fadeUp}>
-                  <TiltCard className="glass-card p-6 sm:p-8 md:p-10 group cursor-default">
-                    <div className="flex justify-between items-start mb-8 sm:mb-10 relative z-[2]">
-                      <div className="icon-circle">
+            <div className="relative">
+              <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+
+              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="space-y-0">
+                {[
+                  {
+                    step: "01",
+                    title: "Register with Partner Link",
+                    desc: "Click the provided partner registration link and complete the full registration on the partner profile. Make sure your registration is successfully completed — this is mandatory to enter the giveaway.",
+                    icon: <SiGoogle className="w-4 h-4" />,
+                    tip: null
+                  },
+                  {
+                    step: "02",
+                    title: "Maximize Your Chances",
+                    desc: "Want to increase your winning probability? Register with the second partner link as well. Both registrations must be completed successfully using the same provided links.",
+                    icon: <Target className="w-4 h-4" />,
+                    tip: "Optional but recommended"
+                  },
+                  {
+                    step: "03",
+                    title: "Fill the Entry Form",
+                    desc: "Submit the giveaway entry form with all required details as mentioned. If you were referred by someone, make sure to enter their referral code during submission — this helps both of you.",
+                    icon: <ShieldCheck className="w-4 h-4" />,
+                    tip: null
+                  },
+                  {
+                    step: "04",
+                    title: "Multiple Entries Allowed",
+                    desc: "You can submit multiple entries to boost your chances. However, each entry must use different details — do not reuse the same email address or mobile number across entries.",
+                    icon: <Users className="w-4 h-4" />,
+                    tip: "Use unique details for each entry"
+                  },
+                  {
+                    step: "05",
+                    title: "Entry Confirmation",
+                    desc: "After successfully completing the form, you will receive an \"Entry Successful\" confirmation email. This confirms that you have officially entered the giveaway.",
+                    icon: <CheckCircle2 className="w-4 h-4" />,
+                    tip: null
+                  },
+                  {
+                    step: "06",
+                    title: "Check Daily Winners",
+                    desc: "Winners are announced daily on this page in the Winners Section. Make sure to check back regularly — your name could appear anytime.",
+                    icon: <Trophy className="w-4 h-4" />,
+                    tip: null
+                  },
+                  {
+                    step: "07",
+                    title: "Join the Community",
+                    desc: "Join our WhatsApp community for more contests, exclusive offers, and monthly giveaways shared twice a month. Stay connected to never miss a drop.",
+                    icon: <SiWhatsapp className="w-4 h-4" />,
+                    tip: null
+                  },
+                  {
+                    step: "08",
+                    title: "Become a Partner",
+                    desc: "Want to earn even more? Fill the Partner Program form to join as an official Rewards X247 partner. We provide huge earning opportunities for our partners — start your journey today.",
+                    icon: <Star className="w-4 h-4" />,
+                    tip: "Earn as a partner"
+                  },
+                ].map((item, i) => (
+                  <motion.div key={i} variants={fadeUp} className="relative flex gap-5 sm:gap-7 pb-10 sm:pb-12 last:pb-0">
+                    <div className="relative z-[2] shrink-0">
+                      <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-2xl bg-black border border-white/8 flex items-center justify-center text-white/40 transition-colors duration-300 group-hover:border-white/15">
                         {item.icon}
                       </div>
-                      <span className="text-sm font-display font-medium text-white/10 tracking-wider">{item.step}</span>
                     </div>
-                    <div className="relative z-[2]">
-                      <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3 sm:mb-4">{item.title}</h3>
-                      <p className="text-white/35 font-light leading-relaxed text-sm sm:text-base">
+                    <div className="relative z-[2] pt-1 flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-[11px] font-display font-medium text-white/15 tracking-widest">{item.step}</span>
+                        {item.tip && (
+                          <span className="text-[10px] font-display font-medium text-white/40 bg-white/[0.04] border border-white/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
+                        )}
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
+                      <p className="text-white/35 font-light leading-relaxed text-sm">
                         {item.desc}
                       </p>
                     </div>
-                  </TiltCard>
-                </motion.div>
-              ))}
-            </motion.div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </section>
 
