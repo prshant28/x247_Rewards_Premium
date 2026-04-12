@@ -22,7 +22,10 @@ import {
   Headphones,
   CreditCard,
   Ticket,
-  Package
+  Package,
+  Gift,
+  Crown,
+  Gem
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
@@ -31,6 +34,8 @@ import CardNav from "@/components/CardNav";
 import "@/components/CardNav.css";
 import DotGrid from "@/components/DotGrid";
 import "@/components/DotGrid.css";
+import ProfileCard from "@/components/ProfileCard";
+import "@/components/ProfileCard.css";
 
 
 function AnimatedCursor() {
@@ -258,9 +263,9 @@ export default function Home() {
             <span className="font-display font-light text-base sm:text-lg tracking-wide text-white">X247 Rewards</span>
           </div>
         }
-        baseColor="rgba(8, 8, 8, 0.85)"
+        baseColor="rgba(6, 6, 6, 0.92)"
         menuColor="#fff"
-        buttonBgColor="rgba(255,255,255,0.08)"
+        buttonBgColor="rgba(255,255,255,0.06)"
         buttonTextColor="#fff"
         onCtaClick={() => { window.location.hash = "#register"; }}
         renderLink={(href, children, className) => (
@@ -269,7 +274,7 @@ export default function Home() {
         items={[
           {
             label: "Navigate",
-            bgColor: "rgba(255,255,255,0.04)",
+            bgColor: "rgba(20, 25, 60, 0.15)",
             textColor: "#fff",
             links: [
               { label: "Home", href: "#register" },
@@ -279,7 +284,7 @@ export default function Home() {
           },
           {
             label: "Explore",
-            bgColor: "rgba(255,255,255,0.04)",
+            bgColor: "rgba(120, 20, 30, 0.12)",
             textColor: "#fff",
             links: [
               { label: "Offers", href: "/offers", spa: true },
@@ -289,7 +294,7 @@ export default function Home() {
           },
           {
             label: "Connect",
-            bgColor: "rgba(255,255,255,0.04)",
+            bgColor: "rgba(255, 255, 255, 0.03)",
             textColor: "#fff",
             links: [
               { label: "WhatsApp", href: "#register" },
@@ -346,12 +351,12 @@ export default function Home() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-semibold leading-[1.05] tracking-tight text-white whitespace-pre-line relative z-[1]"
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-light leading-[1.08] tracking-tight text-white relative z-[1]"
               >
-                <span className="text-gradient">Rewards that you</span>{"\n"}<span className="text-gradient">need Indeed</span>
+                <span className="text-gradient">Rewards that you need Indeed</span>
               </motion.h1>
-              <div aria-hidden="true" className="hero-text-stroke text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-semibold leading-[1.05] tracking-tight whitespace-pre-line">
-                Rewards that you{"\n"}need Indeed
+              <div aria-hidden="true" className="hero-text-stroke text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-light leading-[1.08] tracking-tight">
+                Rewards that you need Indeed
               </div>
             </div>
             
@@ -400,7 +405,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
@@ -509,48 +514,83 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Prizes & Rewards
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
             </motion.div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-10 sm:mb-16">
+              {[
+                {
+                  tier: "Grand Prize",
+                  title: "Premium Laptop",
+                  value: "₹75,000+",
+                  desc: "Monthly grand draw — one lucky winner walks away with a brand new premium laptop. The ultimate reward for our most dedicated participants.",
+                  icon: <Crown className="w-6 h-6" />,
+                  gradient: "linear-gradient(145deg, rgba(30, 35, 80, 0.4) 0%, rgba(10, 10, 10, 1) 100%)",
+                  featured: true
+                },
+                {
+                  tier: "Weekly Draw",
+                  title: "Wireless Earbuds & Gadgets",
+                  value: "₹3,000–₹8,000",
+                  desc: "Premium wireless earbuds, power banks, smart bands, and tech accessories up for grabs in weekly mega draws.",
+                  icon: <Headphones className="w-6 h-6" />,
+                  gradient: "linear-gradient(145deg, rgba(80, 20, 30, 0.3) 0%, rgba(10, 10, 10, 1) 100%)",
+                  featured: false
+                },
+              ].map((item, i) => (
+                <motion.div
+                  key={`big-${i}`}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={fadeUp}
+                >
+                  <TiltCard className="prize-card-large group">
+                    <div className="prize-card-large-bg" style={{ background: item.gradient }} />
+                    <div className="relative z-[2] flex flex-col h-full p-6 sm:p-8">
+                      {item.featured && (
+                        <div className="absolute top-5 right-5 z-[5]">
+                          <div className="premium-badge">
+                            <Star className="w-3 h-3 mr-1" />
+                            GRAND PRIZE
+                          </div>
+                        </div>
+                      )}
+                      <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle w-14 h-14 mb-6">
+                        {item.icon}
+                      </BorderGlow>
+                      <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">{item.tier}</span>
+                      <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-2">{item.title}</h3>
+                      <span className="text-lg font-display font-light text-white/60 mb-4">{item.value}</span>
+                      <p className="text-white/40 font-light text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </div>
+
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16 sm:mb-24"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-16 sm:mb-24"
             >
               {[
-                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "21 winners every day. Branded hoodies, tech bottles, stickers, and accessories shipped worldwide. Just enter — no minimum required.", checks: ["Daily random draw", "No minimum entries needed"], featured: false, icon: <Package className="w-5 h-5" /> },
-                { tier: "Gift Cards", title: "₹500 – ₹2000 Gift Cards", desc: "Win Amazon, Flipkart, or Google Play gift cards. Multiple gift cards given out daily across different entry pools.", checks: ["Amazon / Flipkart / Google Play", "Multiple winners per day"], featured: false, icon: <CreditCard className="w-5 h-5" /> },
-                { tier: "Tech Gear", title: "Wireless Earbuds & Gadgets", desc: "Premium wireless earbuds, power banks, smart bands, and tech accessories up for grabs in weekly mega draws.", checks: ["Weekly mega draws", "Top-tier brands only"], featured: false, icon: <Headphones className="w-5 h-5" /> },
-                { tier: "Event Access", title: "Hackathon & Workshop Passes", desc: "Free entry to invite-only hackathons, workshops, and tech events. VIP registration and mentorship priority included.", checks: ["VIP event access", "Worth ₹499–₹1999"], featured: false, icon: <Ticket className="w-5 h-5" /> },
-                { tier: "Partner Link", title: "Register & Enter Instantly", desc: "Click the partner registration link, complete signup, and you're in. Your entry is confirmed the moment your registration is verified.", checks: ["Instant giveaway entry", "All listed partners valid"], featured: false, icon: <ExternalLink className="w-5 h-5" /> },
-                { tier: "Partner Exclusive", title: "Partner Program Perks", desc: "Join as an official X247 partner and unlock monthly payouts, exclusive merch, early access to new giveaways, and direct support.", checks: ["Monthly partner payouts", "Exclusive early access"], featured: false, icon: <Star className="w-5 h-5" /> }
+                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "21 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, accent: "rgba(30, 40, 100, 0.2)" },
+                { tier: "Gift Cards", title: "₹500 – ₹2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, accent: "rgba(100, 30, 40, 0.2)" },
+                { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, accent: "rgba(40, 80, 40, 0.15)" },
+                { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, accent: "rgba(80, 40, 100, 0.15)" },
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
-                  <TiltCard className={`glass-card ${item.featured ? 'glass-card-featured' : ''} p-5 sm:p-8 group h-full`}>
-                    {item.featured && (
-                      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-[5]">
-                        <div className="premium-badge">
-                          <Star className="w-3 h-3 mr-1" />
-                          PREMIUM
-                        </div>
-                      </div>
-                    )}
+                  <TiltCard className="glass-card p-5 sm:p-6 group h-full">
                     <div className="relative z-[2] flex flex-col h-full">
-                      <div className="flex-1">
-                        <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-6 sm:mb-8">
-                          {item.icon}
-                        </BorderGlow>
-                        <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-2 uppercase tracking-widest font-display">{item.tier}</h4>
-                        <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3">{item.title}</h3>
-                        <p className="text-white/50 font-light mb-6 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
-                      </div>
-                      <ul className="space-y-3 text-xs sm:text-sm text-white/50">
-                        {item.checks.map((c, ci) => (
-                          <li key={ci} className="flex items-center"><Check className="w-3.5 h-3.5 mr-3 text-white/20" /> {c}</li>
-                        ))}
-                      </ul>
+                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
+                        {item.icon}
+                      </BorderGlow>
+                      <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
+                      <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed">{item.desc}</p>
                     </div>
                   </TiltCard>
                 </motion.div>
@@ -594,7 +634,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                   Analytics
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
                 <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
@@ -769,7 +809,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Inner Circle
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
@@ -822,7 +862,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Intel
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">FAQ</h2>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight">FAQ</h2>
             </motion.div>
 
             <motion.div 
