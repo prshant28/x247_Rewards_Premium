@@ -401,7 +401,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
+              <h2 className="text-2xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="How to Enter" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
@@ -510,7 +510,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Prizes & Rewards
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="What You Can Win" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
@@ -630,7 +630,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                   Analytics
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
+                <h2 className="text-xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="Live Tracking Dashboard" /></h2>
                 <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
@@ -805,7 +805,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Inner Circle
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="The Ecosystem" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
@@ -858,7 +858,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Intel
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight">FAQ</h2>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight whitespace-nowrap">FAQ</h2>
             </motion.div>
 
             <motion.div 

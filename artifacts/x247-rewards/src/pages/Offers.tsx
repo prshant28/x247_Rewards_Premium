@@ -120,7 +120,7 @@ export default function Offers() {
               <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
               Active Offers
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap">
               Exclusive Offers
             </h1>
             <p className="text-white/60 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
