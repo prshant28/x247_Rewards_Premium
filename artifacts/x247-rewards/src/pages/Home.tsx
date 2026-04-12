@@ -27,6 +27,10 @@ import {
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
 import BorderGlow from "@/components/BorderGlow";
+import CardNav from "@/components/CardNav";
+import "@/components/CardNav.css";
+import DotGrid from "@/components/DotGrid";
+import "@/components/DotGrid.css";
 
 
 function AnimatedCursor() {
@@ -204,17 +208,10 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
 }
 
 export default function Home() {
-  const [navScrolled, setNavScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   const heroY = useTransform(smoothProgress, [0, 0.3], [0, -80]);
   const heroOpacity = useTransform(smoothProgress, [0, 0.25], [1, 0]);
-
-  useEffect(() => {
-    const handleScroll = () => setNavScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 50 },
@@ -252,32 +249,56 @@ export default function Home() {
         style={{ scaleX: smoothProgress }}
       />
 
-      <nav className="fixed top-0 w-full z-50 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5">
-        <motion.div 
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className={`nav-pill transition-all duration-700 ${navScrolled ? 'nav-pill-scrolled' : 'nav-pill-transparent'}`}
-        >
+      <CardNav
+        logo={
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <span className="font-display font-light text-base sm:text-lg tracking-wide text-white">X247 Rewards</span>
           </div>
-          <div className="hidden md:flex items-center gap-7 text-[13px] font-display font-normal text-white/50">
-            <a href="#register" className="nav-link">Home</a>
-            <a href="#rewards" className="nav-link">Rewards</a>
-            <Link href="/offers" className="nav-link">Offers</Link>
-            <a href="#dashboard" className="nav-link">Dashboard</a>
-            <a href="#faq" className="nav-link">FAQ</a>
-          </div>
-          <BorderGlow as="a" href="#register" borderRadius={100} glowRadius={15} cardBg="rgba(6,6,6,0.9)" className="nav-cta-btn group glass-btn-effect">
-            <span className="relative z-[2]">Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative z-[2]" />
-          </BorderGlow>
-        </motion.div>
-      </nav>
+        }
+        baseColor="rgba(8, 8, 8, 0.85)"
+        menuColor="#fff"
+        buttonBgColor="rgba(255,255,255,0.08)"
+        buttonTextColor="#fff"
+        onCtaClick={() => { window.location.hash = "#register"; }}
+        renderLink={(href, children, className) => (
+          <Link href={href} className={className}>{children}</Link>
+        )}
+        items={[
+          {
+            label: "Navigate",
+            bgColor: "rgba(255,255,255,0.04)",
+            textColor: "#fff",
+            links: [
+              { label: "Home", href: "#register" },
+              { label: "How it Works", href: "#how-it-works" },
+              { label: "Rewards", href: "#rewards" },
+            ],
+          },
+          {
+            label: "Explore",
+            bgColor: "rgba(255,255,255,0.04)",
+            textColor: "#fff",
+            links: [
+              { label: "Offers", href: "/offers", spa: true },
+              { label: "Dashboard", href: "#dashboard" },
+              { label: "FAQ", href: "#faq" },
+            ],
+          },
+          {
+            label: "Connect",
+            bgColor: "rgba(255,255,255,0.04)",
+            textColor: "#fff",
+            links: [
+              { label: "WhatsApp", href: "#register" },
+              { label: "Community", href: "#register" },
+              { label: "Support", href: "#faq" },
+            ],
+          },
+        ]}
+      />
 
       <main className="relative z-10">
         
@@ -290,7 +311,20 @@ export default function Home() {
               noiseIntensity={0.3}
               rotation={0}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-[1]" />
+            <DotGrid
+              dotSize={2}
+              gap={28}
+              baseColor="#1a1a1a"
+              activeColor="#8b2030"
+              proximity={120}
+              speedTrigger={80}
+              shockRadius={200}
+              shockStrength={3}
+              returnDuration={1.5}
+              className="z-[1]"
+              style={{ opacity: 0.6 }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-[2]" />
           </div>
 
           <motion.div 
