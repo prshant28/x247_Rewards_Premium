@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
+import BorderGlow from "@/components/BorderGlow";
 
 
 function AnimatedCursor() {
@@ -271,10 +272,10 @@ export default function Home() {
             <a href="#dashboard" className="nav-link">Dashboard</a>
             <a href="#faq" className="nav-link">FAQ</a>
           </div>
-          <a href="#register" className="nav-cta-btn group glass-btn-effect">
-            <span>Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-          </a>
+          <BorderGlow as="a" href="#register" borderRadius="100px" glowPadding="15px" cardBg="rgba(6,6,6,0.9)" className="nav-cta-btn group" style={{ border: "none" }}>
+            <span className="relative z-[2]">Get Started</span>
+            <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative z-[2]" />
+          </BorderGlow>
         </motion.div>
       </nav>
 
@@ -336,16 +337,15 @@ export default function Home() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24 w-full sm:w-auto px-4"
             >
               <MagneticWrap>
-                <a href="#register" className="premium-btn premium-btn-lg glass-btn-effect group w-full sm:w-auto">
-                  <span className="premium-btn-glow" />
-                  <span className="premium-btn-text">Get Started Now</span>
+                <BorderGlow as="a" href="#register" borderRadius="16px" glowPadding="20px" cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg group w-full sm:w-auto" style={{ border: "none" }}>
+                  <span className="relative z-[2]">Get Started Now</span>
                   <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                </a>
+                </BorderGlow>
               </MagneticWrap>
               <MagneticWrap>
-                <a href="#rewards" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group w-full sm:w-auto">
-                  <span className="premium-btn-text">See Rewards</span>
-                </a>
+                <BorderGlow as="a" href="#rewards" borderRadius="16px" glowPadding="20px" cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-lg premium-btn-ghost group w-full sm:w-auto" style={{ border: "none" }}>
+                  <span className="relative z-[2]">See Rewards</span>
+                </BorderGlow>
               </MagneticWrap>
             </motion.div>
           </motion.div>
@@ -590,11 +590,10 @@ export default function Home() {
                   ))}
                 </ul>
                 <MagneticWrap>
-                  <a href="#register" className="premium-btn premium-btn-lg glass-btn-effect group">
-                    <span className="premium-btn-glow" />
-                    <span className="premium-btn-text">Start Tracking</span>
+                  <BorderGlow as="a" href="#register" borderRadius="16px" glowPadding="20px" cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg group" style={{ border: "none" }}>
+                    <span className="relative z-[2]">Start Tracking</span>
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                  </a>
+                  </BorderGlow>
                 </MagneticWrap>
               </motion.div>
 
@@ -776,11 +775,10 @@ export default function Home() {
               className="flex justify-center"
             >
               <MagneticWrap>
-                <a href="#register" className="premium-btn premium-btn-lg glass-btn-effect group">
-                  <span className="premium-btn-glow" />
+                <BorderGlow as="a" href="#register" borderRadius="16px" glowPadding="20px" cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg group" style={{ border: "none" }}>
                   <SiWhatsapp className="mr-3 w-5 h-5 relative z-[2]" />
-                  <span className="premium-btn-text">Join the Network</span>
-                </a>
+                  <span className="relative z-[2]">Join the Network</span>
+                </BorderGlow>
               </MagneticWrap>
             </motion.div>
           </div>
