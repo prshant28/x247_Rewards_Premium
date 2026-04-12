@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
@@ -133,6 +133,47 @@ function SmokeCanvas() {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ filter: "blur(8px)" }} />;
 }
 
+function AnimatedCursor() {
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const trailRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: 0, y: 0 });
+  const trail = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      pos.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("mousemove", move);
+
+    let raf: number;
+    const animate = () => {
+      trail.current.x += (pos.current.x - trail.current.x) * 0.15;
+      trail.current.y += (pos.current.y - trail.current.y) * 0.15;
+
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${pos.current.x - 6}px, ${pos.current.y - 6}px)`;
+      }
+      if (trailRef.current) {
+        trailRef.current.style.transform = `translate(${trail.current.x - 20}px, ${trail.current.y - 20}px)`;
+      }
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("mousemove", move);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={cursorRef} className="cursor-dot" />
+      <div ref={trailRef} className="cursor-ring" />
+    </>
+  );
+}
+
 function FloatingParticles() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
@@ -187,7 +228,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans">
+    <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans cursor-none">
+      <AnimatedCursor />
       
       <nav className="fixed top-0 w-full z-50 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5">
         <div className={`nav-pill transition-all duration-700 ${navScrolled ? 'nav-pill-scrolled' : 'nav-pill-transparent'}`}>
@@ -270,22 +312,6 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.8, duration: 1 }}
-            className="absolute bottom-8 sm:bottom-12 z-10 flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs font-medium text-white/30 uppercase tracking-widest font-display"
-          >
-            <span>Scroll down</span>
-            <div className="w-6 h-10 sm:w-8 sm:h-12 rounded-full border border-white/15 flex justify-center pt-2">
-              <motion.div 
-                animate={{ y: [0, 8, 0] }}
-                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                className="w-1 h-1.5 rounded-full bg-white/40"
-              />
-            </div>
-            <span>to explore</span>
-          </motion.div>
         </section>
 
         <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-8">

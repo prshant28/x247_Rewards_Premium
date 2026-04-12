@@ -162,23 +162,33 @@
   inherits: false;
 }
 
+@property --cursor-ring-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 @layer utilities {
 
   .glass-card {
     @apply relative overflow-hidden transition-all duration-700;
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.035) 0%,
-      rgba(255, 255, 255, 0.015) 50%,
-      rgba(255, 255, 255, 0.005) 100%
-    );
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(30, 40, 120, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(180, 30, 40, 0.05) 0%, transparent 50%),
+      linear-gradient(
+        165deg,
+        rgba(255, 255, 255, 0.04) 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
     border: 1px solid transparent;
     border-radius: 24px;
     box-shadow:
-      0 4px 24px -4px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      0 8px 32px -8px rgba(0, 0, 0, 0.4),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.02);
   }
 
   .glass-card::before {
@@ -190,9 +200,9 @@
     background: linear-gradient(
       var(--card-border-angle, 0deg),
       rgba(20, 30, 80, 0.5),
-      rgba(255, 255, 255, 0.08),
-      rgba(140, 20, 30, 0.4),
-      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.1),
+      rgba(140, 20, 30, 0.45),
+      rgba(255, 255, 255, 0.1),
       rgba(20, 30, 80, 0.5)
     );
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -212,84 +222,75 @@
   .glass-card::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg,
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from var(--card-border-angle, 0deg),
       transparent 0%,
-      rgba(255, 255, 255, 0.12) 30%,
-      rgba(255, 255, 255, 0.2) 50%,
-      rgba(255, 255, 255, 0.12) 70%,
+      rgba(30, 40, 120, 0.04) 25%,
+      transparent 50%,
+      rgba(180, 30, 40, 0.03) 75%,
       transparent 100%
     );
-    z-index: 2;
+    animation: card-border-rotate 8s linear infinite;
+    z-index: 0;
     pointer-events: none;
   }
   
   .glass-card:hover {
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.06) 0%,
-      rgba(255, 255, 255, 0.025) 50%,
-      rgba(255, 255, 255, 0.01) 100%
-    );
-    transform: translateY(-3px);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(30, 40, 120, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(180, 30, 40, 0.08) 0%, transparent 50%),
+      linear-gradient(
+        165deg,
+        rgba(255, 255, 255, 0.07) 0%,
+        rgba(255, 255, 255, 0.02) 100%
+      );
+    transform: translateY(-4px) scale(1.005);
     box-shadow:
-      0 24px 64px -16px rgba(0, 0, 0, 0.5),
-      0 0 0 0.5px rgba(255, 255, 255, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 32px 72px -20px rgba(0, 0, 0, 0.5),
+      0 0 0 0.5px rgba(255, 255, 255, 0.08),
+      0 0 40px -10px rgba(30, 40, 120, 0.1),
+      0 0 40px -10px rgba(180, 30, 40, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .glass-card:hover::before {
     background: linear-gradient(
       var(--card-border-angle, 0deg),
-      rgba(30, 45, 120, 0.7),
-      rgba(255, 255, 255, 0.12),
-      rgba(180, 30, 40, 0.6),
-      rgba(255, 255, 255, 0.12),
-      rgba(30, 45, 120, 0.7)
+      rgba(30, 45, 120, 0.8),
+      rgba(255, 255, 255, 0.18),
+      rgba(180, 30, 40, 0.7),
+      rgba(255, 255, 255, 0.18),
+      rgba(30, 45, 120, 0.8)
     );
     animation-duration: 3s;
   }
 
   .glass-card:hover::after {
-    background: linear-gradient(90deg,
+    background: conic-gradient(
+      from var(--card-border-angle, 0deg),
       transparent 0%,
-      rgba(255, 255, 255, 0.18) 30%,
-      rgba(255, 255, 255, 0.3) 50%,
-      rgba(255, 255, 255, 0.18) 70%,
+      rgba(30, 40, 120, 0.08) 25%,
+      transparent 50%,
+      rgba(180, 30, 40, 0.06) 75%,
       transparent 100%
     );
   }
 
   .glass-card-featured {
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.02) 50%,
-      rgba(255, 255, 255, 0.01) 100%
-    );
-  }
-
-  .glass-card-featured::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.2) 30%,
-      rgba(255, 255, 255, 0.35) 50%,
-      rgba(255, 255, 255, 0.2) 70%,
-      transparent 100%
-    );
-    z-index: 2;
-    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 30% 0%, rgba(30, 40, 120, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 100%, rgba(180, 30, 40, 0.08) 0%, transparent 50%),
+      linear-gradient(
+        165deg,
+        rgba(255, 255, 255, 0.06) 0%,
+        rgba(255, 255, 255, 0.015) 100%
+      );
   }
 
   .premium-btn {
@@ -801,6 +802,64 @@
       transform: translateY(-120px) translateX(20px);
       opacity: 0;
     }
+  }
+
+  .cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    z-index: 9999;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    will-change: transform;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    z-index: 9998;
+    pointer-events: none;
+    will-change: transform;
+    background: transparent;
+  }
+
+  .cursor-ring::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    padding: 1.5px;
+    background: linear-gradient(
+      var(--cursor-ring-angle, 0deg),
+      rgb(30, 40, 120),
+      rgba(255, 255, 255, 0.5),
+      rgb(200, 40, 50),
+      rgba(255, 255, 255, 0.5),
+      rgb(30, 40, 120)
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    animation: cursor-ring-rotate 3s linear infinite;
+  }
+
+  @keyframes cursor-ring-rotate {
+    0%   { --cursor-ring-angle: 0deg; }
+    100% { --cursor-ring-angle: 360deg; }
+  }
+
+  @media (hover: none) {
+    .cursor-dot, .cursor-ring { display: none; }
   }
 
 }
