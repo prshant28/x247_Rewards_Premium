@@ -156,6 +156,12 @@
   inherits: false;
 }
 
+@property --hero-text-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 @layer utilities {
 
   .glass-card {
@@ -736,10 +742,40 @@
   }
 
   .text-gradient {
-    background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.45) 100%);
+    position: relative;
+    color: transparent;
+    -webkit-text-stroke: 1.5px transparent;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.35) 100%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
+    paint-order: stroke fill;
+  }
+
+  .hero-text-stroke {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1.2px transparent;
+    background: linear-gradient(
+      var(--hero-text-angle, 0deg),
+      rgb(30, 40, 120),
+      rgba(255, 255, 255, 0.7),
+      rgb(200, 40, 50),
+      rgba(255, 255, 255, 0.7),
+      rgb(30, 40, 120)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: hero-text-rotate 6s linear infinite;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  @keyframes hero-text-rotate {
+    0%   { --hero-text-angle: 0deg; }
+    100% { --hero-text-angle: 360deg; }
   }
 
   .floating-particle {
