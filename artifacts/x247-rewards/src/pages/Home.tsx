@@ -189,23 +189,23 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans">
       
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${navScrolled ? 'bg-black/80 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_4px_30px_rgba(0,0,0,0.5)]' : 'bg-transparent border-b border-transparent'}`}>
-        <div className="container mx-auto px-4 sm:px-6 h-16 sm:h-20 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
+      <nav className="fixed top-0 w-full z-50 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5">
+        <div className={`nav-pill transition-all duration-700 ${navScrolled ? 'nav-pill-scrolled' : 'nav-pill-transparent'}`}>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display font-light text-lg sm:text-xl tracking-wide text-white">X247 Rewards</span>
+            <span className="font-display font-light text-base sm:text-lg tracking-wide text-white">X247 Rewards</span>
           </div>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/50">
-            <a href="#how-it-works" className="nav-link">How it Works</a>
+          <div className="hidden md:flex items-center gap-7 text-[13px] font-display font-normal text-white/50">
+            <a href="#register" className="nav-link">Home</a>
             <a href="#rewards" className="nav-link">Rewards</a>
             <a href="#dashboard" className="nav-link">Dashboard</a>
             <a href="#faq" className="nav-link">FAQ</a>
           </div>
-          <a href="#register" className="premium-btn premium-btn-sm group">
-            <span className="premium-btn-text">Get Started</span>
-            <ArrowRight className="w-3.5 h-3.5 ml-1.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+          <a href="#register" className="nav-cta-btn group">
+            <span>Get Started</span>
+            <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
           </a>
         </div>
       </nav>
@@ -249,7 +249,7 @@ export default function Home() {
               <span className="text-gradient">Rewards that you</span>{"\n"}<span className="text-gradient">need Indeed</span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-light leading-relaxed px-4">
+            <p className="text-base sm:text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide">
               Elevate your rewards with verified referrals and exclusive access. Join the premier Google event program for daily swag, gift cards, and hackathon invites.
             </p>
 
@@ -303,7 +303,7 @@ export default function Home() {
                   The Process
                 </div>
                 <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">How it Works</h2>
-                <p className="text-white/40 text-base sm:text-lg font-light leading-relaxed">
+                <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide">
                   A streamlined protocol to secure your position and unlock premium tiers. Follow the sequence precisely.
                 </p>
               </div>
@@ -363,7 +363,7 @@ export default function Home() {
                 Reward Tiers
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">Rewards</h2>
-              <p className="text-white/40 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto">
+              <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards for real influence. Level up your referrals to unlock premium tiers and exclusive opportunities.
               </p>
             </motion.div>
@@ -477,7 +477,7 @@ export default function Home() {
                   Analytics
                 </div>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight">Live Tracking Dashboard</h2>
-                <p className="text-white/40 text-base sm:text-lg font-light mb-8 sm:mb-10 leading-relaxed">
+                <p className="text-white/40 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
                 <ul className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
@@ -628,7 +628,7 @@ export default function Home() {
                 Inner Circle
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">The Ecosystem</h2>
-              <p className="text-white/40 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto">
+              <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond individual rewards lies a network of top-tier developers and event access.
               </p>
             </motion.div>
