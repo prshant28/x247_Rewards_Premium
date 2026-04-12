@@ -257,7 +257,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247 Rewards</span>
+            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">x247 Rewards</span>
           </div>
         }
         baseColor="rgba(6, 6, 6, 0.92)"
