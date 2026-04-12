@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useEffect } from "react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import Offers from "@/pages/Offers";
 
 const queryClient = new QueryClient();
 
@@ -12,6 +13,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/offers" component={Offers} />
       <Route component={NotFound} />
     </Switch>
   );
