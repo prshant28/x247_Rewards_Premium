@@ -1,5 +1,6 @@
 import React from "react";
 import BorderGlow from "@/components/BorderGlow";
+import CardNav from "@/components/CardNav";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -88,24 +89,56 @@ export default function Offers() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <nav className="fixed top-0 left-0 right-0 z-[9999] px-3 sm:px-4 py-3 flex justify-center">
-        <div className="nav-pill nav-pill-scrolled transition-all duration-700">
+      <CardNav
+        logo={
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display font-light text-base sm:text-lg tracking-wide text-white">X247 Rewards</span>
+            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247 Rewards</span>
           </div>
-          <div className="hidden md:flex items-center gap-7 text-[13px] font-display font-normal text-white/50">
-            <Link href="/" className="nav-link">Home</Link>
-            <Link href="/offers" className="nav-link" style={{ color: "rgba(255,255,255,0.9)" }}>Offers</Link>
-          </div>
-          <BorderGlow as={Link} href="/" borderRadius={100} glowRadius={15} cardBg="rgba(6,6,6,0.9)" className="nav-cta-btn group glass-btn-effect">
-            <span className="relative z-[2]">Back to Home</span>
-            <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative z-[2]" />
-          </BorderGlow>
-        </div>
-      </nav>
+        }
+        baseColor="rgba(6, 6, 6, 0.92)"
+        menuColor="#fff"
+        buttonBgColor="rgba(255,255,255,0.06)"
+        buttonTextColor="#fff"
+        onCtaClick={() => { window.location.href = "/"; }}
+        renderLink={(href, children, className) => (
+          <Link href={href} className={className}>{children}</Link>
+        )}
+        items={[
+          {
+            label: "Navigate",
+            bgColor: "rgba(20, 25, 60, 0.15)",
+            textColor: "#fff",
+            links: [
+              { label: "Home", href: "/", spa: true },
+              { label: "How it Works", href: "/#how-it-works" },
+              { label: "Rewards", href: "/#rewards" },
+            ],
+          },
+          {
+            label: "Explore",
+            bgColor: "rgba(120, 20, 30, 0.12)",
+            textColor: "#fff",
+            links: [
+              { label: "Offers", href: "/offers", spa: true },
+              { label: "Dashboard", href: "/#dashboard" },
+              { label: "FAQ", href: "/#faq" },
+            ],
+          },
+          {
+            label: "Connect",
+            bgColor: "rgba(255, 255, 255, 0.03)",
+            textColor: "#fff",
+            links: [
+              { label: "WhatsApp", href: "/#register" },
+              { label: "Community", href: "/#register" },
+              { label: "Support", href: "/#faq" },
+            ],
+          },
+        ]}
+      />
 
       <main className="relative z-10 pt-28 sm:pt-36 pb-20 sm:pb-32">
         <div className="container mx-auto px-4 max-w-6xl">
@@ -147,9 +180,9 @@ export default function Offers() {
                   )}
                   <div className="relative z-[2] flex flex-col h-full">
                     <div className="flex-1">
-                      <div className="icon-circle mb-6">
+                      <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle mb-6">
                         {offer.icon}
-                      </div>
+                      </BorderGlow>
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-[10px] sm:text-xs font-display font-medium text-white/25 uppercase tracking-widest">{offer.tag}</span>
                         <span className="w-1.5 h-1.5 rounded-full bg-white/30 animate-pulse"></span>
@@ -202,10 +235,10 @@ export default function Offers() {
           >
             <div className="glass-card p-8 sm:p-12 max-w-2xl mx-auto">
               <div className="relative z-[2]">
-                <div className="icon-circle mx-auto mb-6">
+                <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle mx-auto mb-6">
                   <ExternalLink className="w-5 h-5" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-display font-semibold text-white mb-4">Ready to Enter?</h3>
+                </BorderGlow>
+                <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-4">Ready to Enter?</h3>
                 <p className="text-white/55 font-light mb-8 text-sm leading-relaxed max-w-md mx-auto">
                   Head back to the main page, register with the partner links, and start claiming these offers today.
                 </p>
