@@ -88,14 +88,13 @@ export default function Offers() {
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
-
       <CardNav
         logo={
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247 Rewards</span>
+            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">x247 </span>
           </div>
         }
         baseColor="rgba(6, 6, 6, 0.92)"
@@ -139,7 +138,6 @@ export default function Offers() {
           },
         ]}
       />
-
       <main className="relative z-10 pt-28 sm:pt-36 pb-20 sm:pb-32">
         <div className="container mx-auto px-4 max-w-6xl">
 
@@ -252,7 +250,6 @@ export default function Offers() {
 
         </div>
       </main>
-
       <footer className="bg-black pt-0 pb-8 sm:pb-12 relative">
         <div className="footer-gradient-line mb-8 sm:mb-12" />
         <div className="container mx-auto px-4 text-center">
