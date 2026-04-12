@@ -272,7 +272,7 @@ export default function Home() {
             <a href="#dashboard" className="nav-link">Dashboard</a>
             <a href="#faq" className="nav-link">FAQ</a>
           </div>
-          <BorderGlow as="a" href="#register" borderRadius="100px" glowPadding="15px" cardBg="rgba(6,6,6,0.9)" className="nav-cta-btn group" style={{ border: "none" }}>
+          <BorderGlow as="a" href="#register" borderRadius={100} glowRadius={15} cardBg="rgba(6,6,6,0.9)" className="nav-cta-btn group glass-btn-effect">
             <span className="relative z-[2]">Get Started</span>
             <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative z-[2]" />
           </BorderGlow>
@@ -331,22 +331,18 @@ export default function Home() {
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24 w-full sm:w-auto px-4"
+              transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 w-full sm:w-auto px-4"
             >
-              <MagneticWrap>
-                <BorderGlow as="a" href="#register" borderRadius="16px" glowPadding="20px" cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg group w-full sm:w-auto" style={{ border: "none" }}>
-                  <span className="relative z-[2]">Get Started Now</span>
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                </BorderGlow>
-              </MagneticWrap>
-              <MagneticWrap>
-                <BorderGlow as="a" href="#rewards" borderRadius="16px" glowPadding="20px" cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-lg premium-btn-ghost group w-full sm:w-auto" style={{ border: "none" }}>
-                  <span className="relative z-[2]">See Rewards</span>
-                </BorderGlow>
-              </MagneticWrap>
+              <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group w-full sm:w-auto">
+                <span className="relative z-[2]">Get Started Now</span>
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+              </BorderGlow>
+              <BorderGlow as="a" href="#rewards" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group w-full sm:w-auto">
+                <span className="relative z-[2]">See Rewards</span>
+              </BorderGlow>
             </motion.div>
           </motion.div>
 
@@ -370,7 +366,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="How to Enter" /></h2>
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
@@ -509,9 +505,9 @@ export default function Home() {
                     )}
                     <div className="relative z-[2] flex flex-col h-full">
                       <div className="flex-1">
-                        <div className="icon-circle mb-6 sm:mb-8">
+                        <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-6 sm:mb-8">
                           {item.icon}
-                        </div>
+                        </BorderGlow>
                         <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-2 uppercase tracking-widest font-display">{item.tier}</h4>
                         <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3">{item.title}</h3>
                         <p className="text-white/50 font-light mb-6 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
@@ -589,12 +585,10 @@ export default function Home() {
                     </motion.li>
                   ))}
                 </ul>
-                <MagneticWrap>
-                  <BorderGlow as="a" href="#register" borderRadius="16px" glowPadding="20px" cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg group" style={{ border: "none" }}>
-                    <span className="relative z-[2]">Start Tracking</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                  </BorderGlow>
-                </MagneticWrap>
+                <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                  <span className="relative z-[2]">Start Tracking</span>
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                </BorderGlow>
               </motion.div>
 
               <motion.div 
@@ -759,9 +753,9 @@ export default function Home() {
                 <motion.div key={i} variants={fadeUp}>
                   <TiltCard className="glass-card p-6 sm:p-8 text-center group">
                     <div className="relative z-[2]">
-                      <div className="icon-circle mx-auto mb-5">
+                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mx-auto mb-5">
                         {item.icon}
-                      </div>
+                      </BorderGlow>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
                       <p className="text-xs sm:text-sm text-white/45 font-light">{item.desc}</p>
                     </div>
@@ -774,12 +768,10 @@ export default function Home() {
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
               className="flex justify-center"
             >
-              <MagneticWrap>
-                <BorderGlow as="a" href="#register" borderRadius="16px" glowPadding="20px" cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg group" style={{ border: "none" }}>
-                  <SiWhatsapp className="mr-3 w-5 h-5 relative z-[2]" />
-                  <span className="relative z-[2]">Join the Network</span>
-                </BorderGlow>
-              </MagneticWrap>
+              <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                <SiWhatsapp className="mr-3 w-5 h-5 relative z-[2]" />
+                <span className="relative z-[2]">Join the Network</span>
+              </BorderGlow>
             </motion.div>
           </div>
         </section>
