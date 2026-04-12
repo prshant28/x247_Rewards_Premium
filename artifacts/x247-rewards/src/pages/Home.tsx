@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, type Variants } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, type Variants } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   Check, 
@@ -134,10 +134,12 @@ function SmokeCanvas() {
 }
 
 function AnimatedCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const trailRef = useRef<HTMLDivElement>(null);
-  const pos = useRef({ x: 0, y: 0 });
-  const trail = useRef({ x: 0, y: 0 });
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const glassRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: -100, y: -100 });
+  const ring = useRef({ x: -100, y: -100 });
+  const glass = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
     const move = (e: MouseEvent) => {
@@ -147,14 +149,19 @@ function AnimatedCursor() {
 
     let raf: number;
     const animate = () => {
-      trail.current.x += (pos.current.x - trail.current.x) * 0.15;
-      trail.current.y += (pos.current.y - trail.current.y) * 0.15;
+      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
+      glass.current.x += (pos.current.x - glass.current.x) * 0.08;
+      glass.current.y += (pos.current.y - glass.current.y) * 0.08;
 
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${pos.current.x - 6}px, ${pos.current.y - 6}px)`;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${pos.current.x - 5}px, ${pos.current.y - 5}px)`;
       }
-      if (trailRef.current) {
-        trailRef.current.style.transform = `translate(${trail.current.x - 20}px, ${trail.current.y - 20}px)`;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${ring.current.x - 20}px, ${ring.current.y - 20}px)`;
+      }
+      if (glassRef.current) {
+        glassRef.current.style.transform = `translate(${glass.current.x - 50}px, ${glass.current.y - 50}px)`;
       }
       raf = requestAnimationFrame(animate);
     };
@@ -168,8 +175,9 @@ function AnimatedCursor() {
 
   return (
     <>
-      <div ref={cursorRef} className="cursor-dot" />
-      <div ref={trailRef} className="cursor-ring" />
+      <div ref={dotRef} className="cursor-dot" />
+      <div ref={ringRef} className="cursor-ring" />
+      <div ref={glassRef} className="cursor-glass" />
     </>
   );
 }
@@ -203,8 +211,108 @@ function GlowLine() {
   );
 }
 
+function MagneticWrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const x = useSpring(rawX, { stiffness: 200, damping: 20 });
+  const y = useSpring(rawY, { stiffness: 200, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    rawX.set((e.clientX - cx) * 0.15);
+    rawY.set((e.clientY - cy) * 0.15);
+  };
+
+  const handleMouseLeave = () => { rawX.set(0); rawY.set(0); };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ x, y }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const cardIcons = [
+  { icon: SiGoogle, color: "rgba(66, 133, 244, 0.4)", bg: "rgba(66, 133, 244, 0.08)" },
+  { icon: ShieldCheck, color: "rgba(52, 211, 153, 0.4)", bg: "rgba(52, 211, 153, 0.08)" },
+  { icon: SiWhatsapp, color: "rgba(37, 211, 102, 0.4)", bg: "rgba(37, 211, 102, 0.08)" },
+  { icon: Trophy, color: "rgba(251, 191, 36, 0.4)", bg: "rgba(251, 191, 36, 0.08)" },
+];
+
+const rewardIcons = [
+  { icon: Gift, color: "rgba(168, 85, 247, 0.4)", bg: "rgba(168, 85, 247, 0.08)" },
+  { icon: Target, color: "rgba(59, 130, 246, 0.4)", bg: "rgba(59, 130, 246, 0.08)" },
+  { icon: Cpu, color: "rgba(236, 72, 153, 0.4)", bg: "rgba(236, 72, 153, 0.08)" },
+  { icon: TerminalSquare, color: "rgba(34, 197, 94, 0.4)", bg: "rgba(34, 197, 94, 0.08)" },
+];
+
+const ecoIcons = [
+  { icon: TerminalSquare, color: "rgba(99, 102, 241, 0.4)", bg: "rgba(99, 102, 241, 0.08)" },
+  { icon: Zap, color: "rgba(250, 204, 21, 0.4)", bg: "rgba(250, 204, 21, 0.08)" },
+  { icon: Users, color: "rgba(56, 189, 248, 0.4)", bg: "rgba(56, 189, 248, 0.08)" },
+];
+
+function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const glareRef = useRef<HTMLDivElement>(null);
+  const rawRotateX = useMotionValue(0);
+  const rawRotateY = useMotionValue(0);
+  const rotateX = useSpring(rawRotateX, { stiffness: 300, damping: 30 });
+  const rotateY = useSpring(rawRotateY, { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    rawRotateX.set((py - 0.5) * -8);
+    rawRotateY.set((px - 0.5) * 8);
+    if (glareRef.current) {
+      glareRef.current.style.background = `radial-gradient(circle at ${px * 100}% ${py * 100}%, rgba(255,255,255,0.06), transparent 60%)`;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    rawRotateX.set(0);
+    rawRotateY.set(0);
+    if (glareRef.current) {
+      glareRef.current.style.background = 'transparent';
+    }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ perspective: 1000, transformStyle: "preserve-3d", rotateX, rotateY }}
+      className={className}
+    >
+      {children}
+      <div
+        ref={glareRef}
+        className="absolute inset-0 rounded-[24px] pointer-events-none z-[3] transition-opacity duration-300"
+      />
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const [navScrolled, setNavScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const heroY = useTransform(smoothProgress, [0, 0.3], [0, -80]);
+  const heroOpacity = useTransform(smoothProgress, [0, 0.25], [1, 0]);
 
   useEffect(() => {
     const handleScroll = () => setNavScrolled(window.scrollY > 50);
@@ -213,26 +321,46 @@ export default function Home() {
   }, []);
 
   const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } }
   };
 
   const scaleIn: Variants = {
-    hidden: { opacity: 0, scale: 0.92 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } }
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } }
   };
 
   const stagger: Variants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.12 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+  };
+
+  const slideLeft: Variants = {
+    hidden: { opacity: 0, x: -60 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } }
+  };
+
+  const slideRight: Variants = {
+    hidden: { opacity: 0, x: 60 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } }
   };
 
   return (
     <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans cursor-none">
       <AnimatedCursor />
       
+      <motion.div 
+        className="scroll-progress-bar"
+        style={{ scaleX: smoothProgress }}
+      />
+
       <nav className="fixed top-0 w-full z-50 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5">
-        <div className={`nav-pill transition-all duration-700 ${navScrolled ? 'nav-pill-scrolled' : 'nav-pill-transparent'}`}>
+        <motion.div 
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className={`nav-pill transition-all duration-700 ${navScrolled ? 'nav-pill-scrolled' : 'nav-pill-transparent'}`}
+        >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
               <Sparkles className="w-4 h-4 text-white" />
@@ -245,11 +373,11 @@ export default function Home() {
             <a href="#dashboard" className="nav-link">Dashboard</a>
             <a href="#faq" className="nav-link">FAQ</a>
           </div>
-          <a href="#register" className="nav-cta-btn group">
+          <a href="#register" className="nav-cta-btn group glass-btn-effect">
             <span>Get Started</span>
             <ArrowRight className="w-3.5 h-3.5 ml-1 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
           </a>
-        </div>
+        </motion.div>
       </nav>
 
       <main className="relative z-10">
@@ -272,15 +400,13 @@ export default function Home() {
           <FloatingParticles />
 
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            style={{ y: heroY, opacity: heroOpacity }}
             className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center"
           >
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="glass-pill-badge mb-8 mt-12 font-display"
             >
               <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse mr-3 inline-block"></span>
@@ -288,28 +414,47 @@ export default function Home() {
             </motion.div>
             
             <div className="relative mb-8">
-              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light leading-[1.05] tracking-tight text-white whitespace-pre-line relative z-[1]">
+              <motion.h1
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light leading-[1.05] tracking-tight text-white whitespace-pre-line relative z-[1]"
+              >
                 <span className="text-gradient">Rewards that you</span>{"\n"}<span className="text-gradient">need Indeed</span>
-              </h1>
+              </motion.h1>
               <div aria-hidden="true" className="hero-text-stroke text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light leading-[1.05] tracking-tight whitespace-pre-line">
                 Rewards that you{"\n"}need Indeed
               </div>
             </div>
             
-            <p className="text-base sm:text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide">
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="text-base sm:text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide"
+            >
               Elevate your rewards with verified referrals and exclusive access. Join the premier Google event program for daily swag, gift cards, and hackathon invites.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24 w-full sm:w-auto px-4">
-              <a href="#register" className="premium-btn premium-btn-lg group w-full sm:w-auto" data-testid="btn-hero-start">
-                <span className="premium-btn-glow" />
-                <span className="premium-btn-text">Get Started Now</span>
-                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a href="#rewards" className="premium-btn premium-btn-lg premium-btn-ghost group w-full sm:w-auto" data-testid="btn-hero-rewards">
-                <span className="premium-btn-text">See Rewards</span>
-              </a>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24 w-full sm:w-auto px-4"
+            >
+              <MagneticWrap>
+                <a href="#register" className="premium-btn premium-btn-lg glass-btn-effect group w-full sm:w-auto">
+                  <span className="premium-btn-glow" />
+                  <span className="premium-btn-text">Get Started Now</span>
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                </a>
+              </MagneticWrap>
+              <MagneticWrap>
+                <a href="#rewards" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group w-full sm:w-auto">
+                  <span className="premium-btn-text">See Rewards</span>
+                </a>
+              </MagneticWrap>
+            </motion.div>
           </motion.div>
 
         </section>
@@ -339,10 +484,12 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex gap-4">
-                <a href="#register" className="premium-btn premium-btn-md group">
-                  <span className="premium-btn-text">Get Started</span>
-                  <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
-                </a>
+                <MagneticWrap>
+                  <a href="#register" className="premium-btn premium-btn-md glass-btn-effect group">
+                    <span className="premium-btn-text">Get Started</span>
+                    <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                  </a>
+                </MagneticWrap>
               </div>
             </motion.div>
 
@@ -351,28 +498,32 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 relative"
             >
               {[
-                { step: "01", title: "Register", desc: "Click both referral links and complete your Google event registration with precise details.", icon: <SiGoogle className="w-6 h-6" /> },
-                { step: "02", title: "Verify", desc: "Submit the official form with your details and unique referral code for validation.", icon: <ShieldCheck className="w-6 h-6" /> },
-                { step: "03", title: "Join Community", desc: "Get added to the private WhatsApp network for live drops and insider alpha.", icon: <SiWhatsapp className="w-6 h-6" /> },
-                { step: "04", title: "Claim Rewards", desc: "Earn swag, unlock milestones, and claim your exclusive event access passes.", icon: <Trophy className="w-6 h-6" /> }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i} 
-                  variants={fadeUp}
-                  className="glass-card p-6 sm:p-8 md:p-10 group cursor-default"
-                >
-                  <div className="flex justify-between items-start mb-8 sm:mb-12">
-                    <div className="icon-circle group-hover:bg-white/10 group-hover:border-white/20 transition-all duration-500">
-                      {item.icon}
-                    </div>
-                    <span className="text-xl sm:text-2xl font-display font-light text-white/15 group-hover:text-white/30 transition-colors duration-500">{item.step}</span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3 sm:mb-4">{item.title}</h3>
-                  <p className="text-white/40 font-light leading-relaxed text-sm sm:text-lg">
-                    {item.desc}
-                  </p>
-                </motion.div>
-              ))}
+                { step: "01", title: "Register", desc: "Click both referral links and complete your Google event registration with precise details." },
+                { step: "02", title: "Verify", desc: "Submit the official form with your details and unique referral code for validation." },
+                { step: "03", title: "Join Community", desc: "Get added to the private WhatsApp network for live drops and insider alpha." },
+                { step: "04", title: "Claim Rewards", desc: "Earn swag, unlock milestones, and claim your exclusive event access passes." }
+              ].map((item, i) => {
+                const iconData = cardIcons[i];
+                const IconComp = iconData.icon;
+                return (
+                  <motion.div key={i} variants={fadeUp}>
+                    <TiltCard className="glass-card group cursor-default">
+                      <div className="card-header-area" style={{ background: `radial-gradient(ellipse at 50% 80%, ${iconData.bg}, transparent 70%)` }}>
+                        <div className="card-icon-wrap group-hover:animate-icon-rotate" style={{ background: iconData.bg, boxShadow: `0 0 30px ${iconData.color}, 0 0 60px ${iconData.color}` }}>
+                          <IconComp className="w-8 h-8" style={{ color: iconData.color.replace('0.4', '1') }} />
+                        </div>
+                        <div className="card-step-badge">{item.step}</div>
+                      </div>
+                      <div className="p-6 sm:p-8 relative z-[2]">
+                        <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3 sm:mb-4">{item.title}</h3>
+                        <p className="text-white/40 font-light leading-relaxed text-sm sm:text-base">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </TiltCard>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
@@ -403,71 +554,46 @@ export default function Home() {
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-16 sm:mb-24"
             >
-              <motion.div variants={fadeUp} className="glass-card p-6 sm:p-10 flex flex-col justify-between group h-full">
-                <div>
-                  <div className="icon-circle mb-8">
-                    <Gift className="w-6 h-6" />
-                  </div>
-                  <h4 className="text-xs font-medium text-white/40 mb-3 uppercase tracking-widest font-display">Daily Drop</h4>
-                  <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">$50 Daily Swag</h3>
-                  <p className="text-white/40 font-light mb-8 text-sm sm:text-base">21 winners selected daily. Premium hoodies, bottles, and tech accessories shipped worldwide.</p>
-                </div>
-                <ul className="space-y-3 text-xs sm:text-sm text-white/60">
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> Daily randomized drawings</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> No minimum referral required</li>
-                </ul>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="glass-card p-6 sm:p-10 flex flex-col justify-between group h-full">
-                <div>
-                  <div className="icon-circle mb-8">
-                    <Target className="w-6 h-6" />
-                  </div>
-                  <h4 className="text-xs font-medium text-white/40 mb-3 uppercase tracking-widest font-display">Milestone I</h4>
-                  <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">$50 Gift Card</h3>
-                  <p className="text-white/40 font-light mb-8 text-sm sm:text-base">Guaranteed reward for every 10 verified referrals. No limits. Choose from Amazon, Steam, or Xbox.</p>
-                </div>
-                <ul className="space-y-3 text-xs sm:text-sm text-white/60">
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> 10 Verified = Unlock</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> Unlimited redemptions</li>
-                </ul>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="glass-card glass-card-featured p-6 sm:p-10 flex flex-col justify-between group h-full relative">
-                <div className="absolute top-4 sm:top-6 right-4 sm:right-6">
-                  <div className="premium-badge">
-                    <Star className="w-3 h-3 mr-1" />
-                    PREMIUM
-                  </div>
-                </div>
-                <div className="relative z-10">
-                  <div className="icon-circle icon-circle-featured mb-8">
-                    <Cpu className="w-6 h-6" />
-                  </div>
-                  <h4 className="text-xs font-medium text-white/40 mb-3 uppercase tracking-widest font-display">Milestone II</h4>
-                  <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">$99 AI Voucher</h3>
-                  <p className="text-white/40 font-light mb-8 text-sm sm:text-base">Hit 50 verified referrals to unlock the exclusive Gen AI Leader package with premium cloud credits.</p>
-                </div>
-                <ul className="space-y-3 text-xs sm:text-sm text-white/60 relative z-10">
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> 50 Verified = Unlock</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> Premium cloud infrastructure</li>
-                </ul>
-              </motion.div>
-
-              <motion.div variants={fadeUp} className="glass-card p-6 sm:p-10 flex flex-col justify-between group h-full">
-                <div>
-                  <div className="icon-circle mb-8">
-                    <TerminalSquare className="w-6 h-6" />
-                  </div>
-                  <h4 className="text-xs font-medium text-white/40 mb-3 uppercase tracking-widest font-display">Exclusive Access</h4>
-                  <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">Hackathons</h3>
-                  <p className="text-white/40 font-light mb-8 text-sm sm:text-base">Free entry to invite-only technical events. Mentorship priority and VIP registration lanes.</p>
-                </div>
-                <ul className="space-y-3 text-xs sm:text-sm text-white/60">
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> VIP Registration</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> ₹499 equivalent value</li>
-                </ul>
-              </motion.div>
+              {[
+                { tier: "Daily Drop", title: "$50 Daily Swag", desc: "21 winners selected daily. Premium hoodies, bottles, and tech accessories shipped worldwide.", checks: ["Daily randomized drawings", "No minimum referral required"], featured: false },
+                { tier: "Milestone I", title: "$50 Gift Card", desc: "Guaranteed reward for every 10 verified referrals. No limits. Choose from Amazon, Steam, or Xbox.", checks: ["10 Verified = Unlock", "Unlimited redemptions"], featured: false },
+                { tier: "Milestone II", title: "$99 AI Voucher", desc: "Hit 50 verified referrals to unlock the exclusive Gen AI Leader package with premium cloud credits.", checks: ["50 Verified = Unlock", "Premium cloud infrastructure"], featured: true },
+                { tier: "Exclusive Access", title: "Hackathons", desc: "Free entry to invite-only technical events. Mentorship priority and VIP registration lanes.", checks: ["VIP Registration", "₹499 equivalent value"], featured: false }
+              ].map((item, i) => {
+                const iconData = rewardIcons[i];
+                const IconComp = iconData.icon;
+                return (
+                  <motion.div key={i} variants={fadeUp}>
+                    <TiltCard className={`glass-card ${item.featured ? 'glass-card-featured' : ''} group h-full`}>
+                      {item.featured && (
+                        <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-[5]">
+                          <div className="premium-badge">
+                            <Star className="w-3 h-3 mr-1" />
+                            PREMIUM
+                          </div>
+                        </div>
+                      )}
+                      <div className="card-header-area card-header-sm" style={{ background: `radial-gradient(ellipse at 50% 80%, ${iconData.bg}, transparent 70%)` }}>
+                        <div className="card-icon-wrap card-icon-sm group-hover:animate-icon-rotate" style={{ background: iconData.bg, boxShadow: `0 0 25px ${iconData.color}, 0 0 50px ${iconData.color}` }}>
+                          <IconComp className="w-6 h-6" style={{ color: iconData.color.replace('0.4', '1') }} />
+                        </div>
+                      </div>
+                      <div className="p-6 sm:p-8 relative z-[2] flex flex-col flex-1">
+                        <div className="flex-1">
+                          <h4 className="text-xs font-medium text-white/40 mb-3 uppercase tracking-widest font-display">{item.tier}</h4>
+                          <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">{item.title}</h3>
+                          <p className="text-white/40 font-light mb-8 text-sm sm:text-base">{item.desc}</p>
+                        </div>
+                        <ul className="space-y-3 text-xs sm:text-sm text-white/60">
+                          {item.checks.map((c, ci) => (
+                            <li key={ci} className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> {c}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </TiltCard>
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
@@ -500,7 +626,7 @@ export default function Home() {
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="flex flex-col lg:flex-row gap-10 sm:gap-16 items-center">
               <motion.div 
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideLeft}
                 className="lg:w-5/12 w-full"
               >
                 <div className="glass-pill-badge mb-6">
@@ -517,28 +643,37 @@ export default function Home() {
                     { icon: <Trophy className="w-4 h-4" />, text: "Automated milestone unlocking" },
                     { icon: <Users className="w-4 h-4" />, text: "Competitive global leaderboard ranking" }
                   ].map((item, i) => (
-                    <li key={i} className="flex items-center">
+                    <motion.li 
+                      key={i} 
+                      className="flex items-center"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    >
                       <div className="icon-circle icon-circle-sm mr-4 shrink-0">
                         {item.icon}
                       </div>
                       <span className="text-white/60 font-light text-sm sm:text-base">{item.text}</span>
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
-                <a href="#register" className="premium-btn premium-btn-lg group">
-                  <span className="premium-btn-glow" />
-                  <span className="premium-btn-text">Start Tracking</span>
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </a>
+                <MagneticWrap>
+                  <a href="#register" className="premium-btn premium-btn-lg glass-btn-effect group">
+                    <span className="premium-btn-glow" />
+                    <span className="premium-btn-text">Start Tracking</span>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                  </a>
+                </MagneticWrap>
               </motion.div>
 
               <motion.div 
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
+                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}
                 className="lg:w-7/12 w-full"
               >
-                <div className="glass-card p-6 sm:p-8 shadow-2xl relative">
+                <TiltCard className="glass-card p-6 sm:p-8 shadow-2xl relative">
                   <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10 gap-3">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10 gap-3 relative z-[2]">
                     <div>
                       <h3 className="font-display font-light text-lg sm:text-xl text-white">Agent_X24</h3>
                       <p className="text-xs sm:text-sm text-white/30 font-light">ID: X247-9982</p>
@@ -548,34 +683,49 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-10">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-10 relative z-[2]">
                     <div className="stat-card">
                       <div className="text-white/30 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Verified</div>
-                      <div className="text-2xl sm:text-4xl font-display font-light text-white">18</div>
+                      <motion.div 
+                        className="text-2xl sm:text-4xl font-display font-light text-white"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
+                      >18</motion.div>
                     </div>
                     <div className="stat-card">
                       <div className="text-white/30 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Total Clicks</div>
-                      <div className="text-2xl sm:text-4xl font-display font-light text-white">247</div>
+                      <motion.div 
+                        className="text-2xl sm:text-4xl font-display font-light text-white"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.6, duration: 0.8 }}
+                      >247</motion.div>
                     </div>
                   </div>
 
-                  <div className="mb-6 sm:mb-10">
+                  <div className="mb-6 sm:mb-10 relative z-[2]">
                     <div className="flex justify-between text-xs sm:text-sm mb-3">
                       <span className="text-white/30 font-light">Milestone I Progress</span>
                       <span className="text-white/60 font-light">18 / 20</span>
                     </div>
-                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
                         whileInView={{ width: "90%" }}
                         viewport={{ once: true }}
-                        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-                        className="h-full bg-gradient-to-r from-white/40 to-white/80 rounded-full"
-                      />
+                        transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+                        className="h-full rounded-full relative overflow-hidden"
+                        style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.8))" }}
+                      >
+                        <div className="absolute inset-0 shimmer-bar" />
+                      </motion.div>
                     </div>
                   </div>
 
-                  <div>
+                  <div className="relative z-[2]">
                     <h4 className="text-[10px] sm:text-xs uppercase tracking-widest font-display text-white/30 mb-4">Recent Activity</h4>
                     <div className="space-y-3 sm:space-y-4">
                       {[
@@ -598,7 +748,7 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
-                </div>
+                </TiltCard>
               </motion.div>
             </div>
           </div>
@@ -610,37 +760,40 @@ export default function Home() {
           <div className="container mx-auto px-4 max-w-4xl">
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
-              className="glass-card p-6 sm:p-10 border-white/10 relative overflow-hidden"
             >
-              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-white/30 via-white/10 to-transparent"></div>
-              <div className="absolute top-0 right-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-              <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-white">Verification Protocol</h3>
-              <p className="text-white/40 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
-                To maintain the integrity of the ecosystem, strict verification measures are in place. Fraudulent referrals will result in permanent disqualification.
-              </p>
-              
-              <div className="grid md:grid-cols-2 gap-6 sm:gap-8 pt-6 border-t border-white/[0.04]">
-                <div>
-                  <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white mb-4 flex items-center">
-                    <CheckCircle2 className="w-4 h-4 mr-2 text-white/60" /> Authorized
-                  </h4>
-                  <ul className="space-y-3 text-xs sm:text-sm text-white/50 font-light">
-                    <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Real attendees</li>
-                    <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Completed registrations</li>
-                    <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Valid contact details</li>
-                  </ul>
+              <TiltCard className="glass-card p-6 sm:p-10 border-white/10 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-white/30 via-white/10 to-transparent"></div>
+                <div className="absolute top-0 right-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                <div className="relative z-[2]">
+                  <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-white">Verification Protocol</h3>
+                  <p className="text-white/40 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
+                    To maintain the integrity of the ecosystem, strict verification measures are in place. Fraudulent referrals will result in permanent disqualification.
+                  </p>
+                  
+                  <div className="grid md:grid-cols-2 gap-6 sm:gap-8 pt-6 border-t border-white/[0.04]">
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white mb-4 flex items-center">
+                        <CheckCircle2 className="w-4 h-4 mr-2 text-white/60" /> Authorized
+                      </h4>
+                      <ul className="space-y-3 text-xs sm:text-sm text-white/50 font-light">
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Real attendees</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Completed registrations</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Valid contact details</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white/40 mb-4 flex items-center">
+                        <ShieldCheck className="w-4 h-4 mr-2 text-white/30" /> Disqualified
+                      </h4>
+                      <ul className="space-y-3 text-xs sm:text-sm text-white/30 font-light">
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Bot/Script traffic</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Duplicate IPs</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Fake registrations</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white/40 mb-4 flex items-center">
-                    <ShieldCheck className="w-4 h-4 mr-2 text-white/30" /> Disqualified
-                  </h4>
-                  <ul className="space-y-3 text-xs sm:text-sm text-white/30 font-light">
-                    <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Bot/Script traffic</li>
-                    <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Duplicate IPs</li>
-                    <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Fake registrations</li>
-                  </ul>
-                </div>
-              </div>
+              </TiltCard>
             </motion.div>
           </div>
         </section>
@@ -669,32 +822,41 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16"
             >
               {[
-                { title: "Hackathons", desc: "Access to private building sessions.", icon: <TerminalSquare className="w-5 h-5" /> },
-                { title: "Workshops", desc: "Expert-led technical deep dives.", icon: <Zap className="w-5 h-5" /> },
-                { title: "Mentorship", desc: "Direct access to industry leaders.", icon: <Users className="w-5 h-5" /> }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i} variants={fadeUp}
-                  className="glass-card p-6 sm:p-8 text-center group"
-                >
-                  <div className="icon-circle mx-auto mb-4">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
-                  <p className="text-xs sm:text-sm text-white/30 font-light">{item.desc}</p>
-                </motion.div>
-              ))}
+                { title: "Hackathons", desc: "Access to private building sessions." },
+                { title: "Workshops", desc: "Expert-led technical deep dives." },
+                { title: "Mentorship", desc: "Direct access to industry leaders." }
+              ].map((item, i) => {
+                const iconData = ecoIcons[i];
+                const IconComp = iconData.icon;
+                return (
+                  <motion.div key={i} variants={fadeUp}>
+                    <TiltCard className="glass-card text-center group">
+                      <div className="card-header-area card-header-xs" style={{ background: `radial-gradient(ellipse at 50% 80%, ${iconData.bg}, transparent 70%)` }}>
+                        <div className="card-icon-wrap card-icon-xs group-hover:animate-icon-rotate" style={{ background: iconData.bg, boxShadow: `0 0 20px ${iconData.color}` }}>
+                          <IconComp className="w-5 h-5" style={{ color: iconData.color.replace('0.4', '1') }} />
+                        </div>
+                      </div>
+                      <div className="p-6 sm:p-8 relative z-[2]">
+                        <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
+                        <p className="text-xs sm:text-sm text-white/30 font-light">{item.desc}</p>
+                      </div>
+                    </TiltCard>
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
               className="flex justify-center"
             >
-              <a href="#register" className="premium-btn premium-btn-lg group">
-                <span className="premium-btn-glow" />
-                <SiWhatsapp className="mr-3 w-5 h-5" />
-                <span className="premium-btn-text">Join the Network</span>
-              </a>
+              <MagneticWrap>
+                <a href="#register" className="premium-btn premium-btn-lg glass-btn-effect group">
+                  <span className="premium-btn-glow" />
+                  <SiWhatsapp className="mr-3 w-5 h-5 relative z-[2]" />
+                  <span className="premium-btn-text">Join the Network</span>
+                </a>
+              </MagneticWrap>
             </motion.div>
           </div>
         </section>
@@ -716,27 +878,30 @@ export default function Home() {
 
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
-              className="glass-card p-5 sm:p-8 md:p-12"
             >
-              <Accordion type="single" collapsible className="w-full">
-                {[
-                  { q: "How do I ensure my referrals are counted?", a: "Make sure your network uses both links to register and submits the verification form with your unique code." },
-                  { q: "When are daily winners announced?", a: "Winners are drawn randomly at 18:00 UTC and announced in the community channel." },
-                  { q: "How long does verification take?", a: "Manual verification typically takes 24-48 hours after form submission." },
-                  { q: "Can I earn multiple gift cards?", a: "Yes. Milestone I ($50 Gift Card) unlocks for every 10 verified referrals." },
-                  { q: "What is the Gen AI Leader Package?", a: "An exclusive tier for 50+ referrals including premium cloud credits, VIP event access, and custom merch." },
-                  { q: "Are international participants eligible?", a: "Yes, the program and shipping are global." }
-                ].map((faq, i) => (
-                  <AccordionItem key={i} value={`item-${i}`} className="border-b border-white/[0.06] last:border-0 px-0 sm:px-2">
-                    <AccordionTrigger className="text-left font-display font-light text-base sm:text-lg text-white/80 hover:text-white py-5 sm:py-6">
-                      {faq.q}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-white/40 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
-                      {faq.a}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+              <TiltCard className="glass-card p-5 sm:p-8 md:p-12">
+                <div className="relative z-[2]">
+                  <Accordion type="single" collapsible className="w-full">
+                    {[
+                      { q: "How do I ensure my referrals are counted?", a: "Make sure your network uses both links to register and submits the verification form with your unique code." },
+                      { q: "When are daily winners announced?", a: "Winners are drawn randomly at 18:00 UTC and announced in the community channel." },
+                      { q: "How long does verification take?", a: "Manual verification typically takes 24-48 hours after form submission." },
+                      { q: "Can I earn multiple gift cards?", a: "Yes. Milestone I ($50 Gift Card) unlocks for every 10 verified referrals." },
+                      { q: "What is the Gen AI Leader Package?", a: "An exclusive tier for 50+ referrals including premium cloud credits, VIP event access, and custom merch." },
+                      { q: "Are international participants eligible?", a: "Yes, the program and shipping are global." }
+                    ].map((faq, i) => (
+                      <AccordionItem key={i} value={`item-${i}`} className="border-b border-white/[0.06] last:border-0 px-0 sm:px-2">
+                        <AccordionTrigger className="text-left font-display font-light text-base sm:text-lg text-white/80 hover:text-white py-5 sm:py-6">
+                          {faq.q}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-white/40 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
+                          {faq.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              </TiltCard>
             </motion.div>
           </div>
         </section>
@@ -747,7 +912,10 @@ export default function Home() {
 
       <footer className="border-t border-white/[0.04] bg-black py-12 sm:py-16">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8 mb-12 sm:mb-16">
+          <motion.div 
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8 mb-12 sm:mb-16"
+          >
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-white" />
@@ -759,7 +927,7 @@ export default function Home() {
               <a href="#" className="hover:text-white/60 transition-colors duration-300">Privacy</a>
               <a href="#" className="hover:text-white/60 transition-colors duration-300">Contact</a>
             </div>
-          </div>
+          </motion.div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light text-white/20">
             <p>&copy; 2024 X247 Rewards Protocol. All rights reserved.</p>
             <p className="flex items-center gap-2">
