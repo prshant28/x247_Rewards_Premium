@@ -34,63 +34,116 @@ function SmokeCanvas() {
     let animId: number;
     let w = 0;
     let h = 0;
-
-    const particles: { x: number; y: number; r: number; vx: number; vy: number; alpha: number; pulse: number; speed: number }[] = [];
+    let t = 0;
 
     function resize() {
-      w = canvas!.clientWidth;
-      h = canvas!.clientHeight;
+      w = canvas!.clientWidth * window.devicePixelRatio;
+      h = canvas!.clientHeight * window.devicePixelRatio;
       canvas!.width = w;
       canvas!.height = h;
+      ctx!.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    function initParticles() {
-      particles.length = 0;
-      const count = 8;
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          r: 150 + Math.random() * 200,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.3,
-          alpha: 0.03 + Math.random() * 0.06,
-          pulse: Math.random() * Math.PI * 2,
-          speed: 0.003 + Math.random() * 0.005,
-        });
-      }
+    function noise(x: number, y: number, z: number) {
+      const n = Math.sin(x * 12.9898 + y * 78.233 + z * 45.164) * 43758.5453;
+      return n - Math.floor(n);
+    }
+
+    function smoothNoise(x: number, y: number, z: number) {
+      const ix = Math.floor(x), iy = Math.floor(y);
+      const fx = x - ix, fy = y - iy;
+      const sx = fx * fx * (3 - 2 * fx);
+      const sy = fy * fy * (3 - 2 * fy);
+      const a = noise(ix, iy, z);
+      const b = noise(ix + 1, iy, z);
+      const c = noise(ix, iy + 1, z);
+      const d = noise(ix + 1, iy + 1, z);
+      return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
     }
 
     function draw() {
-      ctx!.clearRect(0, 0, w, h);
-      for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.pulse += p.speed;
-        const a = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
-        if (p.x < -p.r) p.x = w + p.r;
-        if (p.x > w + p.r) p.x = -p.r;
-        if (p.y < -p.r) p.y = h + p.r;
-        if (p.y > h + p.r) p.y = -p.r;
-        const grad = ctx!.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-        grad.addColorStop(0, `rgba(255,255,255,${a})`);
-        grad.addColorStop(0.5, `rgba(255,255,255,${a * 0.4})`);
-        grad.addColorStop(1, "rgba(255,255,255,0)");
+      const cw = canvas!.clientWidth;
+      const ch = canvas!.clientHeight;
+      ctx!.clearRect(0, 0, cw, ch);
+      t += 0.003;
+
+      const cx = cw * 0.45;
+      const cy = ch * 0.58;
+
+      for (let i = 0; i < 18; i++) {
+        const phase = i * 0.7 + t * 2;
+        const spread = 0.3 + i * 0.06;
+
+        const noiseX = smoothNoise(i * 0.3, t * 0.8, 0) - 0.5;
+        const noiseY = smoothNoise(i * 0.3, t * 0.8, 10) - 0.5;
+
+        const px = cx + noiseX * cw * spread * 0.9 + Math.sin(phase) * 60;
+        const py = cy + noiseY * ch * spread * 0.5 + Math.cos(phase * 0.7) * 40;
+
+        const baseRadius = 80 + i * 18 + Math.sin(phase * 0.5) * 30;
+
+        const alphaWave = 0.5 + 0.5 * Math.sin(phase * 0.3 + i);
+        const baseAlpha = (0.04 + (1 - i / 18) * 0.09) * alphaWave;
+
+        const rx = baseRadius * (1.2 + 0.4 * Math.sin(phase * 0.4));
+        const ry = baseRadius * (0.6 + 0.3 * Math.cos(phase * 0.3));
+
+        ctx!.save();
+        ctx!.translate(px, py);
+        ctx!.rotate(Math.sin(phase * 0.2) * 0.4 + i * 0.2);
+        ctx!.scale(1, ry / rx);
+
+        const grad = ctx!.createRadialGradient(0, 0, 0, 0, 0, rx);
+        grad.addColorStop(0, `rgba(220, 220, 220, ${baseAlpha * 1.8})`);
+        grad.addColorStop(0.3, `rgba(200, 200, 200, ${baseAlpha * 1.2})`);
+        grad.addColorStop(0.6, `rgba(180, 180, 180, ${baseAlpha * 0.5})`);
+        grad.addColorStop(1, "rgba(150, 150, 150, 0)");
         ctx!.fillStyle = grad;
-        ctx!.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+        ctx!.beginPath();
+        ctx!.arc(0, 0, rx, 0, Math.PI * 2);
+        ctx!.fill();
+        ctx!.restore();
       }
+
+      for (let i = 0; i < 12; i++) {
+        const phase = i * 1.1 + t * 1.5;
+        const nx = smoothNoise(i * 0.5, t * 0.6, 20) - 0.5;
+        const ny = smoothNoise(i * 0.5, t * 0.6, 30) - 0.5;
+
+        const px = cx + nx * cw * 0.5 + Math.sin(phase) * 80;
+        const py = cy + ny * ch * 0.35 + Math.cos(phase * 0.6) * 50;
+
+        const r = 40 + i * 12 + Math.sin(phase * 0.4) * 20;
+        const a = 0.02 + (1 - i / 12) * 0.04;
+
+        ctx!.save();
+        ctx!.translate(px, py);
+        ctx!.rotate(phase * 0.15);
+        ctx!.scale(1.5, 0.7);
+
+        const grad = ctx!.createRadialGradient(0, 0, 0, 0, 0, r);
+        grad.addColorStop(0, `rgba(255, 255, 255, ${a * 1.5})`);
+        grad.addColorStop(0.5, `rgba(230, 230, 230, ${a * 0.6})`);
+        grad.addColorStop(1, "rgba(200, 200, 200, 0)");
+        ctx!.fillStyle = grad;
+        ctx!.beginPath();
+        ctx!.arc(0, 0, r, 0, Math.PI * 2);
+        ctx!.fill();
+        ctx!.restore();
+      }
+
       animId = requestAnimationFrame(draw);
     }
 
     resize();
-    initParticles();
     draw();
 
-    window.addEventListener("resize", () => { resize(); initParticles(); });
-    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
+    const onResize = () => resize();
+    window.addEventListener("resize", onResize);
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", onResize); };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ filter: "blur(8px)" }} />;
 }
 
 export default function Home() {
