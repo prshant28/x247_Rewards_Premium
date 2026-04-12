@@ -144,11 +144,6 @@
   }
 }
 
-@property --card-border-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
 
 @property --btn-border-angle {
   syntax: "<angle>";
@@ -182,199 +177,89 @@
   }
 
   .glass-card {
-    @apply relative overflow-hidden transition-all duration-700;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    background:
-      radial-gradient(ellipse at 20% 0%, rgba(30, 40, 120, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 100%, rgba(180, 30, 40, 0.05) 0%, transparent 50%),
-      linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.04) 0%,
-        rgba(255, 255, 255, 0.01) 100%
-      );
-    border: 1px solid transparent;
-    border-radius: 24px;
+    @apply relative overflow-hidden transition-all duration-500;
+    background: linear-gradient(
+      168deg,
+      rgba(18, 18, 18, 1) 0%,
+      rgba(12, 12, 12, 1) 50%,
+      rgba(8, 8, 8, 1) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
     box-shadow:
-      0 8px 32px -8px rgba(0, 0, 0, 0.4),
-      0 2px 4px -1px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+      0 1px 0 0 rgba(255, 255, 255, 0.03) inset,
+      0 4px 24px -6px rgba(0, 0, 0, 0.6);
   }
 
   .glass-card::before {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    padding: 1px;
-    background: linear-gradient(
-      var(--card-border-angle, 0deg),
-      rgba(20, 30, 80, 0.5),
-      rgba(255, 255, 255, 0.1),
-      rgba(140, 20, 30, 0.45),
-      rgba(255, 255, 255, 0.1),
-      rgba(20, 30, 80, 0.5)
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 30%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.08) 70%,
+      transparent 100%
     );
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
     pointer-events: none;
     z-index: 1;
-    animation: card-border-rotate 6s linear infinite;
-  }
-
-  @keyframes card-border-rotate {
-    0%   { --card-border-angle: 0deg; }
-    100% { --card-border-angle: 360deg; }
   }
 
   .glass-card::after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(
-      from var(--card-border-angle, 0deg),
-      transparent 0%,
-      rgba(30, 40, 120, 0.04) 25%,
-      transparent 50%,
-      rgba(180, 30, 40, 0.03) 75%,
-      transparent 100%
+    inset: 0;
+    border-radius: 20px;
+    background: linear-gradient(
+      168deg,
+      rgba(255, 255, 255, 0.015) 0%,
+      transparent 40%
     );
-    animation: card-border-rotate 8s linear infinite;
-    z-index: 0;
     pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.5s ease;
   }
   
   .glass-card:hover {
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
-    background:
-      radial-gradient(ellipse at 20% 0%, rgba(30, 40, 120, 0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 100%, rgba(180, 30, 40, 0.08) 0%, transparent 50%),
-      linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.07) 0%,
-        rgba(255, 255, 255, 0.02) 100%
-      );
-    transform: translateY(-4px) scale(1.005);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
     box-shadow:
-      0 32px 72px -20px rgba(0, 0, 0, 0.5),
-      0 0 0 0.5px rgba(255, 255, 255, 0.08),
-      0 0 40px -10px rgba(30, 40, 120, 0.1),
-      0 0 40px -10px rgba(180, 30, 40, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+      0 20px 50px -12px rgba(0, 0, 0, 0.7),
+      0 0 0 0.5px rgba(255, 255, 255, 0.06);
   }
 
   .glass-card:hover::before {
-    background: linear-gradient(
-      var(--card-border-angle, 0deg),
-      rgba(30, 45, 120, 0.8),
-      rgba(255, 255, 255, 0.18),
-      rgba(180, 30, 40, 0.7),
-      rgba(255, 255, 255, 0.18),
-      rgba(30, 45, 120, 0.8)
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.12) 30%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.12) 70%,
+      transparent 100%
     );
-    animation-duration: 3s;
   }
 
   .glass-card:hover::after {
-    background: conic-gradient(
-      from var(--card-border-angle, 0deg),
-      transparent 0%,
-      rgba(30, 40, 120, 0.08) 25%,
-      transparent 50%,
-      rgba(180, 30, 40, 0.06) 75%,
-      transparent 100%
+    opacity: 1;
+    background: linear-gradient(
+      168deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      transparent 40%
     );
   }
 
   .glass-card-featured {
-    background:
-      radial-gradient(ellipse at 30% 0%, rgba(30, 40, 120, 0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 100%, rgba(180, 30, 40, 0.08) 0%, transparent 50%),
-      linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.06) 0%,
-        rgba(255, 255, 255, 0.015) 100%
-      );
-  }
-
-  .card-header-area {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 160px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    z-index: 2;
-    overflow: hidden;
-  }
-
-  .card-header-sm {
-    min-height: 120px;
-  }
-
-  .card-header-xs {
-    min-height: 100px;
-  }
-
-  .card-icon-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 72px;
-    height: 72px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .card-icon-sm {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-  }
-
-  .card-icon-xs {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-  }
-
-  .group:hover .card-icon-wrap {
-    border-color: rgba(255, 255, 255, 0.15);
-    transform: scale(1.08);
-  }
-
-  @keyframes icon-spin-y {
-    0% { transform: scale(1.08) rotateY(0deg); }
-    100% { transform: scale(1.08) rotateY(360deg); }
-  }
-
-  .group:hover .animate-icon-rotate {
-    animation: icon-spin-y 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1;
-  }
-
-  .card-step-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    font-family: 'Syne', var(--font-display), sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.15);
-    letter-spacing: 0.05em;
-    transition: color 0.5s ease;
-  }
-
-  .group:hover .card-step-badge {
-    color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(
+      168deg,
+      rgba(22, 22, 22, 1) 0%,
+      rgba(14, 14, 14, 1) 50%,
+      rgba(10, 10, 10, 1) 100%
+    );
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   .premium-btn {
@@ -580,23 +465,22 @@
   }
 
   .icon-circle {
-    @apply w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-white/70;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.06),
-      0 2px 8px -2px rgba(0, 0, 0, 0.2);
+    @apply w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-white/50;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .group:hover .icon-circle {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .icon-circle-sm {
     @apply w-9 h-9 sm:w-10 sm:h-10 rounded-xl;
   }
 
-  .icon-circle-featured {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
-    border-color: rgba(255, 255, 255, 0.18);
-  }
 
   .premium-badge {
     @apply inline-flex items-center text-[9px] sm:text-[10px] font-display font-medium uppercase tracking-widest px-3 py-1 rounded-full;
@@ -607,19 +491,15 @@
   }
 
   .stat-card {
-    @apply rounded-2xl p-4 sm:p-6;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    @apply rounded-xl p-4 sm:p-6;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .stat-card:hover {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      0 4px 20px -4px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   .nav-pill {

@@ -242,25 +242,6 @@ function MagneticWrap({ children, className = "" }: { children: React.ReactNode;
   );
 }
 
-const cardIcons = [
-  { icon: SiGoogle, color: "rgba(66, 133, 244, 0.4)", bg: "rgba(66, 133, 244, 0.08)" },
-  { icon: ShieldCheck, color: "rgba(52, 211, 153, 0.4)", bg: "rgba(52, 211, 153, 0.08)" },
-  { icon: SiWhatsapp, color: "rgba(37, 211, 102, 0.4)", bg: "rgba(37, 211, 102, 0.08)" },
-  { icon: Trophy, color: "rgba(251, 191, 36, 0.4)", bg: "rgba(251, 191, 36, 0.08)" },
-];
-
-const rewardIcons = [
-  { icon: Gift, color: "rgba(168, 85, 247, 0.4)", bg: "rgba(168, 85, 247, 0.08)" },
-  { icon: Target, color: "rgba(59, 130, 246, 0.4)", bg: "rgba(59, 130, 246, 0.08)" },
-  { icon: Cpu, color: "rgba(236, 72, 153, 0.4)", bg: "rgba(236, 72, 153, 0.08)" },
-  { icon: TerminalSquare, color: "rgba(34, 197, 94, 0.4)", bg: "rgba(34, 197, 94, 0.08)" },
-];
-
-const ecoIcons = [
-  { icon: TerminalSquare, color: "rgba(99, 102, 241, 0.4)", bg: "rgba(99, 102, 241, 0.08)" },
-  { icon: Zap, color: "rgba(250, 204, 21, 0.4)", bg: "rgba(250, 204, 21, 0.08)" },
-  { icon: Users, color: "rgba(56, 189, 248, 0.4)", bg: "rgba(56, 189, 248, 0.08)" },
-];
 
 function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -498,32 +479,28 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 relative"
             >
               {[
-                { step: "01", title: "Register", desc: "Click both referral links and complete your Google event registration with precise details." },
-                { step: "02", title: "Verify", desc: "Submit the official form with your details and unique referral code for validation." },
-                { step: "03", title: "Join Community", desc: "Get added to the private WhatsApp network for live drops and insider alpha." },
-                { step: "04", title: "Claim Rewards", desc: "Earn swag, unlock milestones, and claim your exclusive event access passes." }
-              ].map((item, i) => {
-                const iconData = cardIcons[i];
-                const IconComp = iconData.icon;
-                return (
-                  <motion.div key={i} variants={fadeUp}>
-                    <TiltCard className="glass-card group cursor-default">
-                      <div className="card-header-area" style={{ background: `radial-gradient(ellipse at 50% 80%, ${iconData.bg}, transparent 70%)` }}>
-                        <div className="card-icon-wrap group-hover:animate-icon-rotate" style={{ background: iconData.bg, boxShadow: `0 0 30px ${iconData.color}, 0 0 60px ${iconData.color}` }}>
-                          <IconComp className="w-8 h-8" style={{ color: iconData.color.replace('0.4', '1') }} />
-                        </div>
-                        <div className="card-step-badge">{item.step}</div>
+                { step: "01", title: "Register", desc: "Click both referral links and complete your Google event registration with precise details.", icon: <SiGoogle className="w-5 h-5" /> },
+                { step: "02", title: "Verify", desc: "Submit the official form with your details and unique referral code for validation.", icon: <ShieldCheck className="w-5 h-5" /> },
+                { step: "03", title: "Join Community", desc: "Get added to the private WhatsApp network for live drops and insider alpha.", icon: <SiWhatsapp className="w-5 h-5" /> },
+                { step: "04", title: "Claim Rewards", desc: "Earn swag, unlock milestones, and claim your exclusive event access passes.", icon: <Trophy className="w-5 h-5" /> }
+              ].map((item, i) => (
+                <motion.div key={i} variants={fadeUp}>
+                  <TiltCard className="glass-card p-6 sm:p-8 md:p-10 group cursor-default">
+                    <div className="flex justify-between items-start mb-8 sm:mb-10 relative z-[2]">
+                      <div className="icon-circle">
+                        {item.icon}
                       </div>
-                      <div className="p-6 sm:p-8 relative z-[2]">
-                        <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3 sm:mb-4">{item.title}</h3>
-                        <p className="text-white/40 font-light leading-relaxed text-sm sm:text-base">
-                          {item.desc}
-                        </p>
-                      </div>
-                    </TiltCard>
-                  </motion.div>
-                );
-              })}
+                      <span className="text-sm font-display font-medium text-white/10 tracking-wider">{item.step}</span>
+                    </div>
+                    <div className="relative z-[2]">
+                      <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3 sm:mb-4">{item.title}</h3>
+                      <p className="text-white/35 font-light leading-relaxed text-sm sm:text-base">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </section>
@@ -555,45 +532,39 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 mb-16 sm:mb-24"
             >
               {[
-                { tier: "Daily Drop", title: "$50 Daily Swag", desc: "21 winners selected daily. Premium hoodies, bottles, and tech accessories shipped worldwide.", checks: ["Daily randomized drawings", "No minimum referral required"], featured: false },
-                { tier: "Milestone I", title: "$50 Gift Card", desc: "Guaranteed reward for every 10 verified referrals. No limits. Choose from Amazon, Steam, or Xbox.", checks: ["10 Verified = Unlock", "Unlimited redemptions"], featured: false },
-                { tier: "Milestone II", title: "$99 AI Voucher", desc: "Hit 50 verified referrals to unlock the exclusive Gen AI Leader package with premium cloud credits.", checks: ["50 Verified = Unlock", "Premium cloud infrastructure"], featured: true },
-                { tier: "Exclusive Access", title: "Hackathons", desc: "Free entry to invite-only technical events. Mentorship priority and VIP registration lanes.", checks: ["VIP Registration", "₹499 equivalent value"], featured: false }
-              ].map((item, i) => {
-                const iconData = rewardIcons[i];
-                const IconComp = iconData.icon;
-                return (
-                  <motion.div key={i} variants={fadeUp}>
-                    <TiltCard className={`glass-card ${item.featured ? 'glass-card-featured' : ''} group h-full`}>
-                      {item.featured && (
-                        <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-[5]">
-                          <div className="premium-badge">
-                            <Star className="w-3 h-3 mr-1" />
-                            PREMIUM
-                          </div>
-                        </div>
-                      )}
-                      <div className="card-header-area card-header-sm" style={{ background: `radial-gradient(ellipse at 50% 80%, ${iconData.bg}, transparent 70%)` }}>
-                        <div className="card-icon-wrap card-icon-sm group-hover:animate-icon-rotate" style={{ background: iconData.bg, boxShadow: `0 0 25px ${iconData.color}, 0 0 50px ${iconData.color}` }}>
-                          <IconComp className="w-6 h-6" style={{ color: iconData.color.replace('0.4', '1') }} />
+                { tier: "Daily Drop", title: "$50 Daily Swag", desc: "21 winners selected daily. Premium hoodies, bottles, and tech accessories shipped worldwide.", checks: ["Daily randomized drawings", "No minimum referral required"], featured: false, icon: <Gift className="w-5 h-5" /> },
+                { tier: "Milestone I", title: "$50 Gift Card", desc: "Guaranteed reward for every 10 verified referrals. No limits. Choose from Amazon, Steam, or Xbox.", checks: ["10 Verified = Unlock", "Unlimited redemptions"], featured: false, icon: <Target className="w-5 h-5" /> },
+                { tier: "Milestone II", title: "$99 AI Voucher", desc: "Hit 50 verified referrals to unlock the exclusive Gen AI Leader package with premium cloud credits.", checks: ["50 Verified = Unlock", "Premium cloud infrastructure"], featured: true, icon: <Cpu className="w-5 h-5" /> },
+                { tier: "Exclusive Access", title: "Hackathons", desc: "Free entry to invite-only technical events. Mentorship priority and VIP registration lanes.", checks: ["VIP Registration", "₹499 equivalent value"], featured: false, icon: <TerminalSquare className="w-5 h-5" /> }
+              ].map((item, i) => (
+                <motion.div key={i} variants={fadeUp}>
+                  <TiltCard className={`glass-card ${item.featured ? 'glass-card-featured' : ''} p-6 sm:p-10 group h-full`}>
+                    {item.featured && (
+                      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-[5]">
+                        <div className="premium-badge">
+                          <Star className="w-3 h-3 mr-1" />
+                          PREMIUM
                         </div>
                       </div>
-                      <div className="p-6 sm:p-8 relative z-[2] flex flex-col flex-1">
-                        <div className="flex-1">
-                          <h4 className="text-xs font-medium text-white/40 mb-3 uppercase tracking-widest font-display">{item.tier}</h4>
-                          <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">{item.title}</h3>
-                          <p className="text-white/40 font-light mb-8 text-sm sm:text-base">{item.desc}</p>
+                    )}
+                    <div className="relative z-[2] flex flex-col h-full">
+                      <div className="flex-1">
+                        <div className="icon-circle mb-6 sm:mb-8">
+                          {item.icon}
                         </div>
-                        <ul className="space-y-3 text-xs sm:text-sm text-white/60">
-                          {item.checks.map((c, ci) => (
-                            <li key={ci} className="flex items-center"><Check className="w-4 h-4 mr-3 text-white/30" /> {c}</li>
-                          ))}
-                        </ul>
+                        <h4 className="text-xs font-medium text-white/30 mb-3 uppercase tracking-widest font-display">{item.tier}</h4>
+                        <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-4">{item.title}</h3>
+                        <p className="text-white/35 font-light mb-8 text-sm sm:text-base">{item.desc}</p>
                       </div>
-                    </TiltCard>
-                  </motion.div>
-                );
-              })}
+                      <ul className="space-y-3 text-xs sm:text-sm text-white/50">
+                        {item.checks.map((c, ci) => (
+                          <li key={ci} className="flex items-center"><Check className="w-3.5 h-3.5 mr-3 text-white/20" /> {c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
             </motion.div>
 
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
@@ -822,28 +793,22 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16"
             >
               {[
-                { title: "Hackathons", desc: "Access to private building sessions." },
-                { title: "Workshops", desc: "Expert-led technical deep dives." },
-                { title: "Mentorship", desc: "Direct access to industry leaders." }
-              ].map((item, i) => {
-                const iconData = ecoIcons[i];
-                const IconComp = iconData.icon;
-                return (
-                  <motion.div key={i} variants={fadeUp}>
-                    <TiltCard className="glass-card text-center group">
-                      <div className="card-header-area card-header-xs" style={{ background: `radial-gradient(ellipse at 50% 80%, ${iconData.bg}, transparent 70%)` }}>
-                        <div className="card-icon-wrap card-icon-xs group-hover:animate-icon-rotate" style={{ background: iconData.bg, boxShadow: `0 0 20px ${iconData.color}` }}>
-                          <IconComp className="w-5 h-5" style={{ color: iconData.color.replace('0.4', '1') }} />
-                        </div>
+                { title: "Hackathons", desc: "Access to private building sessions.", icon: <TerminalSquare className="w-5 h-5" /> },
+                { title: "Workshops", desc: "Expert-led technical deep dives.", icon: <Zap className="w-5 h-5" /> },
+                { title: "Mentorship", desc: "Direct access to industry leaders.", icon: <Users className="w-5 h-5" /> }
+              ].map((item, i) => (
+                <motion.div key={i} variants={fadeUp}>
+                  <TiltCard className="glass-card p-6 sm:p-8 text-center group">
+                    <div className="relative z-[2]">
+                      <div className="icon-circle mx-auto mb-5">
+                        {item.icon}
                       </div>
-                      <div className="p-6 sm:p-8 relative z-[2]">
-                        <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
-                        <p className="text-xs sm:text-sm text-white/30 font-light">{item.desc}</p>
-                      </div>
-                    </TiltCard>
-                  </motion.div>
-                );
-              })}
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
+                      <p className="text-xs sm:text-sm text-white/30 font-light">{item.desc}</p>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
             </motion.div>
 
             <motion.div 
