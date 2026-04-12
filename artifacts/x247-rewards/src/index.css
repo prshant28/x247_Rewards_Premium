@@ -299,14 +299,14 @@
       -22px 0 30px -14px rgba(255, 255, 255, 0.10),
       22px 0 30px -14px rgba(255, 255, 255, 0.10),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    overflow: visible;
+    overflow: hidden;
   }
 
   .premium-btn::before {
     content: '';
     position: absolute;
-    inset: -1px;
-    border-radius: 17px;
+    inset: 0;
+    border-radius: 16px;
     padding: 1.5px;
     background: linear-gradient(
       var(--btn-border-angle, 0deg),
@@ -420,6 +420,53 @@
     opacity: 1;
   }
 
+  .premium-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.06) 60%,
+      transparent 80%
+    );
+    z-index: 2;
+    pointer-events: none;
+    animation: btn-shine 4s ease-in-out infinite;
+  }
+
+  @keyframes btn-shine {
+    0% { left: -100%; }
+    40% { left: 150%; }
+    100% { left: 150%; }
+  }
+
+  .nav-cta-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.06) 60%,
+      transparent 80%
+    );
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    animation: btn-shine 5s ease-in-out infinite 1s;
+  }
+
   .icon-circle {
     @apply w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-white/70;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
@@ -502,13 +549,13 @@
     transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     letter-spacing: 0.02em;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
   }
 
   .nav-cta-btn::before {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: 0;
     border-radius: 100px;
     padding: 1px;
     background: linear-gradient(
