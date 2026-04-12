@@ -74,19 +74,11 @@ export default function Home() {
         
         {/* HERO SECTION */}
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
-          {/* Background Video */}
+          {/* Background - Pure black with subtle white fluid motion */}
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <div className="absolute inset-0 bg-black/60 z-10"></div>
-            <video 
-              autoPlay 
-              muted 
-              loop 
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-screen"
-              src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4"
-            >
-              <div className="w-full h-full bg-gradient-to-b from-black via-zinc-900 to-black"></div>
-            </video>
+            <div className="hero-smoke-layer-1 absolute inset-0"></div>
+            <div className="hero-smoke-layer-2 absolute inset-0"></div>
+            <div className="hero-smoke-layer-3 absolute inset-0"></div>
           </div>
 
           <motion.div 
