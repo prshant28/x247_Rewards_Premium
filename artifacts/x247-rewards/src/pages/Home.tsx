@@ -25,7 +25,7 @@ import {
   Package
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
-import Silk from "@/components/Silk";
+import heroVideo from "@assets/silk-1775994597756_1775998482844.webm";
 
 
 function AnimatedCursor() {
@@ -282,10 +282,17 @@ export default function Home() {
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <Silk speed={5} scale={1} color="#3a1a1a" noiseIntensity={1.8} rotation={0} />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-[1]" />
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              src={heroVideo}
+            />
+            <div className="absolute inset-0 bg-black/30 z-[1]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black z-[2]" />
           </div>
-          <FloatingParticles />
 
           <motion.div 
             style={{ y: heroY, opacity: heroOpacity }}
@@ -306,11 +313,11 @@ export default function Home() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light leading-[1.05] tracking-tight text-white whitespace-pre-line relative z-[1]"
+                className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-semibold leading-[1.05] tracking-tight text-white whitespace-pre-line relative z-[1]"
               >
                 <span className="text-gradient">Rewards that you</span>{"\n"}<span className="text-gradient">need Indeed</span>
               </motion.h1>
-              <div aria-hidden="true" className="hero-text-stroke text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-light leading-[1.05] tracking-tight whitespace-pre-line">
+              <div aria-hidden="true" className="hero-text-stroke text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-semibold leading-[1.05] tracking-tight whitespace-pre-line">
                 Rewards that you{"\n"}need Indeed
               </div>
             </div>
@@ -319,7 +326,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-base sm:text-lg md:text-xl text-white/60 mb-12 max-w-2xl mx-auto font-display font-light leading-relaxed px-4 tracking-wide"
+              className="text-base sm:text-lg md:text-xl text-white/70 mb-12 max-w-2xl mx-auto font-light leading-relaxed px-4 tracking-wide"
             >
               Enter our exclusive giveaway by registering with our partner links. Complete the steps, earn entries, and win daily prizes — gift cards, premium swag, cloud credits, and more.
             </motion.p>
@@ -365,7 +372,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="How to Enter" /></h2>
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="How to Enter" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
@@ -435,7 +442,7 @@ export default function Home() {
                 ].map((item, i) => (
                   <motion.div key={i} variants={fadeUp} className="relative flex gap-5 sm:gap-7 pb-10 sm:pb-12 last:pb-0">
                     <div className="relative z-[2] shrink-0">
-                      <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-2xl bg-black border border-white/8 flex items-center justify-center text-white/40 transition-colors duration-300 group-hover:border-white/15">
+                      <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-2xl bg-black border border-white/8 flex items-center justify-center text-white/55 transition-colors duration-300 group-hover:border-white/15">
                         {item.icon}
                       </div>
                     </div>
@@ -443,7 +450,7 @@ export default function Home() {
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-[11px] font-display font-medium text-white/15 tracking-widest">{item.step}</span>
                         {item.tip && (
-                          <span className="text-[10px] font-display font-medium text-white/40 bg-white/[0.04] border border-white/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
+                          <span className="text-[10px] font-display font-medium text-white/55 bg-white/[0.04] border border-white/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
                         )}
                       </div>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
@@ -474,7 +481,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Prizes & Rewards
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
@@ -507,7 +514,7 @@ export default function Home() {
                         <div className="icon-circle mb-6 sm:mb-8">
                           {item.icon}
                         </div>
-                        <h4 className="text-[10px] sm:text-xs font-medium text-white/30 mb-2 uppercase tracking-widest font-display">{item.tier}</h4>
+                        <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-2 uppercase tracking-widest font-display">{item.tier}</h4>
                         <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3">{item.title}</h3>
                         <p className="text-white/50 font-light mb-6 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
                       </div>
@@ -527,7 +534,7 @@ export default function Home() {
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/55 uppercase tracking-wider">{text}</span>
                       <span className="text-white/10 text-xl font-light">✦</span>
                     </div>
                   ))}
@@ -535,7 +542,7 @@ export default function Home() {
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/55 uppercase tracking-wider">{text}</span>
                       <span className="text-white/10 text-xl font-light">✦</span>
                     </div>
                   ))}
@@ -559,7 +566,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                   Analytics
                 </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
                 <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
@@ -602,7 +609,7 @@ export default function Home() {
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10 gap-3 relative z-[2]">
                     <div>
                       <h3 className="font-display font-light text-lg sm:text-xl text-white">Agent_X24</h3>
-                      <p className="text-xs sm:text-sm text-white/30 font-light">ID: X247-9982</p>
+                      <p className="text-xs sm:text-sm text-white/50 font-light">ID: X247-9982</p>
                     </div>
                     <div className="glass-pill-badge !text-[10px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-white mr-2 animate-pulse" /> ACTIVE
@@ -611,7 +618,7 @@ export default function Home() {
 
                   <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-10 relative z-[2]">
                     <div className="stat-card">
-                      <div className="text-white/30 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Verified</div>
+                      <div className="text-white/50 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Verified</div>
                       <motion.div 
                         className="text-2xl sm:text-4xl font-display font-light text-white"
                         initial={{ opacity: 0 }}
@@ -621,7 +628,7 @@ export default function Home() {
                       >18</motion.div>
                     </div>
                     <div className="stat-card">
-                      <div className="text-white/30 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Total Clicks</div>
+                      <div className="text-white/50 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Total Clicks</div>
                       <motion.div 
                         className="text-2xl sm:text-4xl font-display font-light text-white"
                         initial={{ opacity: 0 }}
@@ -634,7 +641,7 @@ export default function Home() {
 
                   <div className="mb-6 sm:mb-10 relative z-[2]">
                     <div className="flex justify-between text-xs sm:text-sm mb-3">
-                      <span className="text-white/30 font-light">Milestone I Progress</span>
+                      <span className="text-white/50 font-light">Milestone I Progress</span>
                       <span className="text-white/60 font-light">18 / 20</span>
                     </div>
                     <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
@@ -652,7 +659,7 @@ export default function Home() {
                   </div>
 
                   <div className="relative z-[2]">
-                    <h4 className="text-[10px] sm:text-xs uppercase tracking-widest font-display text-white/30 mb-4">Recent Activity</h4>
+                    <h4 className="text-[10px] sm:text-xs uppercase tracking-widest font-display text-white/50 mb-4">Recent Activity</h4>
                     <div className="space-y-3 sm:space-y-4">
                       {[
                         { text: "User ***891 verified", time: "2m ago", icon: <CheckCircle2 className="w-4 h-4" /> },
@@ -667,7 +674,7 @@ export default function Home() {
                           transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
                           className="flex items-center text-xs sm:text-sm"
                         >
-                          <div className="text-white/40 mr-3">{item.icon}</div>
+                          <div className="text-white/55 mr-3">{item.icon}</div>
                           <span className="text-white/60 font-light">{item.text}</span>
                           <span className="ml-auto text-[10px] sm:text-xs text-white/20">{item.time}</span>
                         </motion.div>
@@ -708,13 +715,13 @@ export default function Home() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white/40 mb-4 flex items-center">
-                        <ShieldCheck className="w-4 h-4 mr-2 text-white/30" /> Disqualified
+                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white/55 mb-4 flex items-center">
+                        <ShieldCheck className="w-4 h-4 mr-2 text-white/50" /> Disqualified
                       </h4>
-                      <ul className="space-y-3 text-xs sm:text-sm text-white/30 font-light">
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Bot/Script traffic</li>
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Duplicate IPs</li>
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/20" /> Fake registrations</li>
+                      <ul className="space-y-3 text-xs sm:text-sm text-white/50 font-light">
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Bot/Script traffic</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Duplicate IPs</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Fake registrations</li>
                       </ul>
                     </div>
                   </div>
@@ -737,7 +744,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Inner Circle
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
@@ -793,7 +800,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Intel
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight">FAQ</h2>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-semibold text-white tracking-tight">FAQ</h2>
             </motion.div>
 
             <motion.div 
@@ -851,7 +858,7 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/40 mb-5">Quick Links</h4>
+              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Quick Links</h4>
               <ul className="space-y-3">
                 {[
                   { label: "How it Works", href: "#how-it-works" },
@@ -869,7 +876,7 @@ export default function Home() {
               </ul>
             </div>
             <div>
-              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/40 mb-5">Program Info</h4>
+              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Program Info</h4>
               <ul className="space-y-3 text-sm text-white/45 font-light">
                 <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/20" /> Global Availability</li>
                 <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/20" /> 24/7 Tracking</li>

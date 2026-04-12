@@ -119,10 +119,10 @@ export default function Offers() {
               <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
               Active Offers
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-semibold mb-6 text-white tracking-tight">
               Exclusive Offers
             </h1>
-            <p className="text-white/40 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+            <p className="text-white/60 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
               Boost your entries, earn bonus rewards, and unlock exclusive drops. These offers are live — grab them before they expire.
             </p>
           </motion.div>
@@ -176,7 +176,7 @@ export default function Offers() {
               <div className="marquee-content">
                 {["2x Entry Bonus", "Refer & Earn", "Early Bird Drops", "Partner Cashback", "Weekend Mega Draw", "Flash Giveaways", "Community Rewards", "Exclusive Merch"].map((text, i) => (
                   <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                    <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
+                    <span className="text-lg sm:text-2xl font-display font-light text-white/55 uppercase tracking-wider">{text}</span>
                     <span className="text-white/10 text-xl font-light">✦</span>
                   </div>
                 ))}
@@ -184,7 +184,7 @@ export default function Offers() {
               <div className="marquee-content">
                 {["2x Entry Bonus", "Refer & Earn", "Early Bird Drops", "Partner Cashback", "Weekend Mega Draw", "Flash Giveaways", "Community Rewards", "Exclusive Merch"].map((text, i) => (
                   <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                    <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
+                    <span className="text-lg sm:text-2xl font-display font-light text-white/55 uppercase tracking-wider">{text}</span>
                     <span className="text-white/10 text-xl font-light">✦</span>
                   </div>
                 ))}
@@ -204,8 +204,8 @@ export default function Offers() {
                 <div className="icon-circle mx-auto mb-6">
                   <ExternalLink className="w-5 h-5" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-4">Ready to Enter?</h3>
-                <p className="text-white/35 font-light mb-8 text-sm leading-relaxed max-w-md mx-auto">
+                <h3 className="text-xl sm:text-2xl font-display font-semibold text-white mb-4">Ready to Enter?</h3>
+                <p className="text-white/55 font-light mb-8 text-sm leading-relaxed max-w-md mx-auto">
                   Head back to the main page, register with the partner links, and start claiming these offers today.
                 </p>
                 <Link href="/" className="premium-btn premium-btn-lg glass-btn-effect group inline-flex">
