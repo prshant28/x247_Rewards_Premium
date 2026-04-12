@@ -282,7 +282,7 @@ export default function Home() {
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <Silk speed={5} scale={1} color="#212121" noiseIntensity={1.5} rotation={0} />
+            <Silk speed={5} scale={1} color="#3a1a1a" noiseIntensity={1.8} rotation={0} />
             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-[1]" />
           </div>
           <FloatingParticles />
