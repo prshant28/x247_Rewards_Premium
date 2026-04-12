@@ -5,7 +5,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { 
   Check, 
   Target,
-  Cpu,
   TerminalSquare,
   Activity,
   Trophy,
@@ -289,19 +288,13 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
     const rect = ref.current.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
-    rawRotateX.set((py - 0.5) * -4);
-    rawRotateY.set((px - 0.5) * 4);
-    if (glareRef.current) {
-      glareRef.current.style.background = `radial-gradient(circle at ${px * 100}% ${py * 100}%, rgba(255,255,255,0.025), transparent 60%)`;
-    }
+    rawRotateX.set(0);
+    rawRotateY.set(0);
   };
 
   const handleMouseLeave = () => {
     rawRotateX.set(0);
     rawRotateY.set(0);
-    if (glareRef.current) {
-      glareRef.current.style.background = 'transparent';
-    }
   };
 
   return (
@@ -360,10 +353,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans cursor-none">
+    <div className="min-h-screen bg-black text-foreground selection:bg-white/20 font-sans">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
-      <AnimatedCursor />
+      
       
       <motion.div 
         className="scroll-progress-bar"
@@ -617,7 +610,6 @@ export default function Home() {
                 { tier: "Daily Drop", title: "Premium Swag Kit", desc: "21 winners every day. Branded hoodies, tech bottles, stickers, and accessories shipped worldwide. Just enter — no minimum required.", checks: ["Daily random draw", "No minimum entries needed"], featured: false, icon: <Package className="w-5 h-5" /> },
                 { tier: "Gift Cards", title: "₹500 – ₹2000 Gift Cards", desc: "Win Amazon, Flipkart, or Google Play gift cards. Multiple gift cards given out daily across different entry pools.", checks: ["Amazon / Flipkart / Google Play", "Multiple winners per day"], featured: false, icon: <CreditCard className="w-5 h-5" /> },
                 { tier: "Tech Gear", title: "Wireless Earbuds & Gadgets", desc: "Premium wireless earbuds, power banks, smart bands, and tech accessories up for grabs in weekly mega draws.", checks: ["Weekly mega draws", "Top-tier brands only"], featured: false, icon: <Headphones className="w-5 h-5" /> },
-                { tier: "Cloud Credits", title: "₹5,000 Cloud Voucher", desc: "Premium cloud infrastructure credits for AWS, Google Cloud, or Azure. Built for developers and builders.", checks: ["AWS / GCP / Azure credits", "For builders & developers"], featured: true, icon: <Cpu className="w-5 h-5" /> },
                 { tier: "Event Access", title: "Hackathon & Workshop Passes", desc: "Free entry to invite-only hackathons, workshops, and tech events. VIP registration and mentorship priority included.", checks: ["VIP event access", "Worth ₹499–₹1999"], featured: false, icon: <Ticket className="w-5 h-5" /> },
                 { tier: "Partner Link", title: "Register & Enter Instantly", desc: "Click the partner registration link, complete signup, and you're in. Your entry is confirmed the moment your registration is verified.", checks: ["Instant giveaway entry", "All listed partners valid"], featured: false, icon: <ExternalLink className="w-5 h-5" /> },
                 { tier: "Partner Exclusive", title: "Partner Program Perks", desc: "Join as an official X247 partner and unlock monthly payouts, exclusive merch, early access to new giveaways, and direct support.", checks: ["Monthly partner payouts", "Exclusive early access"], featured: false, icon: <Star className="w-5 h-5" /> }
@@ -655,7 +647,7 @@ export default function Home() {
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
               <div className="marquee-container">
                 <div className="marquee-content">
-                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Cloud Credits", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
+                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
                       <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
                       <span className="text-white/10 text-xl font-light">✦</span>
@@ -663,7 +655,7 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="marquee-content">
-                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Cloud Credits", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
+                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
                       <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
                       <span className="text-white/10 text-xl font-light">✦</span>
