@@ -30,7 +30,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 - **Framework**: React + Vite + Tailwind CSS v4
 - **Design**: Portfolite Framer template style — pure black background, Syne + Inter fonts, glassmorphism cards, premium lateral-glow buttons, video + smoke hero, scrolling marquee ticker
-- **Hero**: Video background (silk webm from attached_assets via @assets alias) + gradient overlays
+- **Hero**: Silk WebGL background (React Three Fiber shader, with CSS radial-gradient fallback when WebGL unavailable) + gradient overlays
 - **Pages**: Home (/) and Offers (/offers)
 - **Sections**: Hero, How it Works (8-step timeline), Rewards (6 cards in 3-col grid), Dashboard Preview, Verification Policy, Community/Ecosystem, FAQ, Footer
 - **Layout**: Section-divider wrapper (rounded-28px card with lateral white edge glow) wraps content sections; GlowLine separators between each section
@@ -44,5 +44,5 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **Routes**: `/` (Home), `/offers` (Offers page with 6 active offer cards)
 - **CSS Theme**: Pure monochrome (black/white/gray), utility classes (glass-card, card-header-area, card-icon-wrap, premium-btn, glass-btn-effect, icon-circle, stat-card, nav-link, section-divider, section-glow-line, glass-pill-badge, premium-badge, floating-particle, cursor-dot/ring/glass, shimmer-bar, scroll-progress-bar) in index.css
 - **@property declarations**: --card-border-angle, --btn-border-angle, --hero-text-angle, --cursor-ring-angle (must be outside @layer)
-- **Fonts**: Poppins (body text), Raleway (headings/display), Syne (fallback display)
-- **Video Asset**: silk webm imported from @assets/ alias (attached_assets/)
+- **Fonts**: Poppins (body text), Syne (headings/display, font-light weight)
+- **WebGL**: React Three Fiber + three.js for Silk shader hero background (replaced OGL); ErrorBoundary + WebGL probe fallback
