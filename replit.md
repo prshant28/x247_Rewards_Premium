@@ -29,9 +29,13 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 ## X247 Rewards (artifacts/x247-rewards)
 
 - **Framework**: React + Vite + Tailwind CSS v4
-- **Design**: Portfolite Framer template style — pure black background, Syne + Inter fonts, glassmorphism cards, lateral-glow glass buttons, canvas smoke hero, scrolling marquee ticker
-- **Sections**: Hero (with SmokeCanvas procedural smoke bg), How it Works, Rewards Showcase, Dashboard Preview, Verification Policy, Community/Ecosystem, FAQ, Footer
-- **Layout**: Section-divider wrapper (rounded-28px card with lateral white edge glow) wraps all content sections after hero
-- **Animations**: Framer Motion fade-up scroll animations with typed Variants
+- **Design**: Portfolite Framer template style — pure black background, Syne + Inter fonts, glassmorphism cards, premium lateral-glow buttons, video + smoke hero, scrolling marquee ticker
+- **Hero**: Video background (halloween smoke) + SmokeCanvas procedural overlay + FloatingParticles + gradient overlays
+- **Sections**: Hero, How it Works, Rewards Showcase, Dashboard Preview, Verification Policy, Community/Ecosystem, FAQ, Footer
+- **Layout**: Section-divider wrapper (rounded-28px card with lateral white edge glow) wraps content sections; GlowLine separators between each section
+- **Buttons**: Premium button system (premium-btn, premium-btn-sm/md/lg/ghost) with lateral box-shadow glow, inner radial glow on hover, arrow icons
+- **Animations**: Framer Motion fadeUp/scaleIn/stagger variants, animated progress bar, activity feed stagger, floating particles
+- **Responsive**: Full mobile-first responsive design (390px+ to 1280px+), stacked buttons on mobile, adapted typography/spacing
 - **Route**: Serves at root path `/`
-- **CSS Theme**: Pure monochrome (black/white/gray), custom glass utility classes (glass-card, glass-button, glass-pill-badge, section-divider) in index.css
+- **CSS Theme**: Pure monochrome (black/white/gray), utility classes (glass-card, premium-btn, icon-circle, stat-card, nav-link, section-divider, section-glow-line, glass-pill-badge, premium-badge, floating-particle) in index.css
+- **Video Asset**: imported from @assets/ alias (attached_assets/)
