@@ -429,7 +429,7 @@ export default function Home() {
                     title: "Become a Partner",
                     desc: "Want to earn even more? Fill the Partner Program form to join as an official Rewards X247 partner. We provide huge earning opportunities for our partners — start your journey today.",
                     icon: <Star className="w-4 h-4" />,
-                    tip: "Earn as a partner"
+                    tip: "Coming Soon"
                   },
                 ].map((item, i) => (
                   <motion.div key={i} variants={fadeUp} className="relative flex gap-5 sm:gap-7 pb-10 sm:pb-12 last:pb-0">
@@ -477,89 +477,28 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={slideLeft}
-              >
-                <TiltCard className="prize-card-large group h-full">
-                  <div className="prize-card-large-bg" style={{ background: "linear-gradient(145deg, rgba(30, 35, 80, 0.5) 0%, rgba(10, 10, 10, 1) 100%)" }} />
-                  <div className="relative z-[2] flex flex-col h-full p-6 sm:p-8">
-                    <div className="absolute top-5 right-5 z-[5]">
-                      <div className="premium-badge" style={{ background: "rgba(30, 40, 100, 0.3)", border: "1px solid rgba(60, 80, 180, 0.3)" }}>
-                        <ShieldCheck className="w-3 h-3 mr-1" />
-                        Required
-                      </div>
-                    </div>
-                    <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle icon-circle-navy w-14 h-14 mb-6">
-                      <ExternalLink className="w-6 h-6" />
-                    </BorderGlow>
-                    <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">Partner 1 — Solution Challenge 2026</span>
-                    <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">Complete This Registration</h3>
-                    <p className="text-white/50 font-light text-sm leading-relaxed mb-3">
-                      Register for the Solution Challenge 2026 on Hack2Skill. Fill the complete registration form — this is your entry ticket into the daily giveaway.
-                    </p>
-                    <div className="flex flex-wrap items-center gap-2 mb-4">
-                      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                        <CheckCircle2 className="w-4 h-4 text-white/40 shrink-0" />
-                        <span className="text-xs text-white/40 font-light">1 completed registration = 1 giveaway entry</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[rgba(30,40,100,0.15)] border border-[rgba(60,80,180,0.25)]">
-                        <Award className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                        <span className="text-xs text-blue-300 font-medium">Students Only</span>
-                      </div>
-                    </div>
-                    <div className="mt-auto pt-2 relative z-[4]">
-                      <BorderGlow as="a" href="https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495" target="_blank" rel="noopener noreferrer" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn w-full justify-center">
-                        <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Register Now</span>
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform relative z-[2]" />
-                      </BorderGlow>
-                    </div>
-                  </div>
-                </TiltCard>
-              </motion.div>
-
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={slideRight}
-              >
-                <TiltCard className="prize-card-large group h-full">
-                  <div className="prize-card-large-bg" style={{ background: "linear-gradient(145deg, rgba(80, 20, 30, 0.4) 0%, rgba(10, 10, 10, 1) 100%)" }} />
-                  <div className="relative z-[2] flex flex-col h-full p-6 sm:p-8">
-                    <div className="absolute top-5 right-5 z-[5]">
-                      <div className="premium-badge premium-badge-hot">
-                        <Zap className="w-3 h-3 mr-1" />
-                        2x Chances
-                      </div>
-                    </div>
-                    <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle icon-circle-red w-14 h-14 mb-6">
-                      <Star className="w-6 h-6" />
-                    </BorderGlow>
-                    <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">Partner 2</span>
-                    <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">Double Your Chances</h3>
-                    <p className="text-white/50 font-light text-sm leading-relaxed mb-3">
-                      Want to increase your winning probability? Register with our second partner as well. Both registrations must be completed to unlock the 2x entry bonus.
-                    </p>
-                    <div className="flex items-center gap-2 mb-6 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                      <Zap className="w-4 h-4 text-white/40 shrink-0" />
-                      <span className="text-xs text-white/40 font-light">Optional — but doubles your winning chances</span>
-                    </div>
-                    <div className="mt-auto pt-2 relative z-[4]">
-                      <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn w-full justify-center">
-                        <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Register with Partner 2</span>
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform relative z-[2]" />
-                      </BorderGlow>
-                    </div>
-                  </div>
-                </TiltCard>
-              </motion.div>
-            </div>
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            >
+              <TiltCard className="glass-card p-8 sm:p-12 text-center">
+                <div className="card-top-accent card-top-accent-navy" />
+                <div className="card-shine" />
+                <div className="relative z-[2] flex flex-col items-center">
+                  <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle icon-circle-navy w-16 h-16 mb-6">
+                    <ExternalLink className="w-7 h-7" />
+                  </BorderGlow>
+                  <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">View All Partner Registrations</h3>
+                  <p className="text-white/50 font-light text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
+                    Browse all available partner links, check which registrations are live, and complete them to earn your giveaway entries.
+                  </p>
+                  <BorderGlow as={Link} href="/partners" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn">
+                    <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                    <span className="relative z-[2]">Go to Partners Page</span>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform relative z-[2]" />
+                  </BorderGlow>
+                </div>
+              </TiltCard>
+            </motion.div>
 
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}

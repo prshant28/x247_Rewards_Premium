@@ -1,17 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import BorderGlow from "@/components/BorderGlow";
 import SiteNav from "@/components/SiteNav";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
-  Sparkles,
   ExternalLink,
-  Globe,
-  Target,
-  Trophy,
   Gift,
-  Activity,
-  Headphones,
   Users,
   Zap,
   Lock,
@@ -22,6 +16,8 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { getPartners, trackClick, trackImpression } from "@/lib/api";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -33,56 +29,51 @@ const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.12 } }
 };
 
-const partners = [
+const placeholderPartners = [
   {
-    id: "partner-1",
-    name: "Solution Challenge 2026",
-    tagline: "Hack2Skill — Students Only",
-    desc: "Register for the Google Solution Challenge 2026 on Hack2Skill. Fill the complete registration form to earn your first giveaway entry. Open to students enrolled in university/college only.",
-    category: "Registration",
-    status: "active" as const,
-    accent: "navy" as const,
-    stats: { registrations: 0, entries: 0, winners: 0 },
-    badge: "Required",
-    badgeSecondary: "Students Only",
-    icon: <ExternalLink className="w-6 h-6" />,
-    href: "https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495",
-  },
-  {
-    id: "partner-2",
+    id: -2,
+    slug: "partner-coming-1",
     name: "Partner 2",
     tagline: "Bonus Entry Partner",
-    desc: "Register here as well to double your winning chances. Both registrations combined unlock the 2x entry multiplier for every giveaway.",
+    description: "Register here as well to double your winning chances. Both registrations combined unlock the 2x entry multiplier for every giveaway.",
     category: "Bonus Entry",
-    status: "coming-soon" as const,
-    accent: "red" as const,
-    stats: { registrations: 0, entries: 0, winners: 0 },
+    registrationUrl: "",
+    accent: "red",
     badge: "2x Chances",
-    icon: <Star className="w-6 h-6" />,
+    badgeSecondary: null,
+    isActive: false,
+    isRequired: false,
+    stats: { clicks: 0, impressions: 0, formFills: 0 },
   },
   {
-    id: "partner-3",
+    id: -3,
+    slug: "partner-coming-2",
     name: "Partner 3",
     tagline: "Coming Soon",
-    desc: "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
+    description: "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
     category: "Upcoming",
-    status: "coming-soon" as const,
-    accent: "neutral" as const,
-    stats: { registrations: 0, entries: 0, winners: 0 },
+    registrationUrl: "",
+    accent: "neutral",
     badge: null,
-    icon: <Gift className="w-6 h-6" />,
+    badgeSecondary: null,
+    isActive: false,
+    isRequired: false,
+    stats: { clicks: 0, impressions: 0, formFills: 0 },
   },
   {
-    id: "partner-4",
+    id: -4,
+    slug: "partner-coming-3",
     name: "Partner 4",
     tagline: "Coming Soon",
-    desc: "Another exciting partner joining the X247 ecosystem. More ways to earn entries and win bigger rewards.",
+    description: "Another exciting partner joining the X247 ecosystem. More ways to earn entries and win bigger rewards.",
     category: "Upcoming",
-    status: "coming-soon" as const,
-    accent: "neutral" as const,
-    stats: { registrations: 0, entries: 0, winners: 0 },
+    registrationUrl: "",
+    accent: "neutral",
     badge: null,
-    icon: <Zap className="w-6 h-6" />,
+    badgeSecondary: null,
+    isActive: false,
+    isRequired: false,
+    stats: { clicks: 0, impressions: 0, formFills: 0 },
   },
 ];
 
@@ -93,13 +84,145 @@ const verifiedBy = [
   { name: "Daily Audited", icon: <BarChart3 className="w-5 h-5" /> },
 ];
 
-function getAccentClasses(accent: "red" | "navy" | "neutral") {
+function getAccentClasses(accent: string) {
   if (accent === "navy") return { card: "glass-card-accent-navy", icon: "icon-circle-navy", topAccent: "card-top-accent card-top-accent-navy" };
   if (accent === "red") return { card: "glass-card-accent-red", icon: "icon-circle-red", topAccent: "card-top-accent card-top-accent-red" };
   return { card: "", icon: "", topAccent: "card-top-accent" };
 }
 
+function getPartnerIcon(accent: string) {
+  if (accent === "navy") return <ExternalLink className="w-6 h-6" />;
+  if (accent === "red") return <Star className="w-6 h-6" />;
+  return <Gift className="w-6 h-6" />;
+}
+
+function PartnerCard({ partner }: { partner: any }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const tracked = useRef(false);
+
+  useEffect(() => {
+    if (partner.id < 0 || tracked.current) return;
+    const el = cardRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !tracked.current) {
+          tracked.current = true;
+          trackImpression(partner.id);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [partner.id]);
+
+  const isComingSoon = !partner.isActive;
+  const classes = getAccentClasses(partner.accent);
+
+  const handleClick = () => {
+    if (partner.id > 0 && partner.registrationUrl) {
+      trackClick(partner.id);
+    }
+  };
+
+  const cardContent = (
+    <div ref={cardRef} className={`glass-card ${classes.card} p-6 sm:p-8 group relative overflow-hidden h-full`}>
+      <div className={classes.topAccent} />
+      <div className="card-shine" />
+
+      {isComingSoon && (
+        <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-[2px] flex items-center justify-center rounded-[24px]">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
+              <Lock className="w-5 h-5 text-white/40" />
+            </div>
+            <span className="text-sm font-display font-light text-white/60">Coming Soon</span>
+          </div>
+        </div>
+      )}
+
+      <div className="relative z-[2] flex flex-col h-full">
+        <div className="flex items-start justify-between mb-5">
+          <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className={`icon-circle ${classes.icon} w-14 h-14`}>
+            {getPartnerIcon(partner.accent)}
+          </BorderGlow>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {partner.badge && (
+              <div className="premium-badge premium-badge-hot !text-[9px]">
+                <Zap className="w-2.5 h-2.5 mr-1" />
+                {partner.badge}
+              </div>
+            )}
+            {partner.badgeSecondary && (
+              <div className="premium-badge !text-[9px]" style={{ background: "rgba(30, 40, 100, 0.3)", border: "1px solid rgba(60, 80, 180, 0.3)" }}>
+                <Star className="w-2.5 h-2.5 mr-1 text-blue-400" />
+                <span className="text-blue-300">{partner.badgeSecondary}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.15em] mb-1">{partner.category}</span>
+        <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">{partner.name}</h3>
+        <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-5">{partner.description}</p>
+
+        <div className="mt-auto pt-4 border-t border-white/[0.04]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div>
+                <div className="text-sm font-display font-light text-white">{partner.stats?.clicks || 0}</div>
+                <div className="text-[9px] text-white/25 uppercase tracking-widest">Clicks</div>
+              </div>
+              <div className="w-px h-6 bg-white/[0.06]" />
+              <div>
+                <div className="text-sm font-display font-light text-white">{partner.stats?.impressions || 0}</div>
+                <div className="text-[9px] text-white/25 uppercase tracking-widest">Views</div>
+              </div>
+            </div>
+            {partner.isActive && (
+              <div className="flex items-center text-white/30 group-hover:text-white/60 transition-colors text-xs font-display">
+                <span>Register</span>
+                <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (partner.isActive && partner.registrationUrl) {
+    return (
+      <a href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleClick} className="block">
+        {cardContent}
+      </a>
+    );
+  }
+
+  return cardContent;
+}
+
 export default function Partners() {
+  const { data: apiPartners, isLoading } = useQuery({
+    queryKey: ["partners"],
+    queryFn: getPartners,
+    staleTime: 30_000,
+  });
+
+  const allPartners = React.useMemo(() => {
+    const active = Array.isArray(apiPartners) ? apiPartners : [];
+    const activeCount = active.length;
+    const fillerCount = Math.max(0, 4 - activeCount);
+    return [...active, ...placeholderPartners.slice(0, fillerCount)];
+  }, [apiPartners]);
+
+  const totalClicks = allPartners.reduce((sum, p) => sum + (p.stats?.clicks || 0), 0);
+  const totalImpressions = allPartners.reduce((sum, p) => sum + (p.stats?.impressions || 0), 0);
+  const activeCount = allPartners.filter((p: any) => p.isActive).length;
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
@@ -143,101 +266,42 @@ export default function Partners() {
                 </div>
                 <div className="flex items-center gap-6 sm:gap-10">
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-display font-light text-white">0</div>
-                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Total Registrations</div>
+                    <div className="text-xl sm:text-2xl font-display font-light text-white">{totalClicks}</div>
+                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Total Clicks</div>
                   </div>
                   <div className="w-px h-8 bg-white/[0.06]" />
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-display font-light text-white">0</div>
-                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Active Entries</div>
+                    <div className="text-xl sm:text-2xl font-display font-light text-white">{totalImpressions}</div>
+                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Impressions</div>
                   </div>
                   <div className="w-px h-8 bg-white/[0.06]" />
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-display font-light text-white">0</div>
-                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Winners</div>
+                    <div className="text-xl sm:text-2xl font-display font-light text-white">{activeCount}</div>
+                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Active Partners</div>
                   </div>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-24"
-          >
-            {partners.map((partner, i) => {
-              const classes = getAccentClasses(partner.accent);
-              return (
-                <motion.div key={partner.id} variants={fadeUp}>
-                  <Link href={`/partners/${partner.id}`} className="block">
-                    <div className={`glass-card ${classes.card} p-6 sm:p-8 group relative overflow-hidden h-full`}>
-                      <div className={classes.topAccent} />
-                      <div className="card-shine" />
-
-                      {partner.status === "coming-soon" && (
-                        <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-[2px] flex items-center justify-center rounded-[24px]">
-                          <div className="flex flex-col items-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
-                              <Lock className="w-5 h-5 text-white/40" />
-                            </div>
-                            <span className="text-sm font-display font-light text-white/60">Coming Soon</span>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="relative z-[2] flex flex-col h-full">
-                        <div className="flex items-start justify-between mb-5">
-                          <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className={`icon-circle ${classes.icon} w-14 h-14`}>
-                            {partner.icon}
-                          </BorderGlow>
-                          <div className="flex items-center gap-2 flex-wrap justify-end">
-                            {partner.badge && (
-                              <div className="premium-badge premium-badge-hot !text-[9px]">
-                                <Zap className="w-2.5 h-2.5 mr-1" />
-                                {partner.badge}
-                              </div>
-                            )}
-                            {(partner as any).badgeSecondary && (
-                              <div className="premium-badge !text-[9px]" style={{ background: "rgba(30, 40, 100, 0.3)", border: "1px solid rgba(60, 80, 180, 0.3)" }}>
-                                <Star className="w-2.5 h-2.5 mr-1 text-blue-400" />
-                                <span className="text-blue-300">{(partner as any).badgeSecondary}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.15em] mb-1">{partner.category}</span>
-                        <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">{partner.name}</h3>
-                        <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-5">{partner.desc}</p>
-
-                        <div className="mt-auto pt-4 border-t border-white/[0.04]">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                              <div>
-                                <div className="text-sm font-display font-light text-white">{partner.stats.registrations}</div>
-                                <div className="text-[9px] text-white/25 uppercase tracking-widest">Registrations</div>
-                              </div>
-                              <div className="w-px h-6 bg-white/[0.06]" />
-                              <div>
-                                <div className="text-sm font-display font-light text-white">{partner.stats.entries}</div>
-                                <div className="text-[9px] text-white/25 uppercase tracking-widest">Entries</div>
-                              </div>
-                            </div>
-                            <div className="flex items-center text-white/30 group-hover:text-white/60 transition-colors text-xs font-display">
-                              <span>View Details</span>
-                              <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+            </div>
+          ) : (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={stagger}
+              className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-24"
+            >
+              {allPartners.map((partner: any) => (
+                <motion.div key={partner.slug || partner.id} variants={fadeUp}>
+                  <PartnerCard partner={partner} />
                 </motion.div>
-              );
-            })}
-          </motion.div>
+              ))}
+            </motion.div>
+          )}
 
           <motion.div
             initial="hidden"

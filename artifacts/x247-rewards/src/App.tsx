@@ -8,7 +8,8 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Offers from "@/pages/Offers";
 import Partners from "@/pages/Partners";
-import PartnerDetail from "@/pages/PartnerDetail";
+import AdminLogin from "@/pages/AdminLogin";
+import AdminPanel from "@/pages/AdminPanel";
 import PageLoader from "@/components/PageLoader";
 
 const queryClient = new QueryClient();
@@ -49,11 +50,14 @@ function Router() {
         <Route path="/offers">
           <AnimatedRoute component={Offers} />
         </Route>
-        <Route path="/partners/:id">
-          <AnimatedRoute component={PartnerDetail} />
-        </Route>
         <Route path="/partners">
           <AnimatedRoute component={Partners} />
+        </Route>
+        <Route path="/x247-admin-login">
+          <AnimatedRoute component={AdminLogin} />
+        </Route>
+        <Route path="/x247-control-panel">
+          <AnimatedRoute component={AdminPanel} />
         </Route>
         <Route>
           <AnimatedRoute component={NotFound} />
