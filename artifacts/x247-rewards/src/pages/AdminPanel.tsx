@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { verifySession, logout, getAnalytics, createPartner, updatePartner, deletePartner } from "@/lib/api";
+import { verifySession, logout, getAnalytics, createPartner, updatePartner, deletePartner, generatePartnerAI } from "@/lib/api";
 import {
   Sparkles, LogOut, Plus, Trash2, Edit3, Save, X, ExternalLink,
   MousePointer, Eye, FileText, BarChart3, Activity, Users, ArrowRight,
-  AlertCircle, CheckCircle2, RefreshCw
+  AlertCircle, CheckCircle2, RefreshCw, Wand2, Loader2
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 
@@ -34,6 +34,10 @@ export default function AdminPanel() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [showAiForm, setShowAiForm] = useState(false);
+  const [aiUrl, setAiUrl] = useState("");
+  const [aiDescription, setAiDescription] = useState("");
+  const [aiGenerating, setAiGenerating] = useState(false);
 
   const [form, setForm] = useState({
     name: "", slug: "", tagline: "", description: "", category: "Registration",
@@ -78,6 +82,39 @@ export default function AdminPanel() {
       registrationUrl: "", accent: "navy", badge: "", badgeSecondary: "",
       isActive: false, isRequired: false,
     });
+  }
+
+  async function handleAiGenerate() {
+    if (!aiUrl && !aiDescription) return;
+    setAiGenerating(true);
+    try {
+      const generated = await generatePartnerAI({
+        url: aiUrl || undefined,
+        description: aiDescription || undefined,
+      });
+      setForm({
+        name: generated.name || "",
+        slug: generated.slug || "",
+        tagline: generated.tagline || "",
+        description: generated.description || "",
+        category: generated.category || "Registration",
+        registrationUrl: generated.registrationUrl || aiUrl || "",
+        accent: generated.accent || "navy",
+        badge: generated.badge || "",
+        badgeSecondary: generated.badgeSecondary || "",
+        isActive: false,
+        isRequired: false,
+      });
+      setShowAiForm(false);
+      setShowAddForm(true);
+      setEditingId(null);
+      setAiUrl("");
+      setAiDescription("");
+      setMessage({ type: "success", text: "AI generated partner details! Review and save below." });
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "AI generation failed" });
+    }
+    setAiGenerating(false);
   }
 
   function startEdit(partner: any) {
@@ -194,14 +231,92 @@ export default function AdminPanel() {
 
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-display font-light text-white">Partner Management</h2>
-          <button
-            onClick={() => { setShowAddForm(true); setEditingId(null); resetForm(); }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-display font-light hover:bg-white/[0.1] transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Add Partner
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setShowAiForm(true); setShowAddForm(false); setEditingId(null); }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300 text-sm font-display font-light hover:bg-purple-500/20 transition-colors"
+            >
+              <Wand2 className="w-4 h-4" />
+              Add with AI
+            </button>
+            <button
+              onClick={() => { setShowAddForm(true); setEditingId(null); resetForm(); setShowAiForm(false); }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-display font-light hover:bg-white/[0.1] transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Add Partner
+            </button>
+          </div>
         </div>
+
+        {showAiForm && (
+          <div className="glass-card p-6 sm:p-8 mb-8">
+            <div className="card-top-accent" style={{ background: "linear-gradient(90deg, transparent 0%, rgba(147, 51, 234, 0.3) 20%, rgba(168, 85, 247, 0.5) 50%, rgba(147, 51, 234, 0.3) 80%, transparent 100%)" }} />
+            <div className="relative z-[2]">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-purple-500/15 border border-purple-500/20 flex items-center justify-center">
+                    <Wand2 className="w-4 h-4 text-purple-400" />
+                  </div>
+                  <h3 className="text-lg font-display font-light text-white">Add Partner with AI</h3>
+                </div>
+                <button onClick={() => setShowAiForm(false)} className="text-white/30 hover:text-white/60">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <p className="text-sm text-white/40 font-light mb-5">Paste a registration URL or describe the partner — AI will auto-fill all the details for you.</p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] block mb-2">Registration URL</label>
+                  <input
+                    type="url"
+                    value={aiUrl}
+                    onChange={(e) => setAiUrl(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-purple-500/30 transition-colors"
+                    placeholder="https://example.com/register"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-white/[0.06]" />
+                  <span className="text-[10px] text-white/30 uppercase tracking-widest">or</span>
+                  <div className="h-px flex-1 bg-white/[0.06]" />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] block mb-2">Description</label>
+                  <textarea
+                    value={aiDescription}
+                    onChange={(e) => setAiDescription(e.target.value)}
+                    rows={2}
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-purple-500/30 transition-colors resize-none"
+                    placeholder="e.g. Google Solution Challenge 2026 - a coding hackathon for students"
+                  />
+                </div>
+
+                <button
+                  onClick={handleAiGenerate}
+                  disabled={aiGenerating || (!aiUrl && !aiDescription)}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-purple-500/15 border border-purple-500/25 text-purple-300 text-sm font-display font-light hover:bg-purple-500/25 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {aiGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Generating with AI...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Generate Partner Details
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {(showAddForm || editingId) && (
           <div className="glass-card p-6 sm:p-8 mb-8">
