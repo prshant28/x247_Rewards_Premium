@@ -861,6 +861,54 @@
     border-radius: 1px;
   }
 
+  .admin-glow-divider {
+    position: relative;
+    width: 100%;
+    height: 2px;
+    margin: 0 auto;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.03) 20%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.03) 80%,
+      transparent 100%
+    );
+  }
+
+  .admin-glow-divider::before {
+    content: '';
+    position: absolute;
+    inset: -0.5px 5%;
+    height: 2px;
+    background: linear-gradient(
+      var(--btn-border-angle, 0deg),
+      transparent 0%,
+      rgba(20, 30, 80, 0.6) 15%,
+      rgba(255, 255, 255, 0.15) 25%,
+      rgba(140, 20, 30, 0.6) 40%,
+      transparent 55%,
+      rgba(140, 20, 30, 0.4) 70%,
+      rgba(255, 255, 255, 0.1) 80%,
+      rgba(20, 30, 80, 0.5) 90%,
+      transparent 100%
+    );
+    animation: btn-border-rotate 6s linear infinite;
+    mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
+    border-radius: 1px;
+  }
+
+  .admin-glow-divider::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 15%;
+    right: 15%;
+    height: 6px;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
   .glass-pill-badge {
     @apply inline-flex items-center justify-center rounded-full text-[10px] sm:text-xs font-medium px-3 sm:px-4 py-1 sm:py-1.5 border;
     backdrop-filter: blur(16px);
