@@ -94,6 +94,12 @@ export async function getPartners(): Promise<PartnerData[]> {
   return res.json();
 }
 
+export async function getPartner(slug: string): Promise<PartnerData | null> {
+  const res = await fetch(`${API_BASE}/partners/${slug}`);
+  if (!res.ok) return null;
+  return res.json();
+}
+
 export async function getAnalytics() {
   const res = await authFetch("/admin/analytics");
   return res.json();

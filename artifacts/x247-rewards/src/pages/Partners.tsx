@@ -186,7 +186,7 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
             </div>
             {partner.isActive && (
               <div className="flex items-center text-white/30 group-hover:text-white/60 transition-colors text-xs font-display">
-                <span>Register</span>
+                <span>View Details</span>
                 <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
               </div>
             )}
@@ -196,11 +196,11 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
     </div>
   );
 
-  if (partner.isActive && partner.registrationUrl) {
+  if (partner.isActive) {
     return (
-      <a href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleClick} className="block">
+      <Link href={`/partners/${partner.slug}`} className="block">
         {cardContent}
-      </a>
+      </Link>
     );
   }
 

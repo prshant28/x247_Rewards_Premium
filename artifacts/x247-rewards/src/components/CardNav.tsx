@@ -51,7 +51,7 @@ const CardNav = ({
 
   const calculateHeight = () => {
     const navEl = navRef.current;
-    if (!navEl) return 260;
+    if (!navEl) return 320;
 
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     if (isMobile) {
@@ -74,7 +74,7 @@ const CardNav = ({
         return h;
       }
     }
-    return 260;
+    return 320;
   };
 
   const createTimeline = () => {

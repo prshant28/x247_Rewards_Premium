@@ -5,176 +5,47 @@ import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
   ArrowLeft,
-  Sparkles,
   ExternalLink,
-  Globe,
-  Target,
-  Trophy,
   Gift,
-  Activity,
-  Headphones,
-  Users,
   Zap,
   Lock,
-  ShieldCheck,
   CheckCircle2,
   Star,
-  BarChart3,
-  TrendingUp,
   Info,
   ListChecks,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import { getPartner, trackClick, type PartnerData } from "@/lib/api";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
 };
 
-interface PartnerData {
-  id: string;
-  name: string;
-  tagline: string;
-  category: string;
-  accent: "navy" | "red" | "neutral";
-  bannerGradient: string;
-  description: string[];
-  benefits: string[];
-  howToEnter: string[];
-  stats: { registrations: number; entries: number; winners: number };
-  badge: string | null;
-}
-
-const partnersData: Record<string, PartnerData> = {
-  "partner-1": {
-    id: "partner-1",
-    name: "Solution Challenge 2026",
-    tagline: "Hack2Skill — Students Only",
-    category: "Registration",
-    accent: "navy",
-    bannerGradient: "linear-gradient(145deg, rgba(30, 35, 80, 0.6) 0%, rgba(10, 10, 20, 0.95) 100%)",
-    description: [
-      "The Solution Challenge 2026 is a nationwide hackathon by Google Developer Groups on Campus, hosted on Hack2Skill. It challenges student developers to build real-world solutions using Google technologies like Flutter, Firebase, Google Cloud, and AI/ML APIs.",
-      "By registering for this event through our partner link, you earn your mandatory first entry into the X247 Rewards daily prize draw. This registration is required to participate in our giveaway.",
-      "This offer is exclusively for students enrolled in an Indian university or college, aged 18 or above. Teams of 1–4 members can participate. Complete the full registration form on Hack2Skill to qualify.",
-    ],
-    benefits: [
-      "Earn your first giveaway entry instantly",
-      "Access to daily prize draws",
-      "Eligible for all standard prizes — gift cards, swag kits, gadgets",
-      "Participate in a major Google hackathon with ₹10,00,000+ prize pool",
-      "Access mentorship, Google Cloud credits, and learning resources",
-      "Open to students only — exclusive opportunity",
-    ],
-    howToEnter: [
-      "Click the 'Register Now' button below to visit Hack2Skill",
-      "Create your account and fill the complete registration form",
-      "Form a team of 1–4 members (or register solo)",
-      "Submit your registration — make sure all fields are filled",
-      "Return to X247 Rewards — your giveaway entry is now active!",
-      "Check the Winners section daily to see if you've won",
-    ],
-    stats: { registrations: 0, entries: 0, winners: 0 },
-    badge: "Required",
-  },
-  "partner-2": {
-    id: "partner-2",
-    name: "Partner 2",
-    tagline: "Bonus Entry Partner",
-    category: "Bonus Entry",
-    accent: "red",
-    bannerGradient: "linear-gradient(145deg, rgba(80, 20, 30, 0.5) 0%, rgba(15, 10, 10, 0.95) 100%)",
-    description: [
-      "Partner 2 is your ticket to doubling your chances. By registering with both Partner 1 and Partner 2, you unlock the 2x entry multiplier — meaning every single entry you submit counts twice.",
-      "This registration is optional, but highly recommended. The 2x multiplier applies to all your entries going forward, giving you a significant edge over participants who only register with one partner.",
-      "The registration process is quick and straightforward. Once both partner registrations are verified, the multiplier is applied automatically — no extra steps needed.",
-    ],
-    benefits: [
-      "2x entry multiplier on all your submissions",
-      "Significantly higher winning probability",
-      "Access to Partner 2 exclusive bonus draws",
-      "Priority consideration for premium prizes",
-      "Unlock the 'Power Entrant' badge on the leaderboard",
-    ],
-    howToEnter: [
-      "Make sure you've already registered with Partner 1 first",
-      "Click the 'Register Now' button on this page",
-      "Complete the full registration on the Partner 2 platform",
-      "Your 2x multiplier activates automatically once verified",
-      "Submit entries as usual — they now count double",
-      "Check your dashboard to confirm the multiplier is active",
-    ],
-    stats: { registrations: 0, entries: 0, winners: 0 },
-    badge: "2x Chances",
-  },
-  "partner-3": {
-    id: "partner-3",
-    name: "Partner 3",
-    tagline: "Coming Soon",
-    category: "Upcoming",
-    accent: "neutral",
-    bannerGradient: "linear-gradient(145deg, rgba(40, 40, 40, 0.4) 0%, rgba(10, 10, 10, 0.95) 100%)",
-    description: [
-      "A new partner integration is being finalized. This partner will offer unique registration bonuses and additional entry opportunities exclusive to X247 Rewards participants.",
-      "Stay tuned — once launched, early registrations will receive special bonus multipliers and priority access to premium prize pools.",
-    ],
-    benefits: [
-      "Details will be revealed at launch",
-      "Early access bonuses for first registrants",
-      "Additional entry opportunities",
-    ],
-    howToEnter: [
-      "Partner registration link will be available at launch",
-      "Follow the same process as other partners",
-      "Join the WhatsApp community to get notified first",
-    ],
-    stats: { registrations: 0, entries: 0, winners: 0 },
-    badge: null,
-  },
-  "partner-4": {
-    id: "partner-4",
-    name: "Partner 4",
-    tagline: "Coming Soon",
-    category: "Upcoming",
-    accent: "neutral",
-    bannerGradient: "linear-gradient(145deg, rgba(40, 40, 40, 0.4) 0%, rgba(10, 10, 10, 0.95) 100%)",
-    description: [
-      "Another exciting partner is joining the X247 Rewards ecosystem. More ways to earn entries, more prizes, and bigger rewards.",
-      "This partner will introduce a completely new category of prizes and entry mechanics. Details will be announced soon.",
-    ],
-    benefits: [
-      "New prize categories",
-      "Unique entry mechanics",
-      "Exclusive rewards for early adopters",
-    ],
-    howToEnter: [
-      "Registration details coming soon",
-      "Join the community to be the first to know",
-    ],
-    stats: { registrations: 0, entries: 0, winners: 0 },
-    badge: null,
-  },
-};
-
 type Tab = "details" | "how-to-enter";
 
-export default function PartnerDetail() {
-  const params = useParams<{ id: string }>();
-  const partner = partnersData[params.id || ""];
+function getPartnerIcon(accent: string) {
+  if (accent === "navy") return <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
+  if (accent === "red") return <Star className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
+  return <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
+}
+
+function getBannerGradient(accent: string) {
+  if (accent === "navy") return "linear-gradient(145deg, rgba(30, 35, 80, 0.6) 0%, rgba(10, 10, 20, 0.95) 100%)";
+  if (accent === "red") return "linear-gradient(145deg, rgba(80, 20, 30, 0.5) 0%, rgba(15, 10, 10, 0.95) 100%)";
+  return "linear-gradient(145deg, rgba(40, 40, 40, 0.4) 0%, rgba(10, 10, 10, 0.95) 100%)";
+}
+
+function PartnerDetailContent({ partner }: { partner: PartnerData }) {
   const [activeTab, setActiveTab] = useState<Tab>("details");
+  const isComingSoon = !partner.isActive;
 
-  if (!partner) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-display font-light mb-4">Partner Not Found</h1>
-          <Link href="/partners" className="text-white/50 hover:text-white transition-colors">← Back to Partners</Link>
-        </div>
-      </div>
-    );
-  }
-
-  const isComingSoon = partner.tagline === "Coming Soon";
+  const handleRegisterClick = () => {
+    if (partner.registrationUrl) {
+      trackClick(partner.id);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -201,12 +72,10 @@ export default function PartnerDetail() {
           >
             <div className="glass-card overflow-hidden relative">
               <div className="card-shine" />
-              <div className="relative" style={{ background: partner.bannerGradient }}>
+              <div className="relative" style={{ background: getBannerGradient(partner.accent) }}>
                 <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-8 relative z-[2]">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
-                    {partner.accent === "navy" ? <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" /> :
-                     partner.accent === "red" ? <Star className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" /> :
-                     <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />}
+                    {getPartnerIcon(partner.accent)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -223,10 +92,10 @@ export default function PartnerDetail() {
                           Coming Soon
                         </div>
                       )}
-                      {partner.id === "partner-1" && (
+                      {partner.badgeSecondary && (
                         <div className="premium-badge !text-[9px]" style={{ background: "rgba(30, 40, 100, 0.3)", border: "1px solid rgba(60, 80, 180, 0.3)" }}>
                           <Star className="w-2.5 h-2.5 mr-1 text-blue-400" />
-                          <span className="text-blue-300">Students Only</span>
+                          <span className="text-blue-300">{partner.badgeSecondary}</span>
                         </div>
                       )}
                     </div>
@@ -239,18 +108,18 @@ export default function PartnerDetail() {
               <div className="p-5 sm:p-8 border-t border-white/[0.04] relative z-[2]">
                 <div className="flex items-center gap-6 sm:gap-10">
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.registrations}</div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Registrations</div>
+                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.clicks}</div>
+                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Clicks</div>
                   </div>
                   <div className="w-px h-8 bg-white/[0.06]" />
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.entries}</div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Entries</div>
+                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.impressions}</div>
+                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Impressions</div>
                   </div>
                   <div className="w-px h-8 bg-white/[0.06]" />
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.winners}</div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Winners</div>
+                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.formFills}</div>
+                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Form Fills</div>
                   </div>
                 </div>
               </div>
@@ -270,8 +139,8 @@ export default function PartnerDetail() {
                   <p className="text-white/40 font-light text-sm leading-relaxed max-w-md mx-auto mb-6">
                     This partner hasn't launched yet. Join our community to be the first to know when registration opens.
                   </p>
-                  <BorderGlow as={Link} href="/" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                    <span className="relative z-[2]">Back to Home</span>
+                  <BorderGlow as={Link} href="/partners" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                    <span className="relative z-[2]">Back to Partners</span>
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
                   </BorderGlow>
                 </div>
@@ -290,7 +159,7 @@ export default function PartnerDetail() {
                 }`}
               >
                 <Info className="w-4 h-4" />
-                Details & Benefits
+                Details
               </button>
               <button
                 onClick={() => setActiveTab("how-to-enter")}
@@ -318,11 +187,7 @@ export default function PartnerDetail() {
                   <div className="card-shine" />
                   <div className="relative z-[2]">
                     <h3 className="text-lg sm:text-xl font-display font-light text-white mb-5">About This Partner</h3>
-                    <div className="space-y-4">
-                      {partner.description.map((para, i) => (
-                        <p key={i} className="text-white/45 font-light text-sm leading-relaxed">{para}</p>
-                      ))}
-                    </div>
+                    <p className="text-white/45 font-light text-sm leading-relaxed">{partner.description}</p>
                   </div>
                 </div>
 
@@ -330,32 +195,39 @@ export default function PartnerDetail() {
                   <div className="card-top-accent card-top-accent-navy" />
                   <div className="card-shine" />
                   <div className="relative z-[2]">
-                    <h3 className="text-lg sm:text-xl font-display font-light text-white mb-5">What You Get</h3>
+                    <h3 className="text-lg sm:text-xl font-display font-light text-white mb-5">Key Info</h3>
                     <ul className="space-y-3">
-                      {partner.benefits.map((benefit, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-white/50 font-light">
+                      <li className="flex items-start gap-3 text-sm text-white/50 font-light">
+                        <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                        <span>1 completed registration = 1 giveaway entry</span>
+                      </li>
+                      {partner.isRequired && (
+                        <li className="flex items-start gap-3 text-sm text-white/50 font-light">
                           <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                          <span>{benefit}</span>
+                          <span>This registration is required to participate in the giveaway</span>
                         </li>
-                      ))}
+                      )}
+                      {partner.badgeSecondary && (
+                        <li className="flex items-start gap-3 text-sm text-white/50 font-light">
+                          <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                          <span>{partner.badgeSecondary} — eligibility restriction applies</span>
+                        </li>
+                      )}
+                      <li className="flex items-start gap-3 text-sm text-white/50 font-light">
+                        <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                        <span>Access to daily prize draws after registration</span>
+                      </li>
                     </ul>
                   </div>
                 </div>
 
-                {!isComingSoon && (
+                {!isComingSoon && partner.registrationUrl && (
                   <div className="flex justify-center pt-4">
-                    {partner.id === "partner-1" ? (
-                      <BorderGlow as="a" href="https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495" target="_blank" rel="noopener noreferrer" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                        <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Register Now</span>
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                      </BorderGlow>
-                    ) : (
-                      <BorderGlow as="a" href="#" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                        <Lock className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Registration Link Coming Soon</span>
-                      </BorderGlow>
-                    )}
+                    <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                      <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                      <span className="relative z-[2]">Register Now</span>
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                    </BorderGlow>
                   </div>
                 )}
               </motion.div>
@@ -374,7 +246,14 @@ export default function PartnerDetail() {
                   <div className="relative z-[2]">
                     <h3 className="text-lg sm:text-xl font-display font-light text-white mb-6">Steps to Enter via {partner.name}</h3>
                     <div className="space-y-5">
-                      {partner.howToEnter.map((step, i) => (
+                      {[
+                        `Click the 'Register Now' button to visit ${partner.name}`,
+                        "Create your account and fill the complete registration form",
+                        "Make sure all required fields are filled correctly",
+                        "Submit your registration",
+                        "Return to X247 Rewards — your giveaway entry is now active!",
+                        "Check the Winners section daily to see if you've won",
+                      ].map((step, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0">
                             <span className="text-xs font-display text-white/50">{String(i + 1).padStart(2, "0")}</span>
@@ -384,11 +263,11 @@ export default function PartnerDetail() {
                       ))}
                     </div>
 
-                    {partner.id === "partner-1" && (
+                    {!isComingSoon && partner.registrationUrl && (
                       <div className="flex justify-center pt-8 border-t border-white/[0.04] mt-8">
-                        <BorderGlow as="a" href="https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495" target="_blank" rel="noopener noreferrer" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                        <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
                           <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                          <span className="relative z-[2]">Register Now on Hack2Skill</span>
+                          <span className="relative z-[2]">Register Now on {partner.name}</span>
                           <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
                         </BorderGlow>
                       </div>
@@ -419,4 +298,36 @@ export default function PartnerDetail() {
       </footer>
     </div>
   );
+}
+
+export default function PartnerDetail() {
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug || "";
+
+  const { data: partner, isLoading, error } = useQuery({
+    queryKey: ["partner", slug],
+    queryFn: () => getPartner(slug),
+    enabled: !!slug,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!partner || error) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-display font-light mb-4">Partner Not Found</h1>
+          <Link href="/partners" className="text-white/50 hover:text-white transition-colors">← Back to Partners</Link>
+        </div>
+      </div>
+    );
+  }
+
+  return <PartnerDetailContent partner={partner} />;
 }
