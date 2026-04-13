@@ -13,8 +13,8 @@ const queryClient = new QueryClient();
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
-  enter: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-  exit: { opacity: 0, y: -8, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
+  enter: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
 function AnimatedRoute({ component: Component }: { component: React.ComponentType }) {

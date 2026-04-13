@@ -8,7 +8,6 @@ import {
   ExternalLink,
   Clock,
   Star,
-  Tag,
   Zap,
   CheckCircle2,
   Users,
@@ -65,7 +64,7 @@ const offers = [
     accent: "navy" as const,
     details: ["3x prize pool", "All week's entries count", "Winners announced Sunday"],
     icon: <Star className="w-5 h-5" />,
-    number: "04",
+    number: "03",
   },
   {
     title: "Community Exclusive Drops",
@@ -76,7 +75,7 @@ const offers = [
     accent: "neutral" as const,
     details: ["WhatsApp community access", "Flash giveaways", "Twice monthly drops"],
     icon: <ShieldCheck className="w-5 h-5" />,
-    number: "05",
+    number: "04",
   },
 ];
 
@@ -159,7 +158,7 @@ export default function Offers() {
               <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
               Active Offers
             </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap">
+            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
               Exclusive Offers
             </h1>
             <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
@@ -277,16 +276,16 @@ export default function Offers() {
               <div className="marquee-content">
                 {["2x Entry Bonus", "Refer & Earn", "Early Bird Drops", "Partner Cashback", "Weekend Mega Draw", "Flash Giveaways", "Community Rewards", "Exclusive Merch"].map((text, i) => (
                   <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                    <span className="text-lg sm:text-2xl font-display font-light text-white/[0.08] uppercase tracking-wider">{text}</span>
-                    <span className="text-white/[0.05] text-xl font-light">✦</span>
+                    <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
+                    <span className="text-white/[0.06] text-xl font-light">✦</span>
                   </div>
                 ))}
               </div>
               <div className="marquee-content">
                 {["2x Entry Bonus", "Refer & Earn", "Early Bird Drops", "Partner Cashback", "Weekend Mega Draw", "Flash Giveaways", "Community Rewards", "Exclusive Merch"].map((text, i) => (
                   <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                    <span className="text-lg sm:text-2xl font-display font-light text-white/[0.08] uppercase tracking-wider">{text}</span>
-                    <span className="text-white/[0.05] text-xl font-light">✦</span>
+                    <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
+                    <span className="text-white/[0.06] text-xl font-light">✦</span>
                   </div>
                 ))}
               </div>
@@ -326,7 +325,7 @@ export default function Offers() {
         <div className="footer-gradient-line mb-8 sm:mb-12" />
         <div className="container mx-auto px-4 text-center">
           <p className="text-xs text-white/20 font-light">
-            © 2025 X247 Rewards. All rights reserved.
+            © 2026 X247 Rewards. All rights reserved.
           </p>
         </div>
       </footer>

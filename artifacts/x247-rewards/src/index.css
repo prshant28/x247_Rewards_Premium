@@ -878,7 +878,7 @@
   .hero-text-stroke {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 0;
     -webkit-text-fill-color: transparent;
     -webkit-text-stroke: 1.2px transparent;
     background: linear-gradient(
