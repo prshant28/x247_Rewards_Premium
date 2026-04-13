@@ -12,6 +12,7 @@ import PartnerDetail from "@/pages/PartnerDetail";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminPanel from "@/pages/AdminPanel";
 import PageLoader from "@/components/PageLoader";
+import ChatBot from "@/components/ChatBot";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +85,7 @@ function App() {
             <Router />
           </PageLoader>
         </WouterRouter>
+        <ChatBot />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
