@@ -861,52 +861,82 @@
     border-radius: 1px;
   }
 
-  .admin-glow-divider {
+  .admin-glow-border-wrap {
     position: relative;
-    width: 100%;
-    height: 2px;
-    margin: 0 auto;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.03) 20%,
-      rgba(255, 255, 255, 0.04) 50%,
-      rgba(255, 255, 255, 0.03) 80%,
-      transparent 100%
-    );
+    border-radius: 24px;
+    padding: 24px;
+    background: rgba(4, 4, 4, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
-  .admin-glow-divider::before {
+  .admin-glow-border-wrap::before {
     content: '';
     position: absolute;
-    inset: -0.5px 5%;
-    height: 2px;
-    background: linear-gradient(
-      var(--btn-border-angle, 0deg),
+    inset: -1px;
+    border-radius: 25px;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--btn-border-angle, 0deg),
       transparent 0%,
-      rgba(20, 30, 80, 0.6) 15%,
-      rgba(255, 255, 255, 0.15) 25%,
-      rgba(140, 20, 30, 0.6) 40%,
-      transparent 55%,
-      rgba(140, 20, 30, 0.4) 70%,
-      rgba(255, 255, 255, 0.1) 80%,
-      rgba(20, 30, 80, 0.5) 90%,
+      rgba(20, 30, 80, 0.6) 10%,
+      rgba(255, 255, 255, 0.12) 18%,
+      rgba(140, 20, 30, 0.6) 28%,
+      transparent 40%,
+      transparent 60%,
+      rgba(140, 20, 30, 0.4) 72%,
+      rgba(255, 255, 255, 0.08) 82%,
+      rgba(20, 30, 80, 0.5) 92%,
       transparent 100%
     );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
     animation: btn-border-rotate 6s linear infinite;
-    mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
-    border-radius: 1px;
+    pointer-events: none;
+    z-index: 1;
   }
 
-  .admin-glow-divider::after {
+  .admin-glow-border-wrap::after {
     content: '';
     position: absolute;
-    top: -2px;
-    left: 15%;
-    right: 15%;
-    height: 6px;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+    inset: -2px;
+    border-radius: 26px;
+    background: conic-gradient(
+      from var(--btn-border-angle, 0deg),
+      transparent 0%,
+      rgba(20, 30, 80, 0.15) 10%,
+      transparent 20%,
+      rgba(140, 20, 30, 0.15) 30%,
+      transparent 40%,
+      transparent 60%,
+      rgba(140, 20, 30, 0.1) 70%,
+      transparent 80%,
+      rgba(20, 30, 80, 0.1) 90%,
+      transparent 100%
+    );
+    filter: blur(8px);
+    animation: btn-border-rotate 6s linear infinite;
     pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (min-width: 640px) {
+    .admin-glow-border-wrap {
+      border-radius: 28px;
+      padding: 28px;
+    }
+    .admin-glow-border-wrap::before { border-radius: 29px; }
+    .admin-glow-border-wrap::after { border-radius: 30px; }
+  }
+
+  @media (min-width: 1024px) {
+    .admin-glow-border-wrap {
+      border-radius: 32px;
+      padding: 32px;
+    }
+    .admin-glow-border-wrap::before { border-radius: 33px; }
+    .admin-glow-border-wrap::after { border-radius: 34px; }
   }
 
   .glass-pill-badge {
