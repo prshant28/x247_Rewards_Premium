@@ -45,7 +45,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **Responsive**: Full mobile-first responsive design (390px+ to 1280px+), stacked buttons on mobile, adapted typography/spacing, cursor hidden on touch devices
 - **Navbar**: SiteNav component (shared across all pages including admin), fixed position, 60px height, dropdown expands to 350px
 - **Chatbot**: AI-powered ChatBot component (global, appears on every page), OpenRouter integration (Llama 4 Scout), streaming SSE responses, partner card previews in responses, context-aware based on current page, premium glassmorphism design
-- **Routes**: `/` (Home), `/offers` (Offers), `/partners` (Partners — loads from API), `/partners/:slug` (Partner Detail), `/x247-admin-login` (Admin Login), `/x247-control-panel` (Admin Dashboard)
+- **Routes**: `/` (Home), `/offers` (Offers), `/partners` (Partners — loads from API), `/partners/:slug` (Partner Detail), `/giveaway` (Giveaway Entry Form), `/x247-admin-login` (Admin Login), `/x247-control-panel` (Admin Dashboard)
 - **CSS Theme**: Pure monochrome (black/white/gray), utility classes (glass-card, card-header-area, card-icon-wrap, premium-btn, glass-btn-effect, icon-circle, stat-card, nav-link, section-divider, section-glow-line, glass-pill-badge, premium-badge, floating-particle, cursor-dot/ring/glass, shimmer-bar, scroll-progress-bar) in index.css
 - **@property declarations**: --card-border-angle, --btn-border-angle, --hero-text-angle, --cursor-ring-angle (must be outside @layer)
 - **Fonts**: Poppins (body text), Syne (headings/display, font-light weight)
@@ -67,6 +67,8 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `POST /api/admin/logout` — logout (delete session)
   - `GET /api/admin/analytics` — analytics dashboard data (admin-protected)
   - `POST /api/chat` — AI chatbot (streaming SSE, OpenRouter Llama 4 Scout, context-aware with partner data)
+  - `GET /api/giveaway/status` — giveaway spots remaining, max spots, isFull
+  - `POST /api/giveaway/enter` — submit giveaway entry (validates partners, age, screenshot, terms)
 
 ## Database Schema (lib/db)
 
@@ -78,6 +80,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **admin_sessions**: id, token, adminId, expiresAt, createdAt
 - **conversations**: id, title, createdAt, updatedAt
 - **messages**: id, conversationId, role, content, createdAt
+- **giveaway_entries**: id, fullName, email, phone, age, city, completedPartners (JSON array of partner IDs), screenshotConfirmed, agreedToTerms, ipHash, entryCount, createdAt
 
 ## Admin Credentials
 
