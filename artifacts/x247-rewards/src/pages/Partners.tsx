@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { getPartners, trackClick, trackImpression } from "@/lib/api";
+import { getPartners, trackClick, trackImpression, type PartnerData } from "@/lib/api";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -29,7 +29,9 @@ const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.12 } }
 };
 
-const placeholderPartners = [
+type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "stats">;
+
+const placeholderPartners: PartnerCardData[] = [
   {
     id: -2,
     slug: "partner-coming-1",
@@ -96,7 +98,7 @@ function getPartnerIcon(accent: string) {
   return <Gift className="w-6 h-6" />;
 }
 
-function PartnerCard({ partner }: { partner: any }) {
+function PartnerCard({ partner }: { partner: PartnerCardData }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const tracked = useRef(false);
 
@@ -212,8 +214,8 @@ export default function Partners() {
     staleTime: 30_000,
   });
 
-  const allPartners = React.useMemo(() => {
-    const active = Array.isArray(apiPartners) ? apiPartners : [];
+  const allPartners: PartnerCardData[] = React.useMemo(() => {
+    const active: PartnerCardData[] = Array.isArray(apiPartners) ? apiPartners : [];
     const activeCount = active.length;
     const fillerCount = Math.max(0, 4 - activeCount);
     return [...active, ...placeholderPartners.slice(0, fillerCount)];
@@ -221,7 +223,7 @@ export default function Partners() {
 
   const totalClicks = allPartners.reduce((sum, p) => sum + (p.stats?.clicks || 0), 0);
   const totalImpressions = allPartners.reduce((sum, p) => sum + (p.stats?.impressions || 0), 0);
-  const activeCount = allPartners.filter((p: any) => p.isActive).length;
+  const activeCount = allPartners.filter((p) => p.isActive).length;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -295,7 +297,7 @@ export default function Partners() {
               variants={stagger}
               className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-24"
             >
-              {allPartners.map((partner: any) => (
+              {allPartners.map((partner) => (
                 <motion.div key={partner.slug || partner.id} variants={fadeUp}>
                   <PartnerCard partner={partner} />
                 </motion.div>
