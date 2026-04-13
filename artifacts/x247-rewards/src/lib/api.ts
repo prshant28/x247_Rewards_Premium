@@ -236,3 +236,129 @@ export async function checkEntryCode(code: string): Promise<{ found: boolean; en
   }
   return result;
 }
+
+export interface ContestData {
+  id: number;
+  name: string;
+  description: string;
+  prize: string;
+  prizeValue: string | null;
+  maxSpots: number;
+  status: string;
+  imageUrl: string | null;
+  slug: string;
+  createdAt: string;
+  endsAt: string | null;
+  totalEntries: number;
+  spotsRemaining: number;
+  isFull: boolean;
+}
+
+export async function getContests(): Promise<ContestData[]> {
+  const res = await fetch(`${API_BASE}/contests`);
+  return res.json();
+}
+
+export async function getContest(slug: string): Promise<ContestData | null> {
+  const res = await fetch(`${API_BASE}/contests/${slug}`);
+  if (!res.ok) return null;
+  return res.json();
+}
+
+function getUserToken(): string | null {
+  return localStorage.getItem("user_token");
+}
+
+function setUserToken(token: string): void {
+  localStorage.setItem("user_token", token);
+}
+
+function clearUserToken(): void {
+  localStorage.removeItem("user_token");
+}
+
+export async function registerUser(data: { fullName: string; email: string; phone?: string; password: string; city?: string }): Promise<{ success: boolean; token?: string; user?: any; error?: string }> {
+  const res = await fetch(`${API_BASE}/users/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  if (!res.ok) return { success: false, error: result.error };
+  setUserToken(result.token);
+  return { success: true, token: result.token, user: result.user };
+}
+
+export async function loginUser(email: string, password: string): Promise<{ success: boolean; token?: string; user?: any; error?: string }> {
+  const res = await fetch(`${API_BASE}/users/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  const result = await res.json();
+  if (!res.ok) return { success: false, error: result.error };
+  setUserToken(result.token);
+  return { success: true, token: result.token, user: result.user };
+}
+
+export async function getCurrentUser(): Promise<any | null> {
+  const token = getUserToken();
+  if (!token) return null;
+  try {
+    const res = await fetch(`${API_BASE}/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function getUserEntries(): Promise<any[]> {
+  const token = getUserToken();
+  if (!token) return [];
+  try {
+    const res = await fetch(`${API_BASE}/users/me/entries`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function logoutUser(): Promise<void> {
+  const token = getUserToken();
+  if (token) {
+    fetch(`${API_BASE}/users/logout`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch(() => {});
+  }
+  clearUserToken();
+}
+
+export function isUserLoggedIn(): boolean {
+  return !!getUserToken();
+}
+
+export function getUserTokenValue(): string | null {
+  return getUserToken();
+}
+
+export interface WinnerData {
+  id: number;
+  winnerName: string;
+  winnerCity: string | null;
+  prize: string;
+  contestName: string;
+  entryCode: string | null;
+  announcedAt: string;
+}
+
+export async function getWinners(): Promise<WinnerData[]> {
+  const res = await fetch(`${API_BASE}/winners`);
+  return res.json();
+}

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { giveawayEntriesTable, partnersTable } from "@workspace/db";
-import { eq, sql } from "drizzle-orm";
+import { giveawayEntriesTable, partnersTable, contestsTable, userSessionsTable } from "@workspace/db";
+import { eq, sql, and } from "drizzle-orm";
 import crypto from "crypto";
 
 const router = Router();
@@ -48,7 +48,7 @@ router.post("/giveaway/enter", async (req, res) => {
       return res.status(400).json({ error: "Contest is full. All spots have been taken." });
     }
 
-    const { fullName, email, phone, age, city, completedPartners, screenshotConfirmed, screenshotUrl, agreedToTerms, isAnonymous } = req.body;
+    const { fullName, email, phone, age, city, completedPartners, screenshotConfirmed, screenshotUrl, agreedToTerms, isAnonymous, contestId, userToken } = req.body;
 
     if (!fullName || !email || !phone || !age || !city) {
       return res.status(400).json({ error: "All fields are required" });
@@ -81,7 +81,36 @@ router.post("/giveaway/enter", async (req, res) => {
     const entryCount = validPartnerIds.length;
     const entryCode = generateEntryCode();
 
+    let userId: number | null = null;
+    if (userToken) {
+      const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, userToken)).limit(1);
+      if (session && new Date(session.expiresAt) > new Date()) {
+        userId = session.userId;
+      }
+    }
+
+    let resolvedContestId: number | null = null;
+    if (contestId) {
+      const [contest] = await db.select().from(contestsTable).where(eq(contestsTable.id, Number(contestId))).limit(1);
+      if (contest) {
+        resolvedContestId = contest.id;
+        const [contestCount] = await db.select({ count: sql<number>`count(*)` }).from(giveawayEntriesTable).where(eq(giveawayEntriesTable.contestId, contest.id));
+        if (Number(contestCount?.count || 0) >= contest.maxSpots) {
+          return res.status(400).json({ error: "This contest is full. All spots have been taken." });
+        }
+
+        if (userId) {
+          const [existingContestEntry] = await db.select().from(giveawayEntriesTable).where(and(eq(giveawayEntriesTable.contestId, contest.id), eq(giveawayEntriesTable.email, email))).limit(1);
+          if (existingContestEntry) {
+            return res.status(400).json({ error: "You have already entered this contest" });
+          }
+        }
+      }
+    }
+
     const [entry] = await db.insert(giveawayEntriesTable).values({
+      contestId: resolvedContestId,
+      userId,
       fullName,
       email,
       phone,
