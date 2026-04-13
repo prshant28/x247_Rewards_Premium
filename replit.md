@@ -45,7 +45,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **Responsive**: Full mobile-first responsive design (390px+ to 1280px+), stacked buttons on mobile, adapted typography/spacing, cursor hidden on touch devices
 - **Navbar**: SiteNav component (shared across all pages including admin), fixed position, 60px height, dropdown expands to 350px
 - **Chatbot**: AI-powered ChatBot component (global, appears on every page), OpenRouter integration (Llama 4 Scout), streaming SSE responses, partner card previews in responses, context-aware based on current page, premium glassmorphism design
-- **Routes**: `/` (Home), `/offers` (Offers), `/partners` (Partners — loads from API), `/partners/:slug` (Partner Detail), `/giveaway` (Giveaway Entry Form), `/x247-admin-login` (Admin Login), `/x247-control-panel` (Admin Dashboard)
+- **Routes**: `/` (Home), `/offers` (Offers), `/partners` (Partners — loads from API), `/partners/:slug` (Partner Detail), `/giveaway` (Contest Hub — Dream11-style contest cards), `/giveaway/:slug` (Giveaway Entry Form for specific contest), `/winners` (Winners Hall of Fame), `/account` (User account — login/register, giveaway history), `/community` (Community page — social links, stats, guidelines), `/x247-admin-login` (Admin Login), `/x247-control-panel` (Admin Dashboard)
 - **CSS Theme**: Pure monochrome (black/white/gray), utility classes (glass-card, card-header-area, card-icon-wrap, premium-btn, glass-btn-effect, icon-circle, stat-card, nav-link, section-divider, section-glow-line, glass-pill-badge, premium-badge, floating-particle, cursor-dot/ring/glass, shimmer-bar, scroll-progress-bar) in index.css
 - **@property declarations**: --card-border-angle, --btn-border-angle, --hero-text-angle, --cursor-ring-angle (must be outside @layer)
 - **Fonts**: Poppins (body text), Syne (headings/display, font-light weight)
@@ -73,6 +73,14 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `POST /api/storage/uploads/request-url` — request presigned upload URL (images only, max 10MB)
   - `GET /api/storage/public-objects/*` — serve public objects
   - `GET /api/storage/objects/*` — serve private objects
+  - `GET /api/contests` — list all contests with entry stats
+  - `GET /api/contests/:slug` — get contest detail by slug
+  - `POST /api/users/register` — user registration (returns token)
+  - `POST /api/users/login` — user login (returns token)
+  - `GET /api/users/me` — get current user profile (auth required)
+  - `GET /api/users/me/entries` — get user's giveaway entries (auth required)
+  - `POST /api/users/logout` — user logout
+  - `GET /api/winners` — list all winners with contest names
 
 ## Database Schema (lib/db)
 
@@ -84,7 +92,11 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **admin_sessions**: id, token, adminId, expiresAt, createdAt
 - **conversations**: id, title, createdAt, updatedAt
 - **messages**: id, conversationId, role, content, createdAt
-- **giveaway_entries**: id, fullName, email, phone, age, city, completedPartners (JSON array of partner IDs), screenshotConfirmed, screenshotUrl, agreedToTerms, ipHash, entryCount, entryCode (X247-XXXX-XXXX format), isAnonymous, createdAt
+- **giveaway_entries**: id, contestId, userId, fullName, email, phone, age, city, completedPartners (JSON array of partner IDs), screenshotConfirmed, screenshotUrl, agreedToTerms, ipHash, entryCount, entryCode (X247-XXXX-XXXX format), isAnonymous, createdAt
+- **contests**: id, name, description, prize, prizeValue, maxSpots, status (active/upcoming/completed), imageUrl, slug (unique), createdAt, endsAt
+- **users**: id, fullName, email (unique), phone, passwordHash, city, createdAt
+- **user_sessions**: id, token (unique), userId, expiresAt, createdAt
+- **winners**: id, contestId, entryId, winnerName, winnerCity, prize, entryCode, announcedAt
 
 ## Admin Credentials
 

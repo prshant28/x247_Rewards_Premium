@@ -13,6 +13,8 @@ import {
   Star,
   Info,
   ListChecks,
+  Trophy,
+  Camera,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -221,11 +223,18 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   </div>
                 </div>
 
-                {!isComingSoon && partner.registrationUrl && (
-                  <div className="flex justify-center pt-4">
-                    <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                      <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                      <span className="relative z-[2]">Register Now</span>
+                {!isComingSoon && (
+                  <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+                    {partner.registrationUrl && (
+                      <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                        <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                        <span className="relative z-[2]">Register Now</span>
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                      </BorderGlow>
+                    )}
+                    <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                      <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                      <span className="relative z-[2]">Enter Giveaway</span>
                       <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
                     </BorderGlow>
                   </div>
@@ -247,27 +256,36 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <h3 className="text-lg sm:text-xl font-display font-light text-white mb-6">Steps to Enter via {partner.name}</h3>
                     <div className="space-y-5">
                       {[
-                        `Click the 'Register Now' button to visit ${partner.name}`,
-                        "Create your account and fill the complete registration form",
-                        "Make sure all required fields are filled correctly",
-                        "Submit your registration",
-                        "Return to X247 Rewards — your giveaway entry is now active!",
-                        "Check the Winners section daily to see if you've won",
+                        { text: `Click the 'Register Now' button to visit ${partner.name}`, icon: <ExternalLink className="w-3.5 h-3.5 text-white/30" /> },
+                        { text: "Create your account and fill the complete registration form", icon: <CheckCircle2 className="w-3.5 h-3.5 text-white/30" /> },
+                        { text: "Make sure all required fields are filled correctly", icon: <Info className="w-3.5 h-3.5 text-white/30" /> },
+                        { text: "Submit the registration on the partner platform", icon: <CheckCircle2 className="w-3.5 h-3.5 text-white/30" /> },
+                        { text: "Take a screenshot of your completed registration as proof", icon: <Camera className="w-3.5 h-3.5 text-white/30" /> },
+                        { text: "Go to the Giveaway section on X247 Rewards, select a contest", icon: <Trophy className="w-3.5 h-3.5 text-white/30" /> },
+                        { text: `Select '${partner.name}' as a completed partner and upload your screenshot proof`, icon: <Star className="w-3.5 h-3.5 text-white/30" /> },
+                        { text: "Submit your entry and check the Winners page daily!", icon: <Gift className="w-3.5 h-3.5 text-white/30" /> },
                       ].map((step, i) => (
                         <div key={i} className="flex items-start gap-4">
                           <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0">
                             <span className="text-xs font-display text-white/50">{String(i + 1).padStart(2, "0")}</span>
                           </div>
-                          <p className="text-sm text-white/50 font-light leading-relaxed pt-1.5">{step}</p>
+                          <p className="text-sm text-white/50 font-light leading-relaxed pt-1.5">{step.text}</p>
                         </div>
                       ))}
                     </div>
 
-                    {!isComingSoon && partner.registrationUrl && (
-                      <div className="flex justify-center pt-8 border-t border-white/[0.04] mt-8">
-                        <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                          <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                          <span className="relative z-[2]">Register Now on {partner.name}</span>
+                    {!isComingSoon && (
+                      <div className="flex flex-col sm:flex-row justify-center gap-3 pt-8 border-t border-white/[0.04] mt-8">
+                        {partner.registrationUrl && (
+                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                            <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                            <span className="relative z-[2]">Register Now</span>
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                          </BorderGlow>
+                        )}
+                        <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                          <span className="relative z-[2]">Enter Giveaway</span>
                           <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
                         </BorderGlow>
                       </div>

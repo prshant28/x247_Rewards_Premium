@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Link } from "wouter";
+import { Link, useParams } from "wouter";
 import {
   Trophy, Sparkles, Shield, Camera, CheckCircle2, AlertCircle,
   Clock, Users, ArrowRight, Gift, Star, ExternalLink, Loader2, PartyPopper,
-  Upload, X, EyeOff, Copy, Search, FileImage
+  Upload, X, EyeOff, Copy, Search, FileImage, Eye, User
 } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import SiteNav from "@/components/SiteNav";
-import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, trackFormFill, type PartnerData, type GiveawayStatus } from "@/lib/api";
+import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, trackFormFill, getContest, registerUser, isUserLoggedIn, getUserTokenValue, type PartnerData, type GiveawayStatus, type ContestData } from "@/lib/api";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -19,8 +19,12 @@ const fadeUp = {
 };
 
 export default function GiveawayEntry() {
+  const params = useParams<{ slug: string }>();
+  const contestSlug = params.slug;
+
   const [partners, setPartners] = useState<PartnerData[]>([]);
   const [status, setStatus] = useState<GiveawayStatus | null>(null);
+  const [contest, setContest] = useState<ContestData | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -53,12 +57,20 @@ export default function GiveawayEntry() {
   const [checking, setChecking] = useState(false);
   const [showChecker, setShowChecker] = useState(false);
 
+  const [createAccount, setCreateAccount] = useState(false);
+  const [accountPassword, setAccountPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
-    Promise.all([
+    const promises: Promise<any>[] = [
       getPartners().then(setPartners),
       getGiveawayStatus().then(setStatus),
-    ]).finally(() => setLoading(false));
-  }, []);
+    ];
+    if (contestSlug) {
+      promises.push(getContest(contestSlug).then(setContest));
+    }
+    Promise.all(promises).finally(() => setLoading(false));
+  }, [contestSlug]);
 
   const activePartners = partners.filter((p) => p.isActive);
   const requiredPartners = activePartners.filter((p) => p.isRequired);
@@ -150,7 +162,26 @@ export default function GiveawayEntry() {
       }
     }
 
-    const result = await submitGiveawayEntry({
+    if (createAccount && accountPassword) {
+      if (accountPassword.length < 6) {
+        setError("Password must be at least 6 characters");
+        setSubmitting(false);
+        return;
+      }
+      try {
+        await registerUser({
+          fullName: form.fullName,
+          email: form.email,
+          phone: form.phone || undefined,
+          password: accountPassword,
+          city: form.city || undefined,
+        });
+      } catch {
+        console.warn("Account creation skipped — email may already be registered");
+      }
+    }
+
+    const submissionData: any = {
       fullName: form.fullName,
       email: form.email,
       phone: form.phone,
@@ -161,7 +192,18 @@ export default function GiveawayEntry() {
       screenshotUrl: uploadedUrl || undefined,
       agreedToTerms,
       isAnonymous,
-    });
+    };
+
+    if (contest) {
+      submissionData.contestId = contest.id;
+    }
+
+    const userToken = getUserTokenValue();
+    if (userToken) {
+      submissionData.userToken = userToken;
+    }
+
+    const result = await submitGiveawayEntry(submissionData);
 
     if (result.success) {
       setSubmitted(true);
@@ -280,30 +322,37 @@ export default function GiveawayEntry() {
       <main className="relative z-10 pt-28 pb-20 px-4">
         <div className="max-w-3xl mx-auto">
           <motion.div initial="hidden" animate="visible" className="text-center mb-10">
+            {contest && (
+              <motion.div variants={fadeUp} custom={0} className="mb-3">
+                <Link href="/giveaway" className="text-xs text-white/30 hover:text-white/50 font-light transition-colors">
+                  ← Back to Contests
+                </Link>
+              </motion.div>
+            )}
             <motion.div variants={fadeUp} custom={0} className="flex items-center justify-center gap-2 mb-4">
               <span className="glass-pill-badge">
                 <Gift className="w-3.5 h-3.5 text-white/60" />
-                <span className="text-[11px] text-white/60 font-light">Daily Prize Draw</span>
+                <span className="text-[11px] text-white/60 font-light">{contest ? contest.prize : "Daily Prize Draw"}</span>
               </span>
             </motion.div>
             <motion.h1 variants={fadeUp} custom={1} className="text-3xl sm:text-4xl lg:text-5xl font-display font-light text-white mb-4">
-              Enter the Giveaway
+              {contest ? contest.name : "Enter the Giveaway"}
             </motion.h1>
             <motion.p variants={fadeUp} custom={2} className="text-white/40 text-sm sm:text-base font-light max-w-xl mx-auto leading-relaxed">
-              Complete partner registrations, submit your proof, and earn entries into the daily prize draw. More registrations = more entries = higher chances of winning!
+              {contest ? contest.description : "Complete partner registrations, submit your proof, and earn entries into the daily prize draw. More registrations = more entries = higher chances of winning!"}
             </motion.p>
           </motion.div>
 
           <motion.div variants={fadeUp} custom={3} initial="hidden" animate="visible" className="grid grid-cols-3 gap-3 mb-8">
             <div className="glass-card p-4 text-center">
               <div className="relative z-[2]">
-                <div className="text-2xl font-display font-light text-white">{status?.spotsRemaining ?? "..."}</div>
+                <div className="text-2xl font-display font-light text-white">{contest ? contest.spotsRemaining : (status?.spotsRemaining ?? "...")}</div>
                 <div className="text-[9px] uppercase tracking-widest text-white/30 font-display mt-1">Spots Left</div>
               </div>
             </div>
             <div className="glass-card p-4 text-center">
               <div className="relative z-[2]">
-                <div className="text-2xl font-display font-light text-white">{status?.maxSpots ?? 100}</div>
+                <div className="text-2xl font-display font-light text-white">{contest ? contest.maxSpots : (status?.maxSpots ?? 100)}</div>
                 <div className="text-[9px] uppercase tracking-widest text-white/30 font-display mt-1">Total Spots</div>
               </div>
             </div>
@@ -366,12 +415,12 @@ export default function GiveawayEntry() {
             )}
           </motion.div>
 
-          {status?.isFull ? (
+          {(contest ? contest.isFull : status?.isFull) ? (
             <motion.div variants={fadeUp} custom={4} initial="hidden" animate="visible" className="glass-card p-8 text-center">
               <div className="relative z-[2]">
                 <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
                 <h2 className="text-2xl font-display font-light text-white mb-2">Contest Full</h2>
-                <p className="text-white/40 text-sm font-light mb-4">All {status.maxSpots} spots have been taken. Stay tuned for the next giveaway!</p>
+                <p className="text-white/40 text-sm font-light mb-4">All {contest ? contest.maxSpots : status?.maxSpots} spots have been taken. Stay tuned for the next giveaway!</p>
                 <div className="flex items-center gap-3 justify-center">
                   <Clock className="w-4 h-4 text-white/50" />
                   <span className="text-sm text-white/60 font-light">Winner announcement: Within 24-48 hours after verification, when contest is filled</span>
@@ -558,6 +607,37 @@ export default function GiveawayEntry() {
                         />
                       </div>
                     </div>
+
+                    {!isUserLoggedIn() && (
+                      <div className="mt-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={createAccount}
+                            onChange={(e) => setCreateAccount(e.target.checked)}
+                            className="accent-white w-4 h-4 shrink-0"
+                          />
+                          <div className="flex items-center gap-2">
+                            <User className="w-3.5 h-3.5 text-white/40" />
+                            <span className="text-sm text-white/60 font-light">Create an account to track my entries</span>
+                          </div>
+                        </label>
+                        {createAccount && (
+                          <div className="mt-3 relative">
+                            <input
+                              type={showPassword ? "text" : "password"}
+                              value={accountPassword}
+                              onChange={(e) => setAccountPassword(e.target.value)}
+                              placeholder="Create a password (min 6 characters)"
+                              className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors pr-10"
+                            />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/40">
+                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 

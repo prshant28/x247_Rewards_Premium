@@ -3,12 +3,9 @@ import { db } from "@workspace/db";
 import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 
 const router = Router();
-
-function hashPassword(password: string): string {
-  return crypto.createHash("sha256").update(password).digest("hex");
-}
 
 function generateToken(): string {
   return crypto.randomBytes(32).toString("hex");
@@ -27,7 +24,7 @@ router.post("/users/register", async (req, res) => {
       return res.status(400).json({ error: "An account with this email already exists" });
     }
 
-    const passwordHash = hashPassword(password);
+    const passwordHash = await bcrypt.hash(password, 10);
     const [user] = await db.insert(usersTable).values({
       fullName,
       email,
@@ -64,7 +61,11 @@ router.post("/users/login", async (req, res) => {
     }
 
     const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
-    if (!user || user.passwordHash !== hashPassword(password)) {
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
