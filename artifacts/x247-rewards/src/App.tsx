@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Offers from "@/pages/Offers";
+import Partners from "@/pages/Partners";
+import PartnerDetail from "@/pages/PartnerDetail";
 import PageLoader from "@/components/PageLoader";
 
 const queryClient = new QueryClient();
@@ -46,6 +48,12 @@ function Router() {
         </Route>
         <Route path="/offers">
           <AnimatedRoute component={Offers} />
+        </Route>
+        <Route path="/partners/:id">
+          <AnimatedRoute component={PartnerDetail} />
+        </Route>
+        <Route path="/partners">
+          <AnimatedRoute component={Partners} />
         </Route>
         <Route>
           <AnimatedRoute component={NotFound} />
