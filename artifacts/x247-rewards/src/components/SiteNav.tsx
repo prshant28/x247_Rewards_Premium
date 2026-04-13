@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 interface SiteNavProps {
-  activePage?: "home" | "partners" | "offers" | "partner-detail";
+  activePage?: "home" | "partners" | "offers" | "partner-detail" | "giveaway";
 }
 
 export default function SiteNav({ activePage = "home" }: SiteNavProps) {
@@ -66,6 +66,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           links: [
             { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
             { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
+            { label: "Giveaway", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Winners", href: isHome ? "#winners" : "/#winners", icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Dashboard", href: isHome ? "#dashboard" : "/#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
             { label: "FAQ", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
