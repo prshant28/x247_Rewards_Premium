@@ -51,6 +51,37 @@ router.get("/partners", async (_req, res) => {
   }
 });
 
+router.get("/partners/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const idNum = parseInt(slug);
+    const condition = isNaN(idNum)
+      ? eq(partnersTable.slug, slug)
+      : eq(partnersTable.id, idNum);
+
+    const [partner] = await db.select().from(partnersTable).where(condition).limit(1);
+    if (!partner) {
+      return res.status(404).json({ error: "Partner not found" });
+    }
+
+    const [clickCount] = await db.select({ count: sql<number>`count(*)` }).from(clicksTable).where(eq(clicksTable.partnerId, partner.id));
+    const [impressionCount] = await db.select({ count: sql<number>`count(*)` }).from(impressionsTable).where(eq(impressionsTable.partnerId, partner.id));
+    const [formFillCount] = await db.select({ count: sql<number>`count(*)` }).from(formFillsTable).where(eq(formFillsTable.partnerId, partner.id));
+
+    return res.json({
+      ...partner,
+      stats: {
+        clicks: Number(clickCount?.count || 0),
+        impressions: Number(impressionCount?.count || 0),
+        formFills: Number(formFillCount?.count || 0),
+      },
+    });
+  } catch (err) {
+    console.error("Get partner error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
 router.post("/partners", requireAdmin, async (req, res) => {
   try {
     const { name, tagline, description, category, registrationUrl, accent, badge, badgeSecondary, isActive, isRequired, slug } = req.body;

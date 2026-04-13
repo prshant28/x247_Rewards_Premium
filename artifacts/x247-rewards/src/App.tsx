@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Offers from "@/pages/Offers";
 import Partners from "@/pages/Partners";
+import PartnerDetail from "@/pages/PartnerDetail";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminPanel from "@/pages/AdminPanel";
 import PageLoader from "@/components/PageLoader";
@@ -49,6 +50,9 @@ function Router() {
         </Route>
         <Route path="/offers">
           <AnimatedRoute component={Offers} />
+        </Route>
+        <Route path="/partners/:slug">
+          <AnimatedRoute component={PartnerDetail} />
         </Route>
         <Route path="/partners">
           <AnimatedRoute component={Partners} />

@@ -77,8 +77,8 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ## Admin Credentials
 
-- Username: `admin`
-- Password: `x247admin2026`
+- Username: `ceo@prshant.dev`
+- Password: `Admin@0007`
 - Login URL: `/x247-admin-login`
 - Dashboard: `/x247-control-panel`
 
