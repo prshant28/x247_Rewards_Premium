@@ -76,6 +76,7 @@
     "zod": "catalog:"
   },
   "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@react-three/fiber": "^9.5.0",
     "gsap": "^3.14.2",
     "lenis": "^1.3.21",
