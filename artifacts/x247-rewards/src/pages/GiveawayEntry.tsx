@@ -6,6 +6,7 @@ import {
   Clock, Users, ArrowRight, Gift, Star, ExternalLink, Loader2, PartyPopper,
   Upload, X, EyeOff, Copy, Search, FileImage
 } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import SiteNav from "@/components/SiteNav";
 import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, type PartnerData, type GiveawayStatus } from "@/lib/api";
 
@@ -44,6 +45,8 @@ export default function GiveawayEntry() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const captchaRef = useRef<HCaptcha>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const [checkCode, setCheckCode] = useState("");
   const [checkResult, setCheckResult] = useState<any>(null);
@@ -119,6 +122,11 @@ export default function GiveawayEntry() {
       return;
     }
 
+    if (!captchaToken) {
+      setError("Please complete the captcha verification.");
+      return;
+    }
+
     const age = parseInt(form.age);
     if (isNaN(age) || age < 18) {
       setError("You must be 18 or older to participate.");
@@ -161,6 +169,8 @@ export default function GiveawayEntry() {
       setEntryCode(result.entryCode || "");
     } else {
       setError(result.error || "Something went wrong. Please try again.");
+      captchaRef.current?.resetCaptcha();
+      setCaptchaToken(null);
     }
     setSubmitting(false);
   }
@@ -183,7 +193,7 @@ export default function GiveawayEntry() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white">
-        <SiteNav activePage="home" />
+        <SiteNav activePage="giveaway" />
         <div className="flex items-center justify-center min-h-screen">
           <Loader2 className="w-6 h-6 text-white/30 animate-spin" />
         </div>
@@ -194,7 +204,7 @@ export default function GiveawayEntry() {
   if (submitted) {
     return (
       <div className="min-h-screen bg-black text-white">
-        <SiteNav activePage="home" />
+        <SiteNav activePage="giveaway" />
         <div className="noise-overlay" />
         <div className="vignette-overlay" />
         <div className="flex items-center justify-center min-h-screen px-4">
@@ -262,7 +272,7 @@ export default function GiveawayEntry() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <SiteNav activePage="home" />
+      <SiteNav activePage="giveaway" />
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -628,6 +638,32 @@ export default function GiveawayEntry() {
                   </div>
                 </div>
 
+                <div className="glass-card p-5 sm:p-6">
+                  <div className="relative z-[2]">
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em]">Step 5</span>
+                      <span className="text-[10px] text-white/20">—</span>
+                      <span className="text-sm font-display font-light text-white">Verification</span>
+                    </div>
+                    <div className="flex justify-center">
+                      <HCaptcha
+                        ref={captchaRef}
+                        sitekey="57c8688a-ca78-46a2-843e-8d1c3fdae89a"
+                        theme="dark"
+                        onVerify={(token) => setCaptchaToken(token)}
+                        onExpire={() => setCaptchaToken(null)}
+                        onError={() => setCaptchaToken(null)}
+                      />
+                    </div>
+                    {captchaToken && (
+                      <div className="mt-3 flex items-center justify-center gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
+                        <span className="text-xs text-green-400/80 font-light">Verification complete</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="glass-card p-4 sm:p-5">
                   <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                     <Clock className="w-5 h-5 text-amber-400 shrink-0" />
@@ -644,7 +680,7 @@ export default function GiveawayEntry() {
 
                 <button
                   type="submit"
-                  disabled={submitting || !allRequiredSelected || !agreedToTerms || selectedPartners.length === 0 || !screenshotFile}
+                  disabled={submitting || !allRequiredSelected || !agreedToTerms || selectedPartners.length === 0 || !screenshotFile || !captchaToken}
                   className="premium-btn w-full py-4 relative overflow-hidden disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <span className="relative z-[2] flex items-center justify-center gap-2 text-sm font-display font-light">
