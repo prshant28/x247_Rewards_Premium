@@ -168,7 +168,9 @@ export interface GiveawayFormData {
   city: string;
   completedPartners: number[];
   screenshotConfirmed: boolean;
+  screenshotUrl?: string;
   agreedToTerms: boolean;
+  isAnonymous?: boolean;
 }
 
 export async function getGiveawayStatus(): Promise<GiveawayStatus> {
@@ -176,7 +178,7 @@ export async function getGiveawayStatus(): Promise<GiveawayStatus> {
   return res.json();
 }
 
-export async function submitGiveawayEntry(data: GiveawayFormData): Promise<{ success: boolean; message: string; error?: string }> {
+export async function submitGiveawayEntry(data: GiveawayFormData): Promise<{ success: boolean; message: string; entryCode?: string; error?: string }> {
   const res = await fetch(`${API_BASE}/giveaway/enter`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -186,5 +188,51 @@ export async function submitGiveawayEntry(data: GiveawayFormData): Promise<{ suc
   if (!res.ok) {
     return { success: false, message: "", error: result.error || "Failed to submit entry" };
   }
-  return { success: true, message: result.message };
+  return { success: true, message: result.message, entryCode: result.entry?.entryCode };
+}
+
+export async function requestUploadUrl(file: { name: string; size: number; contentType: string }): Promise<{ uploadURL: string; objectPath: string }> {
+  const res = await fetch(`${API_BASE}/storage/uploads/request-url`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(file),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Failed to get upload URL");
+  }
+  return res.json();
+}
+
+export async function uploadScreenshot(file: File): Promise<string> {
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error("File size must not exceed 10 MB");
+  }
+
+  const { uploadURL, objectPath } = await requestUploadUrl({
+    name: file.name,
+    size: file.size,
+    contentType: file.type,
+  });
+
+  const uploadRes = await fetch(uploadURL, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+
+  if (!uploadRes.ok) {
+    throw new Error("Failed to upload screenshot");
+  }
+
+  return objectPath;
+}
+
+export async function checkEntryCode(code: string): Promise<{ found: boolean; entry?: any; error?: string }> {
+  const res = await fetch(`${API_BASE}/giveaway/check/${encodeURIComponent(code)}`);
+  const result = await res.json();
+  if (!res.ok) {
+    return { found: false, error: result.error };
+  }
+  return result;
 }

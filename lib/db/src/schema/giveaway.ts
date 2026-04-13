@@ -11,9 +11,12 @@ export const giveawayEntriesTable = pgTable("giveaway_entries", {
   city: text("city").notNull(),
   completedPartners: json("completed_partners").$type<number[]>().notNull(),
   screenshotConfirmed: boolean("screenshot_confirmed").notNull().default(false),
+  screenshotUrl: text("screenshot_url"),
   agreedToTerms: boolean("agreed_to_terms").notNull().default(false),
   ipHash: text("ip_hash"),
   entryCount: integer("entry_count").notNull().default(1),
+  entryCode: text("entry_code").notNull(),
+  isAnonymous: boolean("is_anonymous").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
