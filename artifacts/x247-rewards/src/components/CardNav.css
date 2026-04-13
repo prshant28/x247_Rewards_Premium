@@ -36,17 +36,37 @@
   content: '';
   position: absolute;
   top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg,
+  left: 5%;
+  right: 5%;
+  height: 2px;
+  background: linear-gradient(
+    var(--btn-border-angle, 0deg),
     transparent 0%,
-    rgba(255, 255, 255, 0.12) 30%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.12) 70%,
+    rgba(20, 30, 80, 0.6) 15%,
+    rgba(255, 255, 255, 0.15) 25%,
+    rgba(140, 20, 30, 0.6) 40%,
+    transparent 55%,
+    rgba(140, 20, 30, 0.35) 70%,
+    rgba(255, 255, 255, 0.1) 80%,
+    rgba(20, 30, 80, 0.5) 90%,
     transparent 100%
   );
+  animation: btn-border-rotate 6s linear infinite;
+  mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
   z-index: 2;
+  border-radius: 1px;
+}
+
+@property --btn-border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes btn-border-rotate {
+  0%   { --btn-border-angle: 0deg; }
+  100% { --btn-border-angle: 360deg; }
 }
 
 .card-nav.open {
