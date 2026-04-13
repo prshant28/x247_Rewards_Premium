@@ -55,6 +55,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
             { label: "Home", href: isHome ? "/" : "/", spa: !isHome, icon: <Sparkles className="w-3.5 h-3.5" /> },
             { label: "Partner Links", href: isHome ? "#partners" : "/#partners", icon: <ExternalLink className="w-3.5 h-3.5" /> },
             { label: "How it Works", href: isHome ? "#how-it-works" : "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
+            { label: "Giveaway", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Rewards", href: isHome ? "#rewards" : "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
           ],
         },
@@ -66,7 +67,6 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           links: [
             { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
             { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-            { label: "Giveaway", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Winners", href: isHome ? "#winners" : "/#winners", icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Dashboard", href: isHome ? "#dashboard" : "/#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
             { label: "FAQ", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },

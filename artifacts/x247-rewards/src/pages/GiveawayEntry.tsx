@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import SiteNav from "@/components/SiteNav";
-import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, type PartnerData, type GiveawayStatus } from "@/lib/api";
+import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, trackFormFill, type PartnerData, type GiveawayStatus } from "@/lib/api";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -167,6 +167,7 @@ export default function GiveawayEntry() {
       setSubmitted(true);
       setSuccessMessage(result.message);
       setEntryCode(result.entryCode || "");
+      selectedPartners.forEach((partnerId) => trackFormFill(partnerId));
     } else {
       setError(result.error || "Something went wrong. Please try again.");
       captchaRef.current?.resetCaptcha();
@@ -207,7 +208,7 @@ export default function GiveawayEntry() {
         <SiteNav activePage="giveaway" />
         <div className="noise-overlay" />
         <div className="vignette-overlay" />
-        <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="flex items-center justify-center min-h-screen px-4 pt-28 pb-12">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -216,8 +217,8 @@ export default function GiveawayEntry() {
             <div className="glass-card p-8 sm:p-12">
               <div className="card-top-accent card-top-accent-navy" />
               <div className="relative z-[2]">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/20 flex items-center justify-center mx-auto mb-6">
-                  <PartyPopper className="w-8 h-8 text-green-400" />
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/[0.12] flex items-center justify-center mx-auto mb-6">
+                  <PartyPopper className="w-8 h-8 text-white/70" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">You're In!</h2>
                 <p className="text-white/60 text-sm font-light mb-6 leading-relaxed">{successMessage}</p>
@@ -227,9 +228,9 @@ export default function GiveawayEntry() {
                     <div className="relative z-[2]">
                       <p className="text-[10px] uppercase tracking-widest text-white/30 font-display mb-2">Your Entry Code</p>
                       <div className="flex items-center justify-center gap-3">
-                        <code className="text-lg sm:text-xl font-mono font-bold text-amber-400 tracking-wider">{entryCode}</code>
+                        <code className="text-lg sm:text-xl font-mono font-bold text-white tracking-wider">{entryCode}</code>
                         <button onClick={copyEntryCode} className="p-2 rounded-lg bg-white/[0.06] border border-white/[0.1] hover:bg-white/[0.1] transition-colors">
-                          {codeCopied ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-white/50" />}
+                          {codeCopied ? <CheckCircle2 className="w-4 h-4 text-white/70" /> : <Copy className="w-4 h-4 text-white/50" />}
                         </button>
                       </div>
                       <p className="text-[10px] text-white/30 font-light mt-2">Save this code! You'll need it to check if you've won.</p>
@@ -239,17 +240,17 @@ export default function GiveawayEntry() {
 
                 <div className="glass-card p-4 mb-4">
                   <div className="relative z-[2] flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-amber-400 shrink-0" />
+                    <Clock className="w-5 h-5 text-white/50 shrink-0" />
                     <div className="text-left">
                       <p className="text-[10px] uppercase tracking-widest text-white/30 font-display">Winner Announcement</p>
-                      <p className="text-sm text-white font-light">Within 24-48 hours after verification</p>
+                      <p className="text-sm text-white font-light">Within 24-48 hours after verification, when contest is filled</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="glass-card p-4 mb-6">
                   <div className="relative z-[2] flex items-center gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-white/50 shrink-0" />
                     <div className="text-left">
                       <p className="text-[10px] uppercase tracking-widest text-white/30 font-display">Confirmation Email</p>
                       <p className="text-sm text-white/60 font-light">A confirmation with your entry code has been sent to your email.</p>
@@ -308,7 +309,7 @@ export default function GiveawayEntry() {
             </div>
             <div className="glass-card p-4 text-center">
               <div className="relative z-[2]">
-                <div className="text-2xl font-display font-light text-amber-400">{activePartners.length}</div>
+                <div className="text-2xl font-display font-light text-white">{activePartners.length}</div>
                 <div className="text-[9px] uppercase tracking-widest text-white/30 font-display mt-1">Partners</div>
               </div>
             </div>
@@ -334,19 +335,19 @@ export default function GiveawayEntry() {
                       type="text"
                       value={checkCode}
                       onChange={(e) => setCheckCode(e.target.value.toUpperCase())}
-                      className="flex-1 px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-mono placeholder-white/20 focus:outline-none focus:border-amber-500/30 transition-colors"
+                      className="flex-1 px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-mono placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors"
                       placeholder="X247-XXXX-XXXX"
                     />
                     <button
                       onClick={handleCheckCode}
                       disabled={checking || !checkCode.trim()}
-                      className="px-5 py-3 rounded-xl bg-amber-500/15 border border-amber-500/25 text-amber-300 text-sm font-display font-light hover:bg-amber-500/25 transition-colors disabled:opacity-40"
+                      className="px-5 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white/70 text-sm font-display font-light hover:bg-white/[0.1] transition-colors disabled:opacity-40"
                     >
                       {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : "Check"}
                     </button>
                   </div>
                   {checkResult && (
-                    <div className={`mt-3 p-3 rounded-xl text-sm font-light ${checkResult.found ? "bg-green-500/10 border border-green-500/20 text-green-400" : "bg-red-500/10 border border-red-500/20 text-red-400"}`}>
+                    <div className={`mt-3 p-3 rounded-xl text-sm font-light ${checkResult.found ? "bg-white/[0.04] border border-white/[0.1] text-white/70" : "bg-red-500/10 border border-red-500/20 text-red-400"}`}>
                       {checkResult.found ? (
                         <div className="space-y-1">
                           <p><strong className="font-medium">Entry Found!</strong></p>
@@ -372,8 +373,8 @@ export default function GiveawayEntry() {
                 <h2 className="text-2xl font-display font-light text-white mb-2">Contest Full</h2>
                 <p className="text-white/40 text-sm font-light mb-4">All {status.maxSpots} spots have been taken. Stay tuned for the next giveaway!</p>
                 <div className="flex items-center gap-3 justify-center">
-                  <Clock className="w-4 h-4 text-amber-400" />
-                  <span className="text-sm text-white/60 font-light">Winner announcement: Within 24-48 hours after verification</span>
+                  <Clock className="w-4 h-4 text-white/50" />
+                  <span className="text-sm text-white/60 font-light">Winner announcement: Within 24-48 hours after verification, when contest is filled</span>
                 </div>
               </div>
             </motion.div>
@@ -471,10 +472,10 @@ export default function GiveawayEntry() {
                       })}
                     </div>
                     {selectedPartners.length > 0 && (
-                      <div className="mt-4 px-3 py-2 rounded-lg bg-green-500/5 border border-green-500/10">
-                        <p className="text-xs text-green-400/80 font-light">
+                      <div className="mt-4 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.08]">
+                        <p className="text-xs text-white/60 font-light">
                           <Star className="w-3 h-3 inline mr-1" />
-                          You'll earn <strong className="font-medium">{selectedPartners.length} {selectedPartners.length === 1 ? "entry" : "entries"}</strong> into the daily prize draw!
+                          You'll earn <strong className="font-medium text-white/80">{selectedPartners.length} {selectedPartners.length === 1 ? "entry" : "entries"}</strong> into the daily prize draw!
                         </p>
                       </div>
                     )}
@@ -494,16 +495,16 @@ export default function GiveawayEntry() {
                           type="checkbox"
                           checked={isAnonymous}
                           onChange={(e) => setIsAnonymous(e.target.checked)}
-                          className="accent-purple-500 w-3.5 h-3.5"
+                          className="accent-white w-3.5 h-3.5"
                         />
-                        <EyeOff className="w-3.5 h-3.5 text-purple-400" />
-                        <span className="text-[11px] text-purple-300/70 font-light">Submit Anonymously</span>
+                        <EyeOff className="w-3.5 h-3.5 text-white/40" />
+                        <span className="text-[11px] text-white/40 font-light">Submit Anonymously</span>
                       </label>
                     </div>
 
                     {isAnonymous && (
-                      <div className="mb-4 px-3 py-2 rounded-lg bg-purple-500/5 border border-purple-500/10">
-                        <p className="text-[11px] text-purple-300/70 font-light">
+                      <div className="mb-4 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.08]">
+                        <p className="text-[11px] text-white/50 font-light">
                           <EyeOff className="w-3 h-3 inline mr-1" />
                           Your name will be hidden publicly. Your details are still required for verification and prize delivery.
                         </p>
@@ -583,8 +584,8 @@ export default function GiveawayEntry() {
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-green-400" />
-                            <span className="text-xs text-green-400/80 font-light">{screenshotFile?.name} ({((screenshotFile?.size || 0) / 1024 / 1024).toFixed(1)} MB)</span>
+                            <CheckCircle2 className="w-4 h-4 text-white/60" />
+                            <span className="text-xs text-white/50 font-light">{screenshotFile?.name} ({((screenshotFile?.size || 0) / 1024 / 1024).toFixed(1)} MB)</span>
                           </div>
                           <button type="button" onClick={removeScreenshot} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs hover:bg-red-500/20 transition-colors">
                             <X className="w-3 h-3" />
@@ -618,16 +619,16 @@ export default function GiveawayEntry() {
                       <span className="text-sm font-display font-light text-white">Agreement</span>
                     </div>
 
-                    <label className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border ${agreedToTerms ? "bg-green-500/5 border-green-500/15" : "bg-white/[0.02] border-white/[0.05]"}`}>
+                    <label className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border ${agreedToTerms ? "bg-white/[0.04] border-white/[0.12]" : "bg-white/[0.02] border-white/[0.05]"}`}>
                       <input
                         type="checkbox"
                         checked={agreedToTerms}
                         onChange={(e) => setAgreedToTerms(e.target.checked)}
-                        className="accent-green-500 w-4 h-4 shrink-0 mt-0.5"
+                        className="accent-white w-4 h-4 shrink-0 mt-0.5"
                       />
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <Shield className="w-3.5 h-3.5 text-blue-400" />
+                          <Shield className="w-3.5 h-3.5 text-white/50" />
                           <span className="text-sm text-white font-light">Terms & Conditions Agreement</span>
                         </div>
                         <p className="text-[11px] text-white/35 font-light leading-relaxed">
@@ -657,8 +658,8 @@ export default function GiveawayEntry() {
                     </div>
                     {captchaToken && (
                       <div className="mt-3 flex items-center justify-center gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
-                        <span className="text-xs text-green-400/80 font-light">Verification complete</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-white/60" />
+                        <span className="text-xs text-white/50 font-light">Verification complete</span>
                       </div>
                     )}
                   </div>
@@ -666,13 +667,13 @@ export default function GiveawayEntry() {
 
                 <div className="glass-card p-4 sm:p-5">
                   <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-                    <Clock className="w-5 h-5 text-amber-400 shrink-0" />
+                    <Clock className="w-5 h-5 text-white/50 shrink-0" />
                     <div className="flex-1">
                       <p className="text-xs text-white/50 font-light">
                         <strong className="text-white/70 font-medium">Limited Spots:</strong> Only {status?.maxSpots ?? 100} entries accepted. {status?.spotsRemaining ?? "..."} spots remaining.
                       </p>
                       <p className="text-xs text-white/35 font-light mt-1">
-                        Winner announcement: <strong className="text-white/60 font-medium">Within 24-48 hours after verification</strong>. Once all spots are filled, no more entries will be accepted.
+                        Winner announcement: <strong className="text-white/60 font-medium">Within 24-48 hours after verification, when contest is filled</strong>. Once all spots are filled, no more entries will be accepted.
                       </p>
                     </div>
                   </div>
