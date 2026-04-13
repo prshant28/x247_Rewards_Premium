@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue, type Variants } from "framer-motion";
 import { Link } from "wouter";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
-  Check, 
   Target,
   TerminalSquare,
   Activity,
@@ -20,11 +19,9 @@ import {
   Award,
   ExternalLink,
   Headphones,
-  CreditCard,
   Ticket,
   Package,
   Gift,
-  Crown,
   Gem
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
@@ -36,55 +33,6 @@ import "@/components/DotGrid.css";
 import ProfileCard from "@/components/ProfileCard";
 import "@/components/ProfileCard.css";
 
-
-function AnimatedCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const glassRef = useRef<HTMLDivElement>(null);
-  const pos = useRef({ x: -100, y: -100 });
-  const ring = useRef({ x: -100, y: -100 });
-  const glass = useRef({ x: -100, y: -100 });
-
-  useEffect(() => {
-    const move = (e: MouseEvent) => {
-      pos.current = { x: e.clientX, y: e.clientY };
-    };
-    window.addEventListener("mousemove", move);
-
-    let raf: number;
-    const animate = () => {
-      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
-      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
-      glass.current.x += (pos.current.x - glass.current.x) * 0.08;
-      glass.current.y += (pos.current.y - glass.current.y) * 0.08;
-
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${pos.current.x - 5}px, ${pos.current.y - 5}px)`;
-      }
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ring.current.x - 20}px, ${ring.current.y - 20}px)`;
-      }
-      if (glassRef.current) {
-        glassRef.current.style.transform = `translate(${glass.current.x - 50}px, ${glass.current.y - 50}px)`;
-      }
-      raf = requestAnimationFrame(animate);
-    };
-    raf = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener("mousemove", move);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  return (
-    <>
-      <div ref={dotRef} className="cursor-dot" />
-      <div ref={ringRef} className="cursor-ring" />
-      <div ref={glassRef} className="cursor-glass" />
-    </>
-  );
-}
 
 function FloatingParticles() {
   return (
@@ -140,41 +88,8 @@ function TextReveal({ text, className = "", delay = 0 }: { text: string; classNa
   );
 }
 
-function MagneticWrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const x = useSpring(rawX, { stiffness: 200, damping: 20 });
-  const y = useSpring(rawY, { stiffness: 200, damping: 20 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    rawX.set((e.clientX - cx) * 0.06);
-    rawY.set((e.clientY - cy) * 0.06);
-  };
-
-  const handleMouseLeave = () => { rawX.set(0); rawY.set(0); };
-
-  return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ x, y }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-
 function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const glareRef = useRef<HTMLDivElement>(null);
   const rawRotateX = useMotionValue(0);
   const rawRotateY = useMotionValue(0);
   const rotateX = useSpring(rawRotateX, { stiffness: 300, damping: 30 });
@@ -185,8 +100,8 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
     const rect = ref.current.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
-    rawRotateX.set(0);
-    rawRotateY.set(0);
+    rawRotateX.set((py - 0.5) * -4);
+    rawRotateY.set((px - 0.5) * 4);
   };
 
   const handleMouseLeave = () => {
@@ -203,10 +118,6 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
       className={className}
     >
       {children}
-      <div
-        ref={glareRef}
-        className="absolute inset-0 rounded-[24px] pointer-events-none z-[3] transition-opacity duration-300"
-      />
     </motion.div>
   );
 }
@@ -403,7 +314,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-2xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="How to Enter" /></h2>
+              <h2 className="text-2xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
@@ -512,7 +423,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Prizes & Rewards
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="What You Can Win" /></h2>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
@@ -609,16 +520,16 @@ export default function Home() {
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/55 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/10 text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
+                      <span className="text-white/[0.06] text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/55 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/10 text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
+                      <span className="text-white/[0.06] text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
@@ -641,7 +552,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                   Analytics
                 </div>
-                <h2 className="text-xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="Live Tracking Dashboard" /></h2>
+                <h2 className="text-xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
                 <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
                   Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
                 </p>
@@ -819,7 +730,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Inner Circle
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight whitespace-nowrap"><TextReveal text="The Ecosystem" /></h2>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
@@ -948,7 +859,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Intel
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight whitespace-nowrap">FAQ</h2>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight">FAQ</h2>
             </motion.div>
 
             <motion.div 
@@ -1036,7 +947,7 @@ export default function Home() {
           </motion.div>
           <div className="border-t border-white/[0.04] pt-6 sm:pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light text-white/20">
-              <p>&copy; 2025 X247 Rewards Protocol. All rights reserved.</p>
+              <p>&copy; 2026 X247 Rewards Protocol. All rights reserved.</p>
               <div className="flex gap-5">
                 <a href="#" className="hover:text-white/40 transition-colors duration-300">Terms</a>
                 <a href="#" className="hover:text-white/40 transition-colors duration-300">Privacy</a>
