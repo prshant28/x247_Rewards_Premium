@@ -43,11 +43,6 @@ router.get("/giveaway/status", async (_req, res) => {
 
 router.post("/giveaway/enter", async (req, res) => {
   try {
-    const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(giveawayEntriesTable);
-    if (Number(countResult?.count || 0) >= MAX_SPOTS) {
-      return res.status(400).json({ error: "Contest is full. All spots have been taken." });
-    }
-
     const { fullName, email, phone, age, city, completedPartners, screenshotConfirmed, screenshotUrl, agreedToTerms, isAnonymous, contestId, userToken } = req.body;
 
     if (!fullName || !email || !phone || !age || !city) {
@@ -72,15 +67,6 @@ router.post("/giveaway/enter", async (req, res) => {
 
     const ipHash = hashIp(req.ip || "");
 
-    const [existingEntry] = await db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.email, email)).limit(1);
-    if (existingEntry) {
-      return res.status(400).json({ error: "This email has already been used to enter the giveaway" });
-    }
-
-    const validPartnerIds = completedPartners.filter((id: number) => typeof id === "number" && id > 0);
-    const entryCount = validPartnerIds.length;
-    const entryCode = generateEntryCode();
-
     let userId: number | null = null;
     if (userToken) {
       const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, userToken)).limit(1);
@@ -92,19 +78,29 @@ router.post("/giveaway/enter", async (req, res) => {
     let resolvedContestId: number | null = null;
     if (contestId) {
       const [contest] = await db.select().from(contestsTable).where(eq(contestsTable.id, Number(contestId))).limit(1);
-      if (contest) {
-        resolvedContestId = contest.id;
-        const [contestCount] = await db.select({ count: sql<number>`count(*)` }).from(giveawayEntriesTable).where(eq(giveawayEntriesTable.contestId, contest.id));
-        if (Number(contestCount?.count || 0) >= contest.maxSpots) {
-          return res.status(400).json({ error: "This contest is full. All spots have been taken." });
-        }
+      if (!contest) {
+        return res.status(400).json({ error: "Contest not found" });
+      }
+      resolvedContestId = contest.id;
 
-        if (userId) {
-          const [existingContestEntry] = await db.select().from(giveawayEntriesTable).where(and(eq(giveawayEntriesTable.contestId, contest.id), eq(giveawayEntriesTable.email, email))).limit(1);
-          if (existingContestEntry) {
-            return res.status(400).json({ error: "You have already entered this contest" });
-          }
-        }
+      const [contestCount] = await db.select({ count: sql<number>`count(*)` }).from(giveawayEntriesTable).where(eq(giveawayEntriesTable.contestId, contest.id));
+      if (Number(contestCount?.count || 0) >= contest.maxSpots) {
+        return res.status(400).json({ error: "This contest is full. All spots have been taken." });
+      }
+
+      const [existingContestEntry] = await db.select().from(giveawayEntriesTable).where(and(eq(giveawayEntriesTable.contestId, contest.id), eq(giveawayEntriesTable.email, email))).limit(1);
+      if (existingContestEntry) {
+        return res.status(400).json({ error: "You have already entered this contest" });
+      }
+    } else {
+      const [countResult] = await db.select({ count: sql<number>`count(*)` }).from(giveawayEntriesTable);
+      if (Number(countResult?.count || 0) >= MAX_SPOTS) {
+        return res.status(400).json({ error: "Contest is full. All spots have been taken." });
+      }
+
+      const [existingEntry] = await db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.email, email)).limit(1);
+      if (existingEntry) {
+        return res.status(400).json({ error: "This email has already been used to enter the giveaway" });
       }
     }
 

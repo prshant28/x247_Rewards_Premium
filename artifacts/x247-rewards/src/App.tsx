@@ -12,6 +12,10 @@ import PartnerDetail from "@/pages/PartnerDetail";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminPanel from "@/pages/AdminPanel";
 import GiveawayEntry from "@/pages/GiveawayEntry";
+import Giveaway from "@/pages/Giveaway";
+import Winners from "@/pages/Winners";
+import Account from "@/pages/Account";
+import Community from "@/pages/Community";
 import PageLoader from "@/components/PageLoader";
 import ChatBot from "@/components/ChatBot";
 
@@ -59,8 +63,20 @@ function Router() {
         <Route path="/partners">
           <AnimatedRoute component={Partners} />
         </Route>
-        <Route path="/giveaway">
+        <Route path="/giveaway/:slug">
           <AnimatedRoute component={GiveawayEntry} />
+        </Route>
+        <Route path="/giveaway">
+          <AnimatedRoute component={Giveaway} />
+        </Route>
+        <Route path="/winners">
+          <AnimatedRoute component={Winners} />
+        </Route>
+        <Route path="/account">
+          <AnimatedRoute component={Account} />
+        </Route>
+        <Route path="/community">
+          <AnimatedRoute component={Community} />
         </Route>
         <Route path="/x247-admin-login">
           <AnimatedRoute component={AdminLogin} />

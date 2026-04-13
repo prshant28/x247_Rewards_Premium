@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 interface SiteNavProps {
-  activePage?: "home" | "partners" | "offers" | "partner-detail" | "giveaway";
+  activePage?: "home" | "partners" | "offers" | "partner-detail" | "giveaway" | "winners" | "account" | "community";
 }
 
 export default function SiteNav({ activePage = "home" }: SiteNavProps) {
@@ -67,7 +67,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           links: [
             { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
             { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-            { label: "Winners", href: isHome ? "#winners" : "/#winners", icon: <Trophy className="w-3.5 h-3.5" /> },
+            { label: "Winners", href: "/winners", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Dashboard", href: isHome ? "#dashboard" : "/#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
             { label: "FAQ", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
           ],
@@ -78,8 +78,8 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           bgColor: "rgba(255, 255, 255, 0.03)",
           textColor: "#fff",
           links: [
-            { label: "WhatsApp", href: isHome ? "#register" : "/#register", icon: <ExternalLink className="w-3.5 h-3.5" /> },
-            { label: "Community", href: isHome ? "#register" : "/#register", icon: <Users className="w-3.5 h-3.5" /> },
+            { label: "Community", href: "/community", spa: true, icon: <Users className="w-3.5 h-3.5" /> },
+            { label: "My Account", href: "/account", spa: true, icon: <Sparkles className="w-3.5 h-3.5" /> },
             { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
           ],
         },
