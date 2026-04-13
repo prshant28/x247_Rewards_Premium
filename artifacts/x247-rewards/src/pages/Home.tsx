@@ -364,7 +364,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 w-full sm:w-auto px-4"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 w-full sm:w-auto px-4"
             >
               <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group w-full sm:w-auto">
                 <span className="relative z-[2]">Get Started Now</span>
@@ -373,6 +373,29 @@ export default function Home() {
               <BorderGlow as="a" href="#rewards" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group w-full sm:w-auto">
                 <span className="relative z-[2]">See Rewards</span>
               </BorderGlow>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 1.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="mb-8"
+            >
+              <ProfileCard
+                avatarUrl="/rewards-hero.jpg"
+                miniAvatarUrl="/rewards-hero.jpg"
+                innerGradient="linear-gradient(145deg, rgba(20, 30, 80, 0.4) 0%, rgba(140, 20, 30, 0.25) 50%, rgba(10, 10, 10, 0.8) 100%)"
+                behindGlowEnabled={true}
+                behindGlowColor="rgba(140, 20, 30, 0.5)"
+                behindGlowSize="60%"
+                name="X247 Rewards"
+                title="Premium Giveaway Platform"
+                handle="x247rewards"
+                status="Live Now"
+                contactText="Enter Now"
+                showUserInfo={true}
+                onContactClick={() => { window.location.hash = "#how-it-works"; }}
+              />
             </motion.div>
           </motion.div>
 
