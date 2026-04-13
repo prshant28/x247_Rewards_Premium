@@ -7,12 +7,14 @@ interface NavLink {
   label: string;
   href: string;
   spa?: boolean;
+  icon?: React.ReactNode;
 }
 
 interface NavItem {
   label: string;
   bgColor: string;
   textColor: string;
+  icon?: React.ReactNode;
   links: NavLink[];
 }
 
@@ -194,12 +196,16 @@ const CardNav = ({
               ref={setCardRef(idx)}
               style={{ backgroundColor: item.bgColor, color: item.textColor }}
             >
-              <div className="nav-card-label">{item.label}</div>
+              <div className="nav-card-label">
+                {item.icon && <span className="nav-card-label-icon">{item.icon}</span>}
+                {item.label}
+              </div>
               <div className="nav-card-links">
                 {item.links?.map((lnk, i) => {
+                  const linkIcon = lnk.icon || <ArrowUpRight className="nav-card-link-icon" aria-hidden="true" />;
                   const content = (
                     <>
-                      <ArrowUpRight className="nav-card-link-icon" aria-hidden="true" />
+                      <span className="nav-card-link-icon-wrap">{linkIcon}</span>
                       {lnk.label}
                     </>
                   );

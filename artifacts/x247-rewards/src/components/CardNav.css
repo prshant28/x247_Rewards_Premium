@@ -195,6 +195,27 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   opacity: 0.5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-card-label-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.nav-card-label-icon svg {
+  width: 10px;
+  height: 10px;
+  opacity: 0.7;
 }
 
 .nav-card-links {
@@ -226,4 +247,32 @@
   height: 14px;
   opacity: 0.4;
   flex-shrink: 0;
+}
+
+.nav-card-link-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.nav-card-link-icon-wrap svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0.5;
+}
+
+.nav-card-link:hover .nav-card-link-icon-wrap {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.nav-card-link:hover .nav-card-link-icon-wrap svg {
+  opacity: 0.8;
 }

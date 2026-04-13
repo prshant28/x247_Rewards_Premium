@@ -270,32 +270,35 @@ export default function Home() {
         items={[
           {
             label: "Navigate",
+            icon: <Globe className="w-3 h-3" />,
             bgColor: "rgba(20, 25, 60, 0.15)",
             textColor: "#fff",
             links: [
-              { label: "Home", href: "#register" },
-              { label: "How it Works", href: "#how-it-works" },
-              { label: "Rewards", href: "#rewards" },
+              { label: "Home", href: "#register", icon: <Sparkles className="w-3.5 h-3.5" /> },
+              { label: "How it Works", href: "#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
+              { label: "Rewards", href: "#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
             ],
           },
           {
             label: "Explore",
+            icon: <Zap className="w-3 h-3" />,
             bgColor: "rgba(120, 20, 30, 0.12)",
             textColor: "#fff",
             links: [
-              { label: "Offers", href: "/offers", spa: true },
-              { label: "Dashboard", href: "#dashboard" },
-              { label: "FAQ", href: "#faq" },
+              { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
+              { label: "Dashboard", href: "#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
+              { label: "FAQ", href: "#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
             ],
           },
           {
             label: "Connect",
+            icon: <Users className="w-3 h-3" />,
             bgColor: "rgba(255, 255, 255, 0.03)",
             textColor: "#fff",
             links: [
-              { label: "WhatsApp", href: "#register" },
-              { label: "Community", href: "#register" },
-              { label: "Support", href: "#faq" },
+              { label: "WhatsApp", href: "#register", icon: <ExternalLink className="w-3.5 h-3.5" /> },
+              { label: "Community", href: "#register", icon: <Users className="w-3.5 h-3.5" /> },
+              { label: "Support", href: "#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
             ],
           },
         ]}
