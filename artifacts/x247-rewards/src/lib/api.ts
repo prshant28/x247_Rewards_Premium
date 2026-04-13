@@ -56,7 +56,40 @@ export async function logout(): Promise<void> {
   clearToken();
 }
 
-export async function getPartners() {
+export interface PartnerData {
+  id: number;
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  category: string;
+  registrationUrl: string;
+  accent: string;
+  badge: string | null;
+  badgeSecondary: string | null;
+  isActive: boolean;
+  isRequired: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  stats: { clicks: number; impressions: number; formFills: number };
+}
+
+export interface PartnerInput {
+  slug: string;
+  name: string;
+  tagline?: string;
+  description?: string;
+  category?: string;
+  registrationUrl: string;
+  accent?: string;
+  badge?: string | null;
+  badgeSecondary?: string | null;
+  isActive?: boolean;
+  isRequired?: boolean;
+}
+
+export async function getPartners(): Promise<PartnerData[]> {
   const res = await fetch(`${API_BASE}/partners`);
   return res.json();
 }
@@ -66,7 +99,7 @@ export async function getAnalytics() {
   return res.json();
 }
 
-export async function createPartner(data: any) {
+export async function createPartner(data: PartnerInput) {
   const res = await authFetch("/partners", {
     method: "POST",
     body: JSON.stringify(data),
@@ -74,7 +107,7 @@ export async function createPartner(data: any) {
   return res.json();
 }
 
-export async function updatePartner(id: number, data: any) {
+export async function updatePartner(id: number, data: Partial<PartnerInput>) {
   const res = await authFetch(`/partners/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
