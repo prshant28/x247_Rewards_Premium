@@ -267,7 +267,6 @@ export default function Home() {
             links: [
               { label: "Home", href: "#register", icon: <Sparkles className="w-3.5 h-3.5" /> },
               { label: "Partner Links", href: "#partners", icon: <ExternalLink className="w-3.5 h-3.5" /> },
-              { label: "How it Works", href: "#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
               { label: "Rewards", href: "#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
             ],
           },
