@@ -267,6 +267,7 @@ export default function Home() {
             links: [
               { label: "Home", href: "#register", icon: <Sparkles className="w-3.5 h-3.5" /> },
               { label: "Partner Links", href: "#partners", icon: <ExternalLink className="w-3.5 h-3.5" /> },
+              { label: "How it Works", href: "#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
               { label: "Rewards", href: "#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
             ],
           },
@@ -276,7 +277,9 @@ export default function Home() {
             bgColor: "rgba(120, 20, 30, 0.12)",
             textColor: "#fff",
             links: [
+              { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
               { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
+              { label: "Winners", href: "#winners", icon: <Trophy className="w-3.5 h-3.5" /> },
               { label: "Dashboard", href: "#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
               { label: "FAQ", href: "#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
             ],
@@ -958,7 +961,7 @@ export default function Home() {
                 { title: "How to Enter", desc: "Step-by-step guide to register, submit entries, and start winning.", icon: <Target className="w-5 h-5" />, href: "#how-it-works", spa: false, accent: "navy" as const, badge: null },
                 { title: "Your Dashboard", desc: "Track clicks, verified referrals, milestones, and leaderboard rank.", icon: <Activity className="w-5 h-5" />, href: "#dashboard", spa: false, accent: "navy" as const, badge: null },
                 { title: "Rewards Gallery", desc: "See the full list of prizes — swag kits, gift cards, gadgets, and more.", icon: <Trophy className="w-5 h-5" />, href: "#rewards", spa: false, accent: "neutral" as const, badge: null },
-                { title: "Partner Program", desc: "Become an official partner — unlock payouts, merch, and early access.", icon: <Star className="w-5 h-5" />, href: "#register", spa: false, accent: "neutral" as const, badge: "Earn ₹100/ref" },
+                { title: "All Partners", desc: "View all partner registrations, trust verification, and live stats.", icon: <Star className="w-5 h-5" />, href: "/partners", spa: true, accent: "neutral" as const, badge: "Coming Soon" },
                 { title: "Community Hub", desc: "Join our WhatsApp group for flash giveaways and surprise drops.", icon: <Users className="w-5 h-5" />, href: "#register", spa: false, accent: "red" as const, badge: null },
               ].map((item, i) => {
                 const accentClasses = item.accent === "navy"
@@ -999,6 +1002,79 @@ export default function Home() {
               })}
             </motion.div>
 
+          </div>
+        </section>
+
+        <GlowLine />
+
+        <section id="winners" className="py-20 sm:py-32 relative">
+          <FloatingParticles />
+          <div className="container mx-auto px-4 max-w-6xl">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="text-center mb-16 sm:mb-24"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Daily Winners
+              </div>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Winner Showcase" /></h2>
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+                Real people winning real rewards — every single day. Check back daily to see if your name appears here.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-12"
+            >
+              {[
+                { name: "A***sh K.", prize: "₹1,000 Amazon Gift Card", date: "Today", avatar: "AK", tier: "Gift Card" },
+                { name: "R***ya S.", prize: "Premium Swag Kit", date: "Today", avatar: "RS", tier: "Daily Drop" },
+                { name: "P***av M.", prize: "₹500 Google Play Credit", date: "Yesterday", avatar: "PM", tier: "Gift Card" },
+                { name: "S***ti R.", prize: "Wireless Earbuds", date: "Yesterday", avatar: "SR", tier: "Tech Prize" },
+                { name: "V***sh P.", prize: "₹2,000 Flipkart Voucher", date: "2 days ago", avatar: "VP", tier: "Gift Card" },
+                { name: "M***na J.", prize: "Hackathon VIP Pass", date: "2 days ago", avatar: "MJ", tier: "Event Access" },
+              ].map((winner, i) => (
+                <motion.div key={i} variants={fadeUp}>
+                  <TiltCard className="glass-card p-5 sm:p-6 group h-full">
+                    <div className="card-top-accent" />
+                    <div className="card-shine" />
+                    <div className="relative z-[2] flex flex-col h-full">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-11 h-11 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
+                          <span className="text-xs font-display text-white/60">{winner.avatar}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-display font-light text-white truncate">{winner.name}</h4>
+                          <span className="text-[10px] text-white/30 font-light">{winner.date}</span>
+                        </div>
+                        <div className="premium-badge !text-[8px] !py-1 !px-2" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                          <Trophy className="w-2.5 h-2.5 mr-1" />
+                          {winner.tier}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                        <Gift className="w-4 h-4 text-white/30 shrink-0" />
+                        <span className="text-sm text-white/60 font-light">{winner.prize}</span>
+                      </div>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="text-center"
+            >
+              <p className="text-xs text-white/25 font-light mb-6">
+                Winners are selected daily. Placeholder data shown — real winners will appear once the first draw is completed.
+              </p>
+            </motion.div>
           </div>
         </section>
 
