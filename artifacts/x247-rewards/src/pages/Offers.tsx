@@ -46,17 +46,6 @@ const offers = [
     number: "01",
   },
   {
-    title: "Refer 5, Get Bonus Entry",
-    desc: "Refer 5 friends who complete their registration and receive a guaranteed bonus entry into the weekly mega draw.",
-    tag: "Ongoing",
-    status: "active" as const,
-    highlight: false,
-    accent: "navy" as const,
-    details: ["5 verified referrals needed", "Bonus entry auto-added", "Stackable — no limit"],
-    icon: <Users className="w-5 h-5" />,
-    number: "02",
-  },
-  {
     title: "Early Bird Swag Drop",
     desc: "First 100 entries every Monday receive an exclusive branded sticker pack shipped free. Be fast, be first.",
     tag: "Weekly",
@@ -65,7 +54,7 @@ const offers = [
     accent: "neutral" as const,
     details: ["Every Monday resets", "First 100 entries only", "Free worldwide shipping"],
     icon: <Clock className="w-5 h-5" />,
-    number: "03",
+    number: "02",
   },
   {
     title: "Partner Signup Cashback",
@@ -76,7 +65,7 @@ const offers = [
     accent: "red" as const,
     details: ["For new partner signups", "₹50 instant credit", "One-time per partner"],
     icon: <Tag className="w-5 h-5" />,
-    number: "04",
+    number: "03",
   },
   {
     title: "Weekend Mega Draw",
@@ -87,7 +76,7 @@ const offers = [
     accent: "navy" as const,
     details: ["3x prize pool", "All week's entries count", "Winners announced Sunday"],
     icon: <Star className="w-5 h-5" />,
-    number: "05",
+    number: "04",
   },
   {
     title: "Community Exclusive Drops",
@@ -98,7 +87,7 @@ const offers = [
     accent: "neutral" as const,
     details: ["WhatsApp community access", "Flash giveaways", "Twice monthly drops"],
     icon: <ShieldCheck className="w-5 h-5" />,
-    number: "06",
+    number: "05",
   },
 ];
 
