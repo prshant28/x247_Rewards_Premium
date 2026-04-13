@@ -101,20 +101,20 @@ function ScrollProgressLine({ containerRef, totalSteps }: { containerRef: React.
     <>
       <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-white/[0.04]" />
       <motion.div
-        className="absolute left-[21px] sm:left-[25px] top-0 w-[5px] rounded-full origin-top z-[1]"
+        className="absolute left-[22px] sm:left-[26px] top-0 w-[2px] rounded-full origin-top z-[1]"
         style={{
           height,
-          background: "linear-gradient(180deg, rgb(30, 40, 120) 0%, rgb(80, 30, 90) 30%, rgb(200, 40, 50) 60%, rgb(30, 40, 120) 100%)",
-          boxShadow: "0 0 12px 2px rgba(200, 40, 50, 0.3), 0 0 24px 4px rgba(30, 40, 120, 0.2)",
+          background: "linear-gradient(180deg, rgba(20, 30, 80, 0.8) 0%, rgba(255, 255, 255, 0.15) 25%, rgba(140, 20, 30, 0.8) 50%, rgba(255, 255, 255, 0.12) 75%, rgba(20, 30, 80, 0.7) 100%)",
+          boxShadow: "0 0 8px 1px rgba(140, 20, 30, 0.3), 0 0 16px 2px rgba(20, 30, 80, 0.2)",
           opacity: glowOpacity,
         }}
       />
       <motion.div
-        className="absolute left-[19px] sm:left-[23px] w-[9px] h-[9px] rounded-full z-[3]"
+        className="absolute left-[20px] sm:left-[24px] w-[6px] h-[6px] rounded-full z-[3]"
         style={{
           top: height,
-          background: "radial-gradient(circle, rgb(200, 40, 50) 0%, rgb(30, 40, 120) 100%)",
-          boxShadow: "0 0 16px 4px rgba(200, 40, 50, 0.5), 0 0 32px 8px rgba(30, 40, 120, 0.3)",
+          background: "radial-gradient(circle, rgba(140, 20, 30, 0.9) 0%, rgba(20, 30, 80, 0.8) 100%)",
+          boxShadow: "0 0 10px 3px rgba(140, 20, 30, 0.4), 0 0 20px 5px rgba(20, 30, 80, 0.25)",
           opacity: glowOpacity,
         }}
       />
@@ -132,25 +132,25 @@ function StepIcon({ icon, index, containerRef }: { icon: React.ReactNode; index:
   const borderColor = useTransform(scrollYProgress, (v) => {
     if (v >= threshold - 0.02) {
       const t = index / (totalSteps - 1);
-      const r = Math.round(30 + t * 170);
-      const g = Math.round(40 - t * 10);
-      const b = Math.round(120 - t * 70);
-      return `rgba(${r}, ${g}, ${b}, 0.5)`;
+      const r = Math.round(20 + t * 120);
+      const g = Math.round(30 - t * 10);
+      const b = Math.round(80 - t * 50);
+      return `rgba(${r}, ${g}, ${b}, 0.55)`;
     }
-    return "rgba(255, 255, 255, 0.08)";
+    return "rgba(255, 255, 255, 0.06)";
   });
   const shadowColor = useTransform(scrollYProgress, (v) => {
     if (v >= threshold - 0.02) {
       const t = index / (totalSteps - 1);
-      const r = Math.round(30 + t * 170);
-      const g = Math.round(40 - t * 10);
-      const b = Math.round(120 - t * 70);
-      return `0 0 20px 2px rgba(${r}, ${g}, ${b}, 0.25)`;
+      const r = Math.round(20 + t * 120);
+      const g = Math.round(30 - t * 10);
+      const b = Math.round(80 - t * 50);
+      return `0 0 12px 1px rgba(${r}, ${g}, ${b}, 0.2), 0 0 24px 2px rgba(${r}, ${g}, ${b}, 0.1)`;
     }
     return "none";
   });
   const iconColor = useTransform(scrollYProgress, (v) =>
-    v >= threshold - 0.02 ? "rgba(255, 255, 255, 0.9)" : "rgba(255, 255, 255, 0.35)"
+    v >= threshold - 0.02 ? "rgba(255, 255, 255, 0.85)" : "rgba(255, 255, 255, 0.3)"
   );
 
   return (
