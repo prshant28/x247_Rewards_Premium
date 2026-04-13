@@ -521,22 +521,24 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-10 sm:mb-16">
               {[
                 {
-                  tier: "Grand Prize",
-                  title: "Premium Laptop",
-                  value: "₹75,000+",
-                  desc: "Monthly grand draw — one lucky winner walks away with a brand new premium laptop. The ultimate reward for our most dedicated participants.",
-                  icon: <Crown className="w-6 h-6" />,
+                  label: "Your Hub",
+                  title: "Live Dashboard",
+                  desc: "Track your entries, monitor referral stats, and watch your rank climb on the global leaderboard — all in real time.",
+                  icon: <Activity className="w-6 h-6" />,
                   gradient: "linear-gradient(145deg, rgba(30, 35, 80, 0.4) 0%, rgba(10, 10, 10, 1) 100%)",
-                  featured: true
+                  href: "#dashboard",
+                  cta: "View Dashboard",
+                  badge: null,
                 },
                 {
-                  tier: "Weekly Draw",
-                  title: "Wireless Earbuds & Gadgets",
-                  value: "₹3,000–₹8,000",
-                  desc: "Premium wireless earbuds, power banks, smart bands, and tech accessories up for grabs in weekly mega draws.",
-                  icon: <Headphones className="w-6 h-6" />,
+                  label: "Explore",
+                  title: "Active Offers & Bonuses",
+                  desc: "Unlock 2x entries, cashback deals, early bird drops, and community-exclusive rewards. New offers added regularly.",
+                  icon: <Gift className="w-6 h-6" />,
                   gradient: "linear-gradient(145deg, rgba(80, 20, 30, 0.3) 0%, rgba(10, 10, 10, 1) 100%)",
-                  featured: false
+                  href: "/offers",
+                  cta: "Browse Offers",
+                  badge: "5 Live",
                 },
               ].map((item, i) => (
                 <motion.div
@@ -549,21 +551,26 @@ export default function Home() {
                   <TiltCard className="prize-card-large group">
                     <div className="prize-card-large-bg" style={{ background: item.gradient }} />
                     <div className="relative z-[2] flex flex-col h-full p-6 sm:p-8">
-                      {item.featured && (
+                      {item.badge && (
                         <div className="absolute top-5 right-5 z-[5]">
-                          <div className="premium-badge">
-                            <Star className="w-3 h-3 mr-1" />
-                            GRAND PRIZE
+                          <div className="premium-badge premium-badge-hot">
+                            <Zap className="w-3 h-3 mr-1" />
+                            {item.badge}
                           </div>
                         </div>
                       )}
                       <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle w-14 h-14 mb-6">
                         {item.icon}
                       </BorderGlow>
-                      <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">{item.tier}</span>
+                      <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">{item.label}</span>
                       <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-2">{item.title}</h3>
-                      <span className="text-lg font-display font-light text-white/60 mb-4">{item.value}</span>
-                      <p className="text-white/40 font-light text-sm leading-relaxed">{item.desc}</p>
+                      <p className="text-white/40 font-light text-sm leading-relaxed mb-6">{item.desc}</p>
+                      <div className="mt-auto">
+                        <BorderGlow as={item.href.startsWith("/") ? Link : "a"} href={item.href} borderRadius={14} glowRadius={16} cardBg="rgba(6,6,6,0.95)" className="premium-btn glass-btn-effect group/btn inline-flex">
+                          <span className="relative z-[2] text-sm">{item.cta}</span>
+                          <ArrowRight className="w-3.5 h-3.5 ml-2 group-hover/btn:translate-x-1 transition-transform relative z-[2]" />
+                        </BorderGlow>
+                      </div>
                     </div>
                   </TiltCard>
                 </motion.div>
@@ -851,6 +858,80 @@ export default function Home() {
                 <SiWhatsapp className="mr-3 w-5 h-5 relative z-[2]" />
                 <span className="relative z-[2]">Join the Network</span>
               </BorderGlow>
+            </motion.div>
+          </div>
+        </section>
+
+        <GlowLine />
+
+        <section className="py-20 sm:py-32 relative">
+          <FloatingParticles />
+          <div className="container mx-auto px-4 max-w-6xl">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="text-center mb-16 sm:mb-20"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Quick Access
+              </div>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Explore Everything" /></h2>
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+                Jump straight to what matters — active offers, your dashboard, partner perks, and more.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+            >
+              {[
+                { title: "Active Offers", desc: "2x bonuses, cashback deals, and exclusive drops updated weekly.", icon: <Gift className="w-5 h-5" />, href: "/offers", spa: true, accent: "red" as const, badge: "5 Live" },
+                { title: "How to Enter", desc: "Step-by-step guide to register, submit entries, and start winning.", icon: <Target className="w-5 h-5" />, href: "#how-it-works", spa: false, accent: "navy" as const, badge: null },
+                { title: "Your Dashboard", desc: "Track clicks, verified referrals, milestones, and leaderboard rank.", icon: <Activity className="w-5 h-5" />, href: "#dashboard", spa: false, accent: "navy" as const, badge: null },
+                { title: "Rewards Gallery", desc: "See the full list of prizes — swag kits, gift cards, gadgets, and more.", icon: <Trophy className="w-5 h-5" />, href: "#rewards", spa: false, accent: "neutral" as const, badge: null },
+                { title: "Partner Program", desc: "Become an official partner — unlock payouts, merch, and early access.", icon: <Star className="w-5 h-5" />, href: "#register", spa: false, accent: "neutral" as const, badge: "Earn ₹100/ref" },
+                { title: "Community Hub", desc: "Join our WhatsApp group for flash giveaways and surprise drops.", icon: <Users className="w-5 h-5" />, href: "#register", spa: false, accent: "red" as const, badge: null },
+              ].map((item, i) => {
+                const accentClasses = item.accent === "navy"
+                  ? { card: "glass-card-accent-navy", icon: "icon-circle-navy", top: "card-top-accent card-top-accent-navy" }
+                  : item.accent === "red"
+                  ? { card: "glass-card-accent-red", icon: "icon-circle-red", top: "card-top-accent card-top-accent-red" }
+                  : { card: "", icon: "", top: "card-top-accent" };
+                const WrapTag = item.spa ? Link : "a";
+                return (
+                  <motion.div key={i} variants={fadeUp}>
+                    <WrapTag href={item.href} className="block">
+                      <TiltCard className={`glass-card ${accentClasses.card} p-5 sm:p-7 group h-full relative`}>
+                        <div className={accentClasses.top} />
+                        <div className="card-shine" />
+                        <div className="relative z-[2] flex flex-col h-full">
+                          <div className="flex items-start justify-between mb-5">
+                            <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className={`icon-circle ${accentClasses.icon}`}>
+                              {item.icon}
+                            </BorderGlow>
+                            {item.badge && (
+                              <div className="premium-badge premium-badge-hot !text-[9px]">
+                                <Zap className="w-2.5 h-2.5 mr-1" />
+                                {item.badge}
+                              </div>
+                            )}
+                          </div>
+                          <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
+                          <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{item.desc}</p>
+                          <div className="mt-auto flex items-center text-white/30 group-hover:text-white/60 transition-colors text-xs font-display">
+                            <span>Explore</span>
+                            <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      </TiltCard>
+                    </WrapTag>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
