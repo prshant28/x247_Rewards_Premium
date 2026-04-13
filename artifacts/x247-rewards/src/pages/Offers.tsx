@@ -276,16 +276,16 @@ export default function Offers() {
               <div className="marquee-content">
                 {["2x Entry Bonus", "Refer & Earn", "Early Bird Drops", "Partner Cashback", "Weekend Mega Draw", "Flash Giveaways", "Community Rewards", "Exclusive Merch"].map((text, i) => (
                   <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                    <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
-                    <span className="text-white/[0.06] text-xl font-light">✦</span>
+                    <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
+                    <span className="text-white/15 text-xl font-light">✦</span>
                   </div>
                 ))}
               </div>
               <div className="marquee-content">
                 {["2x Entry Bonus", "Refer & Earn", "Early Bird Drops", "Partner Cashback", "Weekend Mega Draw", "Flash Giveaways", "Community Rewards", "Exclusive Merch"].map((text, i) => (
                   <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                    <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
-                    <span className="text-white/[0.06] text-xl font-light">✦</span>
+                    <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
+                    <span className="text-white/15 text-xl font-light">✦</span>
                   </div>
                 ))}
               </div>

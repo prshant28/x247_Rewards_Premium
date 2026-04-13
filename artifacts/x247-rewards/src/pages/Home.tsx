@@ -600,16 +600,16 @@ export default function Home() {
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
-                      <span className="text-white/[0.06] text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/15 text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/[0.12] uppercase tracking-wider">{text}</span>
-                      <span className="text-white/[0.06] text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/15 text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
