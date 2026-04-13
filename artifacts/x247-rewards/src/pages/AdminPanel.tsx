@@ -286,11 +286,12 @@ export default function AdminPanel() {
                     <select
                       value={form.accent}
                       onChange={(e) => setForm({ ...form, accent: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light focus:outline-none focus:border-white/20 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light focus:outline-none focus:border-white/20 transition-colors appearance-none"
+                      style={{ colorScheme: "dark" }}
                     >
-                      <option value="navy">Navy</option>
-                      <option value="red">Red</option>
-                      <option value="neutral">Neutral</option>
+                      <option value="navy" className="bg-[#0a0a0a] text-white">Navy</option>
+                      <option value="red" className="bg-[#0a0a0a] text-white">Red</option>
+                      <option value="neutral" className="bg-[#0a0a0a] text-white">Neutral</option>
                     </select>
                   </div>
                   <div>

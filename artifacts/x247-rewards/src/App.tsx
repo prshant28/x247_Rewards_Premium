@@ -11,6 +11,7 @@ import Partners from "@/pages/Partners";
 import PartnerDetail from "@/pages/PartnerDetail";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminPanel from "@/pages/AdminPanel";
+import GiveawayEntry from "@/pages/GiveawayEntry";
 import PageLoader from "@/components/PageLoader";
 import ChatBot from "@/components/ChatBot";
 
@@ -57,6 +58,9 @@ function Router() {
         </Route>
         <Route path="/partners">
           <AnimatedRoute component={Partners} />
+        </Route>
+        <Route path="/giveaway">
+          <AnimatedRoute component={GiveawayEntry} />
         </Route>
         <Route path="/x247-admin-login">
           <AnimatedRoute component={AdminLogin} />

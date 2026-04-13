@@ -139,3 +139,40 @@ export async function trackImpression(partnerId: number) {
 export async function trackFormFill(partnerId: number) {
   fetch(`${API_BASE}/partners/${partnerId}/form-fill`, { method: "POST" }).catch(() => {});
 }
+
+export interface GiveawayStatus {
+  totalEntries: number;
+  maxSpots: number;
+  spotsRemaining: number;
+  isFull: boolean;
+  announcementDate: string;
+}
+
+export interface GiveawayFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  age: number;
+  city: string;
+  completedPartners: number[];
+  screenshotConfirmed: boolean;
+  agreedToTerms: boolean;
+}
+
+export async function getGiveawayStatus(): Promise<GiveawayStatus> {
+  const res = await fetch(`${API_BASE}/giveaway/status`);
+  return res.json();
+}
+
+export async function submitGiveawayEntry(data: GiveawayFormData): Promise<{ success: boolean; message: string; error?: string }> {
+  const res = await fetch(`${API_BASE}/giveaway/enter`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  if (!res.ok) {
+    return { success: false, message: "", error: result.error || "Failed to submit entry" };
+  }
+  return { success: true, message: result.message };
+}
