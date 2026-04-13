@@ -88,6 +88,88 @@ function TextReveal({ text, className = "", delay = 0 }: { text: string; classNa
   );
 }
 
+function ScrollProgressLine({ containerRef, totalSteps }: { containerRef: React.RefObject<HTMLDivElement | null>; totalSteps: number }) {
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 0.6", "end 0.5"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 20 });
+  const height = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
+  const glowOpacity = useTransform(smoothProgress, [0, 0.05], [0, 1]);
+
+  return (
+    <>
+      <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-white/[0.04]" />
+      <motion.div
+        className="absolute left-[21px] sm:left-[25px] top-0 w-[5px] rounded-full origin-top z-[1]"
+        style={{
+          height,
+          background: "linear-gradient(180deg, rgb(30, 40, 120) 0%, rgb(80, 30, 90) 30%, rgb(200, 40, 50) 60%, rgb(30, 40, 120) 100%)",
+          boxShadow: "0 0 12px 2px rgba(200, 40, 50, 0.3), 0 0 24px 4px rgba(30, 40, 120, 0.2)",
+          opacity: glowOpacity,
+        }}
+      />
+      <motion.div
+        className="absolute left-[19px] sm:left-[23px] w-[9px] h-[9px] rounded-full z-[3]"
+        style={{
+          top: height,
+          background: "radial-gradient(circle, rgb(200, 40, 50) 0%, rgb(30, 40, 120) 100%)",
+          boxShadow: "0 0 16px 4px rgba(200, 40, 50, 0.5), 0 0 32px 8px rgba(30, 40, 120, 0.3)",
+          opacity: glowOpacity,
+        }}
+      />
+    </>
+  );
+}
+
+function StepIcon({ icon, index, containerRef }: { icon: React.ReactNode; index: number; containerRef: React.RefObject<HTMLDivElement | null> }) {
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 0.6", "end 0.5"],
+  });
+  const totalSteps = 8;
+  const threshold = index / (totalSteps - 1);
+  const borderColor = useTransform(scrollYProgress, (v) => {
+    if (v >= threshold - 0.02) {
+      const t = index / (totalSteps - 1);
+      const r = Math.round(30 + t * 170);
+      const g = Math.round(40 - t * 10);
+      const b = Math.round(120 - t * 70);
+      return `rgba(${r}, ${g}, ${b}, 0.5)`;
+    }
+    return "rgba(255, 255, 255, 0.08)";
+  });
+  const shadowColor = useTransform(scrollYProgress, (v) => {
+    if (v >= threshold - 0.02) {
+      const t = index / (totalSteps - 1);
+      const r = Math.round(30 + t * 170);
+      const g = Math.round(40 - t * 10);
+      const b = Math.round(120 - t * 70);
+      return `0 0 20px 2px rgba(${r}, ${g}, ${b}, 0.25)`;
+    }
+    return "none";
+  });
+  const iconColor = useTransform(scrollYProgress, (v) =>
+    v >= threshold - 0.02 ? "rgba(255, 255, 255, 0.9)" : "rgba(255, 255, 255, 0.35)"
+  );
+
+  return (
+    <motion.div
+      ref={ref}
+      className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-2xl bg-black flex items-center justify-center transition-all duration-500"
+      style={{
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor,
+        boxShadow: shadowColor,
+        color: iconColor,
+      }}
+    >
+      {icon}
+    </motion.div>
+  );
+}
+
 function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const rawRotateX = useMotionValue(0);
@@ -127,6 +209,7 @@ export default function Home() {
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   const heroY = useTransform(smoothProgress, [0, 0.3], [0, -80]);
   const heroOpacity = useTransform(smoothProgress, [0, 0.25], [1, 0]);
+  const stepsContainerRef = useRef<HTMLDivElement>(null);
 
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 50 },
@@ -320,8 +403,8 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <div className="relative">
-              <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+            <div className="relative" ref={stepsContainerRef}>
+              <ScrollProgressLine containerRef={stepsContainerRef} totalSteps={8} />
 
               <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="space-y-0">
                 {[
@@ -384,9 +467,7 @@ export default function Home() {
                 ].map((item, i) => (
                   <motion.div key={i} variants={fadeUp} className="relative flex gap-5 sm:gap-7 pb-10 sm:pb-12 last:pb-0">
                     <div className="relative z-[2] shrink-0">
-                      <div className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-2xl bg-black border border-white/8 flex items-center justify-center text-white/55 transition-colors duration-300 group-hover:border-white/15">
-                        {item.icon}
-                      </div>
+                      <StepIcon icon={item.icon} index={i} containerRef={stepsContainerRef} />
                     </div>
                     <div className="relative z-[2] pt-1 flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
