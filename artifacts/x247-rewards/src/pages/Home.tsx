@@ -375,28 +375,27 @@ export default function Home() {
               </BorderGlow>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="mb-8"
-            >
-              <ProfileCard
-                avatarUrl="/rewards-hero.jpg"
-                miniAvatarUrl="/rewards-hero.jpg"
-                innerGradient="linear-gradient(145deg, rgba(20, 30, 80, 0.4) 0%, rgba(140, 20, 30, 0.25) 50%, rgba(10, 10, 10, 0.8) 100%)"
-                behindGlowEnabled={true}
-                behindGlowColor="rgba(140, 20, 30, 0.5)"
-                behindGlowSize="60%"
-                name="X247 Rewards"
-                title="Premium Giveaway Platform"
-                handle="x247rewards"
-                status="Live Now"
-                contactText="Enter Now"
-                showUserInfo={true}
-                onContactClick={() => { window.location.hash = "#how-it-works"; }}
-              />
-            </motion.div>
+            <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
+              <div className="marquee-container">
+                <div className="marquee-content">
+                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
+                    <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/15 text-xl font-light">✦</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="marquee-content">
+                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
+                    <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/15 text-xl font-light">✦</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
           </motion.div>
 
         </section>
@@ -512,10 +511,10 @@ export default function Home() {
 
         <GlowLine />
 
-        <section id="rewards" className="py-20 sm:py-32 relative">
+        <section id="hub" className="py-20 sm:py-32 relative">
           <FloatingParticles />
           <div className="container mx-auto px-4 max-w-6xl">
-            <motion.div 
+            <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
@@ -524,11 +523,11 @@ export default function Home() {
             >
               <div className="glass-pill-badge mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                Prizes & Rewards
+                Your Hub
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Command Center" /></h2>
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-                Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
+                Your personal control panel — track progress, explore offers, and manage your rewards journey from one place.
               </p>
             </motion.div>
 
@@ -556,7 +555,7 @@ export default function Home() {
                 },
               ].map((item, i) => (
                 <motion.div
-                  key={`big-${i}`}
+                  key={`hub-${i}`}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
@@ -591,13 +590,58 @@ export default function Home() {
               ))}
             </div>
 
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="flex justify-center"
+            >
+              <ProfileCard
+                avatarUrl="/rewards-hero.jpg"
+                miniAvatarUrl="/rewards-hero.jpg"
+                innerGradient="linear-gradient(145deg, rgba(20, 30, 80, 0.4) 0%, rgba(140, 20, 30, 0.25) 50%, rgba(10, 10, 10, 0.8) 100%)"
+                behindGlowEnabled={true}
+                behindGlowColor="rgba(140, 20, 30, 0.5)"
+                behindGlowSize="60%"
+                name="X247 Rewards"
+                title="Premium Giveaway Platform"
+                handle="x247rewards"
+                status="Live Now"
+                contactText="Enter Now"
+                showUserInfo={true}
+                onContactClick={() => { window.location.hash = "#how-it-works"; }}
+              />
+            </motion.div>
+          </div>
+        </section>
+
+        <GlowLine />
+
+        <section id="rewards" className="py-20 sm:py-32 relative">
+          <FloatingParticles />
+          <div className="container mx-auto px-4 max-w-6xl">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="text-center mb-16 sm:mb-24"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Prizes & Rewards
+              </div>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+                Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
+              </p>
+            </motion.div>
+
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-16 sm:mb-24"
             >
               {[
-                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "21 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, accent: "rgba(30, 40, 100, 0.2)" },
-                { tier: "Gift Cards", title: "₹500 – ₹2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, accent: "rgba(100, 30, 40, 0.2)" },
+                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, accent: "rgba(30, 40, 100, 0.2)" },
+                { tier: "Gift Cards", title: "500 – 2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, accent: "rgba(100, 30, 40, 0.2)" },
                 { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, accent: "rgba(40, 80, 40, 0.15)" },
                 { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, accent: "rgba(80, 40, 100, 0.15)" },
               ].map((item, i) => (
@@ -617,27 +661,6 @@ export default function Home() {
                 </motion.div>
               ))}
             </motion.div>
-
-            <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
-              <div className="marquee-container">
-                <div className="marquee-content">
-                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
-                    <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/15 text-xl font-light">✦</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="marquee-content">
-                  {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
-                    <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/15 text-xl font-light">✦</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -946,6 +969,27 @@ export default function Home() {
                   </motion.div>
                 );
               })}
+            </motion.div>
+
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="mt-12 sm:mt-16 flex justify-center"
+            >
+              <ProfileCard
+                avatarUrl="/rewards-hero.jpg"
+                miniAvatarUrl="/rewards-hero.jpg"
+                innerGradient="linear-gradient(145deg, rgba(20, 30, 80, 0.4) 0%, rgba(140, 20, 30, 0.25) 50%, rgba(10, 10, 10, 0.8) 100%)"
+                behindGlowEnabled={true}
+                behindGlowColor="rgba(140, 20, 30, 0.5)"
+                behindGlowSize="60%"
+                name="X247 Rewards"
+                title="Premium Giveaway Platform"
+                handle="x247rewards"
+                status="Live Now"
+                contactText="Enter Now"
+                showUserInfo={true}
+                onContactClick={() => { window.location.hash = "#how-it-works"; }}
+              />
             </motion.div>
           </div>
         </section>
