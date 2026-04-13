@@ -1,6 +1,6 @@
 import React from "react";
 import BorderGlow from "@/components/BorderGlow";
-import CardNav from "@/components/CardNav";
+import SiteNav from "@/components/SiteNav";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -36,15 +36,17 @@ const stagger: Variants = {
 const partners = [
   {
     id: "partner-1",
-    name: "Partner 1",
-    tagline: "Primary Registration Partner",
-    desc: "Complete your registration on this platform to earn your first giveaway entry. This is the mandatory step to participate in daily draws.",
+    name: "Solution Challenge 2026",
+    tagline: "Hack2Skill — Students Only",
+    desc: "Register for the Google Solution Challenge 2026 on Hack2Skill. Fill the complete registration form to earn your first giveaway entry. Open to students enrolled in university/college only.",
     category: "Registration",
-    status: "coming-soon" as const,
+    status: "active" as const,
     accent: "navy" as const,
     stats: { registrations: 0, entries: 0, winners: 0 },
     badge: "Required",
+    badgeSecondary: "Students Only",
     icon: <ExternalLink className="w-6 h-6" />,
+    href: "https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495",
   },
   {
     id: "partner-2",
@@ -103,60 +105,9 @@ export default function Partners() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <CardNav
-        logo={
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247</span>
-          </div>
-        }
-        baseColor="rgba(6, 6, 6, 0.92)"
-        menuColor="#fff"
-        buttonBgColor="rgba(255,255,255,0.06)"
-        buttonTextColor="#fff"
-        onCtaClick={() => { window.location.href = "/"; }}
-        renderLink={(href, children, className) => (
-          <Link href={href} className={className}>{children}</Link>
-        )}
-        items={[
-          {
-            label: "Navigate",
-            icon: <Globe className="w-3 h-3" />,
-            bgColor: "rgba(20, 25, 60, 0.15)",
-            textColor: "#fff",
-            links: [
-              { label: "Home", href: "/", spa: true, icon: <Sparkles className="w-3.5 h-3.5" /> },
-              { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
-              { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Explore",
-            icon: <Zap className="w-3 h-3" />,
-            bgColor: "rgba(120, 20, 30, 0.12)",
-            textColor: "#fff",
-            links: [
-              { label: "How it Works", href: "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
-              { label: "Rewards", href: "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
-              { label: "Dashboard", href: "/#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Connect",
-            icon: <Users className="w-3 h-3" />,
-            bgColor: "rgba(255, 255, 255, 0.03)",
-            textColor: "#fff",
-            links: [
-              { label: "FAQ", href: "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-              { label: "Community", href: "/#register", icon: <Users className="w-3.5 h-3.5" /> },
-            ],
-          },
-        ]}
-      />
+      <SiteNav activePage="partners" />
 
-      <main className="relative z-10 pt-28 sm:pt-36 pb-20 sm:pb-32">
+      <main className="relative z-10 pt-32 sm:pt-40 pb-20 sm:pb-32">
         <div className="container mx-auto px-4 max-w-6xl">
 
           <motion.div
@@ -225,25 +176,33 @@ export default function Partners() {
                       <div className={classes.topAccent} />
                       <div className="card-shine" />
 
-                      <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-[2px] flex items-center justify-center rounded-[24px]">
-                        <div className="flex flex-col items-center gap-3">
-                          <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
-                            <Lock className="w-5 h-5 text-white/40" />
+                      {partner.status === "coming-soon" && (
+                        <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-[2px] flex items-center justify-center rounded-[24px]">
+                          <div className="flex flex-col items-center gap-3">
+                            <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
+                              <Lock className="w-5 h-5 text-white/40" />
+                            </div>
+                            <span className="text-sm font-display font-light text-white/60">Coming Soon</span>
                           </div>
-                          <span className="text-sm font-display font-light text-white/60">Coming Soon</span>
                         </div>
-                      </div>
+                      )}
 
                       <div className="relative z-[2] flex flex-col h-full">
                         <div className="flex items-start justify-between mb-5">
                           <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className={`icon-circle ${classes.icon} w-14 h-14`}>
                             {partner.icon}
                           </BorderGlow>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap justify-end">
                             {partner.badge && (
                               <div className="premium-badge premium-badge-hot !text-[9px]">
                                 <Zap className="w-2.5 h-2.5 mr-1" />
                                 {partner.badge}
+                              </div>
+                            )}
+                            {(partner as any).badgeSecondary && (
+                              <div className="premium-badge !text-[9px]" style={{ background: "rgba(30, 40, 100, 0.3)", border: "1px solid rgba(60, 80, 180, 0.3)" }}>
+                                <Star className="w-2.5 h-2.5 mr-1 text-blue-400" />
+                                <span className="text-blue-300">{(partner as any).badgeSecondary}</span>
                               </div>
                             )}
                           </div>

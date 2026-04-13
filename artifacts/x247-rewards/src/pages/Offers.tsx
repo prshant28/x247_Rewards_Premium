@@ -1,6 +1,6 @@
 import React from "react";
 import BorderGlow from "@/components/BorderGlow";
-import CardNav from "@/components/CardNav";
+import SiteNav from "@/components/SiteNav";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -91,61 +91,9 @@ export default function Offers() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <CardNav
-        logo={
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247</span>
-          </div>
-        }
-        baseColor="rgba(6, 6, 6, 0.92)"
-        menuColor="#fff"
-        buttonBgColor="rgba(255,255,255,0.06)"
-        buttonTextColor="#fff"
-        onCtaClick={() => { window.location.href = "/"; }}
-        renderLink={(href, children, className) => (
-          <Link href={href} className={className}>{children}</Link>
-        )}
-        items={[
-          {
-            label: "Navigate",
-            icon: <Globe className="w-3 h-3" />,
-            bgColor: "rgba(20, 25, 60, 0.15)",
-            textColor: "#fff",
-            links: [
-              { label: "Home", href: "/", spa: true, icon: <Sparkles className="w-3.5 h-3.5" /> },
-              { label: "How it Works", href: "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
-              { label: "Rewards", href: "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Explore",
-            icon: <Zap className="w-3 h-3" />,
-            bgColor: "rgba(120, 20, 30, 0.12)",
-            textColor: "#fff",
-            links: [
-              { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-              { label: "Dashboard", href: "/#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
-              { label: "FAQ", href: "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Connect",
-            icon: <Users className="w-3 h-3" />,
-            bgColor: "rgba(255, 255, 255, 0.03)",
-            textColor: "#fff",
-            links: [
-              { label: "WhatsApp", href: "/#register", icon: <ExternalLink className="w-3.5 h-3.5" /> },
-              { label: "Community", href: "/#register", icon: <Users className="w-3.5 h-3.5" /> },
-              { label: "Support", href: "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-            ],
-          },
-        ]}
-      />
+      <SiteNav activePage="offers" />
 
-      <main className="relative z-10 pt-28 sm:pt-36 pb-20 sm:pb-32">
+      <main className="relative z-10 pt-32 sm:pt-40 pb-20 sm:pb-32">
         <div className="container mx-auto px-4 max-w-6xl">
 
           <motion.div

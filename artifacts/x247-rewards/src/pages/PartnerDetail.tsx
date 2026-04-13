@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import BorderGlow from "@/components/BorderGlow";
-import CardNav from "@/components/CardNav";
+import SiteNav from "@/components/SiteNav";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -48,30 +48,31 @@ interface PartnerData {
 const partnersData: Record<string, PartnerData> = {
   "partner-1": {
     id: "partner-1",
-    name: "Partner 1",
-    tagline: "Primary Registration Partner",
+    name: "Solution Challenge 2026",
+    tagline: "Hack2Skill — Students Only",
     category: "Registration",
     accent: "navy",
     bannerGradient: "linear-gradient(145deg, rgba(30, 35, 80, 0.6) 0%, rgba(10, 10, 20, 0.95) 100%)",
     description: [
-      "Partner 1 is the primary registration platform for the X247 Rewards giveaway program. By completing your registration here, you earn your first entry into the daily prize draw.",
-      "This is the mandatory step — without a completed registration on this platform, your giveaway entry will not be valid. Make sure to use the official link provided on this page.",
-      "Once your registration is verified, your entry is automatically confirmed and you'll receive a confirmation email. From that point on, you're eligible for every daily draw until the campaign ends.",
+      "The Solution Challenge 2026 is a nationwide hackathon by Google Developer Groups on Campus, hosted on Hack2Skill. It challenges student developers to build real-world solutions using Google technologies like Flutter, Firebase, Google Cloud, and AI/ML APIs.",
+      "By registering for this event through our partner link, you earn your mandatory first entry into the X247 Rewards daily prize draw. This registration is required to participate in our giveaway.",
+      "This offer is exclusively for students enrolled in an Indian university or college, aged 18 or above. Teams of 1–4 members can participate. Complete the full registration form on Hack2Skill to qualify.",
     ],
     benefits: [
       "Earn your first giveaway entry instantly",
       "Access to daily prize draws",
       "Eligible for all standard prizes — gift cards, swag kits, gadgets",
-      "Referral code unlocked after registration",
-      "Track your entry status on the dashboard",
+      "Participate in a major Google hackathon with ₹10,00,000+ prize pool",
+      "Access mentorship, Google Cloud credits, and learning resources",
+      "Open to students only — exclusive opportunity",
     ],
     howToEnter: [
-      "Click the 'Register Now' button on this page",
-      "Complete the full registration process on the partner platform",
-      "Return to X247 Rewards and fill the giveaway entry form",
-      "Enter your referral code (if you have one) for bonus tracking",
-      "Wait for your confirmation email — you're now entered!",
-      "Check the Winners Section daily to see if you've won",
+      "Click the 'Register Now' button below to visit Hack2Skill",
+      "Create your account and fill the complete registration form",
+      "Form a team of 1–4 members (or register solo)",
+      "Submit your registration — make sure all fields are filled",
+      "Return to X247 Rewards — your giveaway entry is now active!",
+      "Check the Winners section daily to see if you've won",
     ],
     stats: { registrations: 0, entries: 0, winners: 0 },
     badge: "Required",
@@ -180,60 +181,9 @@ export default function PartnerDetail() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <CardNav
-        logo={
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247</span>
-          </div>
-        }
-        baseColor="rgba(6, 6, 6, 0.92)"
-        menuColor="#fff"
-        buttonBgColor="rgba(255,255,255,0.06)"
-        buttonTextColor="#fff"
-        onCtaClick={() => { window.location.href = "/partners"; }}
-        renderLink={(href, children, className) => (
-          <Link href={href} className={className}>{children}</Link>
-        )}
-        items={[
-          {
-            label: "Navigate",
-            icon: <Globe className="w-3 h-3" />,
-            bgColor: "rgba(20, 25, 60, 0.15)",
-            textColor: "#fff",
-            links: [
-              { label: "Home", href: "/", spa: true, icon: <Sparkles className="w-3.5 h-3.5" /> },
-              { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
-              { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Explore",
-            icon: <Zap className="w-3 h-3" />,
-            bgColor: "rgba(120, 20, 30, 0.12)",
-            textColor: "#fff",
-            links: [
-              { label: "How it Works", href: "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
-              { label: "Dashboard", href: "/#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
-              { label: "FAQ", href: "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Connect",
-            icon: <Users className="w-3 h-3" />,
-            bgColor: "rgba(255, 255, 255, 0.03)",
-            textColor: "#fff",
-            links: [
-              { label: "Community", href: "/#register", icon: <Users className="w-3.5 h-3.5" /> },
-              { label: "Support", href: "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-            ],
-          },
-        ]}
-      />
+      <SiteNav activePage="partner-detail" />
 
-      <main className="relative z-10 pt-24 sm:pt-32 pb-20 sm:pb-32">
+      <main className="relative z-10 pt-32 sm:pt-40 pb-20 sm:pb-32">
         <div className="container mx-auto px-4 max-w-4xl">
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-6">
@@ -271,6 +221,12 @@ export default function PartnerDetail() {
                         <div className="premium-badge !text-[9px]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
                           <Lock className="w-2.5 h-2.5 mr-1" />
                           Coming Soon
+                        </div>
+                      )}
+                      {partner.id === "partner-1" && (
+                        <div className="premium-badge !text-[9px]" style={{ background: "rgba(30, 40, 100, 0.3)", border: "1px solid rgba(60, 80, 180, 0.3)" }}>
+                          <Star className="w-2.5 h-2.5 mr-1 text-blue-400" />
+                          <span className="text-blue-300">Students Only</span>
                         </div>
                       )}
                     </div>
@@ -388,10 +344,18 @@ export default function PartnerDetail() {
 
                 {!isComingSoon && (
                   <div className="flex justify-center pt-4">
-                    <BorderGlow as="a" href="#" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                      <Lock className="w-4 h-4 mr-2 relative z-[2]" />
-                      <span className="relative z-[2]">Registration Link Coming Soon</span>
-                    </BorderGlow>
+                    {partner.id === "partner-1" ? (
+                      <BorderGlow as="a" href="https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495" target="_blank" rel="noopener noreferrer" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                        <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                        <span className="relative z-[2]">Register Now</span>
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                      </BorderGlow>
+                    ) : (
+                      <BorderGlow as="a" href="#" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                        <Lock className="w-4 h-4 mr-2 relative z-[2]" />
+                        <span className="relative z-[2]">Registration Link Coming Soon</span>
+                      </BorderGlow>
+                    )}
                   </div>
                 )}
               </motion.div>
@@ -419,6 +383,16 @@ export default function PartnerDetail() {
                         </div>
                       ))}
                     </div>
+
+                    {partner.id === "partner-1" && (
+                      <div className="flex justify-center pt-8 border-t border-white/[0.04] mt-8">
+                        <BorderGlow as="a" href="https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495" target="_blank" rel="noopener noreferrer" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                          <span className="relative z-[2]">Register Now on Hack2Skill</span>
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                        </BorderGlow>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>

@@ -27,7 +27,7 @@ import {
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
 import BorderGlow from "@/components/BorderGlow";
-import CardNav from "@/components/CardNav";
+import SiteNav from "@/components/SiteNav";
 import DotGrid from "@/components/DotGrid";
 import "@/components/DotGrid.css";
 
@@ -241,62 +241,7 @@ export default function Home() {
         className="scroll-progress-bar"
         style={{ scaleX: smoothProgress }}
       />
-      <CardNav
-        logo={
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">x247</span>
-          </div>
-        }
-        baseColor="rgba(6, 6, 6, 0.92)"
-        menuColor="#fff"
-        buttonBgColor="rgba(255,255,255,0.06)"
-        buttonTextColor="#fff"
-        onCtaClick={() => { window.location.hash = "#partners"; }}
-        renderLink={(href, children, className) => (
-          <Link href={href} className={className}>{children}</Link>
-        )}
-        items={[
-          {
-            label: "Navigate",
-            icon: <Globe className="w-3 h-3" />,
-            bgColor: "rgba(20, 25, 60, 0.15)",
-            textColor: "#fff",
-            links: [
-              { label: "Home", href: "#register", icon: <Sparkles className="w-3.5 h-3.5" /> },
-              { label: "Partner Links", href: "#partners", icon: <ExternalLink className="w-3.5 h-3.5" /> },
-              { label: "How it Works", href: "#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
-              { label: "Rewards", href: "#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Explore",
-            icon: <Zap className="w-3 h-3" />,
-            bgColor: "rgba(120, 20, 30, 0.12)",
-            textColor: "#fff",
-            links: [
-              { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
-              { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-              { label: "Winners", href: "#winners", icon: <Trophy className="w-3.5 h-3.5" /> },
-              { label: "Dashboard", href: "#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
-              { label: "FAQ", href: "#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-            ],
-          },
-          {
-            label: "Connect",
-            icon: <Users className="w-3 h-3" />,
-            bgColor: "rgba(255, 255, 255, 0.03)",
-            textColor: "#fff",
-            links: [
-              { label: "WhatsApp", href: "#register", icon: <ExternalLink className="w-3.5 h-3.5" /> },
-              { label: "Community", href: "#register", icon: <Users className="w-3.5 h-3.5" /> },
-              { label: "Support", href: "#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-            ],
-          },
-        ]}
-      />
+      <SiteNav activePage="home" />
       <main className="relative z-10">
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
@@ -551,19 +496,25 @@ export default function Home() {
                     <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle icon-circle-navy w-14 h-14 mb-6">
                       <ExternalLink className="w-6 h-6" />
                     </BorderGlow>
-                    <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">Partner 1</span>
+                    <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">Partner 1 — Solution Challenge 2026</span>
                     <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">Complete This Registration</h3>
                     <p className="text-white/50 font-light text-sm leading-relaxed mb-3">
-                      Click the link below to register on our primary partner's platform. Complete the full signup process — this is your entry ticket into the daily giveaway.
+                      Register for the Solution Challenge 2026 on Hack2Skill. Fill the complete registration form — this is your entry ticket into the daily giveaway.
                     </p>
-                    <div className="flex items-center gap-2 mb-6 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                      <CheckCircle2 className="w-4 h-4 text-white/40 shrink-0" />
-                      <span className="text-xs text-white/40 font-light">1 completed registration = 1 giveaway entry</span>
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                        <CheckCircle2 className="w-4 h-4 text-white/40 shrink-0" />
+                        <span className="text-xs text-white/40 font-light">1 completed registration = 1 giveaway entry</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[rgba(30,40,100,0.15)] border border-[rgba(60,80,180,0.25)]">
+                        <Award className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                        <span className="text-xs text-blue-300 font-medium">Students Only</span>
+                      </div>
                     </div>
                     <div className="mt-auto pt-2 relative z-[4]">
-                      <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn w-full justify-center">
+                      <BorderGlow as="a" href="https://vision.hack2skill.com/event/solution-challenge-2026/?utm_source=hack2skill&utm_medium=teamdashboard&utm_term=referral-1&utm_campaign=solution-challenge-2026&utm_content=693e29520010adcadec1b495" target="_blank" rel="noopener noreferrer" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn w-full justify-center">
                         <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Register with Partner 1</span>
+                        <span className="relative z-[2]">Register Now</span>
                         <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform relative z-[2]" />
                       </BorderGlow>
                     </div>
