@@ -68,7 +68,11 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `GET /api/admin/analytics` — analytics dashboard data (admin-protected)
   - `POST /api/chat` — AI chatbot (streaming SSE, OpenRouter Llama 4 Scout, context-aware with partner data)
   - `GET /api/giveaway/status` — giveaway spots remaining, max spots, isFull
-  - `POST /api/giveaway/enter` — submit giveaway entry (validates partners, age, screenshot, terms)
+  - `POST /api/giveaway/enter` — submit giveaway entry (validates partners, age, screenshot, terms); returns entryCode
+  - `GET /api/giveaway/check/:code` — check entry code status
+  - `POST /api/storage/uploads/request-url` — request presigned upload URL (images only, max 10MB)
+  - `GET /api/storage/public-objects/*` — serve public objects
+  - `GET /api/storage/objects/*` — serve private objects
 
 ## Database Schema (lib/db)
 
@@ -80,7 +84,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **admin_sessions**: id, token, adminId, expiresAt, createdAt
 - **conversations**: id, title, createdAt, updatedAt
 - **messages**: id, conversationId, role, content, createdAt
-- **giveaway_entries**: id, fullName, email, phone, age, city, completedPartners (JSON array of partner IDs), screenshotConfirmed, agreedToTerms, ipHash, entryCount, createdAt
+- **giveaway_entries**: id, fullName, email, phone, age, city, completedPartners (JSON array of partner IDs), screenshotConfirmed, screenshotUrl, agreedToTerms, ipHash, entryCount, entryCode (X247-XXXX-XXXX format), isAnonymous, createdAt
 
 ## Admin Credentials
 
