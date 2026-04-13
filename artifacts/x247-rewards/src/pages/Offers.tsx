@@ -57,17 +57,6 @@ const offers = [
     number: "02",
   },
   {
-    title: "Partner Signup Cashback",
-    desc: "Complete your partner registration and get ₹50 cashback credited to your account. Valid for new partners only.",
-    tag: "New Partners",
-    status: "active" as const,
-    highlight: true,
-    accent: "red" as const,
-    details: ["For new partner signups", "₹50 instant credit", "One-time per partner"],
-    icon: <Tag className="w-5 h-5" />,
-    number: "03",
-  },
-  {
     title: "Weekend Mega Draw",
     desc: "Every Saturday, we run a special mega draw with 3x the usual prize pool. All entries from the week are eligible.",
     tag: "Every Saturday",
