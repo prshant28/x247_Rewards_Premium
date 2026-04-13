@@ -81,13 +81,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
-  padding: 0 16px;
+  height: 68px;
+  padding: 0 18px;
 }
 
 @media (min-width: 640px) {
   .card-nav-top {
-    padding: 0 20px;
+    height: 72px;
+    padding: 0 24px;
   }
 }
 
