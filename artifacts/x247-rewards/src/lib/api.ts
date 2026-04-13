@@ -105,6 +105,18 @@ export async function getAnalytics() {
   return res.json();
 }
 
+export async function generatePartnerAI(input: { url?: string; description?: string }) {
+  const res = await authFetch("/partners/generate-ai", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "AI generation failed");
+  }
+  return res.json();
+}
+
 export async function createPartner(data: PartnerInput) {
   const res = await authFetch("/partners", {
     method: "POST",

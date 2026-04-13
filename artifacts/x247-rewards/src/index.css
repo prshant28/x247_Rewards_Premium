@@ -253,7 +253,6 @@
       0 6px 20px -4px rgba(0, 0, 0, 0.65),
       0 0 60px -12px rgba(25, 35, 100, 0.15),
       0 0 30px -8px rgba(180, 35, 45, 0.06);
-    transform: translateY(-4px) scale(1.005);
   }
 
   .glass-card .card-shine {
@@ -275,13 +274,7 @@
   }
 
   .glass-card:hover .card-shine {
-    opacity: 1;
-    animation: card-shine-sweep 1.2s ease forwards;
-  }
-
-  @keyframes card-shine-sweep {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    opacity: 0;
   }
 
   .glass-card-featured {
@@ -319,7 +312,6 @@
       0 8px 24px -4px rgba(0, 0, 0, 0.7),
       0 0 100px -15px rgba(30, 45, 130, 0.2),
       0 0 50px -10px rgba(200, 40, 55, 0.1);
-    transform: translateY(-6px) scale(1.008);
   }
 
   .glass-card-accent-navy {

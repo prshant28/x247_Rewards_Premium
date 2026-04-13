@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { partnersTable, clicksTable, impressionsTable, formFillsTable } from "@workspace/db";
 import { eq, sql, and, gte } from "drizzle-orm";
 import { adminSessionsTable } from "@workspace/db";
+import { openrouter } from "@workspace/integrations-openrouter-ai";
 import crypto from "crypto";
 
 const router = Router();
@@ -211,6 +212,72 @@ router.post("/partners/:id/form-fill", async (req, res) => {
   } catch (err) {
     console.error("Track form fill error:", err);
     return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/partners/generate-ai", requireAdmin, async (req, res) => {
+  try {
+    const { url, description } = req.body;
+    if (!url && !description) {
+      return res.status(400).json({ error: "Provide a URL or description" });
+    }
+
+    const prompt = url
+      ? `Given this registration/partner URL: "${url}"
+Analyze the URL and generate partner details for a giveaway platform. Infer what the platform/event is about from the URL structure, domain name, and any path segments.`
+      : `Given this description of a partner: "${description}"
+Generate partner details for a giveaway platform.`;
+
+    const response = await openrouter.chat.completions.create({
+      model: "meta-llama/llama-4-scout",
+      messages: [
+        {
+          role: "system",
+          content: `You are an assistant that generates partner listing details for X247 Rewards, a giveaway platform. Generate realistic, professional partner data.
+
+You MUST respond with ONLY a valid JSON object (no markdown, no code blocks, no extra text). The JSON must have these exact keys:
+{
+  "name": "Partner Name (short, catchy title)",
+  "slug": "kebab-case-slug",
+  "tagline": "A short catchy tagline (under 60 chars)",
+  "description": "A compelling 2-3 sentence description of the partner and what users need to register for",
+  "category": "Registration",
+  "badge": "One of: Required, New, Popular, Exclusive, Limited (pick most appropriate)",
+  "badgeSecondary": "Optional second badge like 'Students Only', 'Free Entry', 'Open for All', or empty string",
+  "accent": "One of: navy, red, neutral (pick based on brand feel)"
+}`
+        },
+        { role: "user", content: prompt }
+      ],
+      max_tokens: 500,
+      temperature: 0.7,
+    });
+
+    const content = response.choices?.[0]?.message?.content || "";
+
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      return res.status(500).json({ error: "AI failed to generate valid partner data" });
+    }
+
+    const generated = JSON.parse(jsonMatch[0]);
+
+    return res.json({
+      name: generated.name || "",
+      slug: generated.slug || "",
+      tagline: generated.tagline || "",
+      description: generated.description || "",
+      category: generated.category || "Registration",
+      registrationUrl: url || "",
+      accent: generated.accent || "navy",
+      badge: generated.badge || "",
+      badgeSecondary: generated.badgeSecondary || "",
+      isActive: false,
+      isRequired: false,
+    });
+  } catch (err) {
+    console.error("AI generate partner error:", err);
+    return res.status(500).json({ error: "Failed to generate partner details" });
   }
 });
 

@@ -52,7 +52,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           bgColor: "rgba(20, 25, 60, 0.15)",
           textColor: "#fff",
           links: [
-            { label: "Home", href: isHome ? "#register" : "/", spa: !isHome, icon: <Sparkles className="w-3.5 h-3.5" /> },
+            { label: "Home", href: isHome ? "/" : "/", spa: !isHome, icon: <Sparkles className="w-3.5 h-3.5" /> },
             { label: "Partner Links", href: isHome ? "#partners" : "/#partners", icon: <ExternalLink className="w-3.5 h-3.5" /> },
             { label: "How it Works", href: isHome ? "#how-it-works" : "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
             { label: "Rewards", href: isHome ? "#rewards" : "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
