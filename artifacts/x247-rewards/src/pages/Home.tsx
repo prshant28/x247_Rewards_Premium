@@ -326,7 +326,7 @@ export default function Home() {
 
           <motion.div 
             style={{ y: heroY, opacity: heroOpacity }}
-            className="relative z-10 text-center max-w-4xl mx-auto flex flex-col items-center"
+            className="relative z-10 text-center w-full max-w-4xl mx-auto flex flex-col items-center px-5 sm:px-6 overflow-hidden"
           >
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -338,16 +338,16 @@ export default function Home() {
               Register. Enter. Win Daily.
             </motion.div>
             
-            <div className="relative mb-8">
+            <div className="relative mb-8 w-full">
               <motion.h1
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-light leading-[1.08] tracking-tight text-white relative z-[1]"
+                className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.1] tracking-tight text-white relative z-[1]"
               >
                 <span className="text-gradient">Win Real Rewards Every Single Day</span>
               </motion.h1>
-              <div aria-hidden="true" className="hero-text-stroke text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-light leading-[1.08] tracking-tight">
+              <div aria-hidden="true" className="hero-text-stroke text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.1] tracking-tight">
                 Win Real Rewards Every Single Day
               </div>
             </div>
@@ -356,7 +356,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-base sm:text-lg md:text-xl text-white/70 mb-12 max-w-2xl mx-auto font-light leading-relaxed px-4 tracking-wide"
+              className="text-sm sm:text-base md:text-lg lg:text-xl text-white/70 mb-12 max-w-2xl mx-auto font-light leading-relaxed tracking-wide"
             >
               Sign up through our partner links below, fill the entry form, and you're in. Every completed registration = one giveaway entry. Winners are picked daily — gift cards, premium swag, gadgets & more.
             </motion.p>
