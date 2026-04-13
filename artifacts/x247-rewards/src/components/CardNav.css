@@ -142,17 +142,50 @@
   font-weight: 500;
   padding: 8px 20px;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   letter-spacing: 0.02em;
   position: relative;
   z-index: 2;
+  overflow: hidden;
+}
+
+.card-nav-cta-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 100px;
+  padding: 1px;
+  background: linear-gradient(
+    var(--btn-border-angle, 0deg),
+    rgba(20, 30, 80, 0.5),
+    rgba(255, 255, 255, 0.12),
+    rgba(140, 20, 30, 0.4),
+    rgba(255, 255, 255, 0.12),
+    rgba(20, 30, 80, 0.5)
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  animation: btn-border-rotate 6s linear infinite;
+  pointer-events: none;
 }
 
 .card-nav-cta-button:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.card-nav-cta-button:hover::before {
+  background: linear-gradient(
+    var(--btn-border-angle, 0deg),
+    rgba(20, 30, 80, 0.7),
+    rgba(255, 255, 255, 0.2),
+    rgba(140, 20, 30, 0.6),
+    rgba(255, 255, 255, 0.2),
+    rgba(20, 30, 80, 0.7)
+  );
 }
 
 .card-nav-content {
