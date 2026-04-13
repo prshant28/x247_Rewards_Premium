@@ -565,18 +565,11 @@ export default function Home() {
                       <span className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2">{item.label}</span>
                       <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-2">{item.title}</h3>
                       <p className="text-white/40 font-light text-sm leading-relaxed mb-6">{item.desc}</p>
-                      <div className="mt-auto pt-2">
-                        {item.href.startsWith("/") ? (
-                          <Link href={item.href} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white/80 text-sm font-display font-light tracking-wide hover:bg-white/[0.1] hover:border-white/[0.18] hover:text-white transition-all duration-300 group/btn">
-                            {item.cta}
-                            <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                          </Link>
-                        ) : (
-                          <a href={item.href} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white/80 text-sm font-display font-light tracking-wide hover:bg-white/[0.1] hover:border-white/[0.18] hover:text-white transition-all duration-300 group/btn">
-                            {item.cta}
-                            <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                          </a>
-                        )}
+                      <div className="mt-auto pt-2 relative z-[4]">
+                        <BorderGlow as={item.href.startsWith("/") ? Link : "a"} href={item.href} borderRadius={16} glowRadius={4} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn">
+                          <span className="relative z-[2]">{item.cta}</span>
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform relative z-[2]" />
+                        </BorderGlow>
                       </div>
                     </div>
                   </TiltCard>
