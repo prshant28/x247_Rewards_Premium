@@ -304,13 +304,15 @@ export default function GiveawayEntry() {
             </div>
           </motion.div>
 
-          <motion.div variants={fadeUp} custom={3.5} initial="hidden" animate="visible" className="mb-8">
+          <motion.div variants={fadeUp} custom={3.5} initial="hidden" animate="visible" className="mb-8 flex flex-col items-center">
             <button
               onClick={() => setShowChecker(!showChecker)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm font-display font-light hover:bg-amber-500/15 transition-colors"
+              className="premium-btn px-6 py-3"
             >
-              <Search className="w-4 h-4" />
-              Check Entry Code
+              <span className="relative z-[2] flex items-center gap-2 text-sm font-display font-light">
+                <Search className="w-4 h-4" />
+                Check Entry Code
+              </span>
             </button>
 
             {showChecker && (
