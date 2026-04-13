@@ -6,6 +6,7 @@ import {
   MousePointer, Eye, FileText, BarChart3, Activity, Users, ArrowRight,
   AlertCircle, CheckCircle2, RefreshCw
 } from "lucide-react";
+import SiteNav from "@/components/SiteNav";
 
 interface PartnerAnalytics {
   partner: any;
@@ -139,15 +140,16 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <SiteNav activePage="home" />
       <div className="noise-overlay" />
 
-      <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-white/[0.06]">
-        <div className="container mx-auto px-4 sm:px-6 max-w-7xl flex items-center justify-between h-16">
+      <div className="sticky top-[92px] z-40 bg-black/90 backdrop-blur-xl border-b border-white/[0.06]">
+        <div className="container mx-auto px-4 sm:px-6 max-w-7xl flex items-center justify-between h-14">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
+            <div className="w-7 h-7 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
+              <Sparkles className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-display text-lg tracking-wide text-white font-normal">X247 Admin</span>
+            <span className="font-display text-base tracking-wide text-white font-normal">X247 Admin</span>
           </div>
           <div className="flex items-center gap-3">
             <button onClick={handleRefresh} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/50 text-xs hover:bg-white/[0.08] transition-colors">
@@ -160,9 +162,9 @@ export default function AdminPanel() {
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="relative z-10 container mx-auto px-4 sm:px-6 max-w-7xl py-8">
+      <main className="relative z-10 container mx-auto px-4 sm:px-6 max-w-7xl py-8 pt-28">
         {message && (
           <div className={`flex items-center gap-2 px-4 py-3 rounded-xl mb-6 text-sm ${message.type === "success" ? "bg-green-500/10 border border-green-500/20 text-green-400" : "bg-red-500/10 border border-red-500/20 text-red-400"}`}>
             {message.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
