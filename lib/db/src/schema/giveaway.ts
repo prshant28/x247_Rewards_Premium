@@ -4,6 +4,8 @@ import { z } from "zod/v4";
 
 export const giveawayEntriesTable = pgTable("giveaway_entries", {
   id: serial("id").primaryKey(),
+  contestId: integer("contest_id"),
+  userId: integer("user_id"),
   fullName: text("full_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),

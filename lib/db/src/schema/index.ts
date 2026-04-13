@@ -4,3 +4,6 @@ export * from "./admin";
 export * from "./conversations";
 export * from "./messages";
 export * from "./giveaway";
+export * from "./contests";
+export * from "./users";
+export * from "./winners";
