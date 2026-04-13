@@ -17,6 +17,20 @@ const pageVariants = {
   exit: { opacity: 0, y: -8, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
 };
 
+function AnimatedRoute({ component: Component }: { component: React.ComponentType }) {
+  return (
+    <motion.div
+      className="page-transition"
+      variants={pageVariants}
+      initial="initial"
+      animate="enter"
+      exit="exit"
+    >
+      <Component />
+    </motion.div>
+  );
+}
+
 function Router() {
   const [location] = useLocation();
 
@@ -26,26 +40,17 @@ function Router() {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
-        key={location}
-        className="page-transition"
-        variants={pageVariants}
-        initial="initial"
-        animate="enter"
-        exit="exit"
-      >
-        <Switch location={location}>
-          <Route path="/">
-            <Home />
-          </Route>
-          <Route path="/offers">
-            <Offers />
-          </Route>
-          <Route>
-            <NotFound />
-          </Route>
-        </Switch>
-      </motion.div>
+      <Switch key={location}>
+        <Route path="/">
+          <AnimatedRoute component={Home} />
+        </Route>
+        <Route path="/offers">
+          <AnimatedRoute component={Offers} />
+        </Route>
+        <Route>
+          <AnimatedRoute component={NotFound} />
+        </Route>
+      </Switch>
     </AnimatePresence>
   );
 }

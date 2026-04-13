@@ -1,7 +1,6 @@
 import React from "react";
 import BorderGlow from "@/components/BorderGlow";
 import CardNav from "@/components/CardNav";
-import PixelTransition from "@/components/PixelTransition";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -45,7 +44,6 @@ const offers = [
     details: ["Valid for first-time entries", "Both partner registrations required", "Automatic 2x multiplier"],
     icon: <Zap className="w-5 h-5" />,
     number: "01",
-    pixelColor: "rgba(180, 35, 45, 0.7)",
   },
   {
     title: "Refer 5, Get Bonus Entry",
@@ -57,7 +55,6 @@ const offers = [
     details: ["5 verified referrals needed", "Bonus entry auto-added", "Stackable — no limit"],
     icon: <Users className="w-5 h-5" />,
     number: "02",
-    pixelColor: "rgba(30, 50, 140, 0.7)",
   },
   {
     title: "Early Bird Swag Drop",
@@ -69,7 +66,6 @@ const offers = [
     details: ["Every Monday resets", "First 100 entries only", "Free worldwide shipping"],
     icon: <Clock className="w-5 h-5" />,
     number: "03",
-    pixelColor: "rgba(255, 255, 255, 0.25)",
   },
   {
     title: "Partner Signup Cashback",
@@ -81,7 +77,6 @@ const offers = [
     details: ["For new partner signups", "₹50 instant credit", "One-time per partner"],
     icon: <Tag className="w-5 h-5" />,
     number: "04",
-    pixelColor: "rgba(180, 35, 45, 0.7)",
   },
   {
     title: "Weekend Mega Draw",
@@ -93,7 +88,6 @@ const offers = [
     details: ["3x prize pool", "All week's entries count", "Winners announced Sunday"],
     icon: <Star className="w-5 h-5" />,
     number: "05",
-    pixelColor: "rgba(30, 50, 140, 0.7)",
   },
   {
     title: "Community Exclusive Drops",
@@ -105,7 +99,6 @@ const offers = [
     details: ["WhatsApp community access", "Flash giveaways", "Twice monthly drops"],
     icon: <ShieldCheck className="w-5 h-5" />,
     number: "06",
-    pixelColor: "rgba(255, 255, 255, 0.25)",
   },
 ];
 
@@ -113,36 +106,6 @@ function getAccentClasses(accent: "red" | "navy" | "neutral") {
   if (accent === "navy") return { card: "glass-card-accent-navy", icon: "icon-circle-navy", topAccent: "card-top-accent card-top-accent-navy" };
   if (accent === "red") return { card: "glass-card-accent-red", icon: "icon-circle-red", topAccent: "card-top-accent card-top-accent-red" };
   return { card: "", icon: "", topAccent: "card-top-accent" };
-}
-
-function OfferIconPixel({ offer, classes }: { offer: typeof offers[0]; classes: ReturnType<typeof getAccentClasses> }) {
-  return (
-    <PixelTransition
-      firstContent={
-        <div className={`icon-circle ${classes.icon} w-full h-full flex items-center justify-center`} style={{ borderRadius: 14 }}>
-          {offer.icon}
-        </div>
-      }
-      secondContent={
-        <div className="w-full h-full flex items-center justify-center rounded-2xl" style={{
-          background: offer.accent === "red"
-            ? "linear-gradient(145deg, rgba(180, 35, 45, 0.2), rgba(100, 15, 20, 0.1))"
-            : offer.accent === "navy"
-            ? "linear-gradient(145deg, rgba(30, 50, 140, 0.2), rgba(15, 25, 70, 0.1))"
-            : "linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02))",
-          borderRadius: 14,
-        }}>
-          <span className="text-2xl font-display font-light text-white/60">{offer.number}</span>
-        </div>
-      }
-      gridSize={6}
-      pixelColor={offer.pixelColor}
-      animationStepDuration={0.25}
-      aspectRatio="100%"
-      className="pixel-icon-card"
-      style={{ width: 56, height: 56, borderRadius: 14 }}
-    />
-  );
 }
 
 export default function Offers() {
@@ -226,7 +189,7 @@ export default function Offers() {
             </p>
           </motion.div>
 
-          {/* Hero Offer */}
+          {/* Hero Offer — first card spans full width */}
           <motion.div
             initial="hidden"
             animate="visible"
@@ -242,27 +205,9 @@ export default function Offers() {
                   <div className="card-shine" />
                   <div className="relative z-[2] flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
                     <div className="flex-shrink-0">
-                      <PixelTransition
-                        firstContent={
-                          <div className={`icon-circle ${classes.icon} w-full h-full flex items-center justify-center`} style={{ borderRadius: 16 }}>
-                            <Zap className="w-8 h-8" />
-                          </div>
-                        }
-                        secondContent={
-                          <div className="w-full h-full flex items-center justify-center rounded-2xl" style={{
-                            background: "linear-gradient(145deg, rgba(180, 35, 45, 0.25), rgba(100, 15, 20, 0.12))",
-                            borderRadius: 16,
-                          }}>
-                            <span className="text-3xl font-display font-light text-white/70">{offer.number}</span>
-                          </div>
-                        }
-                        gridSize={8}
-                        pixelColor="rgba(180, 35, 45, 0.7)"
-                        animationStepDuration={0.3}
-                        aspectRatio="100%"
-                        className="pixel-icon-card"
-                        style={{ width: 80, height: 80, borderRadius: 16 }}
-                      />
+                      <BorderGlow borderRadius={14} glowRadius={14} cardBg="rgba(255,255,255,0.05)" className={`icon-circle ${classes.icon} w-16 h-16 sm:w-20 sm:h-20`}>
+                        <Zap className="w-7 h-7 sm:w-8 sm:h-8" />
+                      </BorderGlow>
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
@@ -318,7 +263,9 @@ export default function Offers() {
                     )}
                     <div className="relative z-[2] flex flex-col h-full">
                       <div className="flex items-start justify-between mb-5">
-                        <OfferIconPixel offer={offer} classes={classes} />
+                        <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className={`icon-circle ${classes.icon}`}>
+                          {offer.icon}
+                        </BorderGlow>
                         <span className="text-4xl sm:text-5xl font-display font-light text-white/[0.03] leading-none mt-[-4px]">{offer.number}</span>
                       </div>
                       <div className="flex-1">

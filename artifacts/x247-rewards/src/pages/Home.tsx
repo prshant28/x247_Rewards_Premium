@@ -31,7 +31,6 @@ import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
 import BorderGlow from "@/components/BorderGlow";
 import CardNav from "@/components/CardNav";
-import PixelTransition from "@/components/PixelTransition";
 import DotGrid from "@/components/DotGrid";
 import "@/components/DotGrid.css";
 import ProfileCard from "@/components/ProfileCard";
@@ -576,36 +575,19 @@ export default function Home() {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-16 sm:mb-24"
             >
               {[
-                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "21 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, hoverIcon: <Crown className="w-5 h-5" />, pixelColor: "rgba(30, 40, 100, 0.5)" },
-                { tier: "Gift Cards", title: "₹500 – ₹2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, hoverIcon: <CreditCard className="w-5 h-5" />, pixelColor: "rgba(100, 30, 40, 0.5)" },
-                { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, hoverIcon: <Star className="w-5 h-5" />, pixelColor: "rgba(255, 255, 255, 0.2)" },
-                { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, hoverIcon: <Award className="w-5 h-5" />, pixelColor: "rgba(255, 255, 255, 0.2)" },
+                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "21 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, accent: "rgba(30, 40, 100, 0.2)" },
+                { tier: "Gift Cards", title: "₹500 – ₹2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, accent: "rgba(100, 30, 40, 0.2)" },
+                { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, accent: "rgba(40, 80, 40, 0.15)" },
+                { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, accent: "rgba(80, 40, 100, 0.15)" },
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
                   <TiltCard className="glass-card p-5 sm:p-6 group h-full">
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2] flex flex-col h-full">
-                      <div className="mb-5 w-12 h-12 sm:w-14 sm:h-14">
-                        <PixelTransition
-                          firstContent={
-                            <div className="icon-circle w-full h-full flex items-center justify-center" style={{ borderRadius: 12 }}>
-                              {item.icon}
-                            </div>
-                          }
-                          secondContent={
-                            <div className="icon-circle w-full h-full flex items-center justify-center" style={{ borderRadius: 12, background: "linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03))" }}>
-                              {item.hoverIcon}
-                            </div>
-                          }
-                          gridSize={5}
-                          pixelColor={item.pixelColor}
-                          animationStepDuration={0.2}
-                          aspectRatio="100%"
-                          className="pixel-icon-card"
-                          style={{ width: "100%", height: "100%", borderRadius: 12 }}
-                        />
-                      </div>
+                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
+                        {item.icon}
+                      </BorderGlow>
                       <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
                       <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed">{item.desc}</p>
@@ -841,35 +823,18 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16"
             >
               {[
-                { title: "Hackathons", desc: "Access to private building sessions.", icon: <TerminalSquare className="w-5 h-5" />, hoverIcon: <Target className="w-5 h-5" />, pixelColor: "rgba(30, 50, 140, 0.6)" },
-                { title: "Workshops", desc: "Expert-led technical deep dives.", icon: <Zap className="w-5 h-5" />, hoverIcon: <Sparkles className="w-5 h-5" />, pixelColor: "rgba(30, 50, 140, 0.6)" },
-                { title: "Mentorship", desc: "Direct access to industry leaders.", icon: <Users className="w-5 h-5" />, hoverIcon: <Crown className="w-5 h-5" />, pixelColor: "rgba(30, 50, 140, 0.6)" }
+                { title: "Hackathons", desc: "Access to private building sessions.", icon: <TerminalSquare className="w-5 h-5" /> },
+                { title: "Workshops", desc: "Expert-led technical deep dives.", icon: <Zap className="w-5 h-5" /> },
+                { title: "Mentorship", desc: "Direct access to industry leaders.", icon: <Users className="w-5 h-5" /> }
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
                   <TiltCard className="glass-card p-6 sm:p-8 text-center group">
                     <div className="card-top-accent card-top-accent-navy" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <div className="mx-auto mb-5 w-12 h-12 sm:w-14 sm:h-14">
-                        <PixelTransition
-                          firstContent={
-                            <div className="icon-circle icon-circle-navy w-full h-full flex items-center justify-center" style={{ borderRadius: 12 }}>
-                              {item.icon}
-                            </div>
-                          }
-                          secondContent={
-                            <div className="icon-circle icon-circle-navy w-full h-full flex items-center justify-center" style={{ borderRadius: 12, background: "linear-gradient(145deg, rgba(30, 50, 140, 0.25), rgba(15, 25, 70, 0.12))" }}>
-                              {item.hoverIcon}
-                            </div>
-                          }
-                          gridSize={5}
-                          pixelColor={item.pixelColor}
-                          animationStepDuration={0.22}
-                          aspectRatio="100%"
-                          className="pixel-icon-card"
-                          style={{ width: "100%", height: "100%", borderRadius: 12 }}
-                        />
-                      </div>
+                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle icon-circle-navy mx-auto mb-5">
+                        {item.icon}
+                      </BorderGlow>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
                       <p className="text-xs sm:text-sm text-white/45 font-light">{item.desc}</p>
                     </div>
