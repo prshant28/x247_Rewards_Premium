@@ -46,14 +46,13 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
 
   useEffect(() => {
     checkAuth();
-    const onStorage = (e: StorageEvent) => {
+    const onAuthChange = () => checkAuth();
+    window.addEventListener("user_auth_changed", onAuthChange);
+    window.addEventListener("storage", (e: StorageEvent) => {
       if (e.key === "user_token") checkAuth();
-    };
-    window.addEventListener("storage", onStorage);
-    const interval = setInterval(checkAuth, 5000);
+    });
     return () => {
-      window.removeEventListener("storage", onStorage);
-      clearInterval(interval);
+      window.removeEventListener("user_auth_changed", onAuthChange);
     };
   }, []);
 

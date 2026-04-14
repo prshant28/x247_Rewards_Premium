@@ -271,10 +271,12 @@ function getUserToken(): string | null {
 
 function setUserToken(token: string): void {
   localStorage.setItem("user_token", token);
+  window.dispatchEvent(new Event("user_auth_changed"));
 }
 
 function clearUserToken(): void {
   localStorage.removeItem("user_token");
+  window.dispatchEvent(new Event("user_auth_changed"));
 }
 
 export async function registerUser(data: { fullName: string; email: string; phone?: string; password: string; city?: string }): Promise<{ success: boolean; token?: string; user?: any; error?: string }> {
