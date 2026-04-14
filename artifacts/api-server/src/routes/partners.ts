@@ -248,12 +248,13 @@ You MUST respond with ONLY a valid JSON object (no markdown, no code blocks, no 
   "category": "Registration",
   "badge": "One of: Required, New, Popular, Exclusive, Limited (pick most appropriate)",
   "badgeSecondary": "Optional second badge like 'Students Only', 'Free Entry', 'Open for All', or empty string",
-  "accent": "One of: navy, red, neutral (pick based on brand feel)"
+  "accent": "One of: navy, red, neutral (pick based on brand feel)",
+  "whatYouGet": "A clear, exciting 1-2 sentence description of what users gain by registering — e.g. prizes, certificates, internships, cash rewards, recognition. Be specific and compelling."
 }`
         },
         { role: "user", content: prompt }
       ],
-      max_tokens: 500,
+      max_tokens: 700,
       temperature: 0.7,
     });
 
@@ -276,6 +277,7 @@ You MUST respond with ONLY a valid JSON object (no markdown, no code blocks, no 
       accent: generated.accent || "navy",
       badge: generated.badge || "",
       badgeSecondary: generated.badgeSecondary || "",
+      whatYouGet: generated.whatYouGet || "",
       isActive: false,
       isRequired: false,
     });

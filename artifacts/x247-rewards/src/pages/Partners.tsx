@@ -30,7 +30,7 @@ const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.12 } }
 };
 
-type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "entryPoints" | "stats">;
+type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "entryPoints" | "whatYouGet" | "stats">;
 
 function buildPlaceholders(activeCount: number): PartnerCardData[] {
   const placeholders: PartnerCardData[] = [];
@@ -52,6 +52,7 @@ function buildPlaceholders(activeCount: number): PartnerCardData[] {
       isActive: false,
       isRequired: false,
       entryPoints: 1,
+      whatYouGet: null,
       stats: { clicks: 0, impressions: 0, formFills: 0 },
     });
   }
@@ -149,6 +150,13 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
         <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.15em] mb-1">{partner.category}</span>
         <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">{partner.name}</h3>
         <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{partner.description}</p>
+
+        {partner.whatYouGet && (
+          <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-3">
+            <Gift className="w-3.5 h-3.5 text-white/50 shrink-0 mt-0.5" />
+            <span className="text-[11px] text-white/60 font-light leading-relaxed line-clamp-2">{partner.whatYouGet}</span>
+          </div>
+        )}
 
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-5">
           <Trophy className="w-3.5 h-3.5 text-white/40 shrink-0" />
