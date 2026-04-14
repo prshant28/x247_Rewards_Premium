@@ -18,6 +18,7 @@ export const partnersTable = pgTable("partners", {
   isFeatured: boolean("is_featured").notNull().default(false),
   entryPoints: integer("entry_points").notNull().default(1),
   whatYouGet: text("what_you_get"),
+  trackingUrl: text("tracking_url"),
   sortOrder: serial("sort_order"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
