@@ -7,6 +7,7 @@ import {
   Upload, X, EyeOff, Copy, Search, FileImage, Eye, User
 } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, trackFormFill, getContest, registerUser, isUserLoggedIn, getUserTokenValue, type PartnerData, type GiveawayStatus, type ContestData } from "@/lib/api";
 
 const fadeUp = {
@@ -20,11 +21,28 @@ const fadeUp = {
 export default function GiveawayEntry() {
   const params = useParams<{ slug: string }>();
   const contestSlug = params.slug;
+  const queryClient = useQueryClient();
 
-  const [partners, setPartners] = useState<PartnerData[]>([]);
-  const [status, setStatus] = useState<GiveawayStatus | null>(null);
-  const [contest, setContest] = useState<ContestData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: partners = [] } = useQuery({
+    queryKey: ["partners"],
+    queryFn: getPartners,
+    staleTime: 0,
+  });
+  const { data: status = null } = useQuery({
+    queryKey: ["giveaway-status"],
+    queryFn: getGiveawayStatus,
+    refetchInterval: 15_000,
+    staleTime: 0,
+  });
+  const { data: contest = null, isLoading: contestLoading } = useQuery({
+    queryKey: ["contest", contestSlug],
+    queryFn: () => getContest(contestSlug!),
+    enabled: !!contestSlug,
+    refetchInterval: 15_000,
+    staleTime: 0,
+  });
+  const loading = !!contestSlug && contestLoading;
+
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -60,16 +78,6 @@ export default function GiveawayEntry() {
   const [accountPassword, setAccountPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    const promises: Promise<any>[] = [
-      getPartners().then(setPartners),
-      getGiveawayStatus().then(setStatus),
-    ];
-    if (contestSlug) {
-      promises.push(getContest(contestSlug).then(setContest));
-    }
-    Promise.all(promises).finally(() => setLoading(false));
-  }, [contestSlug]);
 
   const activePartners = partners.filter((p) => {
     if (!p.isActive) return false;
@@ -254,6 +262,9 @@ export default function GiveawayEntry() {
       setSuccessMessage(result.message);
       setEntryCode(result.entryCode || "");
       selectedPartners.forEach((partnerId) => trackFormFill(partnerId));
+      queryClient.invalidateQueries({ queryKey: ["contests"] });
+      queryClient.invalidateQueries({ queryKey: ["contest", contestSlug] });
+      queryClient.invalidateQueries({ queryKey: ["giveaway-status"] });
     } else {
       setError(result.error || "Something went wrong. Please try again.");
       captchaRef.current?.resetCaptcha();

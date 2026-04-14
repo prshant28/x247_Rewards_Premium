@@ -1,8 +1,12 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import { ObjectStorageService, ObjectNotFoundError, StorageNotConfiguredError } from "../lib/objectStorage";
+import { Readable } from "stream";
+import { ObjectStorageService, ObjectNotFoundError } from "../lib/objectStorage";
 
 const router: IRouter = Router();
 const objectStorageService = new ObjectStorageService();
+
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_SIZE = 10 * 1024 * 1024;
 
 router.post("/storage/uploads/request-url", async (req: Request, res: Response) => {
   const { name, size, contentType } = req.body || {};
@@ -12,56 +16,72 @@ router.post("/storage/uploads/request-url", async (req: Request, res: Response) 
     return;
   }
 
-  if (size && size > 10 * 1024 * 1024) {
+  if (size && size > MAX_SIZE) {
     res.status(400).json({ error: "File size must not exceed 10 MB" });
     return;
   }
 
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-  if (!allowedTypes.includes(contentType)) {
+  if (!ALLOWED_TYPES.includes(contentType)) {
     res.status(400).json({ error: "Only image files (JPEG, PNG, WebP, GIF) are allowed" });
     return;
   }
 
   try {
-    const { uploadURL, objectPath } = await objectStorageService.getUploadDetails();
+    const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+    const objectPath = objectStorageService.normalizeObjectEntityPath(uploadURL);
     res.json({ uploadURL, objectPath, metadata: { name, size, contentType } });
   } catch (error) {
-    if (error instanceof StorageNotConfiguredError) {
-      res.status(503).json({ error: "File storage is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY." });
+    req.log.error({ err: error }, "Error generating upload URL");
+    res.status(500).json({ error: "Failed to generate upload URL" });
+  }
+});
+
+router.get("/storage/public-objects/*filePath", async (req: Request, res: Response) => {
+  try {
+    const raw = req.params.filePath;
+    const filePath = Array.isArray(raw) ? raw.join("/") : raw;
+    const file = await objectStorageService.searchPublicObject(filePath);
+    if (!file) {
+      res.status(404).json({ error: "File not found" });
       return;
     }
-    console.error("Error generating upload URL:", error);
-    res.status(500).json({ error: "Failed to generate upload URL" });
+    const response = await objectStorageService.downloadObject(file);
+    res.status(response.status);
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+    if (response.body) {
+      const nodeStream = Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
+      nodeStream.pipe(res);
+    } else {
+      res.end();
+    }
+  } catch (error) {
+    req.log.error({ err: error }, "Error serving public object");
+    res.status(500).json({ error: "Failed to serve public object" });
   }
 });
 
 router.get("/storage/objects/*path", async (req: Request, res: Response) => {
   try {
     const raw = req.params.path;
-    const publicUrl = Array.isArray(raw) ? raw.join("/") : raw;
-
-    const upstream = await objectStorageService.downloadByPublicUrl(decodeURIComponent(publicUrl));
-
-    const contentType = upstream.headers.get("content-type") || "application/octet-stream";
-    const cacheControl = upstream.headers.get("cache-control") || "public, max-age=3600";
-
-    res.setHeader("Content-Type", contentType);
-    res.setHeader("Cache-Control", cacheControl);
-
-    if (upstream.body) {
-      const { Readable } = await import("stream");
-      const nodeStream = Readable.fromWeb(upstream.body as ReadableStream<Uint8Array>);
+    const wildcardPath = Array.isArray(raw) ? raw.join("/") : raw;
+    const objectPath = `/objects/${wildcardPath}`;
+    const objectFile = await objectStorageService.getObjectEntityFile(objectPath);
+    const response = await objectStorageService.downloadObject(objectFile);
+    res.status(response.status);
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+    if (response.body) {
+      const nodeStream = Readable.fromWeb(response.body as ReadableStream<Uint8Array>);
       nodeStream.pipe(res);
     } else {
       res.end();
     }
   } catch (error) {
     if (error instanceof ObjectNotFoundError) {
+      req.log.warn({ err: error }, "Object not found");
       res.status(404).json({ error: "Object not found" });
       return;
     }
-    console.error("Error serving object:", error);
+    req.log.error({ err: error }, "Error serving object");
     res.status(500).json({ error: "Failed to serve object" });
   }
 });
