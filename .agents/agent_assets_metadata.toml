@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "b6rIdsqgVgnNyoTUKQflX"
+uri = "file://attached_assets/favicon_v1_letterX.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "MwZ6J3X9Ay-fCitxwEaTf"
+uri = "file://attached_assets/favicon_v2_text.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "w9MjXZJ0klqP65Jh3teN7"
+uri = "file://attached_assets/favicon_v3_star.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "RW0fHHmXZi1EVirEg6YXd"
+uri = "file://attached_assets/favicon_v4_trophy.png"
+type = "image"
+title = "generated_image"
