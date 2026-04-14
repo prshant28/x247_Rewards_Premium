@@ -70,6 +70,7 @@ export interface PartnerData {
   isActive: boolean;
   isRequired: boolean;
   entryPoints: number;
+  whatYouGet: string | null;
   sortOrder: number;
   createdAt: string;
   updatedAt: string;
@@ -88,6 +89,8 @@ export interface PartnerInput {
   badgeSecondary?: string | null;
   isActive?: boolean;
   isRequired?: boolean;
+  entryPoints?: number;
+  whatYouGet?: string | null;
 }
 
 export async function getPartners(): Promise<PartnerData[]> {

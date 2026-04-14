@@ -16,6 +16,7 @@ export const partnersTable = pgTable("partners", {
   isActive: boolean("is_active").notNull().default(false),
   isRequired: boolean("is_required").notNull().default(false),
   entryPoints: integer("entry_points").notNull().default(1),
+  whatYouGet: text("what_you_get"),
   sortOrder: serial("sort_order"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
