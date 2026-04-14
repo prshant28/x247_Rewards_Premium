@@ -5,7 +5,7 @@ import {
   ArrowRight, ArrowLeft, ExternalLink, Gift, Zap, Lock, CheckCircle2,
   Star, Info, ListChecks, Trophy, Camera, Sparkles, BadgeCheck, Copy,
   Share2, ChevronRight, ShieldCheck, Clock, Users, Target, Rocket,
-  BookOpen, AlertCircle, CheckSquare, Square,
+  BookOpen, AlertCircle, CheckSquare, Square, TrendingUp,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -36,6 +36,26 @@ const tabVariants: Variants = {
 };
 
 type Tab = "what-you-get" | "details" | "how-to-enter";
+
+/* ─── whatYouGet parsing helpers ─── */
+function parseWhatYouGet(text: string): string[] {
+  return text
+    .split(/[,|•\n;]/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 3);
+}
+
+function getBenefitIcon(text: string): React.ReactNode {
+  const t = text.toLowerCase();
+  if (/prize|cash|money|₹|\$|win|lakh|crore|reward/.test(t)) return <Trophy className="w-5 h-5 text-white/50" />;
+  if (/intern|job|career|opport|recruit|placement/.test(t)) return <Rocket className="w-5 h-5 text-white/50" />;
+  if (/cert|badge|award|recogni/.test(t)) return <BadgeCheck className="w-5 h-5 text-white/50" />;
+  if (/learn|course|train|skill|workshop|bootcamp|educat/.test(t)) return <BookOpen className="w-5 h-5 text-white/50" />;
+  if (/community|network|meet|connect|people/.test(t)) return <Users className="w-5 h-5 text-white/50" />;
+  if (/free|zero|no cost|compliment|gratis/.test(t)) return <Sparkles className="w-5 h-5 text-white/50" />;
+  if (/growth|build|launch|start|scale/.test(t)) return <TrendingUp className="w-5 h-5 text-white/50" />;
+  return <Gift className="w-5 h-5 text-white/50" />;
+}
 
 /* ─── helpers ─── */
 function getPartnerIcon(accent: string) {
@@ -391,70 +411,63 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
               {activeTab === "what-you-get" && hasWhatYouGet && (
                 <motion.div key="wyg" variants={tabVariants} initial="enter" animate="center" exit="exit" className="space-y-5">
 
-                  {/* Prize headline card */}
-                  <div className="glass-card p-8 sm:p-12 relative overflow-hidden text-center">
+                  {/* Section header */}
+                  <div className="glass-card px-6 sm:px-8 py-5 relative overflow-hidden">
                     <div className="card-shine" />
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.06) 0%, transparent 65%)" }} />
-                    <div className="relative z-[2]">
-                      <motion.div variants={scaleIn} className="w-16 h-16 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center mx-auto mb-6">
-                        <Gift className="w-8 h-8 text-white/60" />
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% -20%, rgba(255,255,255,0.05) 0%, transparent 65%)" }} />
+                    <div className="relative z-[2] flex items-center gap-4">
+                      <motion.div variants={scaleIn} className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
+                        <Gift className="w-6 h-6 text-white/60" />
                       </motion.div>
-                      <p className="text-[10px] font-display uppercase tracking-[0.22em] text-white/30 mb-4">What You Get</p>
-                      <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.5 }}
-                        className="text-xl sm:text-2xl md:text-3xl font-display font-light text-white leading-snug max-w-2xl mx-auto"
-                      >
-                        {partner.whatYouGet}
-                      </motion.p>
+                      <div>
+                        <p className="text-[9px] font-display uppercase tracking-[0.22em] text-white/30 mb-1">Benefits &amp; Rewards</p>
+                        <p className="text-base sm:text-lg font-display font-light text-white leading-snug">
+                          Register with {partner.name} to unlock all of the below
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  {/* 3-column benefit chips */}
-                  <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {[
-                      { icon: <Trophy className="w-5 h-5 text-white/50" />, title: "Prize Pool", body: `Register to claim your share of the prize pool` },
-                      { icon: <Rocket className="w-5 h-5 text-white/50" />, title: "Career Edge", body: "Recognition from industry leaders and recruiters" },
-                      { icon: <BadgeCheck className="w-5 h-5 text-white/50" />, title: "Verified Entry", body: `+${partner.entryPoints ?? 1} draw ${(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"} added after verification` },
-                    ].map((item) => (
-                      <motion.div key={item.title} variants={itemFade} className="glass-card p-5 text-center">
-                        <div className="card-shine" />
-                        <div className="relative z-[2]">
-                          <div className="w-11 h-11 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center mx-auto mb-3">
-                            {item.icon}
-                          </div>
-                          <p className="text-[10px] font-display uppercase tracking-widest text-white/30 mb-1">{item.title}</p>
-                          <p className="text-xs text-white/50 font-light leading-relaxed">{item.body}</p>
-                        </div>
+                  {/* Parsed solution cards */}
+                  {(() => {
+                    const items = parseWhatYouGet(partner.whatYouGet!);
+                    return (
+                      <motion.div variants={stagger} initial="hidden" animate="visible" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {items.map((item, i) => (
+                          <motion.div key={i} variants={itemFade} className="glass-card p-5">
+                            <div className="card-shine" />
+                            <div className="relative z-[2] flex items-start gap-4">
+                              <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center shrink-0 mt-0.5">
+                                {getBenefitIcon(item)}
+                              </div>
+                              <div className="flex-1 min-w-0 pt-0.5">
+                                <p className="text-sm text-white font-light leading-relaxed">{item}</p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
                       </motion.div>
-                    ))}
+                    );
+                  })()}
+
+                  {/* X247 entry benefit chip */}
+                  <motion.div variants={itemFade} className="glass-card p-5 relative overflow-hidden">
+                    <div className="card-shine" />
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 60%)" }} />
+                    <div className="relative z-[2] flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
+                        <span className="text-lg font-display font-light text-white leading-none">+{partner.entryPoints ?? 1}</span>
+                        <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">{(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}</span>
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">X247 Bonus</p>
+                        <p className="text-sm text-white font-light leading-snug">
+                          Earn {partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"} into X247 Rewards daily giveaway
+                        </p>
+                        <p className="text-[11px] text-white/35 font-light mt-1">More partners = more entries = higher winning chances.</p>
+                      </div>
+                    </div>
                   </motion.div>
-
-                  {/* Draw entry reward */}
-                  <div className="glass-card p-6 sm:p-8 relative overflow-hidden">
-                    <div className="card-shine" />
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%)" }} />
-                    <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                      <div className="flex items-center gap-4 flex-1">
-                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
-                          <span className="text-xl sm:text-2xl font-display font-light text-white leading-none">+{partner.entryPoints ?? 1}</span>
-                          <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">{(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}</span>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">X247 Draw Benefit</p>
-                          <p className="text-white font-light text-sm sm:text-base leading-snug">
-                            Earn <span className="font-normal">{partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"}</span> into X247 Rewards daily giveaway
-                          </p>
-                          <p className="text-white/35 font-light text-xs mt-1">Each entry = one chance to win in the daily prize draw. More partners = more entries.</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] shrink-0">
-                        <Clock className="w-3 h-3 text-white/30" />
-                        <span className="text-[10px] font-display text-white/35 uppercase tracking-widest">Daily Draw</span>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Why Register */}
                   <div className="glass-card p-6 sm:p-8">
