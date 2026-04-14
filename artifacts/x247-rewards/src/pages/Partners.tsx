@@ -39,16 +39,8 @@ type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "d
 
 const PLACEHOLDER_DATA = [
   {
-    tagline: "Bonus Entry Partner",
-    description: "Register here as well to increase your winning chances. Additional registrations unlock bonus entry multipliers for every giveaway.",
-    category: "Bonus Entry",
-    accent: "red",
-    badge: "2x Chances",
-    whatYouGet: "2x entry multiplier for every giveaway draw | Priority access to limited contest spots | Exclusive bonus rewards for registered users | Referral rewards on each successful signup | First look at all upcoming partner launches",
-  },
-  {
     tagline: "Coming Soon",
-    description: "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
+    description: "A new partner integration is being finalised. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
     category: "Upcoming",
     accent: "neutral",
     badge: null,
@@ -56,19 +48,27 @@ const PLACEHOLDER_DATA = [
   },
   {
     tagline: "Coming Soon",
-    description: "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
+    description: "A new partner integration is being finalised. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
     category: "Upcoming",
     accent: "neutral",
     badge: null,
     whatYouGet: "Premium gadgets and tech rewards up for grabs | Internship and job referral opportunities | Online courses worth ₹10,000+ completely free | Community access with 10,000+ members | Additional giveaway entry points on registration",
+  },
+  {
+    tagline: "Coming Soon",
+    description: "A new partner integration is being finalised. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
+    category: "Upcoming",
+    accent: "neutral",
+    badge: null,
+    whatYouGet: "More exciting rewards and opportunities coming | Early access to upcoming giveaway contests | Referral rewards on each successful signup | First look at all upcoming partner launches | Additional entry points per completed registration",
   },
 ];
 
 function buildPlaceholders(activeCount: number): PartnerCardData[] {
   return PLACEHOLDER_DATA.map((data, i) => ({
     id: -(activeCount + i + 1),
-    slug: `partner-coming-${i + 1}`,
-    name: i === 0 ? "Bonus Entry Partner" : `Partner ${activeCount + i + 1}`,
+    slug: `partner-coming-${activeCount + i + 1}`,
+    name: `Partner ${activeCount + i + 1}`,
     tagline: data.tagline,
     description: data.description,
     category: data.category,
@@ -79,7 +79,7 @@ function buildPlaceholders(activeCount: number): PartnerCardData[] {
     isActive: false,
     isRequired: false,
     isFeatured: false,
-    entryPoints: i === 0 ? 2 : 1,
+    entryPoints: 1,
     whatYouGet: data.whatYouGet,
     stats: { clicks: 0, impressions: 0, formFills: 0 },
   }));
