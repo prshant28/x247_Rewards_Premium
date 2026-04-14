@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CardNav from "@/components/CardNav";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Sparkles,
   ExternalLink,
@@ -8,11 +8,15 @@ import {
   Target,
   Trophy,
   Gift,
-  Activity,
   Headphones,
   Users,
   Zap,
+  LayoutDashboard,
+  HelpCircle,
+  Star,
+  UserPlus,
 } from "lucide-react";
+import { getCurrentUser, logoutUser, isUserLoggedIn } from "@/lib/api";
 
 interface SiteNavProps {
   activePage?: "home" | "partners" | "offers" | "partner-detail" | "giveaway" | "winners" | "account" | "community";
@@ -20,6 +24,45 @@ interface SiteNavProps {
 
 export default function SiteNav({ activePage = "home" }: SiteNavProps) {
   const isHome = activePage === "home";
+  const [, navigate] = useLocation();
+  const [user, setUser] = useState<{ fullName: string; email: string } | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const checkAuth = () => {
+    const logged = isUserLoggedIn();
+    setLoggedIn(logged);
+    if (logged) {
+      getCurrentUser().then((u) => {
+        if (u) setUser({ fullName: u.fullName, email: u.email });
+        else {
+          setLoggedIn(false);
+          setUser(null);
+        }
+      });
+    } else {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "user_token") checkAuth();
+    };
+    window.addEventListener("storage", onStorage);
+    const interval = setInterval(checkAuth, 5000);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    setLoggedIn(false);
+    setUser(null);
+    navigate("/");
+  };
 
   return (
     <CardNav
@@ -35,6 +78,10 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
       menuColor="#fff"
       buttonBgColor="rgba(255,255,255,0.06)"
       buttonTextColor="#fff"
+      isLoggedIn={loggedIn}
+      user={user}
+      onLogout={handleLogout}
+      onNavigate={(path) => navigate(path)}
       onCtaClick={() => {
         if (isHome) {
           window.location.hash = "#partners";
@@ -47,41 +94,46 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
       )}
       items={[
         {
-          label: "Navigate",
+          label: "Pages",
           icon: <Globe className="w-3 h-3" />,
-          bgColor: "rgba(20, 25, 60, 0.15)",
-          textColor: "#fff",
-          links: [
-            { label: "Home", href: isHome ? "/" : "/", spa: !isHome, icon: <Sparkles className="w-3.5 h-3.5" /> },
-            { label: "Partner Links", href: isHome ? "#partners" : "/#partners", icon: <ExternalLink className="w-3.5 h-3.5" /> },
-            { label: "How it Works", href: isHome ? "#how-it-works" : "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
-            { label: "Giveaway", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
-            { label: "Rewards", href: isHome ? "#rewards" : "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
-          ],
-        },
-        {
-          label: "Explore",
-          icon: <Zap className="w-3 h-3" />,
-          bgColor: "rgba(120, 20, 30, 0.12)",
-          textColor: "#fff",
-          links: [
-            { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
-            { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-            { label: "Winners", href: "/winners", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
-            { label: "Dashboard", href: isHome ? "#dashboard" : "/#dashboard", icon: <Activity className="w-3.5 h-3.5" /> },
-            { label: "FAQ", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-          ],
-        },
-        {
-          label: "Connect",
-          icon: <Users className="w-3 h-3" />,
           bgColor: "rgba(255, 255, 255, 0.03)",
           textColor: "#fff",
           links: [
+            { label: "Home", href: "/", spa: true, icon: <Sparkles className="w-3.5 h-3.5" /> },
+            { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
+            { label: "Giveaways", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
+            { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
+            { label: "Winners", href: "/winners", spa: true, icon: <Star className="w-3.5 h-3.5" /> },
             { label: "Community", href: "/community", spa: true, icon: <Users className="w-3.5 h-3.5" /> },
-            { label: "My Account", href: "/account", spa: true, icon: <Sparkles className="w-3.5 h-3.5" /> },
-            { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
           ],
+        },
+        {
+          label: "Quick Links",
+          icon: <Zap className="w-3 h-3" />,
+          bgColor: "rgba(255, 255, 255, 0.03)",
+          textColor: "#fff",
+          links: [
+            { label: "How it Works", href: isHome ? "#how-it-works" : "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
+            { label: "Rewards", href: isHome ? "#rewards" : "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
+            { label: "Dashboard", href: isHome ? "#dashboard" : "/#dashboard", icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
+            { label: "FAQ", href: isHome ? "#faq" : "/#faq", icon: <HelpCircle className="w-3.5 h-3.5" /> },
+          ],
+        },
+        {
+          label: "Account",
+          icon: <Users className="w-3 h-3" />,
+          bgColor: "rgba(255, 255, 255, 0.03)",
+          textColor: "#fff",
+          links: loggedIn
+            ? [
+                { label: "My Account", href: "/account", spa: true, icon: <UserPlus className="w-3.5 h-3.5" /> },
+                { label: "My Entries", href: "/account", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
+                { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
+              ]
+            : [
+                { label: "Get Started", href: "/", spa: false, icon: <UserPlus className="w-3.5 h-3.5" /> },
+                { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
+              ],
         },
       ]}
     />

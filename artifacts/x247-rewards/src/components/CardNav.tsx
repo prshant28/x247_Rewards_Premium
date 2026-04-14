@@ -1,6 +1,6 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useEffect, useCallback } from "react";
 import { gsap } from "gsap";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, User, LogOut, Settings, ChevronDown } from "lucide-react";
 import "./CardNav.css";
 
 interface NavLink {
@@ -8,6 +8,7 @@ interface NavLink {
   href: string;
   spa?: boolean;
   icon?: React.ReactNode;
+  divider?: boolean;
 }
 
 interface NavItem {
@@ -16,6 +17,11 @@ interface NavItem {
   textColor: string;
   icon?: React.ReactNode;
   links: NavLink[];
+}
+
+interface UserInfo {
+  fullName: string;
+  email: string;
 }
 
 interface CardNavProps {
@@ -29,6 +35,20 @@ interface CardNavProps {
   buttonTextColor?: string;
   onCtaClick?: () => void;
   renderLink?: (href: string, children: React.ReactNode, className: string) => React.ReactNode;
+  isLoggedIn?: boolean;
+  user?: UserInfo | null;
+  onLogout?: () => void;
+  onNavigate?: (path: string) => void;
+}
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 }
 
 const CardNav = ({
@@ -42,12 +62,30 @@ const CardNav = ({
   buttonTextColor = "#fff",
   onCtaClick,
   renderLink,
+  isLoggedIn = false,
+  user,
+  onLogout,
+  onNavigate,
 }: CardNavProps) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const avatarDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (avatarDropdownRef.current && !avatarDropdownRef.current.contains(e.target as Node)) {
+        setAvatarOpen(false);
+      }
+    };
+    if (avatarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [avatarOpen]);
 
   const calculateHeight = () => {
     const navEl = navRef.current;
@@ -173,14 +211,79 @@ const CardNav = ({
 
           <div className="logo-container">{logo}</div>
 
-          <button
-            type="button"
-            className="card-nav-cta-button"
-            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
-            onClick={onCtaClick}
-          >
-            Get Started
-          </button>
+          {isLoggedIn && user ? (
+            <div className="avatar-wrapper" ref={avatarDropdownRef}>
+              <button
+                type="button"
+                className="avatar-button"
+                onClick={() => setAvatarOpen(!avatarOpen)}
+                aria-label="User menu"
+              >
+                <div className="avatar-circle">
+                  <span className="avatar-initials">{getInitials(user.fullName)}</span>
+                </div>
+                <ChevronDown className={`avatar-chevron ${avatarOpen ? "rotated" : ""}`} />
+              </button>
+
+              {avatarOpen && (
+                <div className="avatar-dropdown">
+                  <div className="avatar-dropdown-header">
+                    <div className="avatar-dropdown-avatar">
+                      <span>{getInitials(user.fullName)}</span>
+                    </div>
+                    <div className="avatar-dropdown-info">
+                      <span className="avatar-dropdown-name">{user.fullName}</span>
+                      <span className="avatar-dropdown-email">{user.email}</span>
+                    </div>
+                  </div>
+                  <div className="avatar-dropdown-divider" />
+                  <button
+                    type="button"
+                    className="avatar-dropdown-item"
+                    onClick={() => {
+                      setAvatarOpen(false);
+                      onNavigate?.("/account");
+                    }}
+                  >
+                    <User className="avatar-dropdown-icon" />
+                    My Account
+                  </button>
+                  <button
+                    type="button"
+                    className="avatar-dropdown-item"
+                    onClick={() => {
+                      setAvatarOpen(false);
+                      onNavigate?.("/account");
+                    }}
+                  >
+                    <Settings className="avatar-dropdown-icon" />
+                    Settings
+                  </button>
+                  <div className="avatar-dropdown-divider" />
+                  <button
+                    type="button"
+                    className="avatar-dropdown-item avatar-dropdown-logout"
+                    onClick={() => {
+                      setAvatarOpen(false);
+                      onLogout?.();
+                    }}
+                  >
+                    <LogOut className="avatar-dropdown-icon" />
+                    Log Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="card-nav-cta-button"
+              style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+              onClick={onCtaClick}
+            >
+              Get Started
+            </button>
+          )}
         </div>
 
         <div
@@ -202,6 +305,9 @@ const CardNav = ({
               </div>
               <div className="nav-card-links">
                 {item.links?.map((lnk, i) => {
+                  if (lnk.divider) {
+                    return <div key={`divider-${i}`} className="nav-card-link-divider" />;
+                  }
                   const linkIcon = lnk.icon || <ArrowUpRight className="nav-card-link-icon" aria-hidden="true" />;
                   const content = (
                     <>
