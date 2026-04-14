@@ -448,7 +448,7 @@ export default function ChatBot() {
               WebkitBackdropFilter: "blur(60px)",
               borderRadius: "24px",
               border: "1px solid rgba(255, 255, 255, 0.07)",
-              boxShadow: "0 30px 100px rgba(0, 0, 0, 0.9), 0 0 0 0.5px rgba(255, 255, 255, 0.03), 0 0 60px rgba(140, 20, 30, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+              boxShadow: "0 30px 100px rgba(0, 0, 0, 0.9), 0 0 0 0.5px rgba(255, 255, 255, 0.03), 0 0 60px rgba(255, 255, 255, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
             }}
           >
             <div
@@ -456,7 +456,7 @@ export default function ChatBot() {
               style={{
                 borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
                 borderRadius: "24px 24px 0 0",
-                background: "linear-gradient(180deg, rgba(20, 25, 60, 0.12) 0%, rgba(140, 20, 30, 0.04) 50%, transparent 100%)",
+                background: "linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 50%, transparent 100%)",
               }}
             >
               <div className="flex items-center justify-between px-5 py-3.5">
@@ -756,12 +756,12 @@ export default function ChatBot() {
         onClick={() => { setIsOpen(!isOpen); setHasNewMessage(false); }}
         className="fixed bottom-6 right-4 sm:right-6 z-[60] w-14 h-14 rounded-2xl flex items-center justify-center"
         style={{
-          background: "linear-gradient(135deg, rgba(140, 20, 30, 0.5) 0%, rgba(20, 30, 80, 0.5) 100%)",
+          background: "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)",
           border: "1px solid rgba(255, 255, 255, 0.1)",
-          boxShadow: "0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 0 40px rgba(140, 20, 30, 0.15)",
+          boxShadow: "0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 0 40px rgba(255, 255, 255, 0.04)",
           backdropFilter: "blur(20px)",
         }}
-        whileHover={{ scale: 1.05, boxShadow: "0 8px 50px rgba(0, 0, 0, 0.8), 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 0 60px rgba(140, 20, 30, 0.25)" }}
+        whileHover={{ scale: 1.05, boxShadow: "0 8px 50px rgba(0, 0, 0, 0.8), 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 0 60px rgba(255, 255, 255, 0.06)" }}
         whileTap={{ scale: 0.95 }}
       >
         <AnimatePresence mode="wait">
