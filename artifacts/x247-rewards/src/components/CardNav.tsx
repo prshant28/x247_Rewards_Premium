@@ -151,7 +151,7 @@ const CardNav = ({
       tl?.kill();
       tlRef.current = null;
     };
-  }, [ease, items]);
+  }, [ease]);
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -175,17 +175,44 @@ const CardNav = ({
     return () => window.removeEventListener("resize", handleResize);
   }, [isExpanded]);
 
-  const toggleMenu = () => {
+  const resetToCollapsed = () => {
+    const navEl = navRef.current;
+    if (!navEl) return;
+    tlRef.current?.kill();
+    gsap.set(navEl, { height: 60, overflow: "hidden" });
+    gsap.set(cardsRef.current, { y: 50, opacity: 0 });
+    const newTl = createTimeline();
+    tlRef.current = newTl;
+    setIsHamburgerOpen(false);
+    setIsExpanded(false);
+  };
+
+  const closeMenu = (instant?: boolean) => {
+    if (instant) {
+      resetToCollapsed();
+      return;
+    }
     const tl = tlRef.current;
-    if (!tl) return;
+    if (!tl || !isExpanded) return;
+    setIsHamburgerOpen(false);
+    tl.eventCallback("onReverseComplete", () => {
+      setIsExpanded(false);
+    });
+    tl.reverse();
+  };
+
+  const toggleMenu = () => {
     if (!isExpanded) {
+      let tl = tlRef.current;
+      if (!tl) {
+        tl = createTimeline();
+        tlRef.current = tl;
+      }
       setIsHamburgerOpen(true);
       setIsExpanded(true);
       tl.play(0);
     } else {
-      setIsHamburgerOpen(false);
-      tl.eventCallback("onReverseComplete", () => setIsExpanded(false));
-      tl.reverse();
+      closeMenu();
     }
   };
 
@@ -323,7 +350,7 @@ const CardNav = ({
                   );
                   if (lnk.spa && renderLink) {
                     return (
-                      <span key={`${lnk.label}-${i}`}>
+                      <span key={`${lnk.label}-${i}`} onClick={() => closeMenu(true)}>
                         {renderLink(lnk.href, content, "nav-card-link")}
                       </span>
                     );
@@ -333,6 +360,7 @@ const CardNav = ({
                       key={`${lnk.label}-${i}`}
                       className="nav-card-link"
                       href={lnk.href}
+                      onClick={() => closeMenu(true)}
                     >
                       {content}
                     </a>
