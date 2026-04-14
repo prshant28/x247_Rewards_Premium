@@ -1,4 +1,4 @@
-import { pgTable, text, serial, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -15,6 +15,7 @@ export const partnersTable = pgTable("partners", {
   badgeSecondary: text("badge_secondary"),
   isActive: boolean("is_active").notNull().default(false),
   isRequired: boolean("is_required").notNull().default(false),
+  entryPoints: integer("entry_points").notNull().default(1),
   sortOrder: serial("sort_order"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

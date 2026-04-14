@@ -69,6 +69,7 @@ export interface PartnerData {
   badgeSecondary: string | null;
   isActive: boolean;
   isRequired: boolean;
+  entryPoints: number;
   sortOrder: number;
   createdAt: string;
   updatedAt: string;
@@ -247,6 +248,7 @@ export interface ContestData {
   status: string;
   imageUrl: string | null;
   slug: string;
+  partnerIds: number[];
   createdAt: string;
   endsAt: string | null;
   totalEntries: number;
@@ -263,6 +265,26 @@ export async function getContest(slug: string): Promise<ContestData | null> {
   const res = await fetch(`${API_BASE}/contests/${slug}`);
   if (!res.ok) return null;
   return res.json();
+}
+
+export async function createContest(data: Partial<ContestData>): Promise<ContestData> {
+  const res = await authFetch("/contests", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function updateContest(id: number, data: Partial<ContestData>): Promise<ContestData> {
+  const res = await authFetch(`/contests/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function deleteContest(id: number): Promise<void> {
+  await authFetch(`/contests/${id}`, { method: "DELETE" });
 }
 
 function getUserToken(): string | null {

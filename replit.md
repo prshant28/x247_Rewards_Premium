@@ -75,6 +75,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `GET /api/storage/objects/*` — serve private objects
   - `GET /api/contests` — list all contests with entry stats
   - `GET /api/contests/:slug` — get contest detail by slug
+  - `POST /api/contests` — create contest (admin-protected)
+  - `PUT /api/contests/:id` — update contest (admin-protected)
+  - `DELETE /api/contests/:id` — delete contest (admin-protected)
   - `POST /api/users/register` — user registration (returns token)
   - `POST /api/users/login` — user login (returns token)
   - `GET /api/users/me` — get current user profile (auth required)
@@ -93,7 +96,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **conversations**: id, title, createdAt, updatedAt
 - **messages**: id, conversationId, role, content, createdAt
 - **giveaway_entries**: id, contestId, userId, fullName, email, phone, age, city, completedPartners (JSON array of partner IDs), screenshotConfirmed, screenshotUrl, agreedToTerms, ipHash, entryCount, entryCode (X247-XXXX-XXXX format), isAnonymous, createdAt
-- **contests**: id, name, description, prize, prizeValue, maxSpots, status (active/upcoming/completed), imageUrl, slug (unique), createdAt, endsAt
+- **contests**: id, name, description, prize, prizeValue, maxSpots, status (active/upcoming/completed), imageUrl, slug (unique), partnerIds (JSON array of linked partner IDs), createdAt, endsAt
 - **users**: id, fullName, email (unique), phone, passwordHash, city, createdAt
 - **user_sessions**: id, token (unique), userId, expiresAt, createdAt
 - **winners**: id, contestId, entryId, winnerName, winnerCity, prize, entryCode, announcedAt

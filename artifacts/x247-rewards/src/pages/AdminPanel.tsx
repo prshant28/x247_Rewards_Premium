@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { verifySession, logout, getAnalytics, createPartner, updatePartner, deletePartner, generatePartnerAI } from "@/lib/api";
+import { verifySession, logout, getAnalytics, createPartner, updatePartner, deletePartner, generatePartnerAI, getContests, createContest, updateContest, deleteContest, type ContestData } from "@/lib/api";
 import {
   Sparkles, LogOut, Plus, Trash2, Edit3, Save, X, ExternalLink,
   MousePointer, Eye, FileText, BarChart3, Activity, Users, ArrowRight,
-  AlertCircle, CheckCircle2, RefreshCw, Wand2, Loader2
+  AlertCircle, CheckCircle2, RefreshCw, Wand2, Loader2, Trophy, Link2
 } from "lucide-react";
 
 interface PartnerAnalytics {
@@ -38,6 +38,16 @@ export default function AdminPanel() {
   const [aiDescription, setAiDescription] = useState("");
   const [aiGenerating, setAiGenerating] = useState(false);
 
+  const [activeTab, setActiveTab] = useState<"partners" | "contests">("partners");
+  const [contests, setContests] = useState<ContestData[]>([]);
+  const [showContestForm, setShowContestForm] = useState(false);
+  const [editingContestId, setEditingContestId] = useState<number | null>(null);
+  const [contestForm, setContestForm] = useState({
+    name: "", slug: "", description: "", prize: "", prizeValue: "",
+    maxSpots: 100, status: "active", partnerIds: [] as number[],
+    endsAt: "",
+  });
+
   const [form, setForm] = useState({
     name: "", slug: "", tagline: "", description: "", category: "Registration",
     registrationUrl: "", accent: "navy", badge: "", badgeSecondary: "",
@@ -56,8 +66,12 @@ export default function AdminPanel() {
 
   async function loadData() {
     try {
-      const analytics = await getAnalytics();
+      const [analytics, contestsList] = await Promise.all([
+        getAnalytics(),
+        getContests(),
+      ]);
       setData(analytics);
+      setContests(contestsList);
     } catch (err) {
       console.error(err);
     }
@@ -164,6 +178,67 @@ export default function AdminPanel() {
     setTimeout(() => setMessage(null), 3000);
   }
 
+  function resetContestForm() {
+    setContestForm({ name: "", slug: "", description: "", prize: "", prizeValue: "", maxSpots: 100, status: "active", partnerIds: [], endsAt: "" });
+  }
+
+  function startContestEdit(c: ContestData) {
+    setEditingContestId(c.id);
+    setContestForm({
+      name: c.name, slug: c.slug, description: c.description, prize: c.prize,
+      prizeValue: c.prizeValue || "", maxSpots: c.maxSpots, status: c.status,
+      partnerIds: c.partnerIds || [],
+      endsAt: c.endsAt ? new Date(c.endsAt).toISOString().slice(0, 16) : "",
+    });
+    setShowContestForm(false);
+  }
+
+  function generateSlugFromName(name: string): string {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  async function handleContestSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      const payload = { ...contestForm, endsAt: contestForm.endsAt || undefined };
+      if (editingContestId) {
+        await updateContest(editingContestId, payload);
+        setMessage({ type: "success", text: "Contest updated successfully" });
+        setEditingContestId(null);
+      } else {
+        await createContest(payload);
+        setMessage({ type: "success", text: "Contest created successfully" });
+        setShowContestForm(false);
+      }
+      resetContestForm();
+      await loadData();
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "Failed to save contest" });
+    }
+    setTimeout(() => setMessage(null), 3000);
+  }
+
+  async function handleContestDelete(id: number) {
+    if (!confirm("Are you sure you want to delete this contest?")) return;
+    try {
+      await deleteContest(id);
+      setMessage({ type: "success", text: "Contest deleted" });
+      await loadData();
+    } catch {
+      setMessage({ type: "error", text: "Failed to delete contest" });
+    }
+    setTimeout(() => setMessage(null), 3000);
+  }
+
+  function toggleContestPartner(partnerId: number) {
+    setContestForm((prev) => ({
+      ...prev,
+      partnerIds: prev.partnerIds.includes(partnerId)
+        ? prev.partnerIds.filter((id) => id !== partnerId)
+        : [...prev.partnerIds, partnerId],
+    }));
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -227,6 +302,22 @@ export default function AdminPanel() {
           ))}
         </div>
 
+        <div className="flex items-center gap-2 mb-8">
+          <button
+            onClick={() => setActiveTab("partners")}
+            className={`px-5 py-2.5 rounded-xl text-sm font-display font-light transition-all ${activeTab === "partners" ? "bg-white/[0.08] border border-white/[0.15] text-white" : "bg-white/[0.02] border border-white/[0.06] text-white/40 hover:text-white/60"}`}
+          >
+            Partners
+          </button>
+          <button
+            onClick={() => setActiveTab("contests")}
+            className={`px-5 py-2.5 rounded-xl text-sm font-display font-light transition-all ${activeTab === "contests" ? "bg-white/[0.08] border border-white/[0.15] text-white" : "bg-white/[0.02] border border-white/[0.06] text-white/40 hover:text-white/60"}`}
+          >
+            Contests
+          </button>
+        </div>
+
+        {activeTab === "partners" && (<>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-display font-light text-white">Partner Management</h2>
           <div className="flex items-center gap-2">
@@ -535,6 +626,238 @@ export default function AdminPanel() {
             </div>
           )}
         </div>
+        </>)}
+
+        {activeTab === "contests" && (<>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-display font-light text-white">Contest Management</h2>
+          <button
+            onClick={() => { setShowContestForm(true); setEditingContestId(null); resetContestForm(); }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-display font-light hover:bg-white/[0.1] transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Contest
+          </button>
+        </div>
+
+        {(showContestForm || editingContestId !== null) && (
+          <div className="glass-card p-6 sm:p-8 mb-8">
+            <div className="relative z-[2]">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-display font-light text-white">{editingContestId ? "Edit Contest" : "New Contest"}</h3>
+                <button onClick={() => { setShowContestForm(false); setEditingContestId(null); resetContestForm(); }}
+                  className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/40 hover:text-white transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <form onSubmit={handleContestSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Name *</label>
+                    <input value={contestForm.name}
+                      onChange={(e) => setContestForm((p) => ({ ...p, name: e.target.value, slug: p.slug || generateSlugFromName(e.target.value) }))}
+                      className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:border-white/[0.25] focus:outline-none transition-colors"
+                      placeholder="Monthly Mega Giveaway" required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Slug *</label>
+                    <input value={contestForm.slug}
+                      onChange={(e) => setContestForm((p) => ({ ...p, slug: e.target.value }))}
+                      className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:border-white/[0.25] focus:outline-none transition-colors"
+                      placeholder="monthly-mega-giveaway" required />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Description *</label>
+                  <textarea value={contestForm.description}
+                    onChange={(e) => setContestForm((p) => ({ ...p, description: e.target.value }))}
+                    rows={3}
+                    className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:border-white/[0.25] focus:outline-none transition-colors resize-none"
+                    placeholder="Enter a description for this contest" required />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Prize *</label>
+                    <input value={contestForm.prize}
+                      onChange={(e) => setContestForm((p) => ({ ...p, prize: e.target.value }))}
+                      className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:border-white/[0.25] focus:outline-none transition-colors"
+                      placeholder="iPhone 16 Pro" required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Prize Value</label>
+                    <input value={contestForm.prizeValue}
+                      onChange={(e) => setContestForm((p) => ({ ...p, prizeValue: e.target.value }))}
+                      className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:border-white/[0.25] focus:outline-none transition-colors"
+                      placeholder="$1,199" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Max Spots *</label>
+                    <input type="number" value={contestForm.maxSpots}
+                      onChange={(e) => setContestForm((p) => ({ ...p, maxSpots: parseInt(e.target.value) || 100 }))}
+                      className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 focus:border-white/[0.25] focus:outline-none transition-colors"
+                      min={1} required />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Status</label>
+                    <select value={contestForm.status}
+                      onChange={(e) => setContestForm((p) => ({ ...p, status: e.target.value }))}
+                      className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white focus:border-white/[0.25] focus:outline-none transition-colors">
+                      <option value="active" className="bg-black">Active</option>
+                      <option value="upcoming" className="bg-black">Upcoming</option>
+                      <option value="ended" className="bg-black">Ended</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">Ends At</label>
+                    <input type="datetime-local" value={contestForm.endsAt}
+                      onChange={(e) => setContestForm((p) => ({ ...p, endsAt: e.target.value }))}
+                      className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white focus:border-white/[0.25] focus:outline-none transition-colors [color-scheme:dark]" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-white/30 mb-2 font-display">
+                    <Link2 className="w-3 h-3 inline mr-1" />
+                    Linked Partners
+                  </label>
+                  <p className="text-[11px] text-white/25 mb-3 font-light">Select which partners users must register with to enter this contest.</p>
+                  {data?.partners && data.partners.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {data.partners.map((item: PartnerAnalytics) => (
+                        <button
+                          key={item.partner.id}
+                          type="button"
+                          onClick={() => toggleContestPartner(item.partner.id)}
+                          className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${
+                            contestForm.partnerIds.includes(item.partner.id)
+                              ? "bg-white/[0.08] border-white/[0.2]"
+                              : "bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]"
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                            contestForm.partnerIds.includes(item.partner.id)
+                              ? "bg-white/20 border-white/40"
+                              : "border-white/10"
+                          }`}>
+                            {contestForm.partnerIds.includes(item.partner.id) && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm text-white/80 font-light truncate">{item.partner.name}</div>
+                            <div className="text-[10px] text-white/30">{item.partner.isActive ? "Active" : "Inactive"}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-white/25 font-light">No partners available. Create partners first.</p>
+                  )}
+                  {contestForm.partnerIds.length > 0 && (
+                    <div className="mt-2 text-[11px] text-white/35 font-light">{contestForm.partnerIds.length} partner{contestForm.partnerIds.length !== 1 ? "s" : ""} selected</div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button type="submit"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.08] border border-white/[0.15] text-white text-sm font-display font-light hover:bg-white/[0.12] transition-colors">
+                    <Save className="w-4 h-4" />
+                    {editingContestId ? "Update Contest" : "Create Contest"}
+                  </button>
+                  {editingContestId && (
+                    <button type="button" onClick={() => { setEditingContestId(null); resetContestForm(); }}
+                      className="px-4 py-3 rounded-xl text-white/40 text-sm hover:text-white/60 transition-colors">
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <div className="space-y-4">
+          {contests.map((contest) => (
+            <div key={contest.id} className="glass-card p-5 sm:p-6">
+              <div className="card-shine" />
+              <div className="relative z-[2]">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Trophy className="w-4 h-4 text-white/50" />
+                      <h3 className="font-display font-light text-white text-lg">{contest.name}</h3>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-widest font-display ${
+                        contest.status === "active" ? "bg-white/10 text-white/60" : contest.status === "upcoming" ? "bg-white/[0.06] text-white/40" : "bg-white/[0.04] text-white/25"
+                      }`}>{contest.status}</span>
+                    </div>
+                    <p className="text-xs text-white/35 font-light mt-1 line-clamp-2">{contest.description}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ml-4">
+                    <button onClick={() => startContestEdit(contest)}
+                      className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/40 hover:text-white/70 transition-colors">
+                      <Edit3 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleContestDelete(contest.id)}
+                      className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/30 hover:text-white/60 transition-colors">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6 text-sm">
+                  <div>
+                    <span className="text-white/25 text-[10px] uppercase tracking-widest font-display">Prize</span>
+                    <div className="text-white/70 font-light">{contest.prize}{contest.prizeValue ? ` (${contest.prizeValue})` : ""}</div>
+                  </div>
+                  <div className="w-px h-8 bg-white/[0.06]" />
+                  <div>
+                    <span className="text-white/25 text-[10px] uppercase tracking-widest font-display">Entries</span>
+                    <div className="text-white/70 font-light">{contest.totalEntries} / {contest.maxSpots}</div>
+                  </div>
+                  <div className="w-px h-8 bg-white/[0.06]" />
+                  <div>
+                    <span className="text-white/25 text-[10px] uppercase tracking-widest font-display">Partners</span>
+                    <div className="text-white/70 font-light">{(contest.partnerIds || []).length} linked</div>
+                  </div>
+                  {contest.endsAt && (
+                    <>
+                      <div className="w-px h-8 bg-white/[0.06]" />
+                      <div>
+                        <span className="text-white/25 text-[10px] uppercase tracking-widest font-display">Ends</span>
+                        <div className="text-white/70 font-light">{new Date(contest.endsAt).toLocaleDateString()}</div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {(contest.partnerIds || []).length > 0 && data?.partners && (
+                  <div className="mt-3 pt-3 border-t border-white/[0.04]">
+                    <div className="flex flex-wrap gap-1.5">
+                      {contest.partnerIds.map((pid) => {
+                        const p = data.partners.find((item: PartnerAnalytics) => item.partner.id === pid);
+                        return p ? (
+                          <span key={pid} className="text-[10px] px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/40 font-light">
+                            {p.partner.name}
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {contests.length === 0 && (
+            <div className="glass-card p-12 text-center">
+              <div className="card-shine" />
+              <div className="relative z-[2]">
+                <p className="text-white/30 font-light text-sm">No contests yet. Click "Add Contest" to get started.</p>
+              </div>
+            </div>
+          )}
+        </div>
+        </>)}
 
         </div>
       </main>

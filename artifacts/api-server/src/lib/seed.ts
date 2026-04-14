@@ -5,12 +5,13 @@ import { logger } from "./logger";
 
 export async function seedDatabase() {
   try {
+    let seedPartnerIds: number[] = [];
     const [partnerCount] = await db.select({ count: sql<number>`count(*)` }).from(partnersTable);
     const [contestCount] = await db.select({ count: sql<number>`count(*)` }).from(contestsTable);
 
     if (Number(partnerCount?.count || 0) === 0) {
       logger.info("Seeding partners...");
-      await db.insert(partnersTable).values([
+      const seededPartners = await db.insert(partnersTable).values([
         {
           slug: "solution-challenge-2026",
           name: "Solution Challenge 2026",
@@ -23,9 +24,12 @@ export async function seedDatabase() {
           badgeSecondary: "Students Only",
           isActive: true,
           isRequired: true,
+          entryPoints: 1,
         },
-      ]);
+      ]).returning();
+      const partnerIdsList = seededPartners.map(p => p.id);
       logger.info("Partners seeded successfully");
+      seedPartnerIds = partnerIdsList;
     }
 
     if (Number(contestCount?.count || 0) === 0) {
@@ -39,6 +43,7 @@ export async function seedDatabase() {
           maxSpots: 100,
           status: "active",
           slug: "mega-cash-giveaway",
+          partnerIds: seedPartnerIds,
           endsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         },
         {
@@ -49,6 +54,7 @@ export async function seedDatabase() {
           maxSpots: 50,
           status: "active",
           slug: "tech-gadgets-bonanza",
+          partnerIds: seedPartnerIds,
           endsAt: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
         },
         {
@@ -59,6 +65,7 @@ export async function seedDatabase() {
           maxSpots: 75,
           status: "active",
           slug: "gaming-paradise",
+          partnerIds: seedPartnerIds,
           endsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         },
         {
@@ -69,6 +76,7 @@ export async function seedDatabase() {
           maxSpots: 200,
           status: "active",
           slug: "student-special",
+          partnerIds: seedPartnerIds,
           endsAt: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
         },
         {
@@ -79,6 +87,7 @@ export async function seedDatabase() {
           maxSpots: 30,
           status: "upcoming",
           slug: "weekend-flash",
+          partnerIds: seedPartnerIds,
           endsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       ]);

@@ -41,10 +41,10 @@ export default function GiveawayEntry() {
   });
   const [selectedPartners, setSelectedPartners] = useState<number[]>([]);
   const [screenshotConfirmed, setScreenshotConfirmed] = useState(false);
-  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
-  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
+  const [screenshotFiles, setScreenshotFiles] = useState<Record<number, File>>({});
+  const [screenshotPreviews, setScreenshotPreviews] = useState<Record<number, string>>({});
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
-  const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
+  const [screenshotUrls, setScreenshotUrls] = useState<Record<number, string>>({});
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +71,13 @@ export default function GiveawayEntry() {
     Promise.all(promises).finally(() => setLoading(false));
   }, [contestSlug]);
 
-  const activePartners = partners.filter((p) => p.isActive);
+  const activePartners = partners.filter((p) => {
+    if (!p.isActive) return false;
+    if (contest && contest.partnerIds && contest.partnerIds.length > 0) {
+      return contest.partnerIds.includes(p.id);
+    }
+    return true;
+  });
   const requiredPartners = activePartners.filter((p) => p.isRequired);
   const allRequiredSelected = requiredPartners.every((p) => selectedPartners.includes(p.id));
 
@@ -81,9 +87,12 @@ export default function GiveawayEntry() {
     );
   }
 
+  const activeFileInputRef = useRef<number | null>(null);
+
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (!file) return;
+    const partnerId = activeFileInputRef.current;
+    if (!file || partnerId === null) return;
 
     if (file.size > 10 * 1024 * 1024) {
       setError("Screenshot must be under 10 MB.");
@@ -95,19 +104,46 @@ export default function GiveawayEntry() {
       return;
     }
 
-    setScreenshotFile(file);
-    setScreenshotPreview(URL.createObjectURL(file));
+    if (screenshotPreviews[partnerId]) {
+      URL.revokeObjectURL(screenshotPreviews[partnerId]);
+    }
+    setScreenshotFiles((prev) => ({ ...prev, [partnerId]: file }));
+    setScreenshotPreviews((prev) => ({ ...prev, [partnerId]: URL.createObjectURL(file) }));
     setScreenshotConfirmed(true);
     setError("");
-  }
-
-  function removeScreenshot() {
-    setScreenshotFile(null);
-    setScreenshotPreview(null);
-    setScreenshotUrl(null);
-    setScreenshotConfirmed(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
+
+  function removeScreenshot(partnerId: number) {
+    if (screenshotPreviews[partnerId]) {
+      URL.revokeObjectURL(screenshotPreviews[partnerId]);
+    }
+    setScreenshotFiles((prev) => {
+      const next = { ...prev };
+      delete next[partnerId];
+      return next;
+    });
+    setScreenshotPreviews((prev) => {
+      const next = { ...prev };
+      delete next[partnerId];
+      return next;
+    });
+    setScreenshotUrls((prev) => {
+      const next = { ...prev };
+      delete next[partnerId];
+      return next;
+    });
+    if (Object.keys(screenshotFiles).length <= 1) {
+      setScreenshotConfirmed(false);
+    }
+  }
+
+  function triggerFileUpload(partnerId: number) {
+    activeFileInputRef.current = partnerId;
+    fileInputRef.current?.click();
+  }
+
+  const hasAllScreenshots = selectedPartners.length > 0 && selectedPartners.every((pid) => screenshotFiles[pid] || screenshotUrls[pid]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -123,8 +159,8 @@ export default function GiveawayEntry() {
       return;
     }
 
-    if (!screenshotFile) {
-      setError("Please upload a screenshot of your completed registrations.");
+    if (!hasAllScreenshots) {
+      setError("Please upload a screenshot for each selected partner registration.");
       return;
     }
 
@@ -146,12 +182,16 @@ export default function GiveawayEntry() {
 
     setSubmitting(true);
 
-    let uploadedUrl = screenshotUrl;
-    if (screenshotFile && !uploadedUrl) {
+    const uploadedUrls = { ...screenshotUrls };
+    const filesToUpload = selectedPartners.filter((pid) => screenshotFiles[pid] && !uploadedUrls[pid]);
+    if (filesToUpload.length > 0) {
       try {
         setUploadingScreenshot(true);
-        uploadedUrl = await uploadScreenshot(screenshotFile);
-        setScreenshotUrl(uploadedUrl);
+        for (const pid of filesToUpload) {
+          const url = await uploadScreenshot(screenshotFiles[pid]);
+          uploadedUrls[pid] = url;
+        }
+        setScreenshotUrls(uploadedUrls);
         setUploadingScreenshot(false);
       } catch (err: any) {
         setError(err.message || "Failed to upload screenshot");
@@ -160,6 +200,10 @@ export default function GiveawayEntry() {
         return;
       }
     }
+    const screenshotUrlsList = selectedPartners
+      .map((pid) => uploadedUrls[pid])
+      .filter(Boolean);
+    const primaryScreenshotUrl = screenshotUrlsList[0] || null;
 
     if (createAccount && accountPassword) {
       if (accountPassword.length < 6) {
@@ -188,7 +232,8 @@ export default function GiveawayEntry() {
       city: form.city,
       completedPartners: selectedPartners,
       screenshotConfirmed: true,
-      screenshotUrl: uploadedUrl || undefined,
+      screenshotUrl: primaryScreenshotUrl || undefined,
+      screenshotUrls: screenshotUrlsList.length > 0 ? screenshotUrlsList : undefined,
       agreedToTerms,
       isAnonymous,
     };
@@ -653,36 +698,54 @@ export default function GiveawayEntry() {
                       className="hidden"
                     />
 
-                    {screenshotPreview ? (
-                      <div className="relative">
-                        <div className="rounded-xl overflow-hidden border border-white/[0.1] mb-3">
-                          <img src={screenshotPreview} alt="Screenshot preview" className="w-full max-h-64 object-contain bg-white/[0.02]" />
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-white/60" />
-                            <span className="text-xs text-white/50 font-light">{screenshotFile?.name} ({((screenshotFile?.size || 0) / 1024 / 1024).toFixed(1)} MB)</span>
-                          </div>
-                          <button type="button" onClick={removeScreenshot} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs hover:bg-red-500/20 transition-colors">
-                            <X className="w-3 h-3" />
-                            Remove
-                          </button>
-                        </div>
+                    {selectedPartners.length === 0 ? (
+                      <div className="text-center py-6 text-white/30 text-sm font-light">
+                        Select partners in Step 1 to upload screenshots
                       </div>
                     ) : (
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full flex flex-col items-center justify-center gap-3 p-8 rounded-xl border-2 border-dashed border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.15] transition-all cursor-pointer"
-                      >
-                        <div className="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
-                          <FileImage className="w-6 h-6 text-white/40" />
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-white/60 font-light">Click to upload screenshot</p>
-                          <p className="text-[11px] text-white/30 font-light mt-1">JPEG, PNG, WebP, GIF — Max 10 MB</p>
-                        </div>
-                      </button>
+                      <div className="space-y-4">
+                        <p className="text-xs text-white/35 font-light">
+                          Upload a screenshot for each partner registration you completed. One screenshot per partner.
+                        </p>
+                        {selectedPartners.map((pid) => {
+                          const partner = activePartners.find((p) => p.id === pid);
+                          if (!partner) return null;
+                          const preview = screenshotPreviews[pid];
+                          const file = screenshotFiles[pid];
+                          return (
+                            <div key={pid} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                              <div className="flex items-center gap-2 mb-3">
+                                <Camera className="w-3.5 h-3.5 text-white/40" />
+                                <span className="text-xs text-white/60 font-light">{partner.name}</span>
+                                {preview && <CheckCircle2 className="w-3.5 h-3.5 text-white/50 ml-auto" />}
+                              </div>
+                              {preview ? (
+                                <div>
+                                  <div className="rounded-lg overflow-hidden border border-white/[0.08] mb-2">
+                                    <img src={preview} alt={`Screenshot for ${partner.name}`} className="w-full max-h-40 object-contain bg-white/[0.02]" />
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[11px] text-white/40 font-light">{file?.name} ({((file?.size || 0) / 1024 / 1024).toFixed(1)} MB)</span>
+                                    <button type="button" onClick={() => removeScreenshot(pid)} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-white/40 text-[10px] hover:bg-white/[0.08] transition-colors">
+                                      <X className="w-2.5 h-2.5" />
+                                      Remove
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => triggerFileUpload(pid)}
+                                  className="w-full flex items-center justify-center gap-2 py-4 rounded-lg border border-dashed border-white/[0.1] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.15] transition-all cursor-pointer"
+                                >
+                                  <Upload className="w-4 h-4 text-white/30" />
+                                  <span className="text-xs text-white/40 font-light">Upload screenshot</span>
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -757,7 +820,7 @@ export default function GiveawayEntry() {
 
                 <button
                   type="submit"
-                  disabled={submitting || !allRequiredSelected || !agreedToTerms || selectedPartners.length === 0 || !screenshotFile || !captchaToken}
+                  disabled={submitting || !allRequiredSelected || !agreedToTerms || selectedPartners.length === 0 || !hasAllScreenshots || !captchaToken}
                   className="premium-btn w-full py-4 relative overflow-hidden disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <span className="relative z-[2] flex items-center justify-center gap-2 text-sm font-display font-light">
