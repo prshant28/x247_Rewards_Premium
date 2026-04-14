@@ -20,6 +20,7 @@ import {
   Headphones,
 } from "lucide-react";
 import { Link } from "wouter";
+import SiteFooter from "@/components/SiteFooter";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -266,14 +267,11 @@ export default function Offers() {
         </div>
       </main>
 
-      <footer className="bg-black pt-0 pb-8 sm:pb-12 relative">
-        <div className="footer-gradient-line mb-8 sm:mb-12" />
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-xs text-white/20 font-light">
-            © 2026 X247 Rewards. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter links={[
+        { label: "Home", href: "/" },
+        { label: "Partners", href: "/partners" },
+        { label: "Giveaway", href: "/giveaway" },
+      ]} />
     </div>
   );
 }

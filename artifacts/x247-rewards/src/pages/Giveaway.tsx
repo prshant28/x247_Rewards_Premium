@@ -6,6 +6,7 @@ import {
   Zap, Crown, Target, Search, CheckCircle2, Copy
 } from "lucide-react";
 import { getContests, checkEntryCode, type ContestData } from "@/lib/api";
+import SiteFooter from "@/components/SiteFooter";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -297,21 +298,11 @@ export default function Giveaway() {
         </div>
       </main>
 
-      <footer className="bg-black pt-0 pb-8 sm:pb-12 relative">
-        <div className="footer-gradient-line mb-12 sm:mb-16" />
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="border-t border-white/[0.04] pt-6 sm:pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light text-white/20">
-              <p>&copy; 2026 X247 Rewards Protocol. All rights reserved.</p>
-              <div className="flex gap-5">
-                <Link href="/" className="hover:text-white/40 transition-colors duration-300">Home</Link>
-                <Link href="/partners" className="hover:text-white/40 transition-colors duration-300">Partners</Link>
-                <Link href="/winners" className="hover:text-white/40 transition-colors duration-300">Winners</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter links={[
+        { label: "Home", href: "/" },
+        { label: "Partners", href: "/partners" },
+        { label: "Winners", href: "/winners" },
+      ]} />
     </div>
   );
 }
