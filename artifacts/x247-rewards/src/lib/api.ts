@@ -91,7 +91,8 @@ export interface PartnerInput {
 }
 
 export async function getPartners(): Promise<PartnerData[]> {
-  const res = await fetch(`${API_BASE}/partners`);
+  const res = await fetch(`${API_BASE}/partners`, { cache: "no-store" });
+  if (!res.ok) return [];
   return res.json();
 }
 
@@ -175,7 +176,7 @@ export interface GiveawayFormData {
 }
 
 export async function getGiveawayStatus(): Promise<GiveawayStatus> {
-  const res = await fetch(`${API_BASE}/giveaway/status`);
+  const res = await fetch(`${API_BASE}/giveaway/status`, { cache: "no-store" });
   return res.json();
 }
 
@@ -257,7 +258,8 @@ export interface ContestData {
 }
 
 export async function getContests(): Promise<ContestData[]> {
-  const res = await fetch(`${API_BASE}/contests`);
+  const res = await fetch(`${API_BASE}/contests`, { cache: "no-store" });
+  if (!res.ok) return [];
   return res.json();
 }
 
@@ -383,6 +385,7 @@ export interface WinnerData {
 }
 
 export async function getWinners(): Promise<WinnerData[]> {
-  const res = await fetch(`${API_BASE}/winners`);
+  const res = await fetch(`${API_BASE}/winners`, { cache: "no-store" });
+  if (!res.ok) return [];
   return res.json();
 }
