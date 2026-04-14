@@ -282,10 +282,19 @@ export default function Partners() {
 
   const hasFeatured = allPartners.some((p) => p.isActive && p.isFeatured);
 
+  const filterOptions = React.useMemo(() => {
+    const opts: string[] = ["All"];
+    if (hasFeatured) opts.push("Featured");
+    categories.forEach((c) => opts.push(c));
+    opts.push("Coming Soon");
+    return opts;
+  }, [categories, hasFeatured]);
+
   const filteredPartners = React.useMemo(() => {
     if (activeFilter === "All") return allPartners;
-    if (activeFilter === "Featured") return allPartners.filter((p) => p.isFeatured || !p.isActive);
-    return allPartners.filter((p) => !p.isActive || p.category === activeFilter);
+    if (activeFilter === "Featured") return allPartners.filter((p) => p.isFeatured);
+    if (activeFilter === "Coming Soon") return allPartners.filter((p) => !p.isActive);
+    return allPartners.filter((p) => p.category === activeFilter);
   }, [allPartners, activeFilter]);
 
   const totalClicks = allPartners.reduce((sum, p) => sum + (p.stats?.clicks || 0), 0);
@@ -351,14 +360,14 @@ export default function Partners() {
             </div>
           </motion.div>
 
-          {!isLoading && (categories.length > 1 || hasFeatured) && (
+          {!isLoading && (
             <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8 sm:mb-10">
               <div className="flex items-center gap-2 flex-wrap">
                 <div className="flex items-center gap-1.5 mr-1 text-white/25">
                   <SlidersHorizontal className="w-3.5 h-3.5" />
                   <span className="text-[10px] uppercase tracking-widest font-display">Filter</span>
                 </div>
-                {["All", ...(hasFeatured ? ["Featured"] : []), ...categories].map((filter) => (
+                {filterOptions.map((filter) => (
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
@@ -368,7 +377,7 @@ export default function Partners() {
                         : "bg-white/[0.02] border-white/[0.06] text-white/40 hover:text-white/60 hover:bg-white/[0.04]"
                     }`}
                   >
-                    {filter === "Featured" && <span className="mr-1 text-white/50">★</span>}
+                    {filter === "Featured" && <span className="mr-1 opacity-60">★</span>}
                     {filter}
                   </button>
                 ))}

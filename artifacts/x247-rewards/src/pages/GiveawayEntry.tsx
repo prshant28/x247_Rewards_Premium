@@ -826,7 +826,8 @@ export default function GiveawayEntry() {
                     <Clock className="w-5 h-5 text-white/50 shrink-0" />
                     <div className="flex-1">
                       <p className="text-xs text-white/50 font-light">
-                        <strong className="text-white/70 font-medium">Limited Spots:</strong> Only {status?.maxSpots ?? 100} entries accepted. {status?.spotsRemaining ?? "..."} spots remaining.
+                        <strong className="text-white/70 font-medium">Limited Spots:</strong> Only {contest ? contest.maxSpots : (status?.maxSpots ?? 100)} entries accepted.{" "}
+                        <strong className="text-white/70 font-medium">{contest ? contest.spotsRemaining : (status?.spotsRemaining ?? "...")}</strong> spots remaining.
                       </p>
                       <p className="text-xs text-white/35 font-light mt-1">
                         Winner announcement: <strong className="text-white/60 font-medium">Within 24-48 hours after verification, when contest is filled</strong>. Once all spots are filled, no more entries will be accepted.
