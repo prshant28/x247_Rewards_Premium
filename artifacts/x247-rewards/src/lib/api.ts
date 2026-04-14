@@ -394,3 +394,57 @@ export async function getWinners(): Promise<WinnerData[]> {
   if (!res.ok) return [];
   return res.json();
 }
+
+export async function createWinner(data: { contestId?: number; entryId?: number; winnerName: string; winnerCity?: string; prize: string; entryCode?: string }): Promise<WinnerData> {
+  const res = await authFetch("/admin/winners", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "Failed to create winner");
+  }
+  return res.json();
+}
+
+export async function deleteWinner(id: number): Promise<void> {
+  await authFetch(`/admin/winners/${id}`, { method: "DELETE" });
+}
+
+export interface EntryData {
+  id: number;
+  contestId: number | null;
+  fullName: string;
+  email: string;
+  phone: string;
+  age: number;
+  city: string;
+  completedPartners: number[];
+  partnerNames: string[];
+  screenshotConfirmed: boolean;
+  entryCount: number;
+  entryCode: string;
+  isAnonymous: boolean;
+  createdAt: string;
+}
+
+export async function getAdminEntries(opts?: { limit?: number; offset?: number }): Promise<{ entries: EntryData[]; total: number }> {
+  const params = new URLSearchParams();
+  if (opts?.limit) params.set("limit", String(opts.limit));
+  if (opts?.offset) params.set("offset", String(opts.offset));
+  const res = await authFetch(`/admin/entries?${params.toString()}`);
+  if (!res.ok) return { entries: [], total: 0 };
+  return res.json();
+}
+
+export async function generateContestAI(input: { theme?: string; prize?: string; description?: string }): Promise<{ name: string; slug: string; description: string; prize: string; prizeValue: string; maxSpots: number }> {
+  const res = await authFetch("/contests/generate-ai", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || "AI generation failed");
+  }
+  return res.json();
+}

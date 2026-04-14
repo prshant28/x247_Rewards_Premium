@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { adminUsersTable, adminSessionsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { adminUsersTable, adminSessionsTable, giveawayEntriesTable, partnersTable } from "@workspace/db";
+import { eq, desc, ilike, or } from "drizzle-orm";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 
@@ -70,6 +70,42 @@ router.post("/admin/logout", async (req, res) => {
     }
     return res.json({ success: true });
   } catch {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+async function requireAdmin(req: any, res: any, next: any) {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
+  const [session] = await db.select().from(adminSessionsTable).where(eq(adminSessionsTable.token, token)).limit(1);
+  if (!session || new Date(session.expiresAt) < new Date()) return res.status(401).json({ error: "Session expired" });
+  next();
+}
+
+router.get("/admin/entries", requireAdmin, async (req, res) => {
+  try {
+    const { search, limit: limitStr, offset: offsetStr } = req.query as any;
+    const pageLimit = Math.min(parseInt(limitStr) || 50, 200);
+    const pageOffset = parseInt(offsetStr) || 0;
+
+    const entries = await db
+      .select()
+      .from(giveawayEntriesTable)
+      .orderBy(desc(giveawayEntriesTable.createdAt))
+      .limit(pageLimit)
+      .offset(pageOffset);
+
+    const partners = await db.select({ id: partnersTable.id, name: partnersTable.name }).from(partnersTable);
+    const partnerMap = Object.fromEntries(partners.map((p) => [p.id, p.name]));
+
+    const enriched = entries.map((e) => ({
+      ...e,
+      partnerNames: (e.completedPartners as number[]).map((id) => partnerMap[id] || `Partner #${id}`),
+    }));
+
+    return res.json({ entries: enriched, total: entries.length });
+  } catch (err) {
+    console.error("Admin entries error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 });
