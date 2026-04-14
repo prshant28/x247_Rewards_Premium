@@ -98,6 +98,27 @@ function getAccentClasses(accent: string) {
   return { card: "", icon: "", topAccent: "card-top-accent" };
 }
 
+function getSecondaryBadgeStyle(accent: string) {
+  if (accent === "navy") return {
+    bg: "rgba(18, 28, 90, 0.55)",
+    border: "rgba(50, 70, 180, 0.3)",
+    textClass: "text-[#a0b0f0]",
+    iconClass: "text-[#8090e0]",
+  };
+  if (accent === "red") return {
+    bg: "rgba(90, 15, 15, 0.55)",
+    border: "rgba(180, 40, 40, 0.3)",
+    textClass: "text-[#f0a0a0]",
+    iconClass: "text-[#e08080]",
+  };
+  return {
+    bg: "rgba(255, 255, 255, 0.05)",
+    border: "rgba(255, 255, 255, 0.1)",
+    textClass: "text-white/50",
+    iconClass: "text-white/35",
+  };
+}
+
 function getPartnerIcon(accent: string) {
   if (accent === "navy") return <ExternalLink className="w-6 h-6" />;
   if (accent === "red") return <Star className="w-6 h-6" />;
@@ -182,12 +203,18 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
                 {partner.badge}
               </div>
             )}
-            {partner.badgeSecondary && (
-              <div className="premium-badge !text-[9px]" style={{ background: "rgba(30, 40, 100, 0.3)", border: "1px solid rgba(60, 80, 180, 0.3)" }}>
-                <Star className="w-2.5 h-2.5 mr-1 text-blue-400" />
-                <span className="text-blue-300">{partner.badgeSecondary}</span>
-              </div>
-            )}
+            {partner.badgeSecondary && (() => {
+              const bs = getSecondaryBadgeStyle(partner.accent ?? "");
+              return (
+                <div
+                  className="premium-badge !text-[9px]"
+                  style={{ background: bs.bg, border: `1px solid ${bs.border}` }}
+                >
+                  <Star className={`w-2.5 h-2.5 mr-1 ${bs.iconClass}`} />
+                  <span className={bs.textClass}>{partner.badgeSecondary}</span>
+                </div>
+              );
+            })()}
           </div>
         </div>
 
