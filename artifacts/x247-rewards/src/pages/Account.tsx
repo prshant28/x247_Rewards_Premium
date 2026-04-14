@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
+import SiteFooter from "@/components/SiteFooter";
 import {
   User, Trophy, Clock, ArrowRight, LogOut, Mail, Phone,
   MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff
@@ -334,21 +335,11 @@ export default function Account() {
         </div>
       </main>
 
-      <footer className="bg-black pt-0 pb-8 sm:pb-12 relative">
-        <div className="footer-gradient-line mb-12 sm:mb-16" />
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="border-t border-white/[0.04] pt-6 sm:pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light text-white/20">
-              <p>&copy; 2026 X247 Rewards Protocol. All rights reserved.</p>
-              <div className="flex gap-5">
-                <Link href="/" className="hover:text-white/40 transition-colors duration-300">Home</Link>
-                <Link href="/giveaway" className="hover:text-white/40 transition-colors duration-300">Giveaway</Link>
-                <Link href="/winners" className="hover:text-white/40 transition-colors duration-300">Winners</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter links={[
+        { label: "Home", href: "/" },
+        { label: "Giveaway", href: "/giveaway" },
+        { label: "Winners", href: "/winners" },
+      ]} />
     </div>
   );
 }

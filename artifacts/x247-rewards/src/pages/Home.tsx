@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
+import SiteFooter from "@/components/SiteFooter";
 import BorderGlow from "@/components/BorderGlow";
 import DotGrid from "@/components/DotGrid";
 import "@/components/DotGrid.css";
@@ -1010,68 +1011,55 @@ export default function Home() {
         </div>
 
       </main>
-      <footer className="bg-black pt-0 pb-8 sm:pb-12 relative">
-        <div className="footer-gradient-line mb-12 sm:mb-16" />
-        <div className="container mx-auto px-4 sm:px-6">
-          <motion.div 
-            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 mb-14 sm:mb-20"
-          >
-            <div>
-              <div className="flex items-center gap-2.5 mb-5">
-                <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-xl font-display font-light text-white">X247 Rewards</span>
+      <SiteFooter links={[
+        { label: "Terms", href: "#" },
+        { label: "Privacy", href: "#" },
+        { label: "Contact", href: "#" },
+      ]}>
+        <motion.div 
+          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+          className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 mb-14 sm:mb-20"
+        >
+          <div>
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <p className="text-sm text-white/25 font-light leading-relaxed max-w-xs">
-                The premier gamified giveaway and referral platform for partner event participants. Register, enter, and win real rewards daily.
-              </p>
+              <span className="text-xl font-display font-light text-white">X247 Rewards</span>
             </div>
-            <div>
-              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Quick Links</h4>
-              <ul className="space-y-3">
-                {[
-                  { label: "How it Works", href: "#how-it-works" },
-                  { label: "Rewards", href: "#rewards" },
-                  { label: "Dashboard", href: "#dashboard" },
-                  { label: "FAQ", href: "#faq" },
-                ].map((link, i) => (
-                  <li key={i}>
-                    <a href={link.href} className="text-sm text-white/45 font-light hover:text-white/70 transition-colors duration-300 flex items-center gap-2 group">
-                      <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Program Info</h4>
-              <ul className="space-y-3 text-sm text-white/45 font-light">
-                <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/20" /> Global Availability</li>
-                <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/20" /> 24/7 Tracking</li>
-                <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-white/20" /> Verified Referrals Only</li>
-                <li className="flex items-center gap-2"><Award className="w-3.5 h-3.5 text-white/20" /> Real Rewards, No Gimmicks</li>
-              </ul>
-            </div>
-          </motion.div>
-          <div className="border-t border-white/[0.04] pt-6 sm:pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light text-white/20">
-              <p>&copy; 2026 X247 Rewards Protocol. All rights reserved.</p>
-              <div className="flex gap-5">
-                <a href="#" className="hover:text-white/40 transition-colors duration-300">Terms</a>
-                <a href="#" className="hover:text-white/40 transition-colors duration-300">Privacy</a>
-                <a href="#" className="hover:text-white/40 transition-colors duration-300">Contact</a>
-              </div>
-              <p className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500/60 animate-pulse" />
-                System Status: Operational
-              </p>
-            </div>
+            <p className="text-sm text-white/25 font-light leading-relaxed max-w-xs">
+              The premier gamified giveaway and referral platform for partner event participants. Register, enter, and win real rewards daily.
+            </p>
           </div>
-        </div>
-      </footer>
+          <div>
+            <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Quick Links</h4>
+            <ul className="space-y-3">
+              {[
+                { label: "How it Works", href: "#how-it-works" },
+                { label: "Rewards", href: "#rewards" },
+                { label: "Dashboard", href: "#dashboard" },
+                { label: "FAQ", href: "#faq" },
+              ].map((link, i) => (
+                <li key={i}>
+                  <a href={link.href} className="text-sm text-white/45 font-light hover:text-white/70 transition-colors duration-300 flex items-center gap-2 group">
+                    <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Program Info</h4>
+            <ul className="space-y-3 text-sm text-white/45 font-light">
+              <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/20" /> Global Availability</li>
+              <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/20" /> 24/7 Tracking</li>
+              <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-white/20" /> Verified Referrals Only</li>
+              <li className="flex items-center gap-2"><Award className="w-3.5 h-3.5 text-white/20" /> Real Rewards, No Gimmicks</li>
+            </ul>
+          </div>
+        </motion.div>
+      </SiteFooter>
     </div>
   );
 }

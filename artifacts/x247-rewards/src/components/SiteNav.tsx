@@ -126,7 +126,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
                 { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
               ]
             : [
-                { label: "Get Started", href: "/", spa: false, icon: <UserPlus className="w-3.5 h-3.5" /> },
+                { label: "Get Started", href: "/account", spa: false, icon: <UserPlus className="w-3.5 h-3.5" /> },
                 { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
               ],
         },
