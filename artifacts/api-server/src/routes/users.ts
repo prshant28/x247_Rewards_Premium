@@ -11,6 +11,64 @@ function generateToken(): string {
   return crypto.randomBytes(32).toString("hex");
 }
 
+const MEMBERSHIP_PLANS = [
+  {
+    id: "free",
+    name: "Free",
+    price: 0,
+    currency: "INR",
+    interval: null,
+    entriesPerContest: 2,
+    features: [
+      "2 entries per contest",
+      "Text chat assistant",
+      "Access to all partners",
+      "Basic platform access",
+    ],
+    limits: { chatMessagesPerDay: 10, voiceChat: false, entriesPerContest: 2 },
+  },
+  {
+    id: "basic",
+    name: "Basic",
+    price: 199,
+    currency: "INR",
+    interval: "month",
+    entriesPerContest: 5,
+    features: [
+      "5 entries per contest",
+      "Unlimited text chat",
+      "Priority support",
+      "Early access to new partners",
+      "Partner insights & analytics",
+    ],
+    limits: { chatMessagesPerDay: -1, voiceChat: false, entriesPerContest: 5 },
+  },
+  {
+    id: "premium",
+    name: "Premium",
+    price: 499,
+    currency: "INR",
+    interval: "month",
+    entriesPerContest: -1,
+    features: [
+      "Unlimited entries per contest",
+      "Voice AI chat (ElevenLabs)",
+      "Unlimited text chat",
+      "VIP badge on entries",
+      "Exclusive partner deals",
+      "Priority everything",
+      "Dedicated VIP support",
+    ],
+    limits: { chatMessagesPerDay: -1, voiceChat: true, entriesPerContest: -1 },
+  },
+];
+
+function getActiveTier(user: any): string {
+  if (!user.membershipTier || user.membershipTier === "free") return "free";
+  if (user.membershipExpiresAt && new Date(user.membershipExpiresAt) < new Date()) return "free";
+  return user.membershipTier;
+}
+
 router.post("/users/register", async (req, res) => {
   try {
     const { fullName, email, phone, password, city } = req.body;
@@ -107,6 +165,9 @@ router.get("/users/me", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const activeTier = getActiveTier(user);
+    const plan = MEMBERSHIP_PLANS.find(p => p.id === activeTier);
+
     return res.json({
       id: user.id,
       fullName: user.fullName,
@@ -114,6 +175,9 @@ router.get("/users/me", async (req, res) => {
       phone: user.phone,
       city: user.city,
       createdAt: user.createdAt,
+      membershipTier: activeTier,
+      membershipExpiresAt: user.membershipExpiresAt,
+      membershipLimits: plan?.limits || MEMBERSHIP_PLANS[0].limits,
     });
   } catch (err) {
     console.error("User me error:", err);
@@ -173,6 +237,42 @@ router.post("/users/logout", async (req, res) => {
     return res.json({ success: true });
   } catch (err) {
     return res.json({ success: true });
+  }
+});
+
+router.get("/membership/plans", (_req, res) => {
+  res.json(MEMBERSHIP_PLANS);
+});
+
+router.get("/membership/status", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res.json({ tier: "free", limits: MEMBERSHIP_PLANS[0].limits });
+    }
+
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+
+    if (!session || new Date(session.expiresAt) < new Date()) {
+      return res.json({ tier: "free", limits: MEMBERSHIP_PLANS[0].limits });
+    }
+
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+    if (!user) {
+      return res.json({ tier: "free", limits: MEMBERSHIP_PLANS[0].limits });
+    }
+
+    const activeTier = getActiveTier(user);
+    const plan = MEMBERSHIP_PLANS.find(p => p.id === activeTier);
+
+    return res.json({
+      tier: activeTier,
+      expiresAt: user.membershipExpiresAt,
+      limits: plan?.limits || MEMBERSHIP_PLANS[0].limits,
+    });
+  } catch {
+    return res.json({ tier: "free", limits: MEMBERSHIP_PLANS[0].limits });
   }
 });
 
