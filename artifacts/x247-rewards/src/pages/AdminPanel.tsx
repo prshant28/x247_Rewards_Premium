@@ -306,8 +306,8 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
+      <div className="vignette-overlay" />
 
-      {/* Top Bar */}
       <div className="sticky top-[92px] z-40 bg-black/95 backdrop-blur-xl border-b border-white/[0.06]">
         <div className="container mx-auto px-4 sm:px-6 max-w-7xl flex items-center justify-between h-14">
           <div className="flex items-center gap-3">
@@ -330,56 +330,59 @@ export default function AdminPanel() {
         </div>
       </div>
 
-      <main className="relative z-10 container mx-auto px-4 sm:px-6 max-w-7xl py-6 pt-24">
+      <main className="relative z-10 pt-24 pb-8">
+        <div className="container mx-auto px-4 sm:px-6 max-w-7xl mb-6">
 
-        {/* Toast */}
-        {message && (
-          <div className={`flex items-center gap-2 px-4 py-3 rounded-xl mb-6 text-sm font-light ${message.type === "success" ? "bg-white/[0.06] border border-white/[0.12] text-white/80" : "bg-red-500/10 border border-red-500/20 text-red-400"}`}>
-            {message.type === "success" ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
-            {message.text}
-          </div>
-        )}
-
-        {/* Overview Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-          {[
-            { label: "Clicks", value: overview?.totalClicks ?? 0, icon: <MousePointer className="w-4 h-4" /> },
-            { label: "Impressions", value: overview?.totalImpressions ?? 0, icon: <Eye className="w-4 h-4" /> },
-            { label: "Form Fills", value: overview?.totalFormFills ?? 0, icon: <FileText className="w-4 h-4" /> },
-            { label: "Partners", value: overview?.totalPartners ?? 0, icon: <Users className="w-4 h-4" /> },
-            { label: "Active", value: overview?.activePartners ?? 0, icon: <Activity className="w-4 h-4" /> },
-          ].map((stat) => (
-            <div key={stat.label} className="glass-card p-4 sm:p-5">
-              <div className="card-shine" />
-              <div className="relative z-[2]">
-                <div className="text-white/30 mb-2">{stat.icon}</div>
-                <div className="text-2xl sm:text-3xl font-display font-light text-white">{stat.value.toLocaleString()}</div>
-                <div className="text-[10px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
-              </div>
+          {message && (
+            <div className={`flex items-center gap-2 px-4 py-3 rounded-xl mb-6 text-sm font-light ${message.type === "success" ? "bg-white/[0.06] border border-white/[0.12] text-white/80" : "bg-red-500/10 border border-red-500/20 text-red-400"}`}>
+              {message.type === "success" ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+              {message.text}
             </div>
-          ))}
-        </div>
+          )}
 
-        {/* Tab Navigation */}
-        <div className="mb-6">
-          {/* Mobile: scrollable row */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-display font-light whitespace-nowrap transition-all flex-shrink-0 ${
-                  activeTab === tab.id
-                    ? "bg-white/[0.08] border border-white/[0.15] text-white"
-                    : "bg-white/[0.02] border border-white/[0.06] text-white/40 hover:text-white/60 hover:bg-white/[0.04]"
-                }`}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+            {[
+              { label: "Clicks", value: overview?.totalClicks ?? 0, icon: <MousePointer className="w-4 h-4" /> },
+              { label: "Impressions", value: overview?.totalImpressions ?? 0, icon: <Eye className="w-4 h-4" /> },
+              { label: "Form Fills", value: overview?.totalFormFills ?? 0, icon: <FileText className="w-4 h-4" /> },
+              { label: "Partners", value: overview?.totalPartners ?? 0, icon: <Users className="w-4 h-4" /> },
+              { label: "Active", value: overview?.activePartners ?? 0, icon: <Activity className="w-4 h-4" /> },
+            ].map((stat) => (
+              <div key={stat.label} className="glass-card p-4 sm:p-5">
+                <div className="card-shine" />
+                <div className="relative z-[2]">
+                  <div className="text-white/30 mb-2">{stat.icon}</div>
+                  <div className="text-2xl sm:text-3xl font-display font-light text-white">{stat.value.toLocaleString()}</div>
+                  <div className="text-[10px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
+
+        <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5">
+          <div className="section-glow-line"><div className="section-glow-line-inner" /></div>
+
+          <div className="container mx-auto px-4 sm:px-6 max-w-7xl py-6">
+
+            <div className="mb-6">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-display font-light whitespace-nowrap transition-all flex-shrink-0 ${
+                      activeTab === tab.id
+                        ? "bg-white/[0.08] border border-white/[0.15] text-white"
+                        : "bg-white/[0.02] border border-white/[0.06] text-white/40 hover:text-white/60 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    {tab.icon}
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
         {/* ── PARTNERS TAB ── */}
         {activeTab === "partners" && (
@@ -1048,6 +1051,8 @@ export default function AdminPanel() {
           </div>
         )}
 
+          </div>
+        </div>
       </main>
     </div>
   );
