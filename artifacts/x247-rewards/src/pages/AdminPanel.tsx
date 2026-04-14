@@ -51,7 +51,7 @@ export default function AdminPanel() {
   const [form, setForm] = useState({
     name: "", slug: "", tagline: "", description: "", category: "Registration",
     registrationUrl: "", accent: "navy", badge: "", badgeSecondary: "",
-    isActive: false, isRequired: false,
+    isActive: false, isRequired: false, entryPoints: 1, whatYouGet: "",
   });
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function AdminPanel() {
     setForm({
       name: "", slug: "", tagline: "", description: "", category: "Registration",
       registrationUrl: "", accent: "navy", badge: "", badgeSecondary: "",
-      isActive: false, isRequired: false,
+      isActive: false, isRequired: false, entryPoints: 1, whatYouGet: "",
     });
   }
 
@@ -138,6 +138,7 @@ export default function AdminPanel() {
       registrationUrl: partner.registrationUrl, accent: partner.accent,
       badge: partner.badge || "", badgeSecondary: partner.badgeSecondary || "",
       isActive: partner.isActive, isRequired: partner.isRequired,
+      entryPoints: partner.entryPoints ?? 1, whatYouGet: partner.whatYouGet || "",
     });
     setShowAddForm(false);
   }
@@ -517,16 +518,38 @@ export default function AdminPanel() {
                       placeholder="Students Only"
                     />
                   </div>
-                  <div className="flex flex-col gap-3 pt-5">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-blue-500" />
-                      <span className="text-xs text-white/50 font-light">Active</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={form.isRequired} onChange={(e) => setForm({ ...form, isRequired: e.target.checked })} className="accent-blue-500" />
-                      <span className="text-xs text-white/50 font-light">Required</span>
-                    </label>
+                  <div>
+                    <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] block mb-2">Entry Points</label>
+                    <input
+                      type="number" min={1} max={100} value={form.entryPoints}
+                      onChange={(e) => setForm({ ...form, entryPoints: parseInt(e.target.value) || 1 })}
+                      className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors"
+                      placeholder="1"
+                    />
                   </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] block mb-2">What You Get (Prize/Benefit)</label>
+                  <textarea
+                    value={form.whatYouGet}
+                    onChange={(e) => setForm({ ...form, whatYouGet: e.target.value })}
+                    rows={2}
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors resize-none"
+                    placeholder="e.g. Win up to ₹10 Lakh in prizes, free internship opportunity, certification worth ₹5000"
+                  />
+                  <p className="text-[10px] text-white/25 mt-1 font-light">Shown in the 'What You Get' tab on the partner page</p>
+                </div>
+
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-blue-500" />
+                    <span className="text-xs text-white/50 font-light">Active</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={form.isRequired} onChange={(e) => setForm({ ...form, isRequired: e.target.checked })} className="accent-blue-500" />
+                    <span className="text-xs text-white/50 font-light">Required</span>
+                  </label>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-2">

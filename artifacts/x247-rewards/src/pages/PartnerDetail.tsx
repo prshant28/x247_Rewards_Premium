@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import BorderGlow from "@/components/BorderGlow";
-import { motion, type Variants } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   ArrowRight,
   ArrowLeft,
@@ -14,6 +14,8 @@ import {
   ListChecks,
   Trophy,
   Camera,
+  Sparkles,
+  BadgeCheck,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +27,17 @@ const fadeUp: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
 };
 
-type Tab = "details" | "how-to-enter";
+const stagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } }
+};
+
+const itemFade: Variants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }
+};
+
+type Tab = "details" | "what-you-get" | "how-to-enter";
 
 function getPartnerIcon(accent: string) {
   if (accent === "navy") return <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
@@ -40,13 +52,20 @@ function getBannerGradient(accent: string) {
 }
 
 function PartnerDetailContent({ partner }: { partner: PartnerData }) {
-  const [activeTab, setActiveTab] = useState<Tab>("details");
+  const hasWhatYouGet = !!partner.whatYouGet?.trim();
+  const [activeTab, setActiveTab] = useState<Tab>(hasWhatYouGet ? "what-you-get" : "details");
   const isComingSoon = !partner.isActive;
 
   const handleRegisterClick = () => {
     if (partner.registrationUrl) {
       trackClick(partner.id);
     }
+  };
+
+  const tabVariants: Variants = {
+    enter: { opacity: 0, y: 12 },
+    center: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
+    exit: { opacity: 0, y: -8, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } },
   };
 
   return (
@@ -64,6 +83,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
             </Link>
           </motion.div>
 
+          {/* Hero Banner */}
           <motion.div
             initial="hidden"
             animate="visible"
@@ -74,11 +94,21 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
               <div className="card-shine" />
               <div className="relative" style={{ background: getBannerGradient(partner.accent) }}>
                 <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-8 relative z-[2]">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
+                  <motion.div
+                    initial={{ scale: 0.85, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0"
+                  >
                     {getPartnerIcon(partner.accent)}
-                  </div>
+                  </motion.div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+                      className="flex items-center gap-3 mb-2 flex-wrap"
+                    >
                       <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.15em]">{partner.category}</span>
                       {partner.badge && (
                         <div className="premium-badge premium-badge-hot !text-[9px]">
@@ -98,29 +128,47 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                           <span className="text-blue-300">{partner.badgeSecondary}</span>
                         </div>
                       )}
-                    </div>
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-light text-white mb-1">{partner.name}</h1>
-                    <p className="text-sm text-white/40 font-light">{partner.tagline}</p>
+                    </motion.div>
+                    <motion.h1
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      className="text-2xl sm:text-3xl md:text-4xl font-display font-light text-white mb-1"
+                    >
+                      {partner.name}
+                    </motion.h1>
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                      className="text-sm text-white/40 font-light"
+                    >
+                      {partner.tagline}
+                    </motion.p>
                   </div>
                 </div>
               </div>
 
               <div className="p-5 sm:p-8 border-t border-white/[0.04] relative z-[2]">
                 <div className="flex items-center gap-6 sm:gap-10">
-                  <div className="text-center">
-                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.clicks}</div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Clicks</div>
-                  </div>
-                  <div className="w-px h-8 bg-white/[0.06]" />
-                  <div className="text-center">
-                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.impressions}</div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Impressions</div>
-                  </div>
-                  <div className="w-px h-8 bg-white/[0.06]" />
-                  <div className="text-center">
-                    <div className="text-lg sm:text-xl font-display font-light text-white">{partner.stats.formFills}</div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Form Fills</div>
-                  </div>
+                  {[
+                    { label: "Clicks", value: partner.stats.clicks },
+                    { label: "Impressions", value: partner.stats.impressions },
+                    { label: "Form Fills", value: partner.stats.formFills },
+                  ].map((stat, i) => (
+                    <React.Fragment key={stat.label}>
+                      {i > 0 && <div className="w-px h-8 bg-white/[0.06]" />}
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.35 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                        className="text-center"
+                      >
+                        <div className="text-lg sm:text-xl font-display font-light text-white">{stat.value}</div>
+                        <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">{stat.label}</div>
+                      </motion.div>
+                    </React.Fragment>
+                  ))}
                 </div>
               </div>
             </div>
@@ -148,8 +196,22 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
             </motion.div>
           )}
 
+          {/* Tabs */}
           <motion.div initial="hidden" animate="visible" variants={fadeUp}>
             <div className="flex gap-1 mb-6 p-1 bg-white/[0.02] rounded-2xl border border-white/[0.04]">
+              {hasWhatYouGet && (
+                <button
+                  onClick={() => setActiveTab("what-you-get")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-display font-light transition-all duration-300 ${
+                    activeTab === "what-you-get"
+                      ? "bg-white/[0.06] text-white border border-white/[0.08]"
+                      : "text-white/40 hover:text-white/60"
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  What You Get
+                </button>
+              )}
               <button
                 onClick={() => setActiveTab("details")}
                 className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-display font-light transition-all duration-300 ${
@@ -174,159 +236,277 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
               </button>
             </div>
 
-            {activeTab === "details" && (
-              <motion.div
-                key="details"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="space-y-6"
-              >
-                <div className="glass-card p-6 sm:p-8 relative overflow-hidden">
-                  <div className="card-shine" />
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%)" }}
-                  />
-                  <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
-                        <span className="text-xl sm:text-2xl font-display font-light text-white leading-none">
-                          +{partner.entryPoints ?? 1}
-                        </span>
-                        <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">
-                          {(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">Your Benefit</p>
-                        <p className="text-white font-light text-sm sm:text-base leading-snug">
-                          Earn <span className="font-normal text-white">{partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"}</span> after completing registration
-                        </p>
-                        <p className="text-white/35 font-light text-xs mt-1">
-                          Each entry = one chance to win in the daily prize draw
-                        </p>
-                      </div>
-                    </div>
-                    <div className="shrink-0">
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-                        <Trophy className="w-3 h-3 text-white/40" />
-                        <span className="text-[10px] font-display text-white/40 uppercase tracking-widest">Daily Draw</span>
-                      </div>
+            <AnimatePresence mode="wait">
+
+              {/* ── WHAT YOU GET TAB ── */}
+              {activeTab === "what-you-get" && hasWhatYouGet && (
+                <motion.div
+                  key="what-you-get"
+                  variants={tabVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="space-y-5"
+                >
+                  {/* Hero Prize Card */}
+                  <div className="glass-card p-8 sm:p-10 relative overflow-hidden">
+                    <div className="card-shine" />
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%)" }} />
+                    <div className="relative z-[2] text-center">
+                      <motion.div
+                        initial={{ scale: 0.7, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        className="w-16 h-16 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center mx-auto mb-6"
+                      >
+                        <Gift className="w-8 h-8 text-white/60" />
+                      </motion.div>
+                      <p className="text-[10px] font-display uppercase tracking-[0.2em] text-white/30 mb-3">What You Get</p>
+                      <motion.p
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        className="text-xl sm:text-2xl md:text-3xl font-display font-light text-white leading-snug max-w-xl mx-auto"
+                      >
+                        {partner.whatYouGet}
+                      </motion.p>
                     </div>
                   </div>
-                </div>
 
-                <div className="glass-card p-6 sm:p-8">
-                  <div className="card-top-accent" />
-                  <div className="card-shine" />
-                  <div className="relative z-[2]">
-                    <h3 className="text-lg sm:text-xl font-display font-light text-white mb-5">About This Partner</h3>
-                    <p className="text-white/45 font-light text-sm leading-relaxed">{partner.description}</p>
-                  </div>
-                </div>
-
-                <div className="glass-card p-6 sm:p-8">
-                  <div className="card-top-accent card-top-accent-navy" />
-                  <div className="card-shine" />
-                  <div className="relative z-[2]">
-                    <h3 className="text-lg sm:text-xl font-display font-light text-white mb-5">Key Info</h3>
-                    <ul className="space-y-3">
-                      <li className="flex items-start gap-3 text-sm text-white/50 font-light">
-                        <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                        <span>1 completed registration = 1 giveaway entry</span>
-                      </li>
-                      {partner.isRequired && (
-                        <li className="flex items-start gap-3 text-sm text-white/50 font-light">
-                          <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                          <span>This registration is required to participate in the giveaway</span>
-                        </li>
-                      )}
-                      {partner.badgeSecondary && (
-                        <li className="flex items-start gap-3 text-sm text-white/50 font-light">
-                          <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                          <span>{partner.badgeSecondary} — eligibility restriction applies</span>
-                        </li>
-                      )}
-                      <li className="flex items-start gap-3 text-sm text-white/50 font-light">
-                        <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-                        <span>Access to daily prize draws after registration</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-
-                {!isComingSoon && (
-                  <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
-                    {partner.registrationUrl && (
-                      <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                        <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Register Now</span>
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                      </BorderGlow>
-                    )}
-                    <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                      <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
-                      <span className="relative z-[2]">Enter Giveaway</span>
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                    </BorderGlow>
-                  </div>
-                )}
-              </motion.div>
-            )}
-
-            {activeTab === "how-to-enter" && (
-              <motion.div
-                key="how-to-enter"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="glass-card p-6 sm:p-8">
-                  <div className="card-top-accent card-top-accent-red" />
-                  <div className="card-shine" />
-                  <div className="relative z-[2]">
-                    <h3 className="text-lg sm:text-xl font-display font-light text-white mb-6">Steps to Enter via {partner.name}</h3>
-                    <div className="space-y-5">
-                      {[
-                        { text: `Click the 'Register Now' button to visit ${partner.name}`, icon: <ExternalLink className="w-3.5 h-3.5 text-white/30" /> },
-                        { text: "Create your account and fill the complete registration form", icon: <CheckCircle2 className="w-3.5 h-3.5 text-white/30" /> },
-                        { text: "Make sure all required fields are filled correctly", icon: <Info className="w-3.5 h-3.5 text-white/30" /> },
-                        { text: "Submit the registration on the partner platform", icon: <CheckCircle2 className="w-3.5 h-3.5 text-white/30" /> },
-                        { text: "Take a screenshot of your completed registration as proof", icon: <Camera className="w-3.5 h-3.5 text-white/30" /> },
-                        { text: "Go to the Giveaway section on X247 Rewards, select a contest", icon: <Trophy className="w-3.5 h-3.5 text-white/30" /> },
-                        { text: `Select '${partner.name}' as a completed partner and upload your screenshot proof`, icon: <Star className="w-3.5 h-3.5 text-white/30" /> },
-                        { text: "Submit your entry and check the Winners page daily!", icon: <Gift className="w-3.5 h-3.5 text-white/30" /> },
-                      ].map((step, i) => (
-                        <div key={i} className="flex items-start gap-4">
-                          <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0">
-                            <span className="text-xs font-display text-white/50">{String(i + 1).padStart(2, "0")}</span>
-                          </div>
-                          <p className="text-sm text-white/50 font-light leading-relaxed pt-1.5">{step.text}</p>
+                  {/* Entry Reward */}
+                  <div className="glass-card p-6 sm:p-8 relative overflow-hidden">
+                    <div className="card-shine" />
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%)" }}
+                    />
+                    <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
+                          <span className="text-xl sm:text-2xl font-display font-light text-white leading-none">
+                            +{partner.entryPoints ?? 1}
+                          </span>
+                          <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">
+                            {(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}
+                          </span>
                         </div>
-                      ))}
+                        <div>
+                          <p className="text-[10px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">Your Draw Benefit</p>
+                          <p className="text-white font-light text-sm sm:text-base leading-snug">
+                            Earn <span className="font-normal text-white">{partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"}</span> after completing registration
+                          </p>
+                          <p className="text-white/35 font-light text-xs mt-1">
+                            Each entry = one chance to win in the daily prize draw
+                          </p>
+                        </div>
+                      </div>
+                      <div className="shrink-0">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                          <Trophy className="w-3 h-3 text-white/40" />
+                          <span className="text-[10px] font-display text-white/40 uppercase tracking-widest">Daily Draw</span>
+                        </div>
+                      </div>
                     </div>
+                  </div>
 
-                    {!isComingSoon && (
-                      <div className="flex flex-col sm:flex-row justify-center gap-3 pt-8 border-t border-white/[0.04] mt-8">
-                        {partner.registrationUrl && (
-                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                            <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                            <span className="relative z-[2]">Register Now</span>
-                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                          </BorderGlow>
-                        )}
-                        <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                          <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
-                          <span className="relative z-[2]">Enter Giveaway</span>
+                  {/* Verified Benefits */}
+                  <motion.div
+                    variants={stagger}
+                    initial="hidden"
+                    animate="visible"
+                    className="glass-card p-6 sm:p-8"
+                  >
+                    <div className="card-top-accent" />
+                    <div className="card-shine" />
+                    <div className="relative z-[2]">
+                      <h3 className="text-base sm:text-lg font-display font-light text-white mb-5">Why Register?</h3>
+                      <div className="space-y-3">
+                        {[
+                          `Register with ${partner.name} to unlock the prize`,
+                          `Earn ${partner.entryPoints ?? 1} giveaway draw ${(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"} automatically`,
+                          "More partners you complete = higher chance of winning",
+                          "Registrations are verified before entry is confirmed",
+                        ].map((text, i) => (
+                          <motion.div key={i} variants={itemFade} className="flex items-start gap-3">
+                            <div className="w-5 h-5 rounded-lg bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0 mt-0.5">
+                              <BadgeCheck className="w-3 h-3 text-white/50" />
+                            </div>
+                            <p className="text-sm text-white/55 font-light leading-relaxed">{text}</p>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {!isComingSoon && (
+                    <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+                      {partner.registrationUrl && (
+                        <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                          <span className="relative z-[2]">Register &amp; Claim</span>
                           <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
                         </BorderGlow>
+                      )}
+                      <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                        <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                        <span className="relative z-[2]">Enter Giveaway</span>
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                      </BorderGlow>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* ── DETAILS TAB ── */}
+              {activeTab === "details" && (
+                <motion.div
+                  key="details"
+                  variants={tabVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="space-y-6"
+                >
+                  <div className="glass-card p-6 sm:p-8 relative overflow-hidden">
+                    <div className="card-shine" />
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%)" }}
+                    />
+                    <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
+                          <span className="text-xl sm:text-2xl font-display font-light text-white leading-none">
+                            +{partner.entryPoints ?? 1}
+                          </span>
+                          <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">
+                            {(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">Your Benefit</p>
+                          <p className="text-white font-light text-sm sm:text-base leading-snug">
+                            Earn <span className="font-normal text-white">{partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"}</span> after completing registration
+                          </p>
+                          <p className="text-white/35 font-light text-xs mt-1">
+                            Each entry = one chance to win in the daily prize draw
+                          </p>
+                        </div>
                       </div>
-                    )}
+                      <div className="shrink-0">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                          <Trophy className="w-3 h-3 text-white/40" />
+                          <span className="text-[10px] font-display text-white/40 uppercase tracking-widest">Daily Draw</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            )}
+
+                  <div className="glass-card p-6 sm:p-8">
+                    <div className="card-top-accent" />
+                    <div className="card-shine" />
+                    <div className="relative z-[2]">
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-5">About This Partner</h3>
+                      <p className="text-white/45 font-light text-sm leading-relaxed">{partner.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="glass-card p-6 sm:p-8">
+                    <div className="card-top-accent card-top-accent-navy" />
+                    <div className="card-shine" />
+                    <div className="relative z-[2]">
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-5">Key Info</h3>
+                      <motion.ul variants={stagger} initial="hidden" animate="visible" className="space-y-3">
+                        {[
+                          "1 completed registration = 1 giveaway entry",
+                          ...(partner.isRequired ? ["This registration is required to participate in the giveaway"] : []),
+                          ...(partner.badgeSecondary ? [`${partner.badgeSecondary} — eligibility restriction applies`] : []),
+                          "Access to daily prize draws after registration",
+                        ].map((text, i) => (
+                          <motion.li key={i} variants={itemFade} className="flex items-start gap-3 text-sm text-white/50 font-light">
+                            <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                            <span>{text}</span>
+                          </motion.li>
+                        ))}
+                      </motion.ul>
+                    </div>
+                  </div>
+
+                  {!isComingSoon && (
+                    <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+                      {partner.registrationUrl && (
+                        <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                          <span className="relative z-[2]">Register Now</span>
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                        </BorderGlow>
+                      )}
+                      <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                        <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                        <span className="relative z-[2]">Enter Giveaway</span>
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                      </BorderGlow>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* ── HOW TO ENTER TAB ── */}
+              {activeTab === "how-to-enter" && (
+                <motion.div
+                  key="how-to-enter"
+                  variants={tabVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                >
+                  <div className="glass-card p-6 sm:p-8">
+                    <div className="card-top-accent card-top-accent-red" />
+                    <div className="card-shine" />
+                    <div className="relative z-[2]">
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-6">Steps to Enter via {partner.name}</h3>
+                      <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-5">
+                        {[
+                          { text: `Click the 'Register Now' button to visit ${partner.name}`, icon: <ExternalLink className="w-3.5 h-3.5 text-white/30" /> },
+                          { text: "Create your account and fill the complete registration form", icon: <CheckCircle2 className="w-3.5 h-3.5 text-white/30" /> },
+                          { text: "Make sure all required fields are filled correctly", icon: <Info className="w-3.5 h-3.5 text-white/30" /> },
+                          { text: "Submit the registration on the partner platform", icon: <CheckCircle2 className="w-3.5 h-3.5 text-white/30" /> },
+                          { text: "Take a screenshot of your completed registration as proof", icon: <Camera className="w-3.5 h-3.5 text-white/30" /> },
+                          { text: "Go to the Giveaway section on X247 Rewards, select a contest", icon: <Trophy className="w-3.5 h-3.5 text-white/30" /> },
+                          { text: `Select '${partner.name}' as a completed partner and upload your screenshot proof`, icon: <Star className="w-3.5 h-3.5 text-white/30" /> },
+                          { text: "Submit your entry and check the Winners page daily!", icon: <Gift className="w-3.5 h-3.5 text-white/30" /> },
+                        ].map((step, i) => (
+                          <motion.div key={i} variants={itemFade} className="flex items-start gap-4">
+                            <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0">
+                              <span className="text-xs font-display text-white/50">{String(i + 1).padStart(2, "0")}</span>
+                            </div>
+                            <p className="text-sm text-white/50 font-light leading-relaxed pt-1.5">{step.text}</p>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+
+                      {!isComingSoon && (
+                        <div className="flex flex-col sm:flex-row justify-center gap-3 pt-8 border-t border-white/[0.04] mt-8">
+                          {partner.registrationUrl && (
+                            <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                              <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                              <span className="relative z-[2]">Register Now</span>
+                              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                            </BorderGlow>
+                          )}
+                          <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                            <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                            <span className="relative z-[2]">Enter Giveaway</span>
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                          </BorderGlow>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+            </AnimatePresence>
           </motion.div>
 
         </div>
