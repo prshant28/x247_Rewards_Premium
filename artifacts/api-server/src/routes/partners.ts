@@ -85,7 +85,7 @@ router.get("/partners/:slug", async (req, res) => {
 
 router.post("/partners", requireAdmin, async (req, res) => {
   try {
-    const { name, tagline, description, category, registrationUrl, accent, badge, badgeSecondary, isActive, isRequired, slug, entryPoints, whatYouGet } = req.body;
+    const { name, tagline, description, category, registrationUrl, accent, badge, badgeSecondary, isActive, isRequired, isFeatured, slug, entryPoints, whatYouGet } = req.body;
 
     if (!name || !registrationUrl || !slug) {
       return res.status(400).json({ error: "Name, slug, and registration URL are required" });
@@ -103,6 +103,7 @@ router.post("/partners", requireAdmin, async (req, res) => {
       badgeSecondary: badgeSecondary || null,
       isActive: isActive ?? false,
       isRequired: isRequired ?? false,
+      isFeatured: isFeatured ?? false,
       entryPoints: entryPoints ?? 1,
       whatYouGet: whatYouGet || null,
     }).returning();
@@ -120,7 +121,7 @@ router.post("/partners", requireAdmin, async (req, res) => {
 router.put("/partners/:id", requireAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const { name, tagline, description, category, registrationUrl, accent, badge, badgeSecondary, isActive, isRequired, slug, entryPoints, whatYouGet } = req.body;
+    const { name, tagline, description, category, registrationUrl, accent, badge, badgeSecondary, isActive, isRequired, isFeatured, slug, entryPoints, whatYouGet } = req.body;
 
     const [partner] = await db.update(partnersTable)
       .set({
@@ -135,6 +136,7 @@ router.put("/partners/:id", requireAdmin, async (req, res) => {
         ...(badgeSecondary !== undefined && { badgeSecondary }),
         ...(isActive !== undefined && { isActive }),
         ...(isRequired !== undefined && { isRequired }),
+        ...(isFeatured !== undefined && { isFeatured }),
         ...(entryPoints !== undefined && { entryPoints }),
         ...(whatYouGet !== undefined && { whatYouGet }),
         updatedAt: new Date(),

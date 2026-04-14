@@ -75,6 +75,23 @@ router.post("/giveaway/enter", async (req, res) => {
       }
     }
 
+    const allActivePartners = await db.select().from(partnersTable).where(eq(partnersTable.isActive, true));
+    const activePartnerMap = new Map(allActivePartners.map((p) => [p.id, p]));
+
+    const validPartnerIds: number[] = completedPartners
+      .map((id: any) => Number(id))
+      .filter((id: number) => !isNaN(id) && activePartnerMap.has(id));
+
+    if (validPartnerIds.length === 0) {
+      return res.status(400).json({ error: "No valid active partner registrations selected" });
+    }
+
+    const entryCount = validPartnerIds.reduce((sum: number, id: number) => {
+      return sum + (activePartnerMap.get(id)?.entryPoints || 1);
+    }, 0);
+
+    const entryCode = generateEntryCode();
+
     let resolvedContestId: number | null = null;
     if (contestId) {
       const [contest] = await db.select().from(contestsTable).where(eq(contestsTable.id, Number(contestId))).limit(1);
