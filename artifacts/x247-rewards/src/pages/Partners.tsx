@@ -13,6 +13,7 @@ import {
   Star,
   BarChart3,
   TrendingUp,
+  Trophy,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -29,55 +30,33 @@ const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.12 } }
 };
 
-type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "stats">;
+type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "entryPoints" | "stats">;
 
-const placeholderPartners: PartnerCardData[] = [
-  {
-    id: -2,
-    slug: "partner-coming-1",
-    name: "Partner 2",
-    tagline: "Bonus Entry Partner",
-    description: "Register here as well to double your winning chances. Both registrations combined unlock the 2x entry multiplier for every giveaway.",
-    category: "Bonus Entry",
-    registrationUrl: "",
-    accent: "red",
-    badge: "2x Chances",
-    badgeSecondary: null,
-    isActive: false,
-    isRequired: false,
-    stats: { clicks: 0, impressions: 0, formFills: 0 },
-  },
-  {
-    id: -3,
-    slug: "partner-coming-2",
-    name: "Partner 3",
-    tagline: "Coming Soon",
-    description: "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
-    category: "Upcoming",
-    registrationUrl: "",
-    accent: "neutral",
-    badge: null,
-    badgeSecondary: null,
-    isActive: false,
-    isRequired: false,
-    stats: { clicks: 0, impressions: 0, formFills: 0 },
-  },
-  {
-    id: -4,
-    slug: "partner-coming-3",
-    name: "Partner 4",
-    tagline: "Coming Soon",
-    description: "Another exciting partner joining the X247 ecosystem. More ways to earn entries and win bigger rewards.",
-    category: "Upcoming",
-    registrationUrl: "",
-    accent: "neutral",
-    badge: null,
-    badgeSecondary: null,
-    isActive: false,
-    isRequired: false,
-    stats: { clicks: 0, impressions: 0, formFills: 0 },
-  },
-];
+function buildPlaceholders(activeCount: number): PartnerCardData[] {
+  const placeholders: PartnerCardData[] = [];
+  for (let i = 0; i < 3; i++) {
+    const num = activeCount + i + 1;
+    placeholders.push({
+      id: -(num),
+      slug: `partner-coming-${i + 1}`,
+      name: `Partner ${num}`,
+      tagline: i === 0 ? "Bonus Entry Partner" : "Coming Soon",
+      description: i === 0
+        ? "Register here as well to increase your winning chances. Additional registrations unlock bonus entry multipliers for every giveaway."
+        : "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
+      category: i === 0 ? "Bonus Entry" : "Upcoming",
+      registrationUrl: "",
+      accent: i === 0 ? "red" : "neutral",
+      badge: i === 0 ? "2x Chances" : null,
+      badgeSecondary: null,
+      isActive: false,
+      isRequired: false,
+      entryPoints: 1,
+      stats: { clicks: 0, impressions: 0, formFills: 0 },
+    });
+  }
+  return placeholders;
+}
 
 const verifiedBy = [
   { name: "SSL Secured", icon: <ShieldCheck className="w-5 h-5" /> },
@@ -169,7 +148,14 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
 
         <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.15em] mb-1">{partner.category}</span>
         <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">{partner.name}</h3>
-        <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-5">{partner.description}</p>
+        <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{partner.description}</p>
+
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-5">
+          <Trophy className="w-3.5 h-3.5 text-white/40 shrink-0" />
+          <span className="text-[11px] text-white/50 font-light">
+            Earn <strong className="text-white/70 font-medium">{partner.entryPoints || 1} entry {(partner.entryPoints || 1) === 1 ? "point" : "points"}</strong> after completing registration
+          </span>
+        </div>
 
         <div className="mt-auto pt-4 border-t border-white/[0.04]">
           <div className="flex items-center justify-between">
@@ -218,7 +204,8 @@ export default function Partners() {
     const active: PartnerCardData[] = Array.isArray(apiPartners) ? apiPartners : [];
     const activeCount = active.length;
     const fillerCount = Math.max(0, 4 - activeCount);
-    return [...active, ...placeholderPartners.slice(0, fillerCount)];
+    const placeholders = buildPlaceholders(activeCount);
+    return [...active, ...placeholders.slice(0, fillerCount)];
   }, [apiPartners]);
 
   const totalClicks = allPartners.reduce((sum, p) => sum + (p.stats?.clicks || 0), 0);
