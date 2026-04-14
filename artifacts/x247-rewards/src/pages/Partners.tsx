@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BorderGlow from "@/components/BorderGlow";
 import { motion, type Variants } from "framer-motion";
 import {
@@ -18,6 +18,7 @@ import {
   BadgeCheck,
   BookOpen,
   Sparkles,
+  SlidersHorizontal,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -34,7 +35,7 @@ const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.12 } }
 };
 
-type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "entryPoints" | "whatYouGet" | "stats">;
+type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "isFeatured" | "entryPoints" | "whatYouGet" | "stats">;
 
 const PLACEHOLDER_DATA = [
   {
@@ -77,6 +78,7 @@ function buildPlaceholders(activeCount: number): PartnerCardData[] {
     badgeSecondary: null,
     isActive: false,
     isRequired: false,
+    isFeatured: false,
     entryPoints: i === 0 ? 2 : 1,
     whatYouGet: data.whatYouGet,
     stats: { clicks: 0, impressions: 0, formFills: 0 },
@@ -257,6 +259,8 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
 }
 
 export default function Partners() {
+  const [activeFilter, setActiveFilter] = useState<string>("All");
+
   const { data: apiPartners, isLoading } = useQuery({
     queryKey: ["partners"],
     queryFn: getPartners,
@@ -270,6 +274,19 @@ export default function Partners() {
     const placeholders = buildPlaceholders(activeCount);
     return [...active, ...placeholders.slice(0, fillerCount)];
   }, [apiPartners]);
+
+  const categories = React.useMemo(() => {
+    const cats = new Set(allPartners.filter((p) => p.isActive).map((p) => p.category));
+    return Array.from(cats).filter(Boolean);
+  }, [allPartners]);
+
+  const hasFeatured = allPartners.some((p) => p.isActive && p.isFeatured);
+
+  const filteredPartners = React.useMemo(() => {
+    if (activeFilter === "All") return allPartners;
+    if (activeFilter === "Featured") return allPartners.filter((p) => p.isFeatured || !p.isActive);
+    return allPartners.filter((p) => !p.isActive || p.category === activeFilter);
+  }, [allPartners, activeFilter]);
 
   const totalClicks = allPartners.reduce((sum, p) => sum + (p.stats?.clicks || 0), 0);
   const totalImpressions = allPartners.reduce((sum, p) => sum + (p.stats?.impressions || 0), 0);
@@ -334,6 +351,31 @@ export default function Partners() {
             </div>
           </motion.div>
 
+          {!isLoading && (categories.length > 1 || hasFeatured) && (
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8 sm:mb-10">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 mr-1 text-white/25">
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
+                  <span className="text-[10px] uppercase tracking-widest font-display">Filter</span>
+                </div>
+                {["All", ...(hasFeatured ? ["Featured"] : []), ...categories].map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setActiveFilter(filter)}
+                    className={`px-4 py-1.5 rounded-full text-[11px] font-display font-light tracking-wide border transition-all ${
+                      activeFilter === filter
+                        ? "bg-white/[0.1] border-white/[0.2] text-white"
+                        : "bg-white/[0.02] border-white/[0.06] text-white/40 hover:text-white/60 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    {filter === "Featured" && <span className="mr-1 text-white/50">★</span>}
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
               <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
@@ -345,7 +387,7 @@ export default function Partners() {
               variants={stagger}
               className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-24"
             >
-              {allPartners.map((partner) => (
+              {filteredPartners.map((partner) => (
                 <motion.div key={partner.slug || partner.id} variants={fadeUp}>
                   <PartnerCard partner={partner} />
                 </motion.div>

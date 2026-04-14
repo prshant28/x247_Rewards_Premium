@@ -51,7 +51,7 @@ export default function AdminPanel() {
   const [form, setForm] = useState({
     name: "", slug: "", tagline: "", description: "", category: "Registration",
     registrationUrl: "", accent: "navy", badge: "", badgeSecondary: "",
-    isActive: false, isRequired: false, entryPoints: 1, whatYouGet: "",
+    isActive: false, isRequired: false, isFeatured: false, entryPoints: 1, whatYouGet: "",
   });
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export default function AdminPanel() {
     setForm({
       name: "", slug: "", tagline: "", description: "", category: "Registration",
       registrationUrl: "", accent: "navy", badge: "", badgeSecondary: "",
-      isActive: false, isRequired: false, entryPoints: 1, whatYouGet: "",
+      isActive: false, isRequired: false, isFeatured: false, entryPoints: 1, whatYouGet: "",
     });
   }
 
@@ -140,6 +140,7 @@ export default function AdminPanel() {
       registrationUrl: partner.registrationUrl, accent: partner.accent,
       badge: partner.badge || "", badgeSecondary: partner.badgeSecondary || "",
       isActive: partner.isActive, isRequired: partner.isRequired,
+      isFeatured: partner.isFeatured ?? false,
       entryPoints: partner.entryPoints ?? 1, whatYouGet: partner.whatYouGet || "",
     });
     setShowAddForm(false);
@@ -543,14 +544,18 @@ export default function AdminPanel() {
                   <p className="text-[10px] text-white/25 mt-1 font-light">Shown in the 'What You Get' tab on the partner page</p>
                 </div>
 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-6 flex-wrap">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-blue-500" />
+                    <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-white" />
                     <span className="text-xs text-white/50 font-light">Active</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={form.isRequired} onChange={(e) => setForm({ ...form, isRequired: e.target.checked })} className="accent-blue-500" />
+                    <input type="checkbox" checked={form.isRequired} onChange={(e) => setForm({ ...form, isRequired: e.target.checked })} className="accent-white" />
                     <span className="text-xs text-white/50 font-light">Required</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={form.isFeatured} onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })} className="accent-white" />
+                    <span className="text-xs text-white/50 font-light">Featured <span className="text-white/30">(shows in Featured filter)</span></span>
                   </label>
                 </div>
 
@@ -580,15 +585,18 @@ export default function AdminPanel() {
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="text-base sm:text-lg font-display font-light text-white">{item.partner.name}</h3>
                       {item.partner.isActive ? (
-                        <span className="px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-[9px] text-green-400 font-display">LIVE</span>
+                        <span className="px-2 py-0.5 rounded-full bg-white/[0.08] border border-white/[0.12] text-[9px] text-white/60 font-display">LIVE</span>
                       ) : (
                         <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[9px] text-white/30 font-display">INACTIVE</span>
                       )}
+                      {item.partner.isFeatured && (
+                        <span className="px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.1] text-[9px] text-white/50 font-display">★ FEATURED</span>
+                      )}
                       {item.partner.badge && (
-                        <span className="px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-[9px] text-red-400 font-display">{item.partner.badge}</span>
+                        <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[9px] text-white/40 font-display">{item.partner.badge}</span>
                       )}
                       {item.partner.badgeSecondary && (
-                        <span className="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[9px] text-blue-400 font-display">{item.partner.badgeSecondary}</span>
+                        <span className="px-2 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.06] text-[9px] text-white/30 font-display">{item.partner.badgeSecondary}</span>
                       )}
                     </div>
                     <p className="text-xs text-white/30 font-light truncate">{item.partner.registrationUrl}</p>

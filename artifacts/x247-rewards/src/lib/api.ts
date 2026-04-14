@@ -69,6 +69,7 @@ export interface PartnerData {
   badgeSecondary: string | null;
   isActive: boolean;
   isRequired: boolean;
+  isFeatured: boolean;
   entryPoints: number;
   whatYouGet: string | null;
   sortOrder: number;
@@ -89,6 +90,7 @@ export interface PartnerInput {
   badgeSecondary?: string | null;
   isActive?: boolean;
   isRequired?: boolean;
+  isFeatured?: boolean;
   entryPoints?: number;
   whatYouGet?: string | null;
 }
