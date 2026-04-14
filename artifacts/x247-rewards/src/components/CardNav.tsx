@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef, useState, useEffect, useCallback } from "react";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { ArrowUpRight, User, LogOut, Settings, ChevronDown } from "lucide-react";
 import "./CardNav.css";
@@ -73,11 +74,15 @@ const CardNav = ({
   const navRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
-  const avatarDropdownRef = useRef<HTMLDivElement>(null);
+  const avatarBtnRef = useRef<HTMLDivElement>(null);
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (avatarDropdownRef.current && !avatarDropdownRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const inBtn = avatarBtnRef.current?.contains(target);
+      const inMenu = avatarMenuRef.current?.contains(target);
+      if (!inBtn && !inMenu) {
         setAvatarOpen(false);
       }
     };
@@ -212,7 +217,7 @@ const CardNav = ({
           <div className="logo-container">{logo}</div>
 
           {isLoggedIn && user ? (
-            <div className="avatar-wrapper" ref={avatarDropdownRef}>
+            <div className="avatar-wrapper" ref={avatarBtnRef}>
               <button
                 type="button"
                 className="avatar-button"
@@ -225,8 +230,8 @@ const CardNav = ({
                 <ChevronDown className={`avatar-chevron ${avatarOpen ? "rotated" : ""}`} />
               </button>
 
-              {avatarOpen && (
-                <div className="avatar-dropdown">
+              {avatarOpen && createPortal(
+                <div className="avatar-dropdown" ref={avatarMenuRef}>
                   <div className="avatar-dropdown-header">
                     <div className="avatar-dropdown-avatar">
                       <span>{getInitials(user.fullName)}</span>
@@ -271,7 +276,8 @@ const CardNav = ({
                     <LogOut className="avatar-dropdown-icon" />
                     Log Out
                   </button>
-                </div>
+                </div>,
+                document.body
               )}
             </div>
           ) : (

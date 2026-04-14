@@ -560,6 +560,11 @@ export default function Home() {
                   <TiltCard className="glass-card p-5 sm:p-6 group h-full">
                     <div className="card-top-accent" />
                     <div className="card-shine" />
+                    <img
+                      src="/x247-rewards-card.png"
+                      alt=""
+                      className="absolute top-3 right-3 w-16 h-10 sm:w-20 sm:h-12 object-contain opacity-[0.12] group-hover:opacity-[0.2] transition-opacity duration-500 pointer-events-none z-[1]"
+                    />
                     <div className="relative z-[2] flex flex-col h-full">
                       <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
                         {item.icon}
