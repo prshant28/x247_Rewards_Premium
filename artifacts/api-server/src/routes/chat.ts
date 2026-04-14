@@ -139,8 +139,8 @@ router.post("/chat", async (req, res) => {
     res.setHeader("Connection", "keep-alive");
 
     const stream = await openrouter.chat.completions.create({
-      model: "meta-llama/llama-4-scout",
-      max_tokens: 8192,
+      model: "openai/gpt-4o",
+      max_tokens: 4096,
       messages: chatMessages,
       stream: true,
     });

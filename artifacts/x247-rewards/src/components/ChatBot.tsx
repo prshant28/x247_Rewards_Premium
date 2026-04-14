@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   MessageCircle, X, Send, Sparkles, ExternalLink, ArrowRight,
   Bot, User, Loader2, ChevronRight, Clock, Trash2, Plus,
-  History, Zap, RotateCcw, ChevronDown, Copy, Check
+  History, Zap, RotateCcw, ChevronDown, Copy, Check,
+  Mic, MicOff, Volume2, VolumeX, Phone, PhoneOff, Waves,
+  AlertCircle,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -32,6 +34,8 @@ interface PartnerCard {
   accent: string;
 }
 
+type VoiceStatus = "idle" | "listening" | "transcribing" | "thinking" | "speaking";
+
 function parsePartnerCards(content: string): { text: string; cards: PartnerCard[] } {
   const cards: PartnerCard[] = [];
   const text = content.replace(/```partner-card\n([\s\S]*?)```/g, (_, json) => {
@@ -44,6 +48,19 @@ function parsePartnerCards(content: string): { text: string; cards: PartnerCard[
     }
   });
   return { text: text.trim(), cards };
+}
+
+function cleanTextForTTS(content: string): string {
+  let text = content;
+  text = text.replace(/```partner-card[\s\S]*?```/g, "");
+  text = text.replace(/```[\s\S]*?```/g, "");
+  text = text.replace(/\*\*(.*?)\*\*/g, "$1");
+  text = text.replace(/\*(.*?)\*/g, "$1");
+  text = text.replace(/^#{1,6}\s+/gm, "");
+  text = text.replace(/^[-*]\s+/gm, "");
+  text = text.replace(/^\d+\.\s+/gm, "");
+  text = text.replace(/\n{3,}/g, "\n\n");
+  return text.trim().slice(0, 800);
 }
 
 function formatMarkdown(text: string): React.ReactNode[] {
@@ -113,37 +130,26 @@ function renderInlineMarkdown(text: string): React.ReactNode {
 }
 
 function PartnerCardPreview({ card, onNavigate }: { card: PartnerCard; onNavigate: (slug: string) => void }) {
-  const accentColors: Record<string, string> = {
-    navy: "from-blue-900/30 to-blue-800/10",
-    red: "from-red-900/30 to-red-800/10",
-    neutral: "from-white/10 to-white/5",
-  };
-  const borderColors: Record<string, string> = {
-    navy: "border-blue-500/20",
-    red: "border-red-500/20",
-    neutral: "border-white/10",
-  };
-
   return (
     <div
-      className={`mt-2 mb-1 rounded-xl bg-gradient-to-br ${accentColors[card.accent] || accentColors.navy} border ${borderColors[card.accent] || borderColors.navy} p-3 cursor-pointer hover:border-white/20 transition-all group`}
+      className="mt-2 mb-1 rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 cursor-pointer hover:border-white/[0.15] hover:bg-white/[0.04] transition-all group"
       onClick={() => onNavigate(card.slug)}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-            <span className="text-[9px] uppercase tracking-widest text-white/40 font-display">{card.category}</span>
+            <span className="text-[9px] uppercase tracking-widest text-white/30 font-display">{card.category}</span>
             {card.badge && (
-              <span className="px-1.5 py-0.5 rounded-full bg-red-500/15 border border-red-500/25 text-[8px] text-red-400 font-display">{card.badge}</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-[8px] text-white/50 font-display">{card.badge}</span>
             )}
             {card.badgeSecondary && (
-              <span className="px-1.5 py-0.5 rounded-full bg-blue-500/15 border border-blue-500/25 text-[8px] text-blue-400 font-display">{card.badgeSecondary}</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-[8px] text-white/40 font-display">{card.badgeSecondary}</span>
             )}
           </div>
           <h4 className="text-sm font-display font-light text-white truncate">{card.name}</h4>
-          {card.tagline && <p className="text-[11px] text-white/40 font-light mt-0.5 truncate">{card.tagline}</p>}
+          {card.tagline && <p className="text-[11px] text-white/35 font-light mt-0.5 truncate leading-tight">{card.tagline}</p>}
         </div>
-        <div className="flex items-center gap-1 text-white/30 group-hover:text-white/60 transition-colors shrink-0 mt-1">
+        <div className="flex items-center gap-1 text-white/20 group-hover:text-white/50 transition-colors shrink-0 mt-1">
           <span className="text-[9px] font-display">View</span>
           <ChevronRight className="w-3 h-3" />
         </div>
@@ -199,6 +205,54 @@ function timeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString();
 }
 
+function VoiceOrb({ status }: { status: VoiceStatus }) {
+  const isActive = status !== "idle";
+  const colors: Record<VoiceStatus, string> = {
+    idle: "rgba(255,255,255,0.06)",
+    listening: "rgba(255,255,255,0.12)",
+    transcribing: "rgba(255,255,255,0.08)",
+    thinking: "rgba(255,255,255,0.08)",
+    speaking: "rgba(255,255,255,0.1)",
+  };
+
+  return (
+    <div className="relative flex items-center justify-center w-44 h-44">
+      {isActive && (
+        <>
+          <motion.div
+            className="absolute rounded-full border border-white/[0.06]"
+            animate={{ width: [140, 176, 140], height: [140, 176, 140], opacity: [0.6, 0, 0.6] }}
+            transition={{ duration: status === "speaking" ? 1.2 : 2.4, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute rounded-full border border-white/[0.04]"
+            animate={{ width: [140, 196, 140], height: [140, 196, 140], opacity: [0.4, 0, 0.4] }}
+            transition={{ duration: status === "speaking" ? 1.2 : 2.4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+          />
+        </>
+      )}
+      <motion.div
+        className="w-36 h-36 rounded-full flex items-center justify-center relative"
+        style={{ background: `radial-gradient(circle at 40% 35%, rgba(255,255,255,0.08), ${colors[status]})`, border: "1px solid rgba(255,255,255,0.1)", boxShadow: isActive ? "0 0 40px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.06)" : "none" }}
+        animate={isActive ? { scale: [1, 1.03, 1] } : { scale: 1 }}
+        transition={{ duration: 2, repeat: isActive ? Infinity : 0, ease: "easeInOut" }}
+      >
+        {status === "listening" && <Mic className="w-10 h-10 text-white/70" />}
+        {status === "transcribing" && <Loader2 className="w-10 h-10 text-white/50 animate-spin" />}
+        {status === "thinking" && (
+          <div className="flex gap-1.5">
+            <motion.div className="w-2 h-2 rounded-full bg-white/40" animate={{ y: [0, -6, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0 }} />
+            <motion.div className="w-2 h-2 rounded-full bg-white/40" animate={{ y: [0, -6, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.15 }} />
+            <motion.div className="w-2 h-2 rounded-full bg-white/40" animate={{ y: [0, -6, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.3 }} />
+          </div>
+        )}
+        {status === "speaking" && <Waves className="w-10 h-10 text-white/60" />}
+        {status === "idle" && <Mic className="w-10 h-10 text-white/30" />}
+      </motion.div>
+    </div>
+  );
+}
+
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -214,6 +268,19 @@ export default function ChatBot() {
   const [currentConvoId, setCurrentConvoId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [msgCount, setMsgCount] = useState(0);
+
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>("idle");
+  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const [isRecording, setIsRecording] = useState(false);
+  const [voiceTranscript, setVoiceTranscript] = useState("");
+  const [voiceError, setVoiceError] = useState("");
+  const [voiceLastResponse, setVoiceLastResponse] = useState("");
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+  const streamAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     setConversations(loadConversations());
@@ -258,6 +325,15 @@ export default function ChatBot() {
       if (!currentConvoId) setCurrentConvoId(id);
     }
   }, [messages, isStreaming]);
+
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, []);
 
   const getPageContext = useCallback(() => {
     if (location.includes("/partners/")) {
@@ -320,7 +396,57 @@ export default function ChatBot() {
     setTimeout(() => setCopiedId(null), 1500);
   }
 
-  async function handleSend(messageText?: string) {
+  function stopSpeaking() {
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current.src = "";
+      currentAudioRef.current = null;
+    }
+    setVoiceStatus(prev => prev === "speaking" ? "idle" : prev);
+  }
+
+  async function speakText(text: string) {
+    if (!ttsEnabled) return;
+    try {
+      stopSpeaking();
+      const cleanText = cleanTextForTTS(text);
+      if (!cleanText.trim()) return;
+
+      setVoiceStatus("speaking");
+      const res = await fetch("/api/voice/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: cleanText }),
+      });
+
+      if (!res.ok) {
+        setVoiceStatus(isVoiceMode ? "idle" : "idle");
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      currentAudioRef.current = audio;
+
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        currentAudioRef.current = null;
+        setVoiceStatus("idle");
+      };
+      audio.onerror = () => {
+        URL.revokeObjectURL(url);
+        currentAudioRef.current = null;
+        setVoiceStatus("idle");
+      };
+
+      await audio.play();
+    } catch {
+      setVoiceStatus("idle");
+    }
+  }
+
+  async function handleSend(messageText?: string, fromVoice = false) {
     const text = (messageText || input).trim();
     if (!text || isStreaming) return;
 
@@ -336,20 +462,22 @@ export default function ChatBot() {
     setIsStreaming(true);
     setCurrentStreamContent("");
     setMsgCount(c => c + 1);
+    if (fromVoice) setVoiceStatus("thinking");
 
     const chatHistory = [...messages.filter(m => m.id !== "welcome"), userMessage].map(m => ({
       role: m.role,
       content: m.content,
     }));
 
+    const abort = new AbortController();
+    streamAbortRef.current = abort;
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: chatHistory,
-          currentPage: getPageContext(),
-        }),
+        body: JSON.stringify({ messages: chatHistory, currentPage: getPageContext() }),
+        signal: abort.signal,
       });
 
       if (!response.ok) throw new Error("Chat request failed");
@@ -376,10 +504,6 @@ export default function ChatBot() {
                 fullContent += data.content;
                 setCurrentStreamContent(fullContent);
               }
-              if (data.error) {
-                fullContent += "\n\nSorry, something went wrong. Please try again.";
-                setCurrentStreamContent(fullContent);
-              }
             } catch {}
           }
         }
@@ -394,10 +518,14 @@ export default function ChatBot() {
       setMessages((prev) => [...prev, assistantMessage]);
       setCurrentStreamContent("");
 
-      if (!isOpen) {
-        setHasNewMessage(true);
+      if (!isOpen) setHasNewMessage(true);
+
+      if (isVoiceMode || ttsEnabled) {
+        setVoiceLastResponse(cleanTextForTTS(fullContent));
+        await speakText(fullContent);
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.name === "AbortError") return;
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
@@ -406,9 +534,105 @@ export default function ChatBot() {
       };
       setMessages((prev) => [...prev, errorMessage]);
       setCurrentStreamContent("");
+      if (fromVoice) setVoiceStatus("idle");
     }
 
     setIsStreaming(false);
+    if (fromVoice && voiceStatus === "thinking") setVoiceStatus("idle");
+  }
+
+  async function startRecording() {
+    setVoiceError("");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream, { mimeType: getSupportedMimeType() });
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop());
+        const mimeType = recorder.mimeType || "audio/webm";
+        const blob = new Blob(audioChunksRef.current, { type: mimeType });
+        if (blob.size < 500) {
+          setVoiceStatus("idle");
+          setIsRecording(false);
+          return;
+        }
+        await transcribeAudio(blob, mimeType);
+      };
+
+      recorder.start(250);
+      mediaRecorderRef.current = recorder;
+      setIsRecording(true);
+      setVoiceStatus("listening");
+      setVoiceTranscript("");
+    } catch {
+      setVoiceError("Microphone access denied. Please allow mic permission.");
+      setVoiceStatus("idle");
+    }
+  }
+
+  function stopRecording() {
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+  }
+
+  async function transcribeAudio(blob: Blob, mimeType: string) {
+    setVoiceStatus("transcribing");
+    try {
+      const formData = new FormData();
+      formData.append("audio", blob, "recording.webm");
+
+      const res = await fetch("/api/voice/stt", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("STT failed");
+
+      const data = await res.json() as { transcript: string };
+      const transcript = data.transcript?.trim();
+
+      if (!transcript) {
+        setVoiceStatus("idle");
+        setVoiceError("Couldn't understand that. Please try again.");
+        return;
+      }
+
+      setVoiceTranscript(transcript);
+      if (isVoiceMode) {
+        setInput(transcript);
+        await handleSend(transcript, true);
+      } else {
+        setInput(transcript);
+        await handleSend(transcript, false);
+      }
+    } catch {
+      setVoiceError("Transcription failed. Please try again.");
+      setVoiceStatus("idle");
+    }
+  }
+
+  function getSupportedMimeType(): string {
+    const types = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) return type;
+    }
+    return "";
+  }
+
+  function toggleRecording() {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      stopSpeaking();
+      startRecording();
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -432,8 +656,136 @@ export default function ChatBot() {
 
   const realMsgCount = messages.filter(m => m.id !== "welcome").length;
 
+  const voiceStatusLabel: Record<VoiceStatus, string> = {
+    idle: "Tap mic to speak",
+    listening: "Listening...",
+    transcribing: "Processing...",
+    thinking: "Thinking...",
+    speaking: "Speaking...",
+  };
+
   return (
     <>
+      {/* ── Voice Mode Full-Screen Overlay ── */}
+      <AnimatePresence>
+        {isVoiceMode && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[80] flex flex-col"
+            style={{
+              background: "rgba(4, 4, 6, 0.98)",
+              backdropFilter: "blur(40px)",
+            }}
+          >
+            <div className="noise-overlay opacity-50" />
+
+            {/* Header */}
+            <div className="relative z-10 flex items-center justify-between px-6 pt-safe pt-6 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
+                  <Waves className="w-4 h-4 text-white/50" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-display font-medium text-white/60 uppercase tracking-[0.15em]">Voice Mode</p>
+                  <p className="text-[10px] text-white/25 font-light">X247 AI Assistant</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setTtsEnabled(e => !e)}
+                  className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${ttsEnabled ? "bg-white/[0.08] border-white/[0.12] text-white/60" : "bg-white/[0.03] border-white/[0.06] text-white/25"}`}
+                  title={ttsEnabled ? "Mute AI voice" : "Unmute AI voice"}
+                >
+                  {ttsEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+                </button>
+                <button
+                  onClick={() => { setIsVoiceMode(false); stopSpeaking(); if (isRecording) stopRecording(); }}
+                  className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.08] transition-all"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Orb */}
+            <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6 px-6">
+              <VoiceOrb status={voiceStatus} />
+
+              <div className="text-center space-y-2">
+                <p className="text-[11px] font-display uppercase tracking-[0.2em] text-white/30">
+                  {voiceStatusLabel[voiceStatus]}
+                </p>
+                {voiceTranscript && voiceStatus !== "idle" && (
+                  <p className="text-sm text-white/50 font-light max-w-xs text-center leading-relaxed">
+                    "{voiceTranscript}"
+                  </p>
+                )}
+                {voiceError && (
+                  <p className="text-[11px] text-white/40 font-light flex items-center gap-1 justify-center">
+                    <AlertCircle className="w-3 h-3" />
+                    {voiceError}
+                  </p>
+                )}
+              </div>
+
+              {voiceLastResponse && voiceStatus === "idle" && (
+                <div className="max-w-sm w-full px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                  <p className="text-[11px] text-white/25 uppercase tracking-widest font-display mb-1.5">Last response</p>
+                  <p className="text-[12px] text-white/50 font-light leading-relaxed line-clamp-3">{voiceLastResponse}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Mic Button */}
+            <div className="relative z-10 flex flex-col items-center gap-4 px-6 pb-safe pb-12">
+              {voiceStatus === "speaking" && (
+                <button
+                  onClick={stopSpeaking}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] text-white/50 text-[11px] font-display hover:bg-white/[0.1] transition-all"
+                >
+                  <VolumeX className="w-3 h-3" />
+                  Stop Speaking
+                </button>
+              )}
+
+              <motion.button
+                onClick={toggleRecording}
+                disabled={voiceStatus === "transcribing" || voiceStatus === "thinking"}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className="relative w-20 h-20 rounded-full flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                style={{
+                  background: isRecording
+                    ? "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.14), rgba(255,255,255,0.06))"
+                    : "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.1), rgba(255,255,255,0.04))",
+                  border: `1px solid ${isRecording ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.1)"}`,
+                  boxShadow: isRecording ? "0 0 30px rgba(255,255,255,0.08)" : "none",
+                }}
+              >
+                {isRecording && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-white/20"
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0, 0.6] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                )}
+                {isRecording
+                  ? <MicOff className="w-7 h-7 text-white/80" />
+                  : <Mic className="w-7 h-7 text-white/50" />
+                }
+              </motion.button>
+              <p className="text-[10px] text-white/20 font-light">
+                {isRecording ? "Tap to stop" : "Tap to speak"}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Chat Panel ── */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -441,44 +793,61 @@ export default function ChatBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[420px] max-h-[75vh] flex flex-col"
+            className="fixed bottom-24 right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[420px] max-h-[78vh] flex flex-col"
             style={{
-              background: "rgba(6, 6, 10, 0.97)",
+              background: "rgba(5, 5, 8, 0.98)",
               backdropFilter: "blur(60px)",
               WebkitBackdropFilter: "blur(60px)",
               borderRadius: "24px",
               border: "1px solid rgba(255, 255, 255, 0.07)",
-              boxShadow: "0 30px 100px rgba(0, 0, 0, 0.9), 0 0 0 0.5px rgba(255, 255, 255, 0.03), 0 0 60px rgba(255, 255, 255, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+              boxShadow: "0 30px 100px rgba(0, 0, 0, 0.9), 0 0 0 0.5px rgba(255, 255, 255, 0.03), 0 0 60px rgba(255, 255, 255, 0.015), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
             }}
           >
+            {/* Header */}
             <div
               className="shrink-0"
               style={{
                 borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
                 borderRadius: "24px 24px 0 0",
-                background: "linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 50%, transparent 100%)",
+                background: "linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, transparent 100%)",
               }}
             >
               <div className="flex items-center justify-between px-5 py-3.5">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-900/40 to-blue-900/40 border border-white/[0.08] flex items-center justify-center relative">
-                    <Sparkles className="w-4 h-4 text-white/80" />
-                    <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#06060a]" />
+                  <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center relative">
+                    <Sparkles className="w-4 h-4 text-white/70" />
+                    <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-white/60 border-2 border-[#050508]" />
                   </div>
                   <div>
                     <h3 className="text-[13px] font-display font-light text-white tracking-wide">X247 Assistant</h3>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-[9px] text-emerald-400/70 font-light">Online</span>
+                      <span className="text-[9px] text-white/40 font-light">
+                        {isStreaming ? "Thinking..." : "Online · GPT-4o"}
+                      </span>
                       {msgCount > 0 && (
                         <>
-                          <span className="text-[8px] text-white/15">•</span>
-                          <span className="text-[9px] text-white/25 font-light">{msgCount} {msgCount === 1 ? "message" : "messages"}</span>
+                          <span className="text-[8px] text-white/10">•</span>
+                          <span className="text-[9px] text-white/20 font-light">{msgCount} {msgCount === 1 ? "msg" : "msgs"}</span>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setTtsEnabled(e => !e)}
+                    className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${ttsEnabled ? "bg-white/[0.06] border-white/[0.1] text-white/50" : "bg-white/[0.02] border-white/[0.05] text-white/20"}`}
+                    title={ttsEnabled ? "Mute AI voice" : "Unmute AI voice"}
+                  >
+                    {ttsEnabled ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />}
+                  </button>
+                  <button
+                    onClick={() => { setIsVoiceMode(true); setIsOpen(false); }}
+                    className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.06] transition-all"
+                    title="Voice mode"
+                  >
+                    <Mic className="w-3.5 h-3.5" />
+                  </button>
                   <button
                     onClick={startNewChat}
                     className="w-8 h-8 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.06] transition-all"
@@ -496,44 +865,28 @@ export default function ChatBot() {
               </div>
 
               <div className="flex px-5 pb-0 gap-1">
-                <button
-                  onClick={() => setActiveTab("chat")}
-                  className={`px-3 py-2 text-[11px] font-display font-light rounded-t-lg transition-all relative ${
-                    activeTab === "chat"
-                      ? "text-white/80 bg-white/[0.04]"
-                      : "text-white/30 hover:text-white/50"
-                  }`}
-                >
-                  <span className="flex items-center gap-1.5">
-                    <MessageCircle className="w-3 h-3" />
-                    Chat
-                  </span>
-                  {activeTab === "chat" && (
-                    <motion.div layoutId="chatTab" className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-red-500/50 to-blue-500/50 rounded-full" />
-                  )}
-                </button>
-                <button
-                  onClick={() => setActiveTab("history")}
-                  className={`px-3 py-2 text-[11px] font-display font-light rounded-t-lg transition-all relative ${
-                    activeTab === "history"
-                      ? "text-white/80 bg-white/[0.04]"
-                      : "text-white/30 hover:text-white/50"
-                  }`}
-                >
-                  <span className="flex items-center gap-1.5">
-                    <History className="w-3 h-3" />
-                    Recent
-                    {conversations.length > 0 && (
-                      <span className="ml-0.5 px-1.5 py-0 rounded-full bg-white/[0.08] text-[9px] text-white/40">{conversations.length}</span>
+                {(["chat", "history"] as const).map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-3 py-2 text-[11px] font-display font-light rounded-t-lg transition-all relative ${activeTab === tab ? "text-white/80 bg-white/[0.04]" : "text-white/30 hover:text-white/50"}`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {tab === "chat" ? <MessageCircle className="w-3 h-3" /> : <History className="w-3 h-3" />}
+                      {tab === "chat" ? "Chat" : "Recent"}
+                      {tab === "history" && conversations.length > 0 && (
+                        <span className="ml-0.5 px-1.5 py-0 rounded-full bg-white/[0.08] text-[9px] text-white/40">{conversations.length}</span>
+                      )}
+                    </span>
+                    {activeTab === tab && (
+                      <motion.div layoutId="chatTab" className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-white/20 rounded-full" />
                     )}
-                  </span>
-                  {activeTab === "history" && (
-                    <motion.div layoutId="chatTab" className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-red-500/50 to-blue-500/50 rounded-full" />
-                  )}
-                </button>
+                  </button>
+                ))}
               </div>
             </div>
 
+            {/* Body */}
             <AnimatePresence mode="wait">
               {activeTab === "chat" ? (
                 <motion.div
@@ -544,32 +897,33 @@ export default function ChatBot() {
                   transition={{ duration: 0.2 }}
                   className="flex-1 flex flex-col min-h-0"
                 >
-                  <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.08) transparent" }}>
+                  <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.06) transparent" }}>
                     {messages.map((msg) => (
                       <div key={msg.id} className={`flex gap-2.5 group ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-                        <div className={`w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 ${
-                          msg.role === "user"
-                            ? "bg-white/[0.06] border border-white/[0.1]"
-                            : "bg-gradient-to-br from-red-900/25 to-blue-900/25 border border-white/[0.06]"
-                        }`}>
-                          {msg.role === "user" ? <User className="w-3 h-3 text-white/50" /> : <Bot className="w-3 h-3 text-white/50" />}
+                        <div className={`w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" ? "bg-white/[0.06] border border-white/[0.1]" : "bg-white/[0.04] border border-white/[0.06]"}`}>
+                          {msg.role === "user" ? <User className="w-3 h-3 text-white/40" /> : <Bot className="w-3 h-3 text-white/40" />}
                         </div>
                         <div className="relative max-w-[82%]">
-                          <div className={`rounded-2xl px-3.5 py-2.5 ${
-                            msg.role === "user"
-                              ? "bg-gradient-to-br from-white/[0.08] to-white/[0.04] border border-white/[0.1] text-white/90"
-                              : "bg-transparent text-white/75"
-                          }`}>
+                          <div className={`rounded-2xl px-3.5 py-2.5 ${msg.role === "user" ? "bg-white/[0.07] border border-white/[0.1] text-white/90" : "bg-transparent text-white/70"}`}>
                             {renderMessageContent(msg.content)}
                           </div>
                           {msg.id !== "welcome" && msg.role === "assistant" && (
-                            <button
-                              onClick={() => copyMessage(msg.content, msg.id)}
-                              className="absolute -bottom-4 right-1 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-white/25 hover:text-white/50"
-                              title="Copy"
-                            >
-                              {copiedId === msg.id ? <Check className="w-2.5 h-2.5 text-green-400" /> : <Copy className="w-2.5 h-2.5" />}
-                            </button>
+                            <div className="absolute -bottom-5 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={() => speakText(msg.content)}
+                                className="p-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-white/20 hover:text-white/50"
+                                title="Read aloud"
+                              >
+                                <Volume2 className="w-2.5 h-2.5" />
+                              </button>
+                              <button
+                                onClick={() => copyMessage(msg.content, msg.id)}
+                                className="p-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-white/20 hover:text-white/50"
+                                title="Copy"
+                              >
+                                {copiedId === msg.id ? <Check className="w-2.5 h-2.5 text-white/60" /> : <Copy className="w-2.5 h-2.5" />}
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -577,26 +931,26 @@ export default function ChatBot() {
 
                     {isStreaming && currentStreamContent && (
                       <div className="flex gap-2.5">
-                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-gradient-to-br from-red-900/25 to-blue-900/25 border border-white/[0.06]">
-                          <Bot className="w-3 h-3 text-white/50" />
+                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.06]">
+                          <Bot className="w-3 h-3 text-white/40" />
                         </div>
-                        <div className="max-w-[82%] text-white/75">
+                        <div className="max-w-[82%] text-white/70">
                           {renderMessageContent(currentStreamContent)}
-                          <span className="inline-block w-1.5 h-4 bg-white/40 animate-pulse ml-0.5 rounded-sm" />
+                          <span className="inline-block w-1.5 h-4 bg-white/30 animate-pulse ml-0.5 rounded-sm" />
                         </div>
                       </div>
                     )}
 
                     {isStreaming && !currentStreamContent && (
                       <div className="flex gap-2.5">
-                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-gradient-to-br from-red-900/25 to-blue-900/25 border border-white/[0.06]">
-                          <Bot className="w-3 h-3 text-white/50" />
+                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.06]">
+                          <Bot className="w-3 h-3 text-white/40" />
                         </div>
                         <div className="flex items-center gap-1.5 px-3.5 py-2.5">
                           <div className="flex gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white/25 animate-bounce" style={{ animationDelay: "0ms" }} />
-                            <span className="w-1.5 h-1.5 rounded-full bg-white/25 animate-bounce" style={{ animationDelay: "150ms" }} />
-                            <span className="w-1.5 h-1.5 rounded-full bg-white/25 animate-bounce" style={{ animationDelay: "300ms" }} />
+                            {[0, 150, 300].map((delay) => (
+                              <span key={delay} className="w-1.5 h-1.5 rounded-full bg-white/20 animate-bounce" style={{ animationDelay: `${delay}ms` }} />
+                            ))}
                           </div>
                           <span className="text-[11px] text-white/20 font-light ml-1">Thinking</span>
                         </div>
@@ -605,17 +959,15 @@ export default function ChatBot() {
 
                     {messages.length <= 1 && !isStreaming && (
                       <div className="space-y-2 pt-2">
-                        <p className="text-[10px] uppercase tracking-[0.15em] text-white/20 font-display px-1 mb-3">Quick Questions</p>
+                        <p className="text-[10px] uppercase tracking-[0.15em] text-white/15 font-display px-1 mb-3">Quick Questions</p>
                         <div className="grid grid-cols-2 gap-2">
                           {SUGGESTIONS.map((s) => (
                             <button
                               key={s.text}
                               onClick={() => handleSend(s.text)}
-                              className="text-left px-3 py-2.5 rounded-xl bg-white/[0.025] border border-white/[0.05] text-white/45 text-[11px] font-light hover:bg-white/[0.05] hover:text-white/65 hover:border-white/[0.1] transition-all group"
+                              className="text-left px-3 py-2.5 rounded-xl bg-white/[0.025] border border-white/[0.05] text-white/40 text-[11px] font-light hover:bg-white/[0.05] hover:text-white/60 hover:border-white/[0.08] transition-all group"
                             >
-                              <span className="flex items-center gap-1.5 text-white/25 group-hover:text-white/45 transition-colors mb-1">
-                                {s.icon}
-                              </span>
+                              <span className="flex items-center gap-1.5 text-white/20 group-hover:text-white/40 transition-colors mb-1">{s.icon}</span>
                               <span className="leading-tight">{s.text}</span>
                             </button>
                           ))}
@@ -626,13 +978,17 @@ export default function ChatBot() {
                     <div ref={messagesEndRef} />
                   </div>
 
+                  {/* Input */}
                   <div className="shrink-0 px-4 pb-4 pt-2">
+                    {voiceError && (
+                      <div className="flex items-center gap-1.5 px-3 py-2 mb-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[11px] text-white/35">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        {voiceError}
+                      </div>
+                    )}
                     <div
-                      className="flex items-center gap-2 rounded-2xl px-4 py-2.5 transition-all focus-within:border-white/[0.15]"
-                      style={{
-                        background: "rgba(255, 255, 255, 0.025)",
-                        border: "1px solid rgba(255, 255, 255, 0.06)",
-                      }}
+                      className="flex items-center gap-2 rounded-2xl px-3 py-2.5 transition-all focus-within:border-white/[0.12]"
+                      style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}
                     >
                       <input
                         ref={inputRef}
@@ -640,20 +996,52 @@ export default function ChatBot() {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Ask anything about X247..."
-                        disabled={isStreaming}
-                        className="flex-1 bg-transparent text-white/90 text-[13px] font-light placeholder-white/20 outline-none disabled:opacity-50"
+                        placeholder={isRecording ? "Listening..." : "Ask anything about X247..."}
+                        disabled={isStreaming || isRecording}
+                        className="flex-1 bg-transparent text-white/90 text-[13px] font-light placeholder-white/20 outline-none disabled:opacity-50 min-w-0"
                       />
+
+                      <motion.button
+                        onClick={toggleRecording}
+                        disabled={isStreaming || voiceStatus === "transcribing"}
+                        whileTap={{ scale: 0.9 }}
+                        className={`relative w-8 h-8 rounded-xl border flex items-center justify-center transition-all shrink-0 disabled:opacity-30 ${isRecording ? "bg-white/[0.1] border-white/[0.2] text-white/80" : "bg-white/[0.03] border-white/[0.06] text-white/30 hover:text-white/60 hover:bg-white/[0.06]"}`}
+                        title={isRecording ? "Stop recording" : "Voice input"}
+                      >
+                        <AnimatePresence mode="wait">
+                          {isRecording ? (
+                            <motion.div key="stop" initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }}>
+                              {voiceStatus === "transcribing"
+                                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                : <MicOff className="w-3.5 h-3.5" />
+                              }
+                            </motion.div>
+                          ) : (
+                            <motion.div key="mic" initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }}>
+                              <Mic className="w-3.5 h-3.5" />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                        {isRecording && (
+                          <motion.div
+                            className="absolute inset-0 rounded-xl border border-white/30"
+                            animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0, 0.6] }}
+                            transition={{ duration: 1.2, repeat: Infinity }}
+                          />
+                        )}
+                      </motion.button>
+
                       <button
                         onClick={() => handleSend()}
                         disabled={!input.trim() || isStreaming}
-                        className="w-8 h-8 rounded-xl bg-gradient-to-br from-red-900/40 to-blue-900/40 border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/80 disabled:opacity-20 disabled:cursor-not-allowed transition-all hover:border-white/[0.15] hover:shadow-lg hover:shadow-red-900/10"
+                        className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white/40 hover:text-white/80 disabled:opacity-20 disabled:cursor-not-allowed transition-all hover:border-white/[0.2] shrink-0"
                       >
                         <Send className="w-3.5 h-3.5" />
                       </button>
                     </div>
+
                     <div className="flex items-center justify-between mt-2 px-1">
-                      <p className="text-[9px] text-white/12 font-light">Powered by X247 AI</p>
+                      <p className="text-[9px] text-white/12 font-light">Powered by GPT-4o · ElevenLabs Voice</p>
                       {realMsgCount > 0 && (
                         <button
                           onClick={startNewChat}
@@ -674,7 +1062,7 @@ export default function ChatBot() {
                   exit={{ opacity: 0, x: 10 }}
                   transition={{ duration: 0.2 }}
                   className="flex-1 overflow-y-auto min-h-0"
-                  style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.08) transparent" }}
+                  style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.06) transparent" }}
                 >
                   {conversations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full py-12 px-6">
@@ -699,7 +1087,7 @@ export default function ChatBot() {
                         </p>
                         <button
                           onClick={clearAllHistory}
-                          className="text-[10px] text-red-400/40 hover:text-red-400/70 transition-colors font-light flex items-center gap-1"
+                          className="text-[10px] text-white/20 hover:text-white/40 transition-colors font-light flex items-center gap-1"
                         >
                           <Trash2 className="w-2.5 h-2.5" />
                           Clear all
@@ -712,15 +1100,11 @@ export default function ChatBot() {
                             <div
                               key={convo.id}
                               onClick={() => loadConversation(convo)}
-                              className={`group rounded-xl px-3.5 py-3 cursor-pointer transition-all border ${
-                                currentConvoId === convo.id
-                                  ? "bg-white/[0.05] border-white/[0.1]"
-                                  : "bg-white/[0.015] border-transparent hover:bg-white/[0.035] hover:border-white/[0.06]"
-                              }`}
+                              className={`group rounded-xl px-3.5 py-3 cursor-pointer transition-all border ${currentConvoId === convo.id ? "bg-white/[0.05] border-white/[0.1]" : "bg-white/[0.015] border-transparent hover:bg-white/[0.035] hover:border-white/[0.06]"}`}
                             >
                               <div className="flex items-start justify-between gap-2">
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-[12px] text-white/70 font-light truncate">{convo.title}</p>
+                                  <p className="text-[12px] text-white/65 font-light truncate">{convo.title}</p>
                                   {msgPreview && (
                                     <p className="text-[10px] text-white/25 font-light mt-1 truncate leading-tight">
                                       {parsePartnerCards(msgPreview.content).text.slice(0, 60)}...
@@ -734,7 +1118,7 @@ export default function ChatBot() {
                                 </div>
                                 <button
                                   onClick={(e) => deleteConversation(convo.id, e)}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-white/20 hover:text-red-400/60 hover:border-red-500/20"
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-white/20 hover:text-white/50"
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </button>
@@ -752,33 +1136,36 @@ export default function ChatBot() {
         )}
       </AnimatePresence>
 
+      {/* ── Floating Button ── */}
       <motion.button
         onClick={() => { setIsOpen(!isOpen); setHasNewMessage(false); }}
         className="fixed bottom-6 right-4 sm:right-6 z-[60] w-14 h-14 rounded-2xl flex items-center justify-center"
         style={{
           background: "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)",
           border: "1px solid rgba(255, 255, 255, 0.1)",
-          boxShadow: "0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.05), 0 0 40px rgba(255, 255, 255, 0.04)",
+          boxShadow: "0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.05)",
           backdropFilter: "blur(20px)",
         }}
-        whileHover={{ scale: 1.05, boxShadow: "0 8px 50px rgba(0, 0, 0, 0.8), 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 0 60px rgba(255, 255, 255, 0.06)" }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
             <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-              <ChevronDown className="w-5 h-5 text-white" />
+              <ChevronDown className="w-5 h-5 text-white/80" />
             </motion.div>
           ) : (
             <motion.div key="open" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.2 }}>
-              <MessageCircle className="w-5 h-5 text-white" />
+              <MessageCircle className="w-5 h-5 text-white/80" />
             </motion.div>
           )}
         </AnimatePresence>
         {hasNewMessage && !isOpen && (
-          <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-black">
-            <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75" />
-          </span>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-white border-2 border-black"
+          />
         )}
       </motion.button>
     </>

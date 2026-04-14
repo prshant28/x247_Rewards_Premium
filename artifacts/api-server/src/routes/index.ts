@@ -8,6 +8,7 @@ import storageRouter from "./storage";
 import contestsRouter from "./contests";
 import usersRouter from "./users";
 import winnersRouter from "./winners";
+import voiceRouter from "./voice";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use(storageRouter);
 router.use(contestsRouter);
 router.use(usersRouter);
 router.use(winnersRouter);
+router.use(voiceRouter);
 
 export default router;
