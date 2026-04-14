@@ -115,8 +115,10 @@ export default function AdminPanel() {
         accent: generated.accent || "navy",
         badge: generated.badge || "",
         badgeSecondary: generated.badgeSecondary || "",
+        whatYouGet: generated.whatYouGet || "",
         isActive: false,
         isRequired: false,
+        entryPoints: 1,
       });
       setShowAiForm(false);
       setShowAddForm(true);
