@@ -314,7 +314,8 @@ const CardNav = ({
               style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
               onClick={onCtaClick}
             >
-              Get Started
+              <span className="hidden sm:inline">Get Started</span>
+              <span className="sm:hidden">Join</span>
             </button>
           )}
         </div>

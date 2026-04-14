@@ -64,16 +64,18 @@
 }
 
 .card-nav-top {
-  display: flex;
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
   align-items: center;
-  justify-content: space-between;
   height: 60px;
   padding: 0 16px;
+  gap: 4px;
 }
 
 @media (min-width: 640px) {
   .card-nav-top {
     padding: 0 20px;
+    gap: 8px;
   }
 }
 
@@ -114,19 +116,18 @@
 }
 
 .logo-container {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .card-nav-cta-button {
   font-family: 'Poppins', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  padding: 8px 20px;
+  padding: 7px 14px;
   border-radius: 100px;
   border: 1px solid transparent;
   cursor: pointer;
@@ -156,6 +157,13 @@
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .card-nav-cta-button {
+    font-size: 13px;
+    padding: 8px 20px;
+  }
 }
 
 .card-nav-cta-button:hover {
