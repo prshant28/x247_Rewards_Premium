@@ -6,7 +6,6 @@ import {
   MousePointer, Eye, FileText, BarChart3, Activity, Users, ArrowRight,
   AlertCircle, CheckCircle2, RefreshCw, Wand2, Loader2
 } from "lucide-react";
-import SiteNav from "@/components/SiteNav";
 
 interface PartnerAnalytics {
   partner: any;
@@ -177,7 +176,6 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <SiteNav activePage="home" />
       <div className="noise-overlay" />
 
       <div className="sticky top-[92px] z-40 bg-black/90 backdrop-blur-xl border-b border-white/[0.06]">

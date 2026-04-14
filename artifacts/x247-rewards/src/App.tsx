@@ -2,7 +2,7 @@ import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
@@ -18,6 +18,7 @@ import Account from "@/pages/Account";
 import Community from "@/pages/Community";
 import PageLoader from "@/components/PageLoader";
 import ChatBot from "@/components/ChatBot";
+import SiteNav from "@/components/SiteNav";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,22 @@ const pageVariants = {
   enter: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
   exit: { opacity: 0, y: -8, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const } },
 };
+
+function GlobalNav() {
+  const [location] = useLocation();
+  const activePage = useMemo(() => {
+    if (location === "/") return "home" as const;
+    if (location === "/partners") return "partners" as const;
+    if (location.startsWith("/partners/")) return "partner-detail" as const;
+    if (location === "/offers") return "offers" as const;
+    if (location.startsWith("/giveaway")) return "giveaway" as const;
+    if (location === "/winners") return "winners" as const;
+    if (location === "/account") return "account" as const;
+    if (location === "/community") return "community" as const;
+    return "home" as const;
+  }, [location]);
+  return <SiteNav activePage={activePage} />;
+}
 
 function AnimatedRoute({ component: Component }: { component: React.ComponentType }) {
   return (
@@ -101,6 +118,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <GlobalNav />
           <PageLoader>
             <Router />
           </PageLoader>

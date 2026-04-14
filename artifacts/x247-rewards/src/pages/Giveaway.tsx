@@ -5,7 +5,6 @@ import {
   Trophy, Sparkles, Users, ArrowRight, Gift, Clock, Star,
   Zap, Crown, Target, Search, CheckCircle2, Copy
 } from "lucide-react";
-import SiteNav from "@/components/SiteNav";
 import { getContests, checkEntryCode, type ContestData } from "@/lib/api";
 
 const fadeUp = {
@@ -150,8 +149,6 @@ export default function Giveaway() {
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
-
-      <SiteNav activePage="giveaway" />
 
       <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
         <div className="container mx-auto px-4 max-w-5xl">

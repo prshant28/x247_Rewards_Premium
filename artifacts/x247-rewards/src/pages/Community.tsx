@@ -5,7 +5,6 @@ import {
   Users, MessageCircle, Heart, Share2, Trophy, Sparkles,
   ArrowRight, Globe, Shield, Star, Zap, ExternalLink
 } from "lucide-react";
-import SiteNav from "@/components/SiteNav";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -58,8 +57,6 @@ export default function Community() {
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
-
-      <SiteNav activePage="community" />
 
       <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
         <div className="container mx-auto px-4 max-w-5xl">

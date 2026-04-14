@@ -27,7 +27,6 @@ import {
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
 import BorderGlow from "@/components/BorderGlow";
-import SiteNav from "@/components/SiteNav";
 import DotGrid from "@/components/DotGrid";
 import "@/components/DotGrid.css";
 
@@ -233,7 +232,6 @@ export default function Home() {
         className="scroll-progress-bar"
         style={{ scaleX: smoothProgress }}
       />
-      <SiteNav activePage="home" />
       <main className="relative z-10">
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">

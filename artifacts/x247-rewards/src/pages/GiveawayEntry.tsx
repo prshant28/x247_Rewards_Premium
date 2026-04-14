@@ -7,7 +7,6 @@ import {
   Upload, X, EyeOff, Copy, Search, FileImage, Eye, User
 } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import SiteNav from "@/components/SiteNav";
 import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, trackFormFill, getContest, registerUser, isUserLoggedIn, getUserTokenValue, type PartnerData, type GiveawayStatus, type ContestData } from "@/lib/api";
 
 const fadeUp = {
@@ -236,7 +235,6 @@ export default function GiveawayEntry() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white">
-        <SiteNav activePage="giveaway" />
         <div className="flex items-center justify-center min-h-screen">
           <Loader2 className="w-6 h-6 text-white/30 animate-spin" />
         </div>
@@ -247,7 +245,6 @@ export default function GiveawayEntry() {
   if (submitted) {
     return (
       <div className="min-h-screen bg-black text-white">
-        <SiteNav activePage="giveaway" />
         <div className="noise-overlay" />
         <div className="vignette-overlay" />
         <div className="flex items-center justify-center min-h-screen px-4 pt-28 pb-12">
@@ -315,7 +312,6 @@ export default function GiveawayEntry() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <SiteNav activePage="giveaway" />
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
