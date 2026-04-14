@@ -182,6 +182,41 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 className="space-y-6"
               >
+                <div className="glass-card p-6 sm:p-8 relative overflow-hidden">
+                  <div className="card-shine" />
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%)" }}
+                  />
+                  <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                    <div className="flex items-center gap-4 flex-1">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
+                        <span className="text-xl sm:text-2xl font-display font-light text-white leading-none">
+                          +{partner.entryPoints ?? 1}
+                        </span>
+                        <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">
+                          {(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">Your Benefit</p>
+                        <p className="text-white font-light text-sm sm:text-base leading-snug">
+                          Earn <span className="font-normal text-white">{partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"}</span> after completing registration
+                        </p>
+                        <p className="text-white/35 font-light text-xs mt-1">
+                          Each entry = one chance to win in the daily prize draw
+                        </p>
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                        <Trophy className="w-3 h-3 text-white/40" />
+                        <span className="text-[10px] font-display text-white/40 uppercase tracking-widest">Daily Draw</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="glass-card p-6 sm:p-8">
                   <div className="card-top-accent" />
                   <div className="card-shine" />

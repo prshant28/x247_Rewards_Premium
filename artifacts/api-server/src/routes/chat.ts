@@ -70,9 +70,20 @@ async function getPartnersContext(): Promise<string> {
   try {
     const allPartners = await db.select().from(partnersTable).where(eq(partnersTable.isActive, true));
     if (allPartners.length === 0) return "No active partners currently available.";
-    return allPartners.map(p =>
-      `- ${p.name} (slug: ${p.slug}): ${p.tagline || "No tagline"}. Category: ${p.category}. ${p.badge ? `Badge: ${p.badge}.` : ""} ${p.badgeSecondary ? `Secondary badge: ${p.badgeSecondary}.` : ""} ${p.isRequired ? "REQUIRED." : ""} Registration URL: ${p.registrationUrl}`
-    ).join("\n");
+    return allPartners.map(p => {
+      const pts = p.entryPoints ?? 1;
+      const benefit = `Benefit: Earn ${pts} prize draw ${pts === 1 ? "entry" : "entries"} after completing registration.`;
+      return [
+        `- ${p.name} (slug: ${p.slug}):`,
+        `  Tagline: ${p.tagline || "No tagline"}.`,
+        `  Category: ${p.category}.`,
+        p.badge ? `  Badge: ${p.badge}.` : "",
+        p.badgeSecondary ? `  Restriction: ${p.badgeSecondary}.` : "",
+        p.isRequired ? `  REQUIRED — must be completed first.` : "",
+        `  ${benefit}`,
+        `  Registration URL: ${p.registrationUrl}`,
+      ].filter(Boolean).join("\n");
+    }).join("\n\n");
   } catch {
     return "Unable to fetch partner data.";
   }
