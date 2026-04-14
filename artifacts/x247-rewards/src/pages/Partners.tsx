@@ -36,31 +36,51 @@ const stagger: Variants = {
 
 type PartnerCardData = Pick<PartnerData, "id" | "slug" | "name" | "tagline" | "description" | "category" | "registrationUrl" | "accent" | "badge" | "badgeSecondary" | "isActive" | "isRequired" | "entryPoints" | "whatYouGet" | "stats">;
 
+const PLACEHOLDER_DATA = [
+  {
+    tagline: "Bonus Entry Partner",
+    description: "Register here as well to increase your winning chances. Additional registrations unlock bonus entry multipliers for every giveaway.",
+    category: "Bonus Entry",
+    accent: "red",
+    badge: "2x Chances",
+    whatYouGet: "2x entry multiplier for every giveaway draw | Priority access to limited contest spots | Exclusive bonus rewards for registered users | Referral rewards on each successful signup | First look at all upcoming partner launches",
+  },
+  {
+    tagline: "Coming Soon",
+    description: "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
+    category: "Upcoming",
+    accent: "neutral",
+    badge: null,
+    whatYouGet: "Exclusive cash prizes and gift vouchers | Career accelerator programme access | Industry-recognised skill certification | Mentorship sessions with working professionals | Extra draw entries for every registration",
+  },
+  {
+    tagline: "Coming Soon",
+    description: "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
+    category: "Upcoming",
+    accent: "neutral",
+    badge: null,
+    whatYouGet: "Premium gadgets and tech rewards up for grabs | Internship and job referral opportunities | Online courses worth ₹10,000+ completely free | Community access with 10,000+ members | Additional giveaway entry points on registration",
+  },
+];
+
 function buildPlaceholders(activeCount: number): PartnerCardData[] {
-  const placeholders: PartnerCardData[] = [];
-  for (let i = 0; i < 3; i++) {
-    const num = activeCount + i + 1;
-    placeholders.push({
-      id: -(num),
-      slug: `partner-coming-${i + 1}`,
-      name: `Partner ${num}`,
-      tagline: i === 0 ? "Bonus Entry Partner" : "Coming Soon",
-      description: i === 0
-        ? "Register here as well to increase your winning chances. Additional registrations unlock bonus entry multipliers for every giveaway."
-        : "A new partner integration is being finalized. Stay tuned for exclusive registration bonuses and additional entry opportunities.",
-      category: i === 0 ? "Bonus Entry" : "Upcoming",
-      registrationUrl: "",
-      accent: i === 0 ? "red" : "neutral",
-      badge: i === 0 ? "2x Chances" : null,
-      badgeSecondary: null,
-      isActive: false,
-      isRequired: false,
-      entryPoints: 1,
-      whatYouGet: null,
-      stats: { clicks: 0, impressions: 0, formFills: 0 },
-    });
-  }
-  return placeholders;
+  return PLACEHOLDER_DATA.map((data, i) => ({
+    id: -(activeCount + i + 1),
+    slug: `partner-coming-${i + 1}`,
+    name: i === 0 ? "Bonus Entry Partner" : `Partner ${activeCount + i + 1}`,
+    tagline: data.tagline,
+    description: data.description,
+    category: data.category,
+    registrationUrl: "",
+    accent: data.accent,
+    badge: data.badge,
+    badgeSecondary: null,
+    isActive: false,
+    isRequired: false,
+    entryPoints: i === 0 ? 2 : 1,
+    whatYouGet: data.whatYouGet,
+    stats: { clicks: 0, impressions: 0, formFills: 0 },
+  }));
 }
 
 const verifiedBy = [
@@ -87,7 +107,7 @@ function parseWhatYouGet(text: string): string[] {
     .split(/[,|•\n;]/)
     .map((s) => s.trim())
     .filter((s) => s.length > 3)
-    .slice(0, 4);
+    .slice(0, 5);
 }
 
 function getBenefitIcon(text: string) {
@@ -139,14 +159,13 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
       <div className="card-shine" />
 
       {isComingSoon && (
-        <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-[2px] flex items-center justify-center rounded-[24px]">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
-              <Lock className="w-5 h-5 text-white/40" />
-            </div>
-            <span className="text-sm font-display font-light text-white/60">Coming Soon</span>
+        <>
+          <div className="absolute inset-0 z-[3] bg-black/30 backdrop-blur-[1px] rounded-[24px] pointer-events-none" />
+          <div className="absolute top-4 right-4 z-[4] flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 border border-white/[0.1] backdrop-blur-sm">
+            <Lock className="w-3 h-3 text-white/40" />
+            <span className="text-[10px] font-display font-light text-white/50 uppercase tracking-widest">Coming Soon</span>
           </div>
-        </div>
+        </>
       )}
 
       <div className="relative z-[2] flex flex-col h-full">
