@@ -197,7 +197,7 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
 
   if (partner.isActive) {
     return (
-      <Link href={`/partners/${partner.slug}`} className="block">
+      <Link href={`/partners/${partner.slug}`} className="block" onClick={handleClick}>
         {cardContent}
       </Link>
     );
