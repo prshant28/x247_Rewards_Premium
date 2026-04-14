@@ -83,11 +83,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
       onLogout={handleLogout}
       onNavigate={(path) => navigate(path)}
       onCtaClick={() => {
-        if (isHome) {
-          window.location.hash = "#partners";
-        } else {
-          window.location.href = "/";
-        }
+        navigate("/account");
       }}
       renderLink={(href, children, className) => (
         <Link href={href} className={className}>{children}</Link>
@@ -104,7 +100,6 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
             { label: "Giveaways", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
             { label: "Winners", href: "/winners", spa: true, icon: <Star className="w-3.5 h-3.5" /> },
-            { label: "Community", href: "/community", spa: true, icon: <Users className="w-3.5 h-3.5" /> },
           ],
         },
         {
@@ -116,6 +111,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
             { label: "How it Works", href: isHome ? "#how-it-works" : "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
             { label: "Rewards", href: isHome ? "#rewards" : "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Dashboard", href: isHome ? "#dashboard" : "/#dashboard", icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
+            { label: "Community", href: "/community", spa: true, icon: <Users className="w-3.5 h-3.5" /> },
             { label: "FAQ", href: isHome ? "#faq" : "/#faq", icon: <HelpCircle className="w-3.5 h-3.5" /> },
           ],
         },
