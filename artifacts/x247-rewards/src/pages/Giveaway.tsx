@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import {
   Trophy, Sparkles, Users, ArrowRight, Gift, Clock, Star,
   Zap, Crown, Target, Search, CheckCircle2, Copy
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { getContests, checkEntryCode, type ContestData } from "@/lib/api";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -114,19 +115,16 @@ function ContestCard({ contest, index }: { contest: ContestData; index: number }
 }
 
 export default function Giveaway() {
-  const [contests, setContests] = useState<ContestData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: contests = [], isLoading: loading } = useQuery({
+    queryKey: ["contests"],
+    queryFn: getContests,
+    refetchInterval: 30_000,
+    staleTime: 0,
+  });
   const [searchCode, setSearchCode] = useState("");
   const [checking, setChecking] = useState(false);
   const [checkResult, setCheckResult] = useState<any>(null);
   const [checkError, setCheckError] = useState("");
-
-  useEffect(() => {
-    getContests().then((data) => {
-      setContests(data);
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
 
   const handleCheckCode = async () => {
     if (!searchCode.trim()) return;

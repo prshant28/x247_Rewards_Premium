@@ -3,8 +3,50 @@ import { partnersTable, contestsTable, winnersTable } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { logger } from "./logger";
 
+async function ensureSchema() {
+  try {
+    await db.execute(sql`ALTER TABLE partners ADD COLUMN IF NOT EXISTS what_you_get text`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE contests ADD COLUMN IF NOT EXISTS partner_ids jsonb DEFAULT '[]'`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE partners ADD COLUMN IF NOT EXISTS entry_points integer NOT NULL DEFAULT 1`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE contests ADD COLUMN IF NOT EXISTS ends_at timestamptz`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE contests ADD COLUMN IF NOT EXISTS prize_value text`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS screenshot_urls jsonb`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS is_anonymous boolean DEFAULT false`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS user_token text`);
+  } catch {
+  }
+  try {
+    await db.execute(sql`ALTER TABLE giveaway_entries ADD COLUMN IF NOT EXISTS contest_id integer`);
+  } catch {
+  }
+  logger.info("Schema ensured");
+}
+
 export async function seedDatabase() {
   try {
+    await ensureSchema();
+
     let seedPartnerIds: number[] = [];
     const [partnerCount] = await db.select({ count: sql<number>`count(*)` }).from(partnersTable);
     const [contestCount] = await db.select({ count: sql<number>`count(*)` }).from(contestsTable);
@@ -25,11 +67,14 @@ export async function seedDatabase() {
           isActive: true,
           isRequired: true,
           entryPoints: 1,
+          whatYouGet: "Compete for a ₹10 Lakh prize pool, Google recognition, and certificates. Top teams get mentored by Google Developer Experts and featured at the national finale.",
         },
       ]).returning();
-      const partnerIdsList = seededPartners.map(p => p.id);
+      seedPartnerIds = seededPartners.map(p => p.id);
       logger.info("Partners seeded successfully");
-      seedPartnerIds = partnerIdsList;
+    } else {
+      const existing = await db.select({ id: partnersTable.id }).from(partnersTable);
+      seedPartnerIds = existing.map(p => p.id);
     }
 
     if (Number(contestCount?.count || 0) === 0) {
@@ -98,7 +143,6 @@ export async function seedDatabase() {
         const contests = await db.select().from(contestsTable);
         const megaCash = contests.find(c => c.slug === "mega-cash-giveaway");
         const techGadgets = contests.find(c => c.slug === "tech-gadgets-bonanza");
-
         if (megaCash && techGadgets) {
           await db.insert(winnersTable).values([
             {
