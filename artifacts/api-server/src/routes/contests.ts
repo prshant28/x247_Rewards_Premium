@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { contestsTable, giveawayEntriesTable, adminSessionsTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
+import { openrouter } from "@workspace/integrations-openrouter-ai";
 
 const router = Router();
 
@@ -127,6 +128,61 @@ router.delete("/contests/:id", requireAdmin, async (req, res) => {
   } catch (err) {
     console.error("Delete contest error:", err);
     return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/contests/generate-ai", requireAdmin, async (req, res) => {
+  try {
+    const { theme, prize, description } = req.body;
+    if (!theme && !description) {
+      return res.status(400).json({ error: "Provide a theme or description" });
+    }
+
+    const prompt = theme
+      ? `Create a giveaway contest with this theme: "${theme}". Prize hint: "${prize || "tech gadget"}".`
+      : `Create a giveaway contest based on this description: "${description}".`;
+
+    const response = await openrouter.chat.completions.create({
+      model: "meta-llama/llama-4-scout",
+      messages: [
+        {
+          role: "system",
+          content: `You are an assistant that generates contest details for X247 Rewards, a student-focused giveaway platform.
+
+Respond with ONLY a valid JSON object (no markdown, no code blocks). Use these exact keys:
+{
+  "name": "Contest name (concise, exciting, under 50 chars)",
+  "slug": "url-slug-in-kebab-case",
+  "description": "Engaging 2-3 sentence description of the contest and how to enter",
+  "prize": "Prize name (e.g. iPhone 16 Pro, ₹10,000 Cash, MacBook Air M3)",
+  "prizeValue": "Prize value string (e.g. $1,199, ₹10,000) or empty string",
+  "maxSpots": 100
+}`
+        },
+        { role: "user", content: prompt }
+      ],
+      max_tokens: 500,
+      temperature: 0.8,
+    });
+
+    const content = response.choices?.[0]?.message?.content || "";
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      return res.status(500).json({ error: "AI failed to generate valid contest data" });
+    }
+
+    const generated = JSON.parse(jsonMatch[0]);
+    return res.json({
+      name: generated.name || "",
+      slug: generated.slug || "",
+      description: generated.description || "",
+      prize: generated.prize || "",
+      prizeValue: generated.prizeValue || "",
+      maxSpots: generated.maxSpots || 100,
+    });
+  } catch (err) {
+    console.error("AI contest generate error:", err);
+    return res.status(500).json({ error: "Failed to generate contest details" });
   }
 });
 

@@ -1,7 +1,15 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { winnersTable, contestsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { winnersTable, contestsTable, adminSessionsTable } from "@workspace/db";
+import { eq, desc } from "drizzle-orm";
+
+async function requireAdmin(req: any, res: any, next: any) {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
+  const [session] = await db.select().from(adminSessionsTable).where(eq(adminSessionsTable.token, token)).limit(1);
+  if (!session || new Date(session.expiresAt) < new Date()) return res.status(401).json({ error: "Session expired" });
+  next();
+}
 
 const router = Router();
 
@@ -31,6 +39,38 @@ router.get("/winners", async (_req, res) => {
     return res.json(winnersWithContest);
   } catch (err) {
     console.error("Winners list error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/admin/winners", requireAdmin, async (req, res) => {
+  try {
+    const { contestId, entryId, winnerName, winnerCity, prize, entryCode } = req.body;
+    if (!winnerName || !prize) {
+      return res.status(400).json({ error: "winnerName and prize are required" });
+    }
+    const [winner] = await db.insert(winnersTable).values({
+      contestId: contestId || 0,
+      entryId: entryId || null,
+      winnerName,
+      winnerCity: winnerCity || null,
+      prize,
+      entryCode: entryCode || null,
+    }).returning();
+    return res.json(winner);
+  } catch (err) {
+    console.error("Create winner error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.delete("/admin/winners/:id", requireAdmin, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await db.delete(winnersTable).where(eq(winnersTable.id, id));
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("Delete winner error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 });
