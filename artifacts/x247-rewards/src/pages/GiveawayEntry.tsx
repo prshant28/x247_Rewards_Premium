@@ -255,22 +255,28 @@ export default function GiveawayEntry() {
       submissionData.userToken = userToken;
     }
 
-    const result = await submitGiveawayEntry(submissionData);
-
-    if (result.success) {
-      setSubmitted(true);
-      setSuccessMessage(result.message);
-      setEntryCode(result.entryCode || "");
-      selectedPartners.forEach((partnerId) => trackFormFill(partnerId));
-      queryClient.invalidateQueries({ queryKey: ["contests"] });
-      queryClient.invalidateQueries({ queryKey: ["contest", contestSlug] });
-      queryClient.invalidateQueries({ queryKey: ["giveaway-status"] });
-    } else {
-      setError(result.error || "Something went wrong. Please try again.");
+    try {
+      const result = await submitGiveawayEntry(submissionData);
+      if (result.success) {
+        setSubmitted(true);
+        setSuccessMessage(result.message);
+        setEntryCode(result.entryCode || "");
+        selectedPartners.forEach((partnerId) => trackFormFill(partnerId));
+        queryClient.invalidateQueries({ queryKey: ["contests"] });
+        queryClient.invalidateQueries({ queryKey: ["contest", contestSlug] });
+        queryClient.invalidateQueries({ queryKey: ["giveaway-status"] });
+      } else {
+        setError(result.error || "Something went wrong. Please try again.");
+        captchaRef.current?.resetCaptcha();
+        setCaptchaToken(null);
+      }
+    } catch (err: any) {
+      setError(err.message || "Network error. Please try again.");
       captchaRef.current?.resetCaptcha();
       setCaptchaToken(null);
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
   }
 
   async function handleCheckCode() {

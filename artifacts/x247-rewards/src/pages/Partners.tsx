@@ -14,6 +14,10 @@ import {
   BarChart3,
   TrendingUp,
   Trophy,
+  Rocket,
+  BadgeCheck,
+  BookOpen,
+  Sparkles,
 } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -76,6 +80,25 @@ function getPartnerIcon(accent: string) {
   if (accent === "navy") return <ExternalLink className="w-6 h-6" />;
   if (accent === "red") return <Star className="w-6 h-6" />;
   return <Gift className="w-6 h-6" />;
+}
+
+function parseWhatYouGet(text: string): string[] {
+  return text
+    .split(/[,|•\n;]/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 3)
+    .slice(0, 4);
+}
+
+function getBenefitIcon(text: string) {
+  const t = text.toLowerCase();
+  if (/prize|cash|money|₹|\$|win|lakh|crore|reward/.test(t)) return <Trophy className="w-3 h-3 text-white/50 shrink-0" />;
+  if (/intern|job|career|opport|recruit|placement/.test(t)) return <Rocket className="w-3 h-3 text-white/50 shrink-0" />;
+  if (/cert|badge|award|recogni/.test(t)) return <BadgeCheck className="w-3 h-3 text-white/50 shrink-0" />;
+  if (/learn|course|train|skill|workshop|bootcamp|educat/.test(t)) return <BookOpen className="w-3 h-3 text-white/50 shrink-0" />;
+  if (/community|network|meet|connect|people/.test(t)) return <Users className="w-3 h-3 text-white/50 shrink-0" />;
+  if (/free|zero|no cost|compliment|gratis/.test(t)) return <Sparkles className="w-3 h-3 text-white/50 shrink-0" />;
+  return <Gift className="w-3 h-3 text-white/50 shrink-0" />;
 }
 
 function PartnerCard({ partner }: { partner: PartnerCardData }) {
@@ -151,12 +174,25 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
         <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">{partner.name}</h3>
         <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{partner.description}</p>
 
-        {partner.whatYouGet && (
-          <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-3">
-            <Gift className="w-3.5 h-3.5 text-white/50 shrink-0 mt-0.5" />
-            <span className="text-[11px] text-white/60 font-light leading-relaxed line-clamp-2">{partner.whatYouGet}</span>
-          </div>
-        )}
+        {partner.whatYouGet && (() => {
+          const items = parseWhatYouGet(partner.whatYouGet!);
+          return (
+            <div className="mb-3">
+              <p className="text-[9px] font-display uppercase tracking-[0.18em] text-white/25 mb-2">What You Get</p>
+              <div className="grid grid-cols-1 gap-1.5">
+                {items.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06]"
+                  >
+                    {getBenefitIcon(item)}
+                    <span className="text-[11px] text-white/55 font-light leading-snug">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-5">
           <Trophy className="w-3.5 h-3.5 text-white/40 shrink-0" />
