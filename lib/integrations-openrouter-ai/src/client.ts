@@ -1,18 +1,21 @@
 import OpenAI from "openai";
 
-if (!process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL) {
-  throw new Error(
-    "AI_INTEGRATIONS_OPENROUTER_BASE_URL must be set. Did you forget to provision the OpenRouter AI integration?",
-  );
-}
+const baseURL =
+  process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL ||
+  "https://openrouter.ai/api/v1";
 
-if (!process.env.AI_INTEGRATIONS_OPENROUTER_API_KEY) {
+const apiKey =
+  process.env.AI_INTEGRATIONS_OPENROUTER_API_KEY ||
+  process.env.OPENROUTER_API_KEY;
+
+if (!apiKey) {
   throw new Error(
-    "AI_INTEGRATIONS_OPENROUTER_API_KEY must be set. Did you forget to provision the OpenRouter AI integration?",
+    "No OpenRouter API key found. Set OPENROUTER_API_KEY in your .env file. " +
+    "Get a free key at https://openrouter.ai"
   );
 }
 
 export const openrouter = new OpenAI({
-  baseURL: process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL,
-  apiKey: process.env.AI_INTEGRATIONS_OPENROUTER_API_KEY,
+  baseURL,
+  apiKey,
 });
