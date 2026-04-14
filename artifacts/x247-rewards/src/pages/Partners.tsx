@@ -100,22 +100,22 @@ function getAccentClasses(accent: string) {
 
 function getSecondaryBadgeStyle(accent: string) {
   if (accent === "navy") return {
-    bg: "rgba(18, 28, 90, 0.55)",
-    border: "rgba(50, 70, 180, 0.3)",
-    textClass: "text-[#a0b0f0]",
-    iconClass: "text-[#8090e0]",
+    bg: "linear-gradient(135deg, rgba(14, 16, 30, 0.95) 0%, rgba(10, 11, 22, 0.95) 100%)",
+    border: "rgba(255, 255, 255, 0.1)",
+    textClass: "text-white/65",
+    iconClass: "text-white/40",
   };
   if (accent === "red") return {
-    bg: "rgba(90, 15, 15, 0.55)",
-    border: "rgba(180, 40, 40, 0.3)",
-    textClass: "text-[#f0a0a0]",
-    iconClass: "text-[#e08080]",
+    bg: "linear-gradient(135deg, rgba(22, 12, 14, 0.95) 0%, rgba(14, 8, 10, 0.95) 100%)",
+    border: "rgba(255, 255, 255, 0.1)",
+    textClass: "text-white/65",
+    iconClass: "text-white/40",
   };
   return {
-    bg: "rgba(255, 255, 255, 0.05)",
+    bg: "linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%)",
     border: "rgba(255, 255, 255, 0.1)",
-    textClass: "text-white/50",
-    iconClass: "text-white/35",
+    textClass: "text-white/65",
+    iconClass: "text-white/40",
   };
 }
 
