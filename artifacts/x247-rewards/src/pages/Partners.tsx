@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import BorderGlow from "@/components/BorderGlow";
-import SiteNav from "@/components/SiteNav";
 import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -229,8 +228,6 @@ export default function Partners() {
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
-
-      <SiteNav activePage="partners" />
 
       <main className="relative z-10 pt-32 sm:pt-40 pb-20 sm:pb-32">
         <div className="container mx-auto px-4 max-w-6xl">

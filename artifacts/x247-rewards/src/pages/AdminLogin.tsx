@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { login, verifySession } from "@/lib/api";
 import { Sparkles, Lock, ArrowRight, AlertCircle } from "lucide-react";
-import SiteNav from "@/components/SiteNav";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -32,7 +31,6 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-      <SiteNav activePage="home" />
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 

@@ -4,7 +4,6 @@ import { Link } from "wouter";
 import {
   Trophy, Crown, MapPin, Calendar, Gift, Sparkles, ArrowRight, Star
 } from "lucide-react";
-import SiteNav from "@/components/SiteNav";
 import { getWinners, type WinnerData } from "@/lib/api";
 
 const fadeUp = {
@@ -82,8 +81,6 @@ export default function Winners() {
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
-
-      <SiteNav activePage="winners" />
 
       <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
         <div className="container mx-auto px-4 max-w-4xl">
