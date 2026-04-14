@@ -9,6 +9,8 @@ export const usersTable = pgTable("users", {
   phone: text("phone"),
   passwordHash: text("password_hash").notNull(),
   city: text("city"),
+  membershipTier: text("membership_tier").notNull().default("free"),
+  membershipExpiresAt: timestamp("membership_expires_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
