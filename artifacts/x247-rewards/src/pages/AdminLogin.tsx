@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { login, verifySession } from "@/lib/api";
-import { Sparkles, Lock, ArrowRight, AlertCircle, ShieldCheck } from "lucide-react";
+import { Sparkles, Lock, ArrowRight, AlertCircle, ShieldCheck, Loader2, RefreshCw } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const HCAPTCHA_SITE_KEY = "57c8688a-ca78-46a2-843e-8d1c3fdae89a";
@@ -12,6 +12,8 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
+  const [captchaError, setCaptchaError] = useState(false);
   const captchaRef = useRef<HCaptcha>(null);
   const [, setLocation] = useLocation();
 
@@ -24,7 +26,7 @@ export default function AdminLogin() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!captchaToken) {
-      setError("Please complete the security check.");
+      setError("Please complete the security verification first.");
       return;
     }
     setLoading(true);
@@ -40,8 +42,15 @@ export default function AdminLogin() {
     setLoading(false);
   }
 
+  function handleReloadCaptcha() {
+    setCaptchaError(false);
+    setCaptchaLoaded(false);
+    setCaptchaToken(null);
+    captchaRef.current?.resetCaptcha();
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-8">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -95,23 +104,60 @@ export default function AdminLogin() {
               />
             </div>
 
-            <div>
-              <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] block mb-2 flex items-center gap-1.5">
-                <ShieldCheck className="w-3 h-3" />
-                Security Verification
-              </label>
-              <div className="rounded-xl overflow-hidden border border-white/[0.06] bg-white/[0.02]">
-                <HCaptcha
-                  ref={captchaRef}
-                  sitekey={HCAPTCHA_SITE_KEY}
-                  theme="dark"
-                  onVerify={(token) => setCaptchaToken(token)}
-                  onExpire={() => setCaptchaToken(null)}
-                  onError={() => setCaptchaToken(null)}
-                />
+            {/* ── hCaptcha Section ── */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3 h-3 text-white/40" />
+                <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em]">
+                  Security Verification
+                </label>
+                <span className="ml-auto text-[9px] text-white/20 font-light uppercase tracking-wider">Required</span>
               </div>
-              {!captchaToken && (
-                <p className="text-[10px] text-white/25 mt-1.5 font-light">Complete the captcha above to enable login.</p>
+
+              <div className="rounded-xl border border-white/[0.1] bg-white/[0.03] p-3 flex flex-col items-center justify-center min-h-[100px] relative">
+                {!captchaLoaded && !captchaError && (
+                  <div className="absolute inset-0 flex items-center justify-center gap-2 text-white/30 rounded-xl">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-xs font-light">Loading verification...</span>
+                  </div>
+                )}
+
+                {captchaError && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 rounded-xl">
+                    <p className="text-xs text-white/40 font-light text-center">Verification failed to load.</p>
+                    <button
+                      type="button"
+                      onClick={handleReloadCaptcha}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.1] text-white/60 text-xs font-light hover:bg-white/[0.1] transition-colors"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      Retry
+                    </button>
+                  </div>
+                )}
+
+                <div style={{ opacity: captchaLoaded ? 1 : 0, transition: "opacity 0.3s ease" }}>
+                  <HCaptcha
+                    ref={captchaRef}
+                    sitekey={HCAPTCHA_SITE_KEY}
+                    theme="dark"
+                    onVerify={(token) => { setCaptchaToken(token); setError(""); }}
+                    onExpire={() => setCaptchaToken(null)}
+                    onError={() => { setCaptchaError(true); setCaptchaLoaded(true); }}
+                    onLoad={() => setCaptchaLoaded(true)}
+                  />
+                </div>
+              </div>
+
+              {captchaToken ? (
+                <p className="text-[10px] text-white/40 font-light flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/40 inline-block" />
+                  Verification complete — you may now login
+                </p>
+              ) : (
+                <p className="text-[10px] text-white/25 font-light">
+                  Complete the captcha above to enable the login button.
+                </p>
               )}
             </div>
 
@@ -120,9 +166,18 @@ export default function AdminLogin() {
               disabled={loading || !captchaToken}
               className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-display font-light hover:bg-white/[0.1] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <Lock className="w-4 h-4" />
-              {loading ? "Authenticating..." : "Login to Dashboard"}
-              {!loading && <ArrowRight className="w-4 h-4" />}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Authenticating...
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  Login to Dashboard
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </div>
         </form>
