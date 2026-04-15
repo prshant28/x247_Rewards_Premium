@@ -456,6 +456,103 @@ export async function getActivityFeed(): Promise<ActivityFeedItem[]> {
   }
 }
 
+export interface ReferralPartner {
+  id: number;
+  userId: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  code: string;
+  status: string;
+  bio: string | null;
+  motivation: string | null;
+  audienceSize: string | null;
+  socialMedia: { whatsapp?: string; discord?: string; twitter?: string; telegram?: string; instagram?: string; youtube?: string } | null;
+  isVerified: boolean;
+  approvedAt: string | null;
+  rejectedAt: string | null;
+  rejectionReason: string | null;
+  createdAt: string;
+  stats?: {
+    totalClicks: number;
+    totalConversions: number;
+    totalSignups: number;
+    totalEntries: number;
+  };
+  totalClicks?: number;
+  totalConversions?: number;
+}
+
+function userAuthFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  const token = getUserToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string> || {}),
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return fetch(`${API_BASE}${url}`, { ...options, headers });
+}
+
+export async function applyReferralPartner(data: {
+  bio?: string;
+  motivation?: string;
+  audienceSize?: string;
+  socialMedia?: Record<string, string>;
+  phone?: string;
+}): Promise<{ success: boolean; partner?: ReferralPartner; error?: string }> {
+  const res = await userAuthFetch("/referral/apply", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function getReferralProfile(): Promise<{ partner: ReferralPartner | null }> {
+  const res = await userAuthFetch("/referral/me");
+  if (!res.ok) return { partner: null };
+  return res.json();
+}
+
+export async function getReferralStats(): Promise<any> {
+  const res = await userAuthFetch("/referral/me/stats");
+  if (!res.ok) return { dailyClicks: [], dailyConversions: [], recentConversions: [] };
+  return res.json();
+}
+
+export async function getAdminReferrals(): Promise<ReferralPartner[]> {
+  const res = await authFetch("/admin/referrals");
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export async function updateReferralStatus(id: number, status: string, rejectionReason?: string): Promise<{ success: boolean }> {
+  const res = await authFetch(`/admin/referrals/${id}/status`, {
+    method: "PUT",
+    body: JSON.stringify({ status, rejectionReason }),
+  });
+  return res.json();
+}
+
+export async function trackReferralConversion(refCode: string, userId: number | null, type: string, contestId?: number): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/referral/track-conversion`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refCode, userId, type, contestId }),
+    });
+  } catch {}
+}
+
+export function storeReferralCode(code: string): void {
+  localStorage.setItem("x247_ref_code", code);
+}
+
+export function getStoredReferralCode(): string | null {
+  return localStorage.getItem("x247_ref_code");
+}
+
 export async function generateContestAI(input: { theme?: string; prize?: string; description?: string }): Promise<{ name: string; slug: string; description: string; prize: string; prizeValue: string; maxSpots: number }> {
   const res = await authFetch("/contests/generate-ai", {
     method: "POST",

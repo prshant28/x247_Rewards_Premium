@@ -13,13 +13,14 @@ import {
   Zap,
   LayoutDashboard,
   HelpCircle,
+  Share2,
   Star,
   UserPlus,
 } from "lucide-react";
 import { getCurrentUser, logoutUser, isUserLoggedIn } from "@/lib/api";
 
 interface SiteNavProps {
-  activePage?: "home" | "partners" | "offers" | "partner-detail" | "giveaway" | "winners" | "account" | "community";
+  activePage?: "home" | "partners" | "offers" | "partner-detail" | "giveaway" | "winners" | "account" | "community" | "referral";
 }
 
 export default function SiteNav({ activePage = "home" }: SiteNavProps) {
@@ -99,6 +100,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
             { label: "Giveaways", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
             { label: "Winners", href: "/winners", spa: true, icon: <Star className="w-3.5 h-3.5" /> },
+            { label: "Referral", href: "/referral", spa: true, icon: <Share2 className="w-3.5 h-3.5" /> },
           ],
         },
         {

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
-  logoutUser, isUserLoggedIn
+  logoutUser, isUserLoggedIn, getStoredReferralCode, trackReferralConversion
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
@@ -66,6 +66,10 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
         city: form.city || undefined,
       });
       if (result.success) {
+        const refCode = getStoredReferralCode();
+        if (refCode && result.user?.id) {
+          trackReferralConversion(refCode, result.user.id, "signup").catch(() => {});
+        }
         onSuccess();
       } else {
         setError(result.error || "Registration failed");

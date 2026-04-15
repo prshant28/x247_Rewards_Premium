@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue, type Variants } from "framer-motion";
 import { Link } from "wouter";
+import { storeReferralCode } from "@/lib/api";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   Target,
@@ -202,6 +203,14 @@ export default function Home() {
   const heroY = useTransform(smoothProgress, [0, 0.3], [0, -80]);
   const heroOpacity = useTransform(smoothProgress, [0, 0.25], [1, 0]);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) {
+      storeReferralCode(ref);
+    }
+  }, []);
 
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 50 },

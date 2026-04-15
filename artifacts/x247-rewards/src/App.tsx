@@ -16,6 +16,8 @@ import Giveaway from "@/pages/Giveaway";
 import Winners from "@/pages/Winners";
 import Account from "@/pages/Account";
 import Community from "@/pages/Community";
+import Referral from "@/pages/Referral";
+import ReferralDashboard from "@/pages/ReferralDashboard";
 import PageLoader from "@/components/PageLoader";
 import ChatBot from "@/components/ChatBot";
 import SiteNav from "@/components/SiteNav";
@@ -39,6 +41,7 @@ function GlobalNav() {
     if (location === "/winners") return "winners" as const;
     if (location === "/account") return "account" as const;
     if (location === "/community") return "community" as const;
+    if (location.startsWith("/referral")) return "referral" as const;
     return "home" as const;
   }, [location]);
   return <SiteNav activePage={activePage} />;
@@ -94,6 +97,12 @@ function Router() {
         </Route>
         <Route path="/community">
           <AnimatedRoute component={Community} />
+        </Route>
+        <Route path="/referral/dashboard">
+          <AnimatedRoute component={ReferralDashboard} />
+        </Route>
+        <Route path="/referral">
+          <AnimatedRoute component={Referral} />
         </Route>
         <Route path="/x247-admin-login">
           <AnimatedRoute component={AdminLogin} />
