@@ -4,7 +4,8 @@ import {
   verifySession, logout, getAnalytics, createPartner, updatePartner, deletePartner,
   generatePartnerAI, getContests, createContest, updateContest, deleteContest,
   getAdminEntries, getWinners, createWinner, deleteWinner, generateContestAI,
-  type ContestData, type EntryData, type WinnerData,
+  getAdminReferrals, updateReferralStatus,
+  type ContestData, type EntryData, type WinnerData, type ReferralPartner,
 } from "@/lib/api";
 import {
   Sparkles, LogOut, Plus, Trash2, Edit3, Save, X, ExternalLink,
@@ -32,7 +33,7 @@ interface AnalyticsData {
   partners: PartnerAnalytics[];
 }
 
-type Tab = "partners" | "contests" | "analytics" | "entries" | "winners";
+type Tab = "partners" | "contests" | "analytics" | "entries" | "winners" | "referrals";
 
 export default function AdminPanel() {
   const [, setLocation] = useLocation();
@@ -75,6 +76,10 @@ export default function AdminPanel() {
   });
   const [winnerSubmitting, setWinnerSubmitting] = useState(false);
 
+  const [referralApplications, setReferralApplications] = useState<ReferralPartner[]>([]);
+  const [referralsLoading, setReferralsLoading] = useState(false);
+  const [referralActionLoading, setReferralActionLoading] = useState<number | null>(null);
+
   const [form, setForm] = useState({
     name: "", slug: "", tagline: "", description: "", category: "Registration",
     registrationUrl: "", accent: "navy", badge: "", badgeSecondary: "",
@@ -111,9 +116,29 @@ export default function AdminPanel() {
     setWinnersLoading(false);
   }
 
+  async function loadReferrals() {
+    setReferralsLoading(true);
+    try {
+      const r = await getAdminReferrals();
+      setReferralApplications(r);
+    } catch (err) { console.error(err); }
+    setReferralsLoading(false);
+  }
+
+  async function handleReferralAction(id: number, status: string) {
+    setReferralActionLoading(id);
+    try {
+      await updateReferralStatus(id, status);
+      showMsg("success", `Referral partner ${status}`);
+      await loadReferrals();
+    } catch (err: any) { showMsg("error", err.message || "Action failed"); }
+    setReferralActionLoading(null);
+  }
+
   useEffect(() => {
     if (activeTab === "entries" && entries.length === 0) loadEntries();
     if (activeTab === "winners") loadWinners();
+    if (activeTab === "referrals") loadReferrals();
   }, [activeTab]);
 
   async function handleRefresh() {
@@ -121,6 +146,7 @@ export default function AdminPanel() {
     await loadData();
     if (activeTab === "entries") await loadEntries();
     if (activeTab === "winners") await loadWinners();
+    if (activeTab === "referrals") await loadReferrals();
     setRefreshing(false);
   }
 
@@ -290,6 +316,7 @@ export default function AdminPanel() {
     { id: "analytics", label: "Analytics", icon: <BarChart3 className="w-4 h-4" /> },
     { id: "entries", label: "Entries", icon: <FileText className="w-4 h-4" /> },
     { id: "winners", label: "Winners", icon: <Award className="w-4 h-4" /> },
+    { id: "referrals", label: "Referrals", icon: <Users className="w-4 h-4" /> },
   ];
 
   if (loading) {
@@ -1046,6 +1073,107 @@ export default function AdminPanel() {
                 {winners.length === 0 && (
                   <div className="glass-card p-12 text-center"><div className="card-shine" /><div className="relative z-[2]"><Award className="w-8 h-8 text-white/10 mx-auto mb-3" /><p className="text-white/25 font-light text-sm">No winners declared yet. Use "Declare Winner" to add one.</p></div></div>
                 )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "referrals" && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-display font-light text-white">Referral Partners</h2>
+              <button
+                onClick={loadReferrals}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/70 text-sm font-display font-light hover:bg-white/[0.08] transition-colors"
+              >
+                <RefreshCw className="w-4 h-4" /> Refresh
+              </button>
+            </div>
+
+            {referralsLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="text-center"><div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin mx-auto mb-3" /><div className="text-white/30 text-sm font-light">Loading referral applications...</div></div>
+              </div>
+            ) : referralApplications.length === 0 ? (
+              <div className="glass-card p-12 text-center"><div className="card-shine" /><div className="relative z-[2]"><Users className="w-8 h-8 text-white/10 mx-auto mb-3" /><p className="text-white/25 font-light text-sm">No referral applications yet.</p></div></div>
+            ) : (
+              <div className="space-y-3">
+                {referralApplications.map((app) => (
+                  <div key={app.id} className="glass-card p-5 sm:p-6">
+                    <div className="card-shine" />
+                    <div className="relative z-[2]">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
+                            <h4 className="font-display font-light text-white">{app.name}</h4>
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-display uppercase tracking-widest border ${
+                              app.status === "approved" ? "bg-white/[0.08] text-white/70 border-white/[0.12]" :
+                              app.status === "pending" ? "bg-white/[0.06] text-white/50 border-white/[0.08]" :
+                              app.status === "rejected" ? "bg-white/[0.04] text-white/30 border-white/[0.06]" :
+                              "bg-white/[0.04] text-white/30 border-white/[0.06]"
+                            }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${app.status === "approved" ? "bg-white/60" : app.status === "pending" ? "bg-white/30 animate-pulse" : "bg-white/20"}`} />
+                              {app.status}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-white/35 font-light mb-2">
+                            <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{app.email}</span>
+                            {app.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{app.phone}</span>}
+                            <span className="font-mono text-[10px] text-white/25">{app.code}</span>
+                          </div>
+                          {app.bio && <p className="text-xs text-white/25 font-light line-clamp-2 mb-2">{app.bio}</p>}
+                          <div className="flex items-center gap-4 text-[10px] text-white/20 font-light">
+                            <span className="flex items-center gap-1"><MousePointer className="w-3 h-3" />{(app as any).totalClicks ?? 0} clicks</span>
+                            <span className="flex items-center gap-1"><UserCheck className="w-3 h-3" />{(app as any).totalConversions ?? 0} conversions</span>
+                            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(app.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {app.status === "pending" && (
+                            <>
+                              <button
+                                onClick={() => handleReferralAction(app.id, "approved")}
+                                disabled={referralActionLoading === app.id}
+                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white/70 text-xs font-display font-light hover:bg-white/[0.1] transition-colors disabled:opacity-40"
+                              >
+                                {referralActionLoading === app.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleReferralAction(app.id, "rejected")}
+                                disabled={referralActionLoading === app.id}
+                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white/30 text-xs font-display font-light hover:bg-white/[0.06] transition-colors disabled:opacity-40"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          {app.status === "approved" && (
+                            <button
+                              onClick={() => handleReferralAction(app.id, "suspended")}
+                              disabled={referralActionLoading === app.id}
+                              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white/30 text-xs font-display font-light hover:bg-white/[0.06] transition-colors disabled:opacity-40"
+                            >
+                              <Shield className="w-3.5 h-3.5" />
+                              Suspend
+                            </button>
+                          )}
+                          {(app.status === "rejected" || app.status === "suspended") && (
+                            <button
+                              onClick={() => handleReferralAction(app.id, "approved")}
+                              disabled={referralActionLoading === app.id}
+                              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white/70 text-xs font-display font-light hover:bg-white/[0.1] transition-colors disabled:opacity-40"
+                            >
+                              {referralActionLoading === app.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                              Approve
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

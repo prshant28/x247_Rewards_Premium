@@ -45,7 +45,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **Responsive**: Full mobile-first responsive design (390px+ to 1280px+), stacked buttons on mobile, adapted typography/spacing, cursor hidden on touch devices
 - **Navbar**: SiteNav component (shared across all pages), fixed position, 60px height, dropdown expands to 350px. When logged in: shows avatar circle with user initials + dropdown (My Account, Settings, Log Out). When not logged in: shows "Get Started" button. Auth state syncs via storage events + polling. Navigation cards: Pages, Quick Links, Account.
 - **Chatbot**: AI-powered ChatBot component (global, appears on every page), OpenRouter integration (Llama 4 Scout), streaming SSE responses, partner card previews in responses, context-aware based on current page, premium glassmorphism design
-- **Routes**: `/` (Home), `/offers` (Offers), `/partners` (Partners — loads from API), `/partners/:slug` (Partner Detail), `/giveaway` (Contest Hub — Dream11-style contest cards), `/giveaway/:slug` (Giveaway Entry Form for specific contest), `/winners` (Winners Hall of Fame), `/account` (User account — login/register, giveaway history), `/community` (Community page — social links, stats, guidelines), `/x247-admin-login` (Admin Login), `/x247-control-panel` (Admin Dashboard)
+- **Routes**: `/` (Home), `/offers` (Offers), `/partners` (Partners — loads from API), `/partners/:slug` (Partner Detail), `/giveaway` (Contest Hub — Dream11-style contest cards), `/giveaway/:slug` (Giveaway Entry Form for specific contest), `/winners` (Winners Hall of Fame), `/account` (User account — login/register, giveaway history), `/community` (Community page — social links, stats, guidelines), `/referral` (Referral Partner Program — info + apply), `/referral/dashboard` (Referral partner dashboard — stats, share links, conversions), `/x247-admin-login` (Admin Login), `/x247-control-panel` (Admin Dashboard)
 - **CSS Theme**: Pure monochrome (black/white/gray), utility classes (glass-card, card-header-area, card-icon-wrap, premium-btn, glass-btn-effect, icon-circle, stat-card, nav-link, section-divider, section-glow-line, glass-pill-badge, premium-badge, floating-particle, cursor-dot/ring/glass, shimmer-bar, scroll-progress-bar) in index.css
 - **@property declarations**: --card-border-angle, --btn-border-angle, --hero-text-angle, --cursor-ring-angle (must be outside @layer)
 - **Fonts**: Poppins (body text), Syne (headings/display, font-light weight)
@@ -86,6 +86,13 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `GET /api/winners` — list all winners with contest names
   - `GET /api/activity/feed` — public activity feed (recent entries + winners, anonymized names)
   - `POST /api/voice/synthesize` — ElevenLabs TTS (membership gated)
+  - `POST /api/referral/apply` — apply as referral partner (user auth required)
+  - `GET /api/referral/me` — get own referral profile + stats (user auth required)
+  - `GET /api/referral/me/stats` — detailed stats with daily breakdown (user auth required)
+  - `GET /api/r/:code` — track referral click + redirect to home with ?ref= param
+  - `GET /api/admin/referrals` — list all referral applications (admin-protected)
+  - `PUT /api/admin/referrals/:id/status` — approve/reject/suspend referral partner (admin-protected)
+  - `POST /api/referral/track-conversion` — track signup/entry conversion (deduped per user+type)
 
 ## Interactive Components
 
@@ -112,6 +119,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **users**: id, fullName, email (unique), phone, passwordHash, city, createdAt
 - **user_sessions**: id, token (unique), userId, expiresAt, createdAt
 - **winners**: id, contestId, entryId, winnerName, winnerCity, prize, entryCode, announcedAt
+- **referral_partners**: id, userId, name, email, phone, code (unique), status (pending/approved/rejected/suspended), bio, motivation, audienceSize, socialMedia (JSON), isVerified, approvedAt, rejectedAt, rejectionReason, createdAt
+- **referral_clicks**: id, referralPartnerId, ipHash, userAgent, source, createdAt
+- **referral_conversions**: id, referralPartnerId, referredUserId, contestId, type (signup/entry), createdAt
 
 ## Admin Credentials
 
