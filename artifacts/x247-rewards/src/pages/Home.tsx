@@ -394,10 +394,17 @@ function RewardsCarousel() {
                       <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
                       <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed flex-1">{item.desc}</p>
-                      <div className="mt-4 flex items-center text-white/30 text-xs font-display group-hover:text-white/50 transition-colors">
+                      <a
+                        href="#rewards"
+                        className="mt-4 flex items-center text-white/30 text-xs font-display group-hover:text-white/50 transition-colors"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document.getElementById("rewards")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }}
+                      >
                         <span>Learn more</span>
                         <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                      </div>
+                      </a>
                     </div>
                   </div>
                 </div>
