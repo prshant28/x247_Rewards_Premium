@@ -1148,6 +1148,100 @@
     }
   }
 
+  .testimonial-marquee-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 0 0;
+  }
+
+  .testimonial-marquee-row {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .testimonial-marquee-track {
+    display: flex;
+    gap: 16px;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .testimonial-marquee-left {
+    animation: testimonial-scroll-left 40s linear infinite;
+  }
+
+  .testimonial-marquee-right {
+    animation: testimonial-scroll-right 45s linear infinite;
+  }
+
+  @keyframes testimonial-scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes testimonial-scroll-right {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  .testimonial-card {
+    flex-shrink: 0;
+    width: 300px;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .testimonial-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    transform: translateY(-2px);
+  }
+
+  .testimonial-fade-left,
+  .testimonial-fade-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .testimonial-fade-left {
+    left: 0;
+    background: linear-gradient(to right, rgb(0, 0, 0) 0%, transparent 100%);
+  }
+
+  .testimonial-fade-right {
+    right: 0;
+    background: linear-gradient(to left, rgb(0, 0, 0) 0%, transparent 100%);
+  }
+
+  @media (min-width: 640px) {
+    .testimonial-card {
+      width: 340px;
+      padding: 24px;
+    }
+
+    .testimonial-fade-left,
+    .testimonial-fade-right {
+      width: 120px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .testimonial-marquee-left,
+    .testimonial-marquee-right {
+      animation: none;
+    }
+  }
+
   .reward-card-image {
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
