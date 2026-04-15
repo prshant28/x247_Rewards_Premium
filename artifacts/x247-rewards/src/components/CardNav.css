@@ -188,6 +188,12 @@
   flex-direction: column;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.card-nav-content::-webkit-scrollbar {
+  display: none;
 }
 
 @media (max-width: 767px) {
