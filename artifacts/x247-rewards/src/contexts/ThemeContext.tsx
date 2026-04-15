@@ -6,7 +6,8 @@ export type ThemeId =
   | "brushed-steel"
   | "smoky-glass"
   | "noir-minimal"
-  | "liquid-dark";
+  | "liquid-dark"
+  | "pristine-light";
 
 export interface ThemeInfo {
   id: ThemeId;
@@ -56,6 +57,12 @@ export const THEMES: ThemeInfo[] = [
     name: "Liquid Dark",
     description: "Organic flowing aesthetic, artistic premium",
     preview: { bg: "#020203", card: "#0a0a0e", border: "#1a1a22", accent: "#2e2e3a" },
+  },
+  {
+    id: "pristine-light",
+    name: "Pristine Light",
+    description: "Clean white, soft shadows, minimal elegance",
+    preview: { bg: "#f5f5f5", card: "#ffffff", border: "#e0e0e0", accent: "#1a1a1a" },
   },
 ];
 
