@@ -2,25 +2,26 @@ import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
-import Offers from "@/pages/Offers";
-import Partners from "@/pages/Partners";
-import PartnerDetail from "@/pages/PartnerDetail";
-import AdminLogin from "@/pages/AdminLogin";
-import AdminPanel from "@/pages/AdminPanel";
-import GiveawayEntry from "@/pages/GiveawayEntry";
-import Giveaway from "@/pages/Giveaway";
-import Winners from "@/pages/Winners";
-import Account from "@/pages/Account";
-import Community from "@/pages/Community";
-import Referral from "@/pages/Referral";
-import ReferralDashboard from "@/pages/ReferralDashboard";
 import PageLoader from "@/components/PageLoader";
 import ChatBot from "@/components/ChatBot";
 import SiteNav from "@/components/SiteNav";
+
+const Offers = lazy(() => import("@/pages/Offers"));
+const Partners = lazy(() => import("@/pages/Partners"));
+const PartnerDetail = lazy(() => import("@/pages/PartnerDetail"));
+const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
+const AdminPanel = lazy(() => import("@/pages/AdminPanel"));
+const GiveawayEntry = lazy(() => import("@/pages/GiveawayEntry"));
+const Giveaway = lazy(() => import("@/pages/Giveaway"));
+const Winners = lazy(() => import("@/pages/Winners"));
+const Account = lazy(() => import("@/pages/Account"));
+const Community = lazy(() => import("@/pages/Community"));
+const Referral = lazy(() => import("@/pages/Referral"));
+const ReferralDashboard = lazy(() => import("@/pages/ReferralDashboard"));
+const NotFound = lazy(() => import("@/pages/not-found"));
 
 const queryClient = new QueryClient();
 
@@ -69,52 +70,54 @@ function Router() {
   }, [location]);
 
   return (
-    <AnimatePresence mode="wait">
-      <Switch key={location}>
-        <Route path="/">
-          <AnimatedRoute component={Home} />
-        </Route>
-        <Route path="/offers">
-          <AnimatedRoute component={Offers} />
-        </Route>
-        <Route path="/partners/:slug">
-          <AnimatedRoute component={PartnerDetail} />
-        </Route>
-        <Route path="/partners">
-          <AnimatedRoute component={Partners} />
-        </Route>
-        <Route path="/giveaway/:slug">
-          <AnimatedRoute component={GiveawayEntry} />
-        </Route>
-        <Route path="/giveaway">
-          <AnimatedRoute component={Giveaway} />
-        </Route>
-        <Route path="/winners">
-          <AnimatedRoute component={Winners} />
-        </Route>
-        <Route path="/account">
-          <AnimatedRoute component={Account} />
-        </Route>
-        <Route path="/community">
-          <AnimatedRoute component={Community} />
-        </Route>
-        <Route path="/referral/dashboard">
-          <AnimatedRoute component={ReferralDashboard} />
-        </Route>
-        <Route path="/referral">
-          <AnimatedRoute component={Referral} />
-        </Route>
-        <Route path="/x247-admin-login">
-          <AnimatedRoute component={AdminLogin} />
-        </Route>
-        <Route path="/x247-control-panel">
-          <AnimatedRoute component={AdminPanel} />
-        </Route>
-        <Route>
-          <AnimatedRoute component={NotFound} />
-        </Route>
-      </Switch>
-    </AnimatePresence>
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <AnimatePresence mode="wait">
+        <Switch key={location}>
+          <Route path="/">
+            <AnimatedRoute component={Home} />
+          </Route>
+          <Route path="/offers">
+            <AnimatedRoute component={Offers} />
+          </Route>
+          <Route path="/partners/:slug">
+            <AnimatedRoute component={PartnerDetail} />
+          </Route>
+          <Route path="/partners">
+            <AnimatedRoute component={Partners} />
+          </Route>
+          <Route path="/giveaway/:slug">
+            <AnimatedRoute component={GiveawayEntry} />
+          </Route>
+          <Route path="/giveaway">
+            <AnimatedRoute component={Giveaway} />
+          </Route>
+          <Route path="/winners">
+            <AnimatedRoute component={Winners} />
+          </Route>
+          <Route path="/account">
+            <AnimatedRoute component={Account} />
+          </Route>
+          <Route path="/community">
+            <AnimatedRoute component={Community} />
+          </Route>
+          <Route path="/referral/dashboard">
+            <AnimatedRoute component={ReferralDashboard} />
+          </Route>
+          <Route path="/referral">
+            <AnimatedRoute component={Referral} />
+          </Route>
+          <Route path="/x247-admin-login">
+            <AnimatedRoute component={AdminLogin} />
+          </Route>
+          <Route path="/x247-control-panel">
+            <AnimatedRoute component={AdminPanel} />
+          </Route>
+          <Route>
+            <AnimatedRoute component={NotFound} />
+          </Route>
+        </Switch>
+      </AnimatePresence>
+    </Suspense>
   );
 }
 

@@ -739,7 +739,7 @@ export default function GiveawayEntry() {
                               {preview ? (
                                 <div>
                                   <div className="rounded-lg overflow-hidden border border-white/[0.08] mb-2">
-                                    <img src={preview} alt={`Screenshot for ${partner.name}`} className="w-full max-h-40 object-contain bg-white/[0.02]" />
+                                    <img src={preview} alt={`Screenshot for ${partner.name}`} className="w-full max-h-40 object-contain bg-white/[0.02]" loading="lazy" decoding="async" />
                                   </div>
                                   <div className="flex items-center justify-between">
                                     <span className="text-[11px] text-white/40 font-light">{file?.name} ({((file?.size || 0) / 1024 / 1024).toFixed(1)} MB)</span>
