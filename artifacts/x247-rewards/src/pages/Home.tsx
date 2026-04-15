@@ -114,6 +114,175 @@ function GlowLine() {
   );
 }
 
+const heroBannerSlides = [
+  {
+    badge: "About X247",
+    title: "Your Gateway to Daily Rewards",
+    desc: "X247 is a gamified rewards platform where every registration earns you a shot at winning premium prizes — gift cards, gadgets, and exclusive swag, drawn every single day.",
+    icon: <Sparkles className="w-5 h-5" />,
+    features: ["Daily Prize Draws", "Zero Cost Entry", "Real Rewards"],
+  },
+  {
+    badge: "How It Works",
+    title: "Register. Enter. Win.",
+    desc: "Sign up through our partner links, complete a quick registration form, and you're automatically entered into the daily giveaway. More registrations = more entries = higher chances.",
+    icon: <Target className="w-5 h-5" />,
+    features: ["Partner Signups", "Verified Entries", "Auto Draw System"],
+  },
+  {
+    badge: "Live Rewards",
+    title: "Premium Prizes Every Day",
+    desc: "From wireless earbuds and tech gadgets to gift cards and exclusive merch — our reward pool refreshes daily with items worth winning. No catches, no hidden fees.",
+    icon: <Gift className="w-5 h-5" />,
+    features: ["Gift Cards", "Tech Gadgets", "Exclusive Merch"],
+  },
+  {
+    badge: "Partner Program",
+    title: "Earn While You Share",
+    desc: "Become a referral partner and track every click, signup, and conversion in real-time. Hit milestones, climb leaderboards, and unlock bonus rewards for your network.",
+    icon: <Users className="w-5 h-5" />,
+    features: ["Live Analytics", "Milestone Bonuses", "Leaderboard Ranks"],
+  },
+  {
+    badge: "What's New",
+    title: "Daily Drops & Flash Events",
+    desc: "Stay tuned for surprise flash giveaways, double-entry weekends, and limited-edition reward drops. The more active you are, the more you win.",
+    icon: <Zap className="w-5 h-5" />,
+    features: ["Flash Giveaways", "Bonus Events", "Limited Drops"],
+  },
+];
+
+function HeroBannerSlider() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+  const totalSlides = heroBannerSlides.length;
+
+  useEffect(() => {
+    if (isHovered || reducedMotion) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isHovered, reducedMotion, totalSlides]);
+
+  const goTo = useCallback((idx: number) => {
+    setCurrentSlide(idx);
+  }, []);
+
+  const goPrev = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  }, [totalSlides]);
+
+  const goNext = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  }, [totalSlides]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="relative w-full max-w-3xl mx-auto mb-8 sm:mb-10"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] bg-gradient-to-br from-white/[0.04] to-white/[0.01]">
+        <div
+          ref={trackRef}
+          className="hero-banner-track"
+          style={{
+            transform: `translate3d(-${currentSlide * 100}%, 0, 0)`,
+            transition: reducedMotion ? "none" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          {heroBannerSlides.map((slide, i) => (
+            <div
+              key={i}
+              className="hero-banner-slide"
+              aria-hidden={i !== currentSlide}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-white/[0.02] pointer-events-none" />
+              <div className="absolute -top-4 -right-4 w-56 h-56 sm:w-72 sm:h-72 opacity-[0.04] pointer-events-none">
+                <div className="w-full h-full flex items-center justify-center">
+                  {React.cloneElement(slide.icon as React.ReactElement, { className: "w-full h-full" })}
+                </div>
+              </div>
+              <div className="absolute bottom-0 left-0 w-32 h-32 opacity-[0.02] pointer-events-none blur-2xl bg-white rounded-full" />
+
+              <div className="relative z-[2] p-6 sm:p-8 md:p-10 flex flex-col justify-center min-h-[240px] sm:min-h-[280px]">
+                <div className="glass-pill-badge mb-4 !text-[10px] w-fit">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                  {slide.badge}
+                </div>
+
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-light text-white mb-3 tracking-tight">
+                  {slide.title}
+                </h3>
+
+                <p className="text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-lg">
+                  {slide.desc}
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  {slide.features.map((feat, fi) => (
+                    <span
+                      key={fi}
+                      className="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.10] text-[10px] sm:text-xs text-white/60 font-display tracking-wide"
+                    >
+                      {feat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="hero-image-shimmer" />
+      </div>
+
+      <button
+        onClick={goPrev}
+        aria-label="Previous slide"
+        className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-black/80 transition-all backdrop-blur-sm"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+      <button
+        onClick={goNext}
+        aria-label="Next slide"
+        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-black/80 transition-all backdrop-blur-sm"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+
+      <div className="flex items-center justify-center gap-2 mt-4">
+        {heroBannerSlides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            className={`hero-banner-dot ${i === currentSlide ? "hero-banner-dot-active" : ""}`}
+          />
+        ))}
+      </div>
+
+      <div className="hero-banner-progress mt-3">
+        <div
+          className="hero-banner-progress-bar"
+          style={{
+            animationDuration: isHovered ? "0s" : "5s",
+            animationPlayState: isHovered ? "paused" : "running",
+          }}
+          key={currentSlide}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
 function TextReveal({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) {
   const words = text.split(" ");
   return (
@@ -594,26 +763,7 @@ export default function Home() {
               </BorderGlow>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-2xl mx-auto mb-8 sm:mb-10"
-            >
-              <div className="relative rounded-2xl overflow-hidden border border-white/[0.06]">
-                <img
-                  src="/images/hero-metallic.png"
-                  alt=""
-                  className="w-full h-auto object-cover opacity-60"
-                  loading="eager"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
-                <div className="hero-image-shimmer" />
-              </div>
-              <GlowOrb className="-top-10 -right-10 z-[-1]" size={150} opacity={0.04} />
-              <GlowOrb className="-bottom-10 -left-10 z-[-1]" size={120} opacity={0.03} />
-            </motion.div>
+            <HeroBannerSlider />
 
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
               <div className="marquee-container">
@@ -876,7 +1026,7 @@ export default function Home() {
             <div className="flex flex-col lg:flex-row gap-10 sm:gap-16 items-center">
               <motion.div 
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideLeft}
-                className="lg:w-5/12 w-full"
+                className="lg:w-1/2 w-full"
               >
                 <div className="glass-pill-badge mb-6">
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
@@ -926,14 +1076,14 @@ export default function Home() {
 
               <motion.div 
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}
-                className="lg:w-7/12 w-full"
+                className="lg:w-1/2 w-full"
               >
-                <TiltCard className="glass-card p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                <TiltCard className="glass-card p-5 sm:p-6 shadow-2xl relative overflow-hidden">
                   <div className="card-top-accent" />
                   <div className="card-shine" />
                   <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
 
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10 gap-3 relative z-[2]">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-5 pb-3 sm:pb-4 border-b border-white/10 gap-3 relative z-[2]">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
                         <span className="text-xs font-display font-bold text-white/60">AX</span>
@@ -948,7 +1098,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6 sm:mb-8 relative z-[2]">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5 relative z-[2]">
                     {[
                       { label: "Clicks", value: "247", icon: <Activity className="w-3 h-3" /> },
                       { label: "Signups", value: "42", icon: <Users className="w-3 h-3" /> },
@@ -970,11 +1120,11 @@ export default function Home() {
                     ))}
                   </div>
 
-                  <div className="mb-5 sm:mb-7 relative z-[2]">
-                    <div className="flex justify-between text-[10px] sm:text-xs mb-2.5">
+                  <div className="mb-4 sm:mb-5 relative z-[2]">
+                    <div className="flex justify-between text-[10px] sm:text-xs mb-2">
                       <span className="text-white/40 font-light uppercase tracking-wider font-display">7-Day Performance</span>
                     </div>
-                    <div className="flex items-end gap-1 h-16 sm:h-20">
+                    <div className="flex items-end gap-1 h-14 sm:h-16">
                       {[30, 45, 35, 60, 50, 75, 65].map((h, i) => (
                         <motion.div
                           key={i}
@@ -996,8 +1146,8 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="mb-5 sm:mb-7 relative z-[2]">
-                    <div className="flex justify-between text-xs sm:text-sm mb-2.5">
+                  <div className="mb-4 sm:mb-5 relative z-[2]">
+                    <div className="flex justify-between text-xs sm:text-sm mb-2">
                       <span className="text-white/40 font-light">Milestone I Progress</span>
                       <span className="text-white/50 font-light font-display">18 / 20</span>
                     </div>
