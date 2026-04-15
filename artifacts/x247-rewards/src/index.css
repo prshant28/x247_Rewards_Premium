@@ -992,6 +992,21 @@
     100% { transform: translateX(100%); }
   }
 
+  .hero-banner-container {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.005) 100%);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.03),
+      0 8px 32px rgba(0,0,0,0.4),
+      0 2px 8px rgba(0,0,0,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .hero-banner-glow {
+    background: radial-gradient(ellipse 80% 60% at 20% 80%, rgba(255,255,255,0.02) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 20%, rgba(255,255,255,0.015) 0%, transparent 50%);
+  }
+
   .hero-banner-track {
     display: flex;
     will-change: transform;
@@ -1005,35 +1020,107 @@
     overflow: hidden;
   }
 
+  .hero-banner-slide-bg {
+    background: linear-gradient(135deg, rgba(255,255,255,0.035) 0%, transparent 40%, rgba(255,255,255,0.01) 100%);
+  }
+
+  .hero-banner-pill {
+    padding: 5px 14px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.55);
+    font-family: var(--font-display, 'Syne', sans-serif);
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+  }
+
+  .hero-banner-pill:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .hero-banner-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--font-display, 'Syne', sans-serif);
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .hero-banner-cta:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  }
+
+  .hero-banner-arrow {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.35);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .hero-banner-arrow:hover {
+    background: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.03);
+  }
+
   .hero-banner-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     cursor: pointer;
     padding: 0;
   }
 
   .hero-banner-dot-active {
-    width: 24px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.5);
-    border-color: rgba(255, 255, 255, 0.2);
+    width: 28px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.6));
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.08);
   }
 
   .hero-banner-progress {
     width: 100%;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.04);
+    height: 1px;
+    background: rgba(255, 255, 255, 0.03);
     border-radius: 1px;
     overflow: hidden;
   }
 
   .hero-banner-progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.35));
+    background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.3));
     border-radius: 1px;
     animation: hero-banner-fill 5s linear forwards;
     transform-origin: left;
@@ -1042,6 +1129,23 @@
   @keyframes hero-banner-fill {
     0% { width: 0%; }
     100% { width: 100%; }
+  }
+
+  @media (min-width: 640px) {
+    .hero-banner-arrow {
+      width: 40px;
+      height: 40px;
+    }
+
+    .hero-banner-pill {
+      font-size: 12px;
+      padding: 6px 16px;
+    }
+
+    .hero-banner-cta {
+      font-size: 12px;
+      padding: 7px 20px;
+    }
   }
 
   .reward-card-image {
