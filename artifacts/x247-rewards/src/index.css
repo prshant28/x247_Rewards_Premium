@@ -1148,6 +1148,44 @@
     }
   }
 
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  .bento-card {
+    position: relative;
+    padding: 28px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .bento-card:hover {
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(255, 255, 255, 0.09);
+  }
+
+  .bento-card-wide {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 640px) {
+    .bento-card {
+      padding: 32px;
+    }
+  }
+
   .testimonial-marquee-wrapper {
     position: relative;
     width: 100%;
