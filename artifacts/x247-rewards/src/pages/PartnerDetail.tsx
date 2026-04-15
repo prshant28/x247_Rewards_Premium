@@ -63,9 +63,7 @@ function getPartnerIcon(accent: string) {
   if (accent === "red") return <Star className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
   return <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
 }
-function getBannerGradient(accent: string) {
-  if (accent === "navy") return "linear-gradient(145deg, rgba(30,35,80,0.6) 0%, rgba(10,10,20,0.95) 100%)";
-  if (accent === "red")  return "linear-gradient(145deg, rgba(80,20,30,0.5) 0%, rgba(15,10,10,0.95) 100%)";
+function getBannerGradient(_accent: string) {
   return "linear-gradient(145deg, rgba(40,40,40,0.4) 0%, rgba(10,10,10,0.95) 100%)";
 }
 
@@ -257,9 +255,9 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                         </div>
                       )}
                       {partner.badgeSecondary && (
-                        <div className="premium-badge !text-[9px]" style={{ background: "rgba(30,40,100,0.3)", border: "1px solid rgba(60,80,180,0.3)" }}>
-                          <Star className="w-2.5 h-2.5 mr-1 text-blue-400" />
-                          <span className="text-blue-300">{partner.badgeSecondary}</span>
+                        <div className="premium-badge !text-[9px]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                          <Star className="w-2.5 h-2.5 mr-1 text-white/50" />
+                          <span className="text-white/60">{partner.badgeSecondary}</span>
                         </div>
                       )}
                       {partner.isRequired && (
@@ -554,7 +552,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   {/* Eligibility & Key Info */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="glass-card p-6 sm:p-7">
-                      <div className="card-top-accent card-top-accent-navy" />
+                      <div className="card-top-accent" />
                       <div className="card-shine" />
                       <div className="relative z-[2]">
                         <h3 className="text-base font-display font-light text-white mb-4 flex items-center gap-2">
@@ -668,7 +666,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
 
                   {/* Tips */}
                   <div className="glass-card p-6 sm:p-8">
-                    <div className="card-top-accent card-top-accent-navy" />
+                    <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
                       <h3 className="text-base font-display font-light text-white mb-5 flex items-center gap-2">

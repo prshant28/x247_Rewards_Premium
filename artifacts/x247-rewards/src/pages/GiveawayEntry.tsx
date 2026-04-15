@@ -562,7 +562,7 @@ export default function GiveawayEntry() {
                                   <span className="px-1.5 py-0.5 rounded-full bg-red-500/15 border border-red-500/25 text-[8px] text-red-400 font-display">REQUIRED</span>
                                 )}
                                 {partner.badgeSecondary && (
-                                  <span className="px-1.5 py-0.5 rounded-full bg-blue-500/15 border border-blue-500/25 text-[8px] text-blue-400 font-display">{partner.badgeSecondary}</span>
+                                  <span className="px-1.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.1] text-[8px] text-white/50 font-display">{partner.badgeSecondary}</span>
                                 )}
                               </div>
                               <p className="text-[11px] text-white/30 font-light truncate mt-0.5">{partner.tagline}</p>
