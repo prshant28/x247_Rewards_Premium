@@ -958,6 +958,35 @@
     100% { transform: translateX(100%); }
   }
 
+  .hero-image-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.03) 45%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(255, 255, 255, 0.03) 55%,
+      transparent 70%
+    );
+    animation: hero-shimmer 6s ease-in-out infinite;
+  }
+
+  @keyframes hero-shimmer {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .reward-card-image {
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .group:hover .reward-card-image {
+    opacity: 0.55;
+    transform: scale(1.05);
+  }
+
   .cursor-dot {
     position: fixed;
     top: 0;
@@ -1341,6 +1370,8 @@
     .shimmer-bar { animation: none; }
     .floating-particle { animation: none; }
     .scroll-progress-bar { display: none; }
+    .hero-image-shimmer { animation: none; }
+    .reward-card-image { transition: none; }
   }
 
   .page-loader {

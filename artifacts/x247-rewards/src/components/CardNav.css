@@ -186,6 +186,15 @@
   gap: 8px;
   padding: 0 12px 12px;
   flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 767px) {
+  .card-nav.open .card-nav-content {
+    max-height: calc(100dvh - 92px);
+    overflow-y: auto;
+  }
 }
 
 @media (min-width: 768px) {

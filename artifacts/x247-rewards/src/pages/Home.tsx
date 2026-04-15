@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, type Variants } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, type Variants } from "framer-motion";
 import { Link } from "wouter";
 import { storeReferralCode } from "@/lib/api";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -23,7 +23,8 @@ import {
   Ticket,
   Package,
   Gift,
-  Gem
+  Gem,
+  BarChart3
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
@@ -35,6 +36,52 @@ import SocialProofToast from "@/components/SocialProofToast";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import "@/components/DotGrid.css";
 
+
+function GlowOrb({ className = "", size = 200, opacity = 0.06 }: { className?: string; size?: number; opacity?: number }) {
+  const reducedMotion = useReducedMotion();
+  return (
+    <motion.div
+      className={`absolute rounded-full pointer-events-none ${className}`}
+      style={{
+        width: size,
+        height: size,
+        background: `radial-gradient(circle, rgba(255,255,255,${opacity}) 0%, transparent 70%)`,
+        filter: "blur(40px)",
+      }}
+      animate={reducedMotion ? {} : {
+        scale: [1, 1.2, 1],
+        opacity: [opacity, opacity * 1.5, opacity],
+      }}
+      transition={{
+        duration: 6,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    />
+  );
+}
+
+function FloatingIcon({ icon, delay = 0, className = "" }: { icon: React.ReactNode; delay?: number; className?: string }) {
+  const reducedMotion = useReducedMotion();
+  if (reducedMotion) return null;
+  return (
+    <motion.div
+      className={`absolute pointer-events-none text-white/[0.04] ${className}`}
+      animate={{
+        y: [0, -15, 0],
+        rotate: [0, 5, -5, 0],
+      }}
+      transition={{
+        duration: 8,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    >
+      {icon}
+    </motion.div>
+  );
+}
 
 function FloatingParticles() {
   return (
@@ -324,6 +371,27 @@ export default function Home() {
               </BorderGlow>
             </motion.div>
 
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.2, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-2xl mx-auto mb-8 sm:mb-10"
+            >
+              <div className="relative rounded-2xl overflow-hidden border border-white/[0.06]">
+                <img
+                  src="/images/hero-metallic.png"
+                  alt=""
+                  className="w-full h-auto object-cover opacity-60"
+                  loading="eager"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+                <div className="hero-image-shimmer" />
+              </div>
+              <GlowOrb className="-top-10 -right-10 z-[-1]" size={150} opacity={0.04} />
+              <GlowOrb className="-bottom-10 -left-10 z-[-1]" size={120} opacity={0.03} />
+            </motion.div>
+
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
               <div className="marquee-container">
                 <div className="marquee-content">
@@ -355,6 +423,9 @@ export default function Home() {
 
         <section id="how-it-works" className="py-20 sm:py-32 relative">
           <FloatingParticles />
+          <GlowOrb className="top-32 left-[5%] hidden lg:block" size={180} opacity={0.025} />
+          <FloatingIcon icon={<Target className="w-10 h-10" />} className="top-20 right-[10%] hidden lg:block" delay={1.5} />
+          <FloatingIcon icon={<Star className="w-8 h-8" />} className="bottom-24 left-[12%] hidden lg:block" delay={4} />
           <div className="container mx-auto px-4 max-w-4xl">
             <motion.div 
               initial="hidden"
@@ -541,6 +612,9 @@ export default function Home() {
 
         <section id="rewards" className="py-20 sm:py-32 relative">
           <FloatingParticles />
+          <GlowOrb className="top-16 right-[8%] hidden lg:block" size={220} opacity={0.03} />
+          <FloatingIcon icon={<Gift className="w-10 h-10" />} className="top-28 left-[8%] hidden lg:block" delay={0.5} />
+          <FloatingIcon icon={<Package className="w-8 h-8" />} className="bottom-16 right-[12%] hidden lg:block" delay={2} />
           <div className="container mx-auto px-4 max-w-6xl">
             <motion.div 
               initial="hidden"
@@ -564,22 +638,34 @@ export default function Home() {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-16 sm:mb-24"
             >
               {[
-                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, accent: "rgba(30, 40, 100, 0.2)" },
-                { tier: "Gift Cards", title: "500 – 2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, accent: "rgba(100, 30, 40, 0.2)" },
-                { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, accent: "rgba(40, 80, 40, 0.15)" },
-                { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, accent: "rgba(80, 40, 100, 0.15)" },
+                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
+                { tier: "Gift Cards", title: "500 – 2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/reward-trophy.png" },
+                { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
+                { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-headphones.png" },
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
-                  <TiltCard className="glass-card p-5 sm:p-6 group h-full">
+                  <TiltCard className="glass-card group h-full overflow-hidden">
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2] flex flex-col h-full">
-                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
-                        {item.icon}
-                      </BorderGlow>
-                      <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
-                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                      <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed">{item.desc}</p>
+                      <div className="relative h-32 sm:h-36 overflow-hidden">
+                        <img src={item.img} alt="" className="w-full h-full object-cover opacity-40 reward-card-image" loading="lazy" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(6,6,6,0.98)] via-[rgba(6,6,6,0.5)] to-transparent" />
+                        <motion.div
+                          className="absolute top-3 right-3"
+                          animate={{ y: [0, -4, 0] }}
+                          transition={{ duration: 3, delay: i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+                        >
+                          <BorderGlow borderRadius={10} glowRadius={8} cardBg="rgba(0,0,0,0.6)" className="icon-circle icon-circle-sm backdrop-blur-sm">
+                            {item.icon}
+                          </BorderGlow>
+                        </motion.div>
+                      </div>
+                      <div className="p-5 sm:p-6 pt-3">
+                        <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
+                        <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
+                        <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed">{item.desc}</p>
+                      </div>
                     </div>
                   </TiltCard>
                 </motion.div>
@@ -592,6 +678,9 @@ export default function Home() {
 
         <section id="dashboard" className="py-20 sm:py-32 relative">
           <FloatingParticles />
+          <GlowOrb className="top-20 right-10 hidden lg:block" size={250} opacity={0.03} />
+          <FloatingIcon icon={<BarChart3 className="w-12 h-12" />} className="top-32 right-[15%] hidden lg:block" delay={1} />
+          <FloatingIcon icon={<Trophy className="w-10 h-10" />} className="bottom-20 left-[10%] hidden lg:block" delay={2.5} />
           <div className="container mx-auto px-4 max-w-6xl">
             <div className="flex flex-col lg:flex-row gap-10 sm:gap-16 items-center">
               <motion.div 
@@ -778,6 +867,10 @@ export default function Home() {
 
         <section className="py-20 sm:py-32 relative">
           <FloatingParticles />
+          <GlowOrb className="top-10 left-[5%] hidden lg:block" size={200} opacity={0.03} />
+          <GlowOrb className="bottom-20 right-[8%] hidden lg:block" size={180} opacity={0.025} />
+          <FloatingIcon icon={<Sparkles className="w-10 h-10" />} className="top-24 right-[12%] hidden lg:block" delay={0} />
+          <FloatingIcon icon={<Gem className="w-8 h-8" />} className="bottom-32 left-[8%] hidden lg:block" delay={3} />
           <div className="container mx-auto px-4 max-w-6xl">
             <motion.div 
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
@@ -791,6 +884,20 @@ export default function Home() {
               <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-md mx-auto mb-14 sm:mb-20"
+            >
+              <div className="relative rounded-full overflow-hidden aspect-square max-w-[200px] mx-auto border border-white/[0.06]">
+                <img src="/images/abstract-sphere.png" alt="" className="w-full h-full object-cover opacity-30" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+              </div>
+              <GlowOrb className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1]" size={250} opacity={0.04} />
             </motion.div>
 
             <motion.div 
@@ -807,9 +914,14 @@ export default function Home() {
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mx-auto mb-5">
-                        {item.icon}
-                      </BorderGlow>
+                      <motion.div
+                        animate={{ y: [0, -5, 0] }}
+                        transition={{ duration: 4, delay: i * 0.8, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mx-auto mb-5">
+                          {item.icon}
+                        </BorderGlow>
+                      </motion.div>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
                       <p className="text-xs sm:text-sm text-white/45 font-light">{item.desc}</p>
                     </div>
