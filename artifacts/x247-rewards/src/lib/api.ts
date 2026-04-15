@@ -437,6 +437,25 @@ export async function getAdminEntries(opts?: { limit?: number; offset?: number }
   return res.json();
 }
 
+export interface ActivityFeedItem {
+  type: "entry" | "winner";
+  name: string;
+  city: string;
+  contest: string;
+  prize?: string;
+  time: string;
+}
+
+export async function getActivityFeed(): Promise<ActivityFeedItem[]> {
+  try {
+    const res = await fetch(`${API_BASE}/activity/feed`);
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
 export async function generateContestAI(input: { theme?: string; prize?: string; description?: string }): Promise<{ name: string; slug: string; description: string; prize: string; prizeValue: string; maxSpots: number }> {
   const res = await authFetch("/contests/generate-ai", {
     method: "POST",

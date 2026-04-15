@@ -10,6 +10,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getContests, checkEntryCode, type ContestData } from "@/lib/api";
 import SiteFooter from "@/components/SiteFooter";
 import BorderGlow from "@/components/BorderGlow";
+import CountdownTimer from "@/components/CountdownTimer";
+import ConfettiEffect from "@/components/ConfettiEffect";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -131,10 +134,12 @@ function ContestCard({ contest, index }: { contest: ContestData; index: number }
                   <Users className="w-3 h-3 text-white/25" />
                   <span className="text-[10px] text-white/30 font-light">{contest.spotsRemaining} left</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Target className="w-3 h-3 text-white/25" />
-                  <span className="text-[10px] text-white/30 font-light">{contest.maxSpots} max</span>
-                </div>
+                {contest.endsAt && (
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3 h-3 text-white/25" />
+                    <CountdownTimer endsAt={contest.endsAt} compact />
+                  </div>
+                )}
               </div>
               {!isUpcoming && !isFull && (
                 <div className="flex items-center gap-1 text-xs text-white/40 group-hover:text-white/60 transition-colors font-display">
@@ -161,15 +166,18 @@ export default function Giveaway() {
   const [checking, setChecking] = useState(false);
   const [checkResult, setCheckResult] = useState<any>(null);
   const [checkError, setCheckError] = useState("");
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const handleCheckCode = async () => {
     if (!searchCode.trim()) return;
     setChecking(true);
     setCheckError("");
     setCheckResult(null);
+    setConfettiActive(false);
     const result = await checkEntryCode(searchCode.trim());
     if (result.found) {
       setCheckResult(result.entry);
+      setConfettiActive(true);
     } else {
       setCheckError(result.error || "Entry code not found");
     }
@@ -217,7 +225,7 @@ export default function Giveaway() {
                     <div className="card-shine" />
                     <div className="relative z-[2]">
                       <div className="text-white/30 mx-auto mb-2 flex justify-center">{stat.icon}</div>
-                      <div className="text-xl sm:text-2xl font-display font-light text-white">{stat.value}</div>
+                      <AnimatedCounter value={stat.value} className="text-xl sm:text-2xl font-display font-light text-white" />
                       <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
                     </div>
                   </div>
@@ -235,8 +243,9 @@ export default function Giveaway() {
             <div className="container mx-auto px-4 max-w-5xl">
 
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5} className="mb-10">
-                <div className="glass-card p-5 sm:p-6">
+                <div className="glass-card p-5 sm:p-6 relative overflow-hidden">
                   <div className="card-shine" />
+                  <ConfettiEffect active={confettiActive} />
                   <div className="relative z-[2]">
                     <div className="flex items-center gap-2 mb-4">
                       <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">

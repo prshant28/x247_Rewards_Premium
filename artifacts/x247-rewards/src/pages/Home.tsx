@@ -29,6 +29,9 @@ import Silk from "@/components/Silk";
 import SiteFooter from "@/components/SiteFooter";
 import BorderGlow from "@/components/BorderGlow";
 import DotGrid from "@/components/DotGrid";
+import LiveActivityFeed from "@/components/LiveActivityFeed";
+import SocialProofToast from "@/components/SocialProofToast";
+import AnimatedCounter from "@/components/AnimatedCounter";
 import "@/components/DotGrid.css";
 
 
@@ -248,7 +251,7 @@ export default function Home() {
               dotSize={2}
               gap={28}
               baseColor="#1a1a1a"
-              activeColor="#8b2030"
+              activeColor="#666666"
               proximity={120}
               speedTrigger={80}
               shockRadius={200}
@@ -472,10 +475,10 @@ export default function Home() {
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
             >
               <TiltCard className="glass-card p-8 sm:p-12 text-center">
-                <div className="card-top-accent card-top-accent-navy" />
+                <div className="card-top-accent" />
                 <div className="card-shine" />
                 <div className="relative z-[2] flex flex-col items-center">
-                  <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle icon-circle-navy w-16 h-16 mb-6">
+                  <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle w-16 h-16 mb-6">
                     <ExternalLink className="w-7 h-7" />
                   </BorderGlow>
                   <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">View All Partner Registrations</h3>
@@ -625,8 +628,8 @@ export default function Home() {
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}
                 className="lg:w-7/12 w-full"
               >
-                <TiltCard className="glass-card glass-card-accent-navy p-6 sm:p-8 shadow-2xl relative">
-                  <div className="card-top-accent card-top-accent-navy" />
+                <TiltCard className="glass-card p-6 sm:p-8 shadow-2xl relative">
+                  <div className="card-top-accent" />
                   <div className="card-shine" />
                   <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10 gap-3 relative z-[2]">
@@ -707,6 +710,13 @@ export default function Home() {
                 </TiltCard>
               </motion.div>
             </div>
+
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="mt-10 sm:mt-14"
+            >
+              <LiveActivityFeed />
+            </motion.div>
           </div>
         </section>
 
@@ -718,7 +728,7 @@ export default function Home() {
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={scaleIn}
             >
               <TiltCard className="glass-card p-6 sm:p-10 border-white/10 relative overflow-hidden">
-                <div className="card-top-accent card-top-accent-red" />
+                <div className="card-top-accent" />
                 <div className="card-shine" />
                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-white/30 via-white/10 to-transparent"></div>
                 <div className="relative z-[2]">
@@ -785,10 +795,10 @@ export default function Home() {
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeUp}>
                   <TiltCard className="glass-card p-6 sm:p-8 text-center group">
-                    <div className="card-top-accent card-top-accent-navy" />
+                    <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle icon-circle-navy mx-auto mb-5">
+                      <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mx-auto mb-5">
                         {item.icon}
                       </BorderGlow>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
@@ -838,28 +848,23 @@ export default function Home() {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
             >
               {[
-                { title: "Active Offers", desc: "2x bonuses, cashback deals, and exclusive drops updated weekly.", icon: <Gift className="w-5 h-5" />, href: "/offers", spa: true, accent: "red" as const, badge: "5 Live" },
-                { title: "How to Enter", desc: "Step-by-step guide to register, submit entries, and start winning.", icon: <Target className="w-5 h-5" />, href: "#how-it-works", spa: false, accent: "navy" as const, badge: null },
-                { title: "Your Dashboard", desc: "Track clicks, verified referrals, milestones, and leaderboard rank.", icon: <Activity className="w-5 h-5" />, href: "#dashboard", spa: false, accent: "navy" as const, badge: null },
-                { title: "Rewards Gallery", desc: "See the full list of prizes — swag kits, gift cards, gadgets, and more.", icon: <Trophy className="w-5 h-5" />, href: "#rewards", spa: false, accent: "neutral" as const, badge: null },
-                { title: "All Partners", desc: "View all partner registrations, trust verification, and live stats.", icon: <Star className="w-5 h-5" />, href: "/partners", spa: true, accent: "neutral" as const, badge: "Coming Soon" },
-                { title: "Community Hub", desc: "Join our WhatsApp group for flash giveaways and surprise drops.", icon: <Users className="w-5 h-5" />, href: "#register", spa: false, accent: "red" as const, badge: null },
+                { title: "Active Offers", desc: "2x bonuses, cashback deals, and exclusive drops updated weekly.", icon: <Gift className="w-5 h-5" />, href: "/offers", spa: true, badge: "5 Live" },
+                { title: "How to Enter", desc: "Step-by-step guide to register, submit entries, and start winning.", icon: <Target className="w-5 h-5" />, href: "#how-it-works", spa: false, badge: null },
+                { title: "Your Dashboard", desc: "Track clicks, verified referrals, milestones, and leaderboard rank.", icon: <Activity className="w-5 h-5" />, href: "#dashboard", spa: false, badge: null },
+                { title: "Rewards Gallery", desc: "See the full list of prizes — swag kits, gift cards, gadgets, and more.", icon: <Trophy className="w-5 h-5" />, href: "#rewards", spa: false, badge: null },
+                { title: "All Partners", desc: "View all partner registrations, trust verification, and live stats.", icon: <Star className="w-5 h-5" />, href: "/partners", spa: true, badge: "Coming Soon" },
+                { title: "Community Hub", desc: "Join our WhatsApp group for flash giveaways and surprise drops.", icon: <Users className="w-5 h-5" />, href: "#register", spa: false, badge: null },
               ].map((item, i) => {
-                const accentClasses = item.accent === "navy"
-                  ? { card: "glass-card-accent-navy", icon: "icon-circle-navy", top: "card-top-accent card-top-accent-navy" }
-                  : item.accent === "red"
-                  ? { card: "glass-card-accent-red", icon: "icon-circle-red", top: "card-top-accent card-top-accent-red" }
-                  : { card: "", icon: "", top: "card-top-accent" };
                 const WrapTag = item.spa ? Link : "a";
                 return (
                   <motion.div key={i} variants={fadeUp}>
                     <WrapTag href={item.href} className="block">
-                      <TiltCard className={`glass-card ${accentClasses.card} p-5 sm:p-7 group h-full relative`}>
-                        <div className={accentClasses.top} />
+                      <TiltCard className="glass-card p-5 sm:p-7 group h-full relative">
+                        <div className="card-top-accent" />
                         <div className="card-shine" />
                         <div className="relative z-[2] flex flex-col h-full">
                           <div className="flex items-start justify-between mb-5">
-                            <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className={`icon-circle ${accentClasses.icon}`}>
+                            <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle">
                               {item.icon}
                             </BorderGlow>
                             {item.badge && (
@@ -1060,6 +1065,7 @@ export default function Home() {
           </div>
         </motion.div>
       </SiteFooter>
+      <SocialProofToast />
     </div>
   );
 }

@@ -30,7 +30,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 ## X247 Rewards (artifacts/x247-rewards)
 
 - **Framework**: React + Vite + Tailwind CSS v4
-- **Design**: Ultra-premium dark metallic aesthetic — pure black background, Syne + Poppins fonts, red/navy gradient borders, glassmorphism cards
+- **Design**: Ultra-premium dark monochrome aesthetic — pure black background, Syne + Poppins fonts, white/gray only (no color accents), glassmorphism cards
 - **Hero**: Silk WebGL background (React Three Fiber shader, with CSS radial-gradient fallback when WebGL unavailable) + gradient overlays
 - **Pages**: Home (/), Offers (/offers), Partners (/partners)
 - **Admin Pages**: Admin Login (/x247-admin-login), Control Panel (/x247-control-panel)
@@ -38,7 +38,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **Layout**: Section-divider wrapper (rounded-28px card with lateral white edge glow) wraps content sections; GlowLine separators between each section
 - **Buttons**: Premium button system (premium-btn, premium-btn-sm/md/lg/ghost) with lateral box-shadow glow, inner radial glow on hover, arrow icons, glassmorphism via `.glass-btn-effect` (backdrop-filter blur)
 - **Cursor**: Default browser cursor (AnimatedCursor component exists but is not rendered)
-- **Cards**: Dark metallic glass-card (animated rotating red/navy gradient border), no hover effects
+- **Cards**: Dark metallic glass-card (animated rotating gray gradient border), no hover effects
 - **Interactive**: TiltCard (subtle 4deg tilt, 0.025 glare), MagneticWrap (0.06 multiplier, minimal movement), parallax hero (fade+translate on scroll)
 - **Animations**: Framer Motion fadeUp/scaleIn/stagger/slideLeft/slideRight variants, animated progress bar with shimmer, scroll progress bar, activity feed stagger, floating particles
 - **Performance**: Mouse-driven effects use useMotionValue/useSpring (no React state churn), prefers-reduced-motion disables animations/cursor/shimmer
@@ -84,6 +84,18 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `GET /api/users/me/entries` — get user's giveaway entries (auth required)
   - `POST /api/users/logout` — user logout
   - `GET /api/winners` — list all winners with contest names
+  - `GET /api/activity/feed` — public activity feed (recent entries + winners, anonymized names)
+  - `POST /api/voice/synthesize` — ElevenLabs TTS (membership gated)
+
+## Interactive Components
+
+- **LiveActivityFeed**: Rotating ticker showing recent entries/winners from `/api/activity/feed`
+- **SocialProofToast**: Floating toast notifications ("Someone just entered...")
+- **AnimatedCounter**: Count-up animation on scroll (used in stats cards)
+- **CountdownTimer**: Live contest countdown (compact mode for cards, full mode standalone)
+- **ConfettiEffect**: Monochrome particle burst on valid entry code check
+- **FAQ Accordion**: Interactive expand/collapse FAQ on Community page
+- **Streak Tracker**: Daily visit streak counter in Account dashboard (localStorage-based)
 
 ## Database Schema (lib/db)
 
@@ -110,4 +122,4 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ## DotGrid Settings
 
-- dotSize=2, gap=28, baseColor=#1a1a1a, activeColor=#8b2030
+- dotSize=2, gap=28, baseColor=#1a1a1a, activeColor=#666666
