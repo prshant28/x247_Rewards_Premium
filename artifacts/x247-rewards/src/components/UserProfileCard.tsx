@@ -1,4 +1,4 @@
-import { BadgeCheck, Users, Trophy, Link as LinkIcon } from "lucide-react";
+import { Users, Trophy, Link as LinkIcon, UserPlus } from "lucide-react";
 
 interface UserProfileCardProps {
   fullName: string;
@@ -44,72 +44,68 @@ export default function UserProfileCard({
   onShare,
 }: UserProfileCardProps) {
   return (
-    <div className="user-profile-card">
-      <div className="user-profile-card-inner">
-        <div className="user-profile-avatar-area">
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={fullName}
-              className="user-profile-avatar-img"
-            />
-          ) : (
-            <div className="user-profile-avatar-placeholder">
-              <span className="user-profile-initials">
-                {getInitials(fullName)}
-              </span>
-            </div>
+    <div className="upc">
+      <div className="upc-photo-area">
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt={fullName}
+            className="upc-photo"
+          />
+        ) : (
+          <div className="upc-photo-placeholder">
+            <span className="upc-initials">
+              {getInitials(fullName)}
+            </span>
+          </div>
+        )}
+        {membershipTier && membershipTier !== "free" && (
+          <div className="upc-tier">
+            {membershipTier}
+          </div>
+        )}
+      </div>
+
+      <div className="upc-body">
+        <div className="upc-name-row">
+          <h3 className="upc-name">{fullName}</h3>
+          {isVerified && (
+            <span className="upc-verified">
+              <svg viewBox="0 0 22 22" fill="none" className="upc-verified-svg">
+                <path d="M11 0L13.09 2.26L16 1.27L16.87 4.24L19.87 4.63L19.47 7.63L22 9.24L20.24 11.76L22 14.28L19.47 15.89L19.87 18.89L16.87 19.28L16 22.25L13.09 21.26L11 23.52L8.91 21.26L6 22.25L5.13 19.28L2.13 18.89L2.53 15.89L0 14.28L1.76 11.76L0 9.24L2.53 7.63L2.13 4.63L5.13 4.24L6 1.27L8.91 2.26L11 0Z" fill="currentColor"/>
+                <path d="M7.5 11.5L10 14L15 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
           )}
-          {membershipTier && membershipTier !== "free" && (
-            <div className="user-profile-tier-badge">
-              {membershipTier}
-            </div>
+          {selectedBadge && BADGE_ICONS[selectedBadge] && (
+            <span className="upc-badge-emoji" title={selectedBadge}>
+              {BADGE_ICONS[selectedBadge]}
+            </span>
           )}
         </div>
 
-        <div className="user-profile-info">
-          <div className="user-profile-name-row">
-            <h3 className="user-profile-name">
-              {fullName}
-            </h3>
-            {isVerified && (
-              <BadgeCheck className="user-profile-verified-icon" />
-            )}
-            {selectedBadge && BADGE_ICONS[selectedBadge] && (
-              <span className="user-profile-badge-emoji" title={selectedBadge}>
-                {BADGE_ICONS[selectedBadge]}
-              </span>
+        {bio && (
+          <p className="upc-bio">{bio}</p>
+        )}
+
+        {!compact && (
+          <div className="upc-footer">
+            <div className="upc-stat">
+              <Users className="upc-stat-icon" />
+              <span>{stats?.entries ?? 0}</span>
+            </div>
+            <div className="upc-stat">
+              <Trophy className="upc-stat-icon" />
+              <span>{stats?.contestsJoined ?? 0}</span>
+            </div>
+            {onShare && (
+              <button onClick={onShare} className="upc-follow-btn">
+                <LinkIcon className="upc-follow-icon" />
+                Share
+              </button>
             )}
           </div>
-
-          {bio && (
-            <p className="user-profile-bio">
-              {bio}
-            </p>
-          )}
-
-          {!compact && (
-            <div className="user-profile-footer">
-              <div className="user-profile-stat">
-                <Users className="w-4 h-4" />
-                <span>{stats?.entries ?? 0}</span>
-              </div>
-              <div className="user-profile-stat">
-                <Trophy className="w-4 h-4" />
-                <span>{stats?.contestsJoined ?? 0}</span>
-              </div>
-              {onShare && (
-                <button
-                  onClick={onShare}
-                  className="user-profile-share-btn"
-                >
-                  <LinkIcon className="w-3.5 h-3.5" />
-                  Share
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
