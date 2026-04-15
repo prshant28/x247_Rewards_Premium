@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, AnimatePresence, type Variants } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, type Variants } from "framer-motion";
 import { Link } from "wouter";
 import { storeReferralCode } from "@/lib/api";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -257,95 +257,73 @@ const rewardItems = [
 
 function RewardsCarousel() {
   const reducedMotion = useReducedMotion();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
+  const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const dragX = useMotionValue(0);
-  const totalSlides = rewardItems.length;
-
-  const paginate = useCallback((newDirection: number) => {
-    setDirection(newDirection);
-    setCurrentIndex((prev) => (prev + newDirection + totalSlides) % totalSlides);
-  }, [totalSlides]);
-
-  const goToSlide = useCallback((index: number) => {
-    setDirection(index > currentIndex ? 1 : -1);
-    setCurrentIndex(index);
-  }, [currentIndex]);
+  const [isReady, setIsReady] = useState(false);
+  const total = rewardItems.length;
+  const trackRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef(0);
+  const touchDelta = useRef(0);
+  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (isPaused || reducedMotion) return;
-    const timer = setInterval(() => paginate(1), 4000);
-    return () => clearInterval(timer);
-  }, [isPaused, paginate, reducedMotion]);
+    rewardItems.forEach((item) => {
+      const img = new Image();
+      img.src = item.img;
+    });
+    requestAnimationFrame(() => setIsReady(true));
+  }, []);
 
-  const getVisibleIndices = () => {
-    const prev = (currentIndex - 1 + totalSlides) % totalSlides;
-    const next = (currentIndex + 1) % totalSlides;
-    return [prev, currentIndex, next];
-  };
+  const goTo = useCallback((idx: number) => {
+    setCurrent(((idx % total) + total) % total);
+  }, [total]);
 
-  const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? "100%" : "-100%",
-      opacity: 0,
-      scale: 0.92,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      zIndex: 1,
-    },
-    exit: (dir: number) => ({
-      x: dir < 0 ? "100%" : "-100%",
-      opacity: 0,
-      scale: 0.92,
-      zIndex: 0,
-    }),
-  };
-
-  const handleDragEnd = (_: any, info: { offset: { x: number }; velocity: { x: number } }) => {
-    const swipe = info.offset.x;
-    const velocity = info.velocity.x;
-    if (swipe < -50 || velocity < -300) {
-      paginate(1);
-    } else if (swipe > 50 || velocity > 300) {
-      paginate(-1);
-    }
-  };
-
-  const [progress, setProgress] = useState(0);
-  const progressRef = useRef<ReturnType<typeof requestAnimationFrame> | null>(null);
-  const startTimeRef = useRef(Date.now());
+  const next = useCallback(() => goTo(current + 1), [current, goTo]);
+  const prev = useCallback(() => goTo(current - 1), [current, goTo]);
 
   useEffect(() => {
     if (isPaused || reducedMotion) {
-      if (progressRef.current) cancelAnimationFrame(progressRef.current);
+      if (autoplayRef.current) clearInterval(autoplayRef.current);
+      autoplayRef.current = null;
       return;
     }
-    startTimeRef.current = Date.now() - (progress * 4000);
-    const tick = () => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const p = Math.min(elapsed / 4000, 1);
-      setProgress(p);
-      if (p < 1) {
-        progressRef.current = requestAnimationFrame(tick);
-      }
-    };
-    progressRef.current = requestAnimationFrame(tick);
-    return () => { if (progressRef.current) cancelAnimationFrame(progressRef.current); };
-  }, [isPaused, reducedMotion, currentIndex]);
+    autoplayRef.current = setInterval(next, 4500);
+    return () => { if (autoplayRef.current) clearInterval(autoplayRef.current); };
+  }, [isPaused, next, reducedMotion]);
 
-  useEffect(() => {
-    setProgress(0);
-    startTimeRef.current = Date.now();
-  }, [currentIndex]);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDelta.current = 0;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchDelta.current = e.touches[0].clientX - touchStartX.current;
+  };
+  const handleTouchEnd = () => {
+    if (touchDelta.current < -40) next();
+    else if (touchDelta.current > 40) prev();
+    touchDelta.current = 0;
+  };
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") { paginate(-1); }
-    else if (e.key === "ArrowRight") { paginate(1); }
-  }, [paginate]);
+    if (e.key === "ArrowLeft") prev();
+    else if (e.key === "ArrowRight") next();
+  }, [prev, next]);
+
+  const [visibleCount, setVisibleCount] = useState(3);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      setVisibleCount(w < 640 ? 1 : w < 1024 ? 2 : 3);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const cardWidthPercent = 100 / visibleCount;
+  const maxOffset = total - visibleCount;
+  const clampedCurrent = Math.min(current, Math.max(maxOffset, 0));
+  const offset = -(clampedCurrent * cardWidthPercent);
 
   return (
     <div
@@ -358,98 +336,86 @@ function RewardsCarousel() {
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
-      <div className="relative overflow-hidden rounded-2xl" style={{ minHeight: 380 }} aria-live="polite">
-        <AnimatePresence initial={false} custom={direction} mode="popLayout">
-          <motion.div
-            key={currentIndex}
-            custom={direction}
-            variants={reducedMotion ? undefined : slideVariants}
-            initial={reducedMotion ? false : "enter"}
-            animate="center"
-            exit={reducedMotion ? undefined : "exit"}
-            transition={reducedMotion ? { duration: 0 } : {
-              x: { type: "spring", stiffness: 300, damping: 35, mass: 0.8 },
-              opacity: { duration: 0.3 },
-              scale: { duration: 0.4 },
-            }}
-            drag={reducedMotion ? false : "x"}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.12}
-            onDragEnd={handleDragEnd}
-            style={{ x: dragX }}
-            className="w-full cursor-grab active:cursor-grabbing"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-              {getVisibleIndices().map((idx, pos) => {
-                const item = rewardItems[idx];
-                const isCenter = pos === 1;
-                return (
-                  <motion.div
-                    key={`${currentIndex}-${idx}`}
-                    initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: pos * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className={pos !== 1 ? "hidden sm:block" : "block"}
-                  >
-                    <TiltCard className={`glass-card group h-full overflow-hidden transition-all duration-500 ${isCenter ? "ring-1 ring-white/[0.08] shadow-[0_0_40px_-10px_rgba(255,255,255,0.06)]" : ""}`}>
-                      <div className="card-top-accent" />
-                      <div className="card-shine" />
-                      <div className="relative z-[2] flex flex-col h-full">
-                        <div className="relative h-36 sm:h-44 overflow-hidden">
-                          <motion.img
-                            src={item.img}
-                            alt={`${item.tier}: ${item.title}`}
-                            className="w-full h-full object-cover opacity-40 reward-card-image"
-                            loading="lazy"
-                            whileHover={reducedMotion ? {} : { scale: 1.05 }}
-                            transition={{ duration: 0.6 }}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(6,6,6,0.98)] via-[rgba(6,6,6,0.5)] to-transparent" />
-                          <motion.div
-                            className="absolute top-3 right-3"
-                            animate={reducedMotion ? {} : { y: [0, -4, 0] }}
-                            transition={{ duration: 3, delay: pos * 0.5, repeat: Infinity, ease: "easeInOut" }}
-                          >
-                            <BorderGlow borderRadius={10} glowRadius={8} cardBg="rgba(0,0,0,0.6)" className="icon-circle icon-circle-sm backdrop-blur-sm">
-                              {item.icon}
-                            </BorderGlow>
-                          </motion.div>
-                          {isCenter && (
-                            <div className="absolute top-3 left-3">
-                              <span className="px-2.5 py-1 rounded-full bg-white/[0.08] backdrop-blur-md text-[9px] uppercase tracking-widest text-white/60 font-display border border-white/[0.06]">
-                                Featured
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="p-5 sm:p-6 pt-3 flex-1 flex flex-col">
-                          <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
-                          <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                          <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed flex-1">{item.desc}</p>
-                          <div className="mt-4 flex items-center text-white/30 text-xs font-display group-hover:text-white/50 transition-colors">
-                            <span>Learn more</span>
-                            <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </div>
+      <div
+        className="overflow-hidden rounded-2xl"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        aria-live="polite"
+      >
+        <div
+          ref={trackRef}
+          className="flex carousel-track"
+          style={{
+            transform: `translate3d(${offset}%, 0, 0)`,
+            opacity: isReady ? 1 : 0,
+          }}
+        >
+          {rewardItems.map((item, i) => {
+            const isActive = i === current;
+            const isAdjacent = i === ((current - 1 + total) % total) || i === ((current + 1) % total);
+            return (
+              <div
+                key={i}
+                className="carousel-slide"
+                style={{ width: `${cardWidthPercent}%`, minWidth: `${cardWidthPercent}%`, padding: "0 8px" }}
+              >
+                <div
+                  className={`glass-card group h-full overflow-hidden carousel-card ${isActive ? "carousel-card-active" : isAdjacent ? "carousel-card-adjacent" : "carousel-card-distant"}`}
+                  onClick={() => !isActive && goTo(i)}
+                  style={{ cursor: isActive ? "default" : "pointer" }}
+                >
+                  <div className="card-top-accent" />
+                  <div className="card-shine" />
+                  <div className="relative z-[2] flex flex-col h-full">
+                    <div className="relative h-36 sm:h-44 overflow-hidden">
+                      <img
+                        src={item.img}
+                        alt={`${item.tier}: ${item.title}`}
+                        className="w-full h-full object-cover opacity-40 reward-card-image"
+                        loading="eager"
+                        decoding="async"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(6,6,6,0.98)] via-[rgba(6,6,6,0.5)] to-transparent" />
+                      <div className="absolute top-3 right-3">
+                        <BorderGlow borderRadius={10} glowRadius={8} cardBg="rgba(0,0,0,0.6)" className="icon-circle icon-circle-sm backdrop-blur-sm">
+                          {item.icon}
+                        </BorderGlow>
                       </div>
-                    </TiltCard>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+                      {isActive && (
+                        <div className="absolute top-3 left-3">
+                          <span className="px-2.5 py-1 rounded-full bg-white/[0.08] backdrop-blur-md text-[9px] uppercase tracking-widest text-white/60 font-display border border-white/[0.06]">
+                            Featured
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-5 sm:p-6 pt-3 flex-1 flex flex-col">
+                      <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
+                      <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed flex-1">{item.desc}</p>
+                      <div className="mt-4 flex items-center text-white/30 text-xs font-display group-hover:text-white/50 transition-colors">
+                        <span>Learn more</span>
+                        <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <button
-        onClick={() => paginate(-1)}
+        onClick={prev}
         className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-0.5 transition-transform" />
       </button>
       <button
-        onClick={() => paginate(1)}
+        onClick={next}
         className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
         aria-label="Next slide"
       >
@@ -460,15 +426,15 @@ function RewardsCarousel() {
         {rewardItems.map((_, idx) => (
           <button
             key={idx}
-            onClick={() => goToSlide(idx)}
+            onClick={() => goTo(idx)}
             role="tab"
-            aria-selected={idx === currentIndex}
+            aria-selected={idx === current}
             aria-label={`Slide ${idx + 1}: ${rewardItems[idx].title}`}
             className="group relative p-1"
           >
             <div
               className={`h-1 rounded-full transition-all duration-500 ease-out ${
-                idx === currentIndex
+                idx === current
                   ? "w-8 bg-white/40 shadow-[0_0_8px_rgba(255,255,255,0.1)]"
                   : "w-2 bg-white/[0.1] group-hover:bg-white/20"
               }`}
@@ -478,14 +444,17 @@ function RewardsCarousel() {
       </div>
 
       <div className="flex items-center justify-center mt-4 gap-3 text-white/20 text-[10px] font-display tracking-widest uppercase">
-        <span>{String(currentIndex + 1).padStart(2, "0")}</span>
+        <span>{String(current + 1).padStart(2, "0")}</span>
         <div className="w-8 h-px bg-white/10 relative overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-white/30 transition-none"
-            style={{ width: `${progress * 100}%` }}
+            className="absolute inset-y-0 left-0 bg-white/30 carousel-progress"
+            key={current}
+            style={{
+              animationPlayState: isPaused ? "paused" : "running",
+            }}
           />
         </div>
-        <span>{String(totalSlides).padStart(2, "0")}</span>
+        <span>{String(total).padStart(2, "0")}</span>
       </div>
     </div>
   );
