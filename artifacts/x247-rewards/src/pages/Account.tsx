@@ -707,34 +707,50 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
           const isCurrent = activeTier === plan.id;
           const isDowngrade = planIndex < activeIndex;
           const isBlack = plan.id === "black";
+          const isGold = plan.id === "gold";
 
           return (
             <div
               key={plan.id}
-              className={`acct-plan-card ${isBlack ? "acct-plan-black" : ""} ${plan.popular && activeTier === "free" ? "acct-plan-popular" : ""} ${isCurrent ? "acct-plan-current" : ""}`}
+              className={`pricing-card ${isBlack ? "pricing-card-black" : ""} ${isGold && plan.popular && activeTier === "free" ? "pricing-card-popular" : ""} ${isCurrent ? "pricing-card-current" : ""}`}
             >
+              <div className="pricing-card-glow" />
+
               {plan.popular && activeTier === "free" && (
-                <div className="acct-plan-badge">Most Popular</div>
+                <div className="pricing-badge pricing-badge-popular">
+                  <Star className="w-2.5 h-2.5" />
+                  <span>Most Popular</span>
+                </div>
               )}
               {isCurrent && (
-                <div className="acct-plan-badge">Current Plan</div>
+                <div className="pricing-badge pricing-badge-current">
+                  <Check className="w-2.5 h-2.5" />
+                  <span>Current</span>
+                </div>
               )}
 
-              <div className="acct-plan-head">
-                <h4 className="text-base font-display font-medium text-white">{plan.name}</h4>
-                <p className="text-[10px] text-white/30 font-light mt-0.5">{plan.tagline}</p>
+              <div className="pricing-head">
+                <div className="pricing-tier-icon">
+                  {isBlack ? <Crown className="w-5 h-5" /> : isGold ? <Award className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
+                </div>
+                <h4 className="pricing-tier-name">{plan.name}</h4>
+                <p className="pricing-tier-tagline">{plan.tagline}</p>
               </div>
 
-              <div className="acct-plan-price">
-                <span className="text-[10px] text-white/30 font-light">₹</span>
-                <span className="text-3xl font-display font-light text-white">{plan.price}</span>
-                <span className="text-xs text-white/25 font-light">/mo</span>
+              <div className="pricing-price">
+                <span className="pricing-currency">₹</span>
+                <span className="pricing-amount">{plan.price}</span>
+                <span className="pricing-period">/mo</span>
               </div>
 
-              <ul className="acct-plan-features">
+              <div className="pricing-divider" />
+
+              <ul className="pricing-features">
                 {plan.features.map((f) => (
-                  <li key={f}>
-                    <Check className="w-3 h-3 text-white/30 shrink-0 mt-0.5" />
+                  <li key={f} className="pricing-feature-item">
+                    <div className="pricing-feature-check">
+                      <Check className="w-2.5 h-2.5" />
+                    </div>
                     <span>{f}</span>
                   </li>
                 ))}
@@ -743,9 +759,19 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
               <button
                 onClick={() => !isCurrent && !isDowngrade && handlePurchase(plan.id)}
                 disabled={purchasing !== null || isCurrent || isDowngrade}
-                className={`acct-plan-btn ${isBlack && !isCurrent ? "acct-plan-btn-black" : ""}`}
+                className={`pricing-btn ${isBlack && !isCurrent ? "pricing-btn-black" : ""}`}
               >
-                {purchasing === plan.id ? "Processing..." : isCurrent ? "Current Plan" : isDowngrade ? "Downgrade" : `Get ${plan.name}`}
+                {purchasing === plan.id ? (
+                  <span className="flex items-center gap-2 justify-center">
+                    <div className="w-3.5 h-3.5 border border-white/30 border-t-white/80 rounded-full animate-spin" />
+                    Processing
+                  </span>
+                ) : isCurrent ? "Current Plan" : isDowngrade ? "Downgrade" : (
+                  <span className="flex items-center gap-2 justify-center">
+                    Get {plan.name}
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                )}
               </button>
             </div>
           );

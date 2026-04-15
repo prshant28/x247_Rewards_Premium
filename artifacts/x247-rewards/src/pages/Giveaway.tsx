@@ -64,87 +64,84 @@ function ContestCard({ contest, index }: { contest: ContestData; index: number }
   return (
     <motion.div custom={index} variants={fadeUp} initial="hidden" animate="visible">
       <Link href={isUpcoming ? `/giveaway` : `/giveaway/${contest.slug}`} aria-label={isUpcoming ? `${contest.name} — coming soon` : `Enter ${contest.name}`}>
-        <div className={`glass-card overflow-hidden group cursor-pointer transition-all duration-300 ${isUpcoming ? "opacity-60 pointer-events-none" : ""} ${isFull ? "opacity-70" : ""}`}>
-          <div className="card-top-accent" />
-          <div className="card-shine" />
+        <div className={`contest-card group ${isUpcoming ? "contest-card-upcoming" : ""} ${isFull ? "contest-card-full" : ""}`}>
+          <div className="contest-card-glow" />
+          <div className="contest-card-shine" />
 
-          <div className="relative z-[2] p-6 sm:p-7">
-            <div className="flex items-start justify-between mb-5">
+          <div className="contest-card-inner">
+            <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 {isUpcoming ? (
-                  <div className="premium-badge !text-[9px]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <Clock className="w-2.5 h-2.5 mr-1" />
-                    Coming Soon
+                  <div className="contest-badge contest-badge-upcoming">
+                    <Clock className="w-3 h-3" />
+                    <span>Coming Soon</span>
                   </div>
                 ) : isFull ? (
-                  <div className="premium-badge !text-[9px]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <CheckCircle2 className="w-2.5 h-2.5 mr-1" />
-                    Full
+                  <div className="contest-badge contest-badge-full">
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>Full</span>
                   </div>
                 ) : (
-                  <div className="premium-badge premium-badge-hot !text-[9px]">
-                    <Zap className="w-2.5 h-2.5 mr-1" />
-                    Live Now
+                  <div className="contest-badge contest-badge-live">
+                    <span className="contest-badge-pulse" />
+                    <Zap className="w-3 h-3" />
+                    <span>Live</span>
                   </div>
                 )}
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-white/40" />
+              <div className="contest-icon-box">
+                <Trophy className="w-5 h-5 text-white/30" />
               </div>
             </div>
 
-            <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2 tracking-tight">{contest.name}</h3>
-            <p className="text-xs text-white/35 font-light leading-relaxed mb-5 line-clamp-2">{contest.description}</p>
+            <h3 className="text-xl sm:text-2xl font-display font-medium text-white mb-1.5 tracking-tight leading-tight">{contest.name}</h3>
+            <p className="text-[11px] text-white/30 font-light leading-relaxed mb-5 line-clamp-2">{contest.description}</p>
 
-            <div className="flex items-center gap-3 mb-5 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-              <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0">
-                <Gift className="w-4 h-4 text-white/50" />
+            <div className="contest-prize-box">
+              <div className="contest-prize-icon">
+                <Gift className="w-4 h-4 text-white/40" />
               </div>
-              <div>
+              <div className="flex-1">
                 <div className="text-sm font-display font-light text-white">{contest.prize}</div>
                 {contest.prizeValue && (
-                  <div className="text-[10px] text-white/30 font-light">Worth {contest.prizeValue}</div>
+                  <div className="text-[9px] text-white/25 font-light mt-0.5">Worth {contest.prizeValue}</div>
                 )}
               </div>
+              <ChevronRight className="w-4 h-4 text-white/10" />
             </div>
 
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] text-white/30 font-display uppercase tracking-widest">Spots Filled</span>
-                <span className="text-xs text-white/50 font-light">{contest.totalEntries}/{contest.maxSpots}</span>
+            <div className="contest-progress">
+              <div className="flex justify-between items-center mb-2.5">
+                <span className="text-[9px] text-white/25 font-display uppercase tracking-[0.15em]">Capacity</span>
+                <span className="text-[11px] text-white/45 font-light font-mono">{contest.totalEntries}<span className="text-white/15"> / </span>{contest.maxSpots}</span>
               </div>
-              <div className="w-full h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+              <div className="contest-progress-track">
                 <motion.div
-                  className="h-full rounded-full"
+                  className="contest-progress-fill"
                   initial={{ width: 0 }}
                   animate={{ width: `${spotsPercent}%` }}
-                  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                  style={{
-                    background: isFull
-                      ? "rgba(255,255,255,0.2)"
-                      : "linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.35))",
-                  }}
+                  transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/[0.04]">
+            <div className="contest-footer">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5">
-                  <Users className="w-3 h-3 text-white/25" />
-                  <span className="text-[10px] text-white/30 font-light">{contest.spotsRemaining} left</span>
+                  <Users className="w-3 h-3 text-white/20" />
+                  <span className="text-[10px] text-white/25 font-light">{contest.spotsRemaining} spots left</span>
                 </div>
                 {contest.endsAt && (
                   <div className="flex items-center gap-1.5">
-                    <Clock className="w-3 h-3 text-white/25" />
+                    <Clock className="w-3 h-3 text-white/20" />
                     <CountdownTimer endsAt={contest.endsAt} compact />
                   </div>
                 )}
               </div>
               {!isUpcoming && !isFull && (
-                <div className="flex items-center gap-1 text-xs text-white/40 group-hover:text-white/60 transition-colors font-display">
-                  <span className="font-light">Enter Now</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                <div className="contest-enter-btn">
+                  <span>Enter</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </div>
               )}
             </div>
