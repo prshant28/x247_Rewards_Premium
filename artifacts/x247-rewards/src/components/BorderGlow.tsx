@@ -61,7 +61,7 @@ export default function BorderGlow({
   coneSpread = 25,
   edgeSensitivity = 30,
   fillOpacity = 0.5,
-  colors = ["#8b2030", "#1e3a6e", "#a0a0a0"],
+  colors = ["#666666", "#444444", "#888888"],
   as: Tag = "div",
   ...rest
 }: BorderGlowProps) {

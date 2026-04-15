@@ -4,12 +4,13 @@ import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import {
   User, Trophy, Clock, ArrowRight, LogOut, Mail, Phone,
-  MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff
+  MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
   logoutUser, isUserLoggedIn
 } from "@/lib/api";
+import AnimatedCounter from "@/components/AnimatedCounter";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -165,8 +166,43 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
+function getLocalDate(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function computeStreak(dates: string[]): number {
+  let streak = 0;
+  const sorted = [...new Set(dates)].sort().reverse();
+  for (let i = 0; i < sorted.length; i++) {
+    const expected = new Date();
+    expected.setDate(expected.getDate() - i);
+    const expectedStr = `${expected.getFullYear()}-${String(expected.getMonth() + 1).padStart(2, "0")}-${String(expected.getDate()).padStart(2, "0")}`;
+    if (sorted[i] === expectedStr) {
+      streak++;
+    } else break;
+  }
+  return streak;
+}
+
+function useStreak(): number {
+  const [streak, setStreak] = useState(0);
+  useEffect(() => {
+    const key = "x247_visit_dates";
+    const today = getLocalDate();
+    const stored = JSON.parse(localStorage.getItem(key) || "[]") as string[];
+    if (!stored.includes(today)) {
+      stored.push(today);
+      localStorage.setItem(key, JSON.stringify(stored.slice(-30)));
+    }
+    setStreak(computeStreak(stored));
+  }, []);
+  return streak;
+}
+
 function Dashboard({ user, entries, onLogout }: { user: any; entries: any[]; onLogout: () => void }) {
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
+  const streak = useStreak();
 
   return (
     <>
@@ -215,9 +251,38 @@ function Dashboard({ user, entries, onLogout }: { user: any; entries: any[]; onL
         </div>
       </motion.div>
 
+      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5} className="mb-6">
+        <div className="grid grid-cols-3 gap-3">
+          <div className="glass-card p-4 text-center">
+            <div className="card-shine" />
+            <div className="relative z-[2]">
+              <Flame className="w-4 h-4 text-white/30 mx-auto mb-2" />
+              <AnimatedCounter value={streak} className="text-xl font-display font-light text-white block" />
+              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">Day Streak</div>
+            </div>
+          </div>
+          <div className="glass-card p-4 text-center">
+            <div className="card-shine" />
+            <div className="relative z-[2]">
+              <Trophy className="w-4 h-4 text-white/30 mx-auto mb-2" />
+              <AnimatedCounter value={entries.length} className="text-xl font-display font-light text-white block" />
+              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">Entries</div>
+            </div>
+          </div>
+          <div className="glass-card p-4 text-center">
+            <div className="card-shine" />
+            <div className="relative z-[2]">
+              <Target className="w-4 h-4 text-white/30 mx-auto mb-2" />
+              <AnimatedCounter value={entries.reduce((s: number, e: any) => s + (e.partnersCompleted || 0), 0)} className="text-xl font-display font-light text-white block" />
+              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">Partners</div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
       <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-1 h-5 rounded-full bg-gradient-to-b from-red-500/60 to-red-500/0" />
+          <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
           <h3 className="text-lg font-display font-light text-white">Your Giveaway Entries</h3>
           <span className="text-[10px] text-white/25 font-light">{entries.length} total</span>
         </div>

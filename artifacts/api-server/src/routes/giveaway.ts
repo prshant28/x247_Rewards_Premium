@@ -21,6 +21,59 @@ function generateEntryCode(): string {
   return `${prefix}-${code.substring(0, 4)}-${code.substring(4)}`;
 }
 
+router.get("/activity/feed", async (_req, res) => {
+  try {
+    const recentEntries = await db
+      .select({
+        type: sql<string>`'entry'`,
+        name: giveawayEntriesTable.fullName,
+        city: giveawayEntriesTable.city,
+        contestId: giveawayEntriesTable.contestId,
+        createdAt: giveawayEntriesTable.createdAt,
+      })
+      .from(giveawayEntriesTable)
+      .orderBy(sql`created_at DESC`)
+      .limit(10);
+
+    const winnersResult = await db.execute(sql`
+      SELECT 'winner' as type, winner_name as name, winner_city as city, 
+             w.contest_id, w.announced_at as created_at, w.prize,
+             c.name as contest_name
+      FROM winners w
+      LEFT JOIN contests c ON w.contest_id = c.id
+      ORDER BY w.announced_at DESC LIMIT 5
+    `);
+    const recentWinners = winnersResult.rows || winnersResult || [];
+
+    const contestNames: Record<number, string> = {};
+    const allContests = await db.select().from(contestsTable);
+    for (const c of allContests) contestNames[c.id] = c.name;
+
+    const feed = [
+      ...recentEntries.map((e) => ({
+        type: "entry",
+        name: e.name ? e.name.split(" ").map((w: string, i: number) => i === 0 ? w[0] + "." : w[0] + ".").join(" ") : "Someone",
+        city: e.city || "India",
+        contest: e.contestId ? contestNames[e.contestId] || "Contest" : "Giveaway",
+        time: e.createdAt,
+      })),
+      ...(recentWinners as any[]).map((w: any) => ({
+        type: "winner",
+        name: w.name || "Winner",
+        city: w.city || "India",
+        contest: w.contest_name || "Contest",
+        prize: w.prize,
+        time: w.created_at,
+      })),
+    ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 15);
+
+    return res.json(feed);
+  } catch (err) {
+    console.error("Activity feed error:", err);
+    return res.json([]);
+  }
+});
+
 router.get("/giveaway/status", async (_req, res) => {
   try {
     const [result] = await db.select({ count: sql<number>`count(*)` }).from(giveawayEntriesTable);
