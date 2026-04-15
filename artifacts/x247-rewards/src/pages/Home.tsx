@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, type Variants } from "framer-motion";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, AnimatePresence, type Variants } from "framer-motion";
 import { Link } from "wouter";
 import { storeReferralCode } from "@/lib/api";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -24,7 +24,9 @@ import {
   Package,
   Gift,
   Gem,
-  BarChart3
+  BarChart3,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 import Silk from "@/components/Silk";
@@ -241,6 +243,251 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
     >
       {children}
     </motion.div>
+  );
+}
+
+const rewardItems = [
+  { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
+  { tier: "Gift Cards", title: "₹500 – ₹2,000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/reward-trophy.png" },
+  { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
+  { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-headphones.png" },
+  { tier: "Tech Prizes", title: "Wireless Earbuds", desc: "Premium wireless earbuds and tech gadgets — weekly drops for top entries.", icon: <Headphones className="w-5 h-5" />, img: "/images/reward-headphones.png" },
+  { tier: "Grand Prize", title: "₹10,000 Cash", desc: "Monthly grand draw for the ultimate reward. More entries = higher chances.", icon: <Trophy className="w-5 h-5" />, img: "/images/reward-trophy.png" },
+];
+
+function RewardsCarousel() {
+  const reducedMotion = useReducedMotion();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const dragX = useMotionValue(0);
+  const totalSlides = rewardItems.length;
+
+  const paginate = useCallback((newDirection: number) => {
+    setDirection(newDirection);
+    setCurrentIndex((prev) => (prev + newDirection + totalSlides) % totalSlides);
+  }, [totalSlides]);
+
+  const goToSlide = useCallback((index: number) => {
+    setDirection(index > currentIndex ? 1 : -1);
+    setCurrentIndex(index);
+  }, [currentIndex]);
+
+  useEffect(() => {
+    if (isPaused || reducedMotion) return;
+    const timer = setInterval(() => paginate(1), 4000);
+    return () => clearInterval(timer);
+  }, [isPaused, paginate, reducedMotion]);
+
+  const getVisibleIndices = () => {
+    const prev = (currentIndex - 1 + totalSlides) % totalSlides;
+    const next = (currentIndex + 1) % totalSlides;
+    return [prev, currentIndex, next];
+  };
+
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? "100%" : "-100%",
+      opacity: 0,
+      scale: 0.92,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      zIndex: 1,
+    },
+    exit: (dir: number) => ({
+      x: dir < 0 ? "100%" : "-100%",
+      opacity: 0,
+      scale: 0.92,
+      zIndex: 0,
+    }),
+  };
+
+  const handleDragEnd = (_: any, info: { offset: { x: number }; velocity: { x: number } }) => {
+    const swipe = info.offset.x;
+    const velocity = info.velocity.x;
+    if (swipe < -50 || velocity < -300) {
+      paginate(1);
+    } else if (swipe > 50 || velocity > 300) {
+      paginate(-1);
+    }
+  };
+
+  const [progress, setProgress] = useState(0);
+  const progressRef = useRef<ReturnType<typeof requestAnimationFrame> | null>(null);
+  const startTimeRef = useRef(Date.now());
+
+  useEffect(() => {
+    if (isPaused || reducedMotion) {
+      if (progressRef.current) cancelAnimationFrame(progressRef.current);
+      return;
+    }
+    startTimeRef.current = Date.now() - (progress * 4000);
+    const tick = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const p = Math.min(elapsed / 4000, 1);
+      setProgress(p);
+      if (p < 1) {
+        progressRef.current = requestAnimationFrame(tick);
+      }
+    };
+    progressRef.current = requestAnimationFrame(tick);
+    return () => { if (progressRef.current) cancelAnimationFrame(progressRef.current); };
+  }, [isPaused, reducedMotion, currentIndex]);
+
+  useEffect(() => {
+    setProgress(0);
+    startTimeRef.current = Date.now();
+  }, [currentIndex]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") { paginate(-1); }
+    else if (e.key === "ArrowRight") { paginate(1); }
+  }, [paginate]);
+
+  return (
+    <div
+      className="relative outline-none focus-visible:ring-1 focus-visible:ring-white/20 rounded-2xl"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Prizes and rewards"
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
+      <div className="relative overflow-hidden rounded-2xl" style={{ minHeight: 380 }} aria-live="polite">
+        <AnimatePresence initial={false} custom={direction} mode="popLayout">
+          <motion.div
+            key={currentIndex}
+            custom={direction}
+            variants={reducedMotion ? undefined : slideVariants}
+            initial={reducedMotion ? false : "enter"}
+            animate="center"
+            exit={reducedMotion ? undefined : "exit"}
+            transition={reducedMotion ? { duration: 0 } : {
+              x: { type: "spring", stiffness: 300, damping: 35, mass: 0.8 },
+              opacity: { duration: 0.3 },
+              scale: { duration: 0.4 },
+            }}
+            drag={reducedMotion ? false : "x"}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.12}
+            onDragEnd={handleDragEnd}
+            style={{ x: dragX }}
+            className="w-full cursor-grab active:cursor-grabbing"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              {getVisibleIndices().map((idx, pos) => {
+                const item = rewardItems[idx];
+                const isCenter = pos === 1;
+                return (
+                  <motion.div
+                    key={`${currentIndex}-${idx}`}
+                    initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: pos * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className={pos !== 1 ? "hidden sm:block" : "block"}
+                  >
+                    <TiltCard className={`glass-card group h-full overflow-hidden transition-all duration-500 ${isCenter ? "ring-1 ring-white/[0.08] shadow-[0_0_40px_-10px_rgba(255,255,255,0.06)]" : ""}`}>
+                      <div className="card-top-accent" />
+                      <div className="card-shine" />
+                      <div className="relative z-[2] flex flex-col h-full">
+                        <div className="relative h-36 sm:h-44 overflow-hidden">
+                          <motion.img
+                            src={item.img}
+                            alt={`${item.tier}: ${item.title}`}
+                            className="w-full h-full object-cover opacity-40 reward-card-image"
+                            loading="lazy"
+                            whileHover={reducedMotion ? {} : { scale: 1.05 }}
+                            transition={{ duration: 0.6 }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(6,6,6,0.98)] via-[rgba(6,6,6,0.5)] to-transparent" />
+                          <motion.div
+                            className="absolute top-3 right-3"
+                            animate={reducedMotion ? {} : { y: [0, -4, 0] }}
+                            transition={{ duration: 3, delay: pos * 0.5, repeat: Infinity, ease: "easeInOut" }}
+                          >
+                            <BorderGlow borderRadius={10} glowRadius={8} cardBg="rgba(0,0,0,0.6)" className="icon-circle icon-circle-sm backdrop-blur-sm">
+                              {item.icon}
+                            </BorderGlow>
+                          </motion.div>
+                          {isCenter && (
+                            <div className="absolute top-3 left-3">
+                              <span className="px-2.5 py-1 rounded-full bg-white/[0.08] backdrop-blur-md text-[9px] uppercase tracking-widest text-white/60 font-display border border-white/[0.06]">
+                                Featured
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-5 sm:p-6 pt-3 flex-1 flex flex-col">
+                          <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
+                          <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
+                          <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed flex-1">{item.desc}</p>
+                          <div className="mt-4 flex items-center text-white/30 text-xs font-display group-hover:text-white/50 transition-colors">
+                            <span>Learn more</span>
+                            <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      </div>
+                    </TiltCard>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <button
+        onClick={() => paginate(-1)}
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-0.5 transition-transform" />
+      </button>
+      <button
+        onClick={() => paginate(1)}
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
+      </button>
+
+      <div className="flex items-center justify-center mt-8 sm:mt-10 gap-2" role="tablist" aria-label="Slide navigation">
+        {rewardItems.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => goToSlide(idx)}
+            role="tab"
+            aria-selected={idx === currentIndex}
+            aria-label={`Slide ${idx + 1}: ${rewardItems[idx].title}`}
+            className="group relative p-1"
+          >
+            <div
+              className={`h-1 rounded-full transition-all duration-500 ease-out ${
+                idx === currentIndex
+                  ? "w-8 bg-white/40 shadow-[0_0_8px_rgba(255,255,255,0.1)]"
+                  : "w-2 bg-white/[0.1] group-hover:bg-white/20"
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-center mt-4 gap-3 text-white/20 text-[10px] font-display tracking-widest uppercase">
+        <span>{String(currentIndex + 1).padStart(2, "0")}</span>
+        <div className="w-8 h-px bg-white/10 relative overflow-hidden">
+          <div
+            className="absolute inset-y-0 left-0 bg-white/30 transition-none"
+            style={{ width: `${progress * 100}%` }}
+          />
+        </div>
+        <span>{String(totalSlides).padStart(2, "0")}</span>
+      </div>
+    </div>
   );
 }
 
@@ -633,43 +880,11 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-16 sm:mb-24"
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="mb-16 sm:mb-24 px-6 sm:px-8"
             >
-              {[
-                { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
-                { tier: "Gift Cards", title: "500 – 2000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/reward-trophy.png" },
-                { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
-                { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-headphones.png" },
-              ].map((item, i) => (
-                <motion.div key={i} variants={fadeUp}>
-                  <TiltCard className="glass-card group h-full overflow-hidden">
-                    <div className="card-top-accent" />
-                    <div className="card-shine" />
-                    <div className="relative z-[2] flex flex-col h-full">
-                      <div className="relative h-32 sm:h-36 overflow-hidden">
-                        <img src={item.img} alt="" className="w-full h-full object-cover opacity-40 reward-card-image" loading="lazy" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(6,6,6,0.98)] via-[rgba(6,6,6,0.5)] to-transparent" />
-                        <motion.div
-                          className="absolute top-3 right-3"
-                          animate={{ y: [0, -4, 0] }}
-                          transition={{ duration: 3, delay: i * 0.5, repeat: Infinity, ease: "easeInOut" }}
-                        >
-                          <BorderGlow borderRadius={10} glowRadius={8} cardBg="rgba(0,0,0,0.6)" className="icon-circle icon-circle-sm backdrop-blur-sm">
-                            {item.icon}
-                          </BorderGlow>
-                        </motion.div>
-                      </div>
-                      <div className="p-5 sm:p-6 pt-3">
-                        <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
-                        <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                        <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed">{item.desc}</p>
-                      </div>
-                    </div>
-                  </TiltCard>
-                </motion.div>
-              ))}
+              <RewardsCarousel />
             </motion.div>
           </div>
         </section>
