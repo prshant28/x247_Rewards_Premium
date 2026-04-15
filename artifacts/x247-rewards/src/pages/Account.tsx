@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
+import UserProfileCard from "@/components/UserProfileCard";
 import {
   User, Trophy, Clock, ArrowRight, LogOut, Mail, Phone,
   MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target,
-  Palette, Check
+  Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
+  Edit3, Save, X, Award
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
-  logoutUser, isUserLoggedIn, getStoredReferralCode, trackReferralConversion
+  logoutUser, isUserLoggedIn, getStoredReferralCode, trackReferralConversion,
+  updateProfile, getUserBadges, purchaseMembership, uploadScreenshot
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import { useTheme, THEMES, type ThemeId } from "@/contexts/ThemeContext";
@@ -253,9 +256,387 @@ function ThemeSelector() {
   );
 }
 
-function Dashboard({ user, entries, onLogout }: { user: any; entries: any[]; onLogout: () => void }) {
+function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [bio, setBio] = useState(user.bio || "");
+  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
+  const [profileSlug, setProfileSlug] = useState(user.profileSlug || "");
+  const [isPublic, setIsPublic] = useState(user.isPublic || false);
+
+  const profileUrl = profileSlug
+    ? `${window.location.origin}${import.meta.env.BASE_URL}profile/${profileSlug}`
+    : "";
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Please select an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image must be under 5MB");
+      return;
+    }
+    setUploading(true);
+    setError("");
+    try {
+      const objectPath = await uploadScreenshot(file);
+      const url = `/api/storage/public/${objectPath}`;
+      setAvatarUrl(url);
+      await updateProfile({ avatarUrl: url });
+      onUpdate({ ...user, avatarUrl: url });
+    } catch (err: any) {
+      setError(err.message || "Upload failed");
+    }
+    setUploading(false);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError("");
+    const result = await updateProfile({ bio, profileSlug, isPublic });
+    if (result.success) {
+      onUpdate({ ...user, bio, profileSlug: result.data.profileSlug, isPublic, avatarUrl });
+      setProfileSlug(result.data.profileSlug);
+      setEditing(false);
+    } else {
+      setError(result.error || "Failed to save");
+    }
+    setSaving(false);
+  };
+
+  const handleCopyLink = () => {
+    if (profileUrl) {
+      navigator.clipboard.writeText(profileUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleShare = () => {
+    if (profileUrl && navigator.share) {
+      navigator.share({ title: `${user.fullName} on X247`, url: profileUrl }).catch(() => {});
+    } else {
+      handleCopyLink();
+    }
+  };
+
+  return (
+    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="mb-6">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
+        <User className="w-4 h-4 text-white/40" />
+        <h3 className="text-lg font-display font-light text-white">Public Profile</h3>
+        <button
+          onClick={() => setEditing(!editing)}
+          className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
+        >
+          {editing ? <X className="w-3 h-3" /> : <Edit3 className="w-3 h-3" />}
+          {editing ? "Cancel" : "Edit"}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <UserProfileCard
+            fullName={user.fullName}
+            bio={bio || undefined}
+            avatarUrl={avatarUrl || undefined}
+            isVerified={user.isVerified}
+            selectedBadge={user.selectedBadge}
+            stats={{ entries: 0, contestsJoined: 0 }}
+            membershipTier={user.membershipTier}
+            compact={false}
+            onShare={profileSlug && isPublic ? handleShare : undefined}
+          />
+        </div>
+
+        <div className="space-y-3">
+          {editing ? (
+            <>
+              <div>
+                <label className="block text-[10px] text-white/30 uppercase tracking-widest font-display mb-1.5">Avatar</label>
+                <label className="flex items-center gap-3 p-3 bg-white/[0.03] border border-white/[0.06] rounded-xl cursor-pointer hover:bg-white/[0.04] transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-5 h-5 text-white/30" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-xs text-white/50 font-light">{uploading ? "Uploading..." : "Change avatar"}</div>
+                    <div className="text-[9px] text-white/25 font-light">Max 5MB, JPG/PNG</div>
+                  </div>
+                  <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" disabled={uploading} />
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-white/30 uppercase tracking-widest font-display mb-1.5">Bio</label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value.slice(0, 200))}
+                  placeholder="Tell people about yourself..."
+                  rows={3}
+                  className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12] resize-none"
+                />
+                <div className="text-right text-[9px] text-white/20 mt-0.5">{bio.length}/200</div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-white/30 uppercase tracking-widest font-display mb-1.5">Profile Link</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/25 font-light shrink-0">/profile/</span>
+                  <input
+                    type="text"
+                    value={profileSlug}
+                    onChange={(e) => setProfileSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30))}
+                    placeholder="your-name"
+                    className="flex-1 px-3 py-2 bg-white/[0.03] border border-white/[0.06] rounded-lg text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+                <div className="flex items-center gap-2">
+                  {isPublic ? <Globe className="w-4 h-4 text-white/40" /> : <Lock className="w-4 h-4 text-white/25" />}
+                  <span className="text-xs text-white/50 font-light">{isPublic ? "Profile is public" : "Profile is private"}</span>
+                </div>
+                <button
+                  onClick={() => setIsPublic(!isPublic)}
+                  className={`relative w-10 h-5 rounded-full transition-all ${isPublic ? "bg-white/20" : "bg-white/[0.06]"}`}
+                >
+                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${isPublic ? "left-5.5 bg-white" : "left-0.5 bg-white/40"}`} />
+                </button>
+              </div>
+
+              {error && <p className="text-xs text-red-400/60 font-light">{error}</p>}
+
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white font-light hover:bg-white/[0.08] transition-all disabled:opacity-30"
+              >
+                <Save className="w-3.5 h-3.5" />
+                {saving ? "Saving..." : "Save Profile"}
+              </button>
+            </>
+          ) : (
+            <div className="space-y-3">
+              <div className="glass-card p-4">
+                <div className="card-shine" />
+                <div className="relative z-[2]">
+                  <div className="flex items-center gap-2 mb-2">
+                    {isPublic ? <Globe className="w-4 h-4 text-white/40" /> : <Lock className="w-4 h-4 text-white/25" />}
+                    <span className="text-xs text-white/50 font-light">{isPublic ? "Public" : "Private"}</span>
+                  </div>
+                  {profileSlug && isPublic ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 p-2 bg-white/[0.03] border border-white/[0.04] rounded-lg">
+                        <span className="text-[10px] text-white/30 font-mono truncate flex-1">/profile/{profileSlug}</span>
+                        <button onClick={handleCopyLink} className="shrink-0 p-1 hover:bg-white/[0.06] rounded transition-all">
+                          {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3 text-white/30" />}
+                        </button>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleShare}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
+                        >
+                          <Share2 className="w-3 h-3" />
+                          Share
+                        </button>
+                        <Link
+                          href={`/profile/${profileSlug}`}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          View
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-white/25 font-light">
+                      {profileSlug ? "Make your profile public to share it" : "Click Edit to set up your profile link"}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function BadgeSelector({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
+  const [badges, setBadges] = useState<{ available: any[]; earned: string[] }>({ available: [], earned: [] });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    getUserBadges().then(setBadges);
+  }, []);
+
+  const handleSelectBadge = async (badgeId: string | null) => {
+    setSaving(true);
+    const result = await updateProfile({ selectedBadge: badgeId });
+    if (result.success) {
+      onUpdate({ ...user, selectedBadge: badgeId });
+    }
+    setSaving(false);
+  };
+
+  return (
+    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2.2} className="mb-6">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
+        <Award className="w-4 h-4 text-white/40" />
+        <h3 className="text-lg font-display font-light text-white">Badges</h3>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {badges.available.map((badge) => {
+          const earned = badges.earned.includes(badge.id);
+          const isSelected = user.selectedBadge === badge.id;
+          return (
+            <button
+              key={badge.id}
+              onClick={() => earned ? handleSelectBadge(isSelected ? null : badge.id) : undefined}
+              disabled={!earned || saving}
+              className={`relative rounded-2xl p-3 text-center transition-all duration-300 border ${
+                isSelected
+                  ? "border-white/20 bg-white/[0.06]"
+                  : earned
+                  ? "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:bg-white/[0.05] cursor-pointer"
+                  : "border-white/[0.04] bg-white/[0.01] opacity-40 cursor-not-allowed"
+              }`}
+            >
+              {isSelected && (
+                <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                  <Check className="w-2.5 h-2.5 text-white/80" />
+                </div>
+              )}
+              <div className="text-2xl mb-1.5">{badge.icon}</div>
+              <div className="text-[10px] font-display font-medium text-white/70 mb-0.5">{badge.name}</div>
+              <div className="text-[8px] text-white/30 font-light leading-tight">{badge.description}</div>
+              {!earned && <div className="text-[8px] text-white/20 mt-1 font-display uppercase tracking-wider">Locked</div>}
+            </button>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+function MembershipSection({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
+  const [purchasing, setPurchasing] = useState<string | null>(null);
+
+  const plans = [
+    { id: "basic", name: "Basic", price: 199, features: ["5 entries per contest", "Unlimited chat", "Priority support"] },
+    { id: "premium", name: "Premium", price: 499, features: ["Unlimited entries", "Verified badge", "Voice AI chat", "VIP support"] },
+  ];
+
+  const handlePurchase = async (planId: string) => {
+    setPurchasing(planId);
+    const result = await purchaseMembership(planId);
+    if (result.success) {
+      onUpdate({
+        ...user,
+        membershipTier: planId,
+        isVerified: result.data.isVerified,
+      });
+    }
+    setPurchasing(null);
+  };
+
+  return (
+    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2.8} className="mb-6">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
+        <Crown className="w-4 h-4 text-white/40" />
+        <h3 className="text-lg font-display font-light text-white">Membership</h3>
+        {user.isVerified && (
+          <div className="flex items-center gap-1 ml-auto px-2.5 py-1 bg-white/[0.04] border border-white/[0.08] rounded-lg">
+            <BadgeCheck className="w-3.5 h-3.5 text-white/60" />
+            <span className="text-[10px] text-white/50 font-light">Verified</span>
+          </div>
+        )}
+      </div>
+
+      {user.membershipTier !== "free" ? (
+        <div className="glass-card p-5">
+          <div className="card-shine" />
+          <div className="relative z-[2]">
+            <div className="flex items-center gap-3 mb-3">
+              <Crown className="w-5 h-5 text-white/50" />
+              <div>
+                <div className="text-sm font-display font-light text-white capitalize">{user.membershipTier} Plan</div>
+                <div className="text-[10px] text-white/30 font-light">Active membership</div>
+              </div>
+            </div>
+            {user.isVerified && (
+              <div className="flex items-center gap-2 p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+                <BadgeCheck className="w-4 h-4 text-white/50" />
+                <span className="text-xs text-white/40 font-light">Verified badge is active on your profile</span>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {plans.map((plan) => (
+            <div key={plan.id} className={`glass-card p-5 ${plan.id === "premium" ? "border border-white/[0.12]" : ""}`}>
+              <div className="card-shine" />
+              <div className="relative z-[2]">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-base font-display font-light text-white">{plan.name}</h4>
+                  {plan.id === "premium" && (
+                    <BadgeCheck className="w-4 h-4 text-white/40" />
+                  )}
+                </div>
+                <div className="mb-3">
+                  <span className="text-2xl font-display font-light text-white">{plan.price}</span>
+                  <span className="text-xs text-white/30 font-light"> /mo</span>
+                </div>
+                <ul className="space-y-1.5 mb-4">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-xs text-white/40 font-light">
+                      <Check className="w-3 h-3 text-white/30" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => handlePurchase(plan.id)}
+                  disabled={purchasing !== null}
+                  className="w-full py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-xs text-white font-light hover:bg-white/[0.08] transition-all disabled:opacity-30"
+                >
+                  {purchasing === plan.id ? "Processing..." : `Get ${plan.name}`}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entries: any[]; onLogout: () => void }) {
+  const [user, setUser] = useState(initialUser);
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
   const streak = useStreak();
+
+  const handleUserUpdate = (updatedUser: any) => {
+    setUser(updatedUser);
+  };
 
   return (
     <>
@@ -268,7 +649,10 @@ function Dashboard({ user, entries, onLogout }: { user: any; entries: any[]; onL
                 <User className="w-7 h-7 text-white/40" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl sm:text-2xl font-display font-light text-white mb-1">{user.fullName}</h2>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-xl sm:text-2xl font-display font-light text-white">{user.fullName}</h2>
+                  {user.isVerified && <BadgeCheck className="w-5 h-5 text-white/50" />}
+                </div>
                 <div className="flex flex-wrap items-center gap-3 text-xs text-white/30 font-light">
                   <div className="flex items-center gap-1.5">
                     <Mail className="w-3 h-3" />
@@ -332,6 +716,12 @@ function Dashboard({ user, entries, onLogout }: { user: any; entries: any[]; onL
           </div>
         </div>
       </motion.div>
+
+      <ProfileEditor user={user} onUpdate={handleUserUpdate} />
+
+      <BadgeSelector user={user} onUpdate={handleUserUpdate} />
+
+      <MembershipSection user={user} onUpdate={handleUserUpdate} />
 
       <ThemeSelector />
 

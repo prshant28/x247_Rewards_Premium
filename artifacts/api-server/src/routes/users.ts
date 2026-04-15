@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable } from "@workspace/db";
-import { eq, sql } from "drizzle-orm";
+import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable, userBadgesTable } from "@workspace/db";
+import { eq, sql, and } from "drizzle-orm";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 
@@ -168,12 +168,21 @@ router.get("/users/me", async (req, res) => {
     const activeTier = getActiveTier(user);
     const plan = MEMBERSHIP_PLANS.find(p => p.id === activeTier);
 
+    const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id));
+
     return res.json({
       id: user.id,
       fullName: user.fullName,
       email: user.email,
       phone: user.phone,
       city: user.city,
+      bio: user.bio,
+      avatarUrl: user.avatarUrl,
+      profileSlug: user.profileSlug,
+      isPublic: user.isPublic,
+      isVerified: user.isVerified,
+      selectedBadge: user.selectedBadge,
+      badges: badges.map(b => b.badgeId),
       createdAt: user.createdAt,
       membershipTier: activeTier,
       membershipExpiresAt: user.membershipExpiresAt,
@@ -237,6 +246,190 @@ router.post("/users/logout", async (req, res) => {
     return res.json({ success: true });
   } catch (err) {
     return res.json({ success: true });
+  }
+});
+
+const AVAILABLE_BADGES = [
+  { id: "early-adopter", name: "Early Adopter", description: "Joined during the launch phase", icon: "🚀" },
+  { id: "streak-master", name: "Streak Master", description: "Maintained a 7-day streak", icon: "🔥" },
+  { id: "first-win", name: "First Win", description: "Won your first giveaway", icon: "🏆" },
+  { id: "social-butterfly", name: "Social Butterfly", description: "Referred 5 friends", icon: "🦋" },
+  { id: "partner-pro", name: "Partner Pro", description: "Completed 10 partner tasks", icon: "⭐" },
+  { id: "community-hero", name: "Community Hero", description: "Active community contributor", icon: "🛡️" },
+  { id: "lucky-charm", name: "Lucky Charm", description: "Won 3 giveaways", icon: "🍀" },
+  { id: "mega-streak", name: "Mega Streak", description: "Maintained a 30-day streak", icon: "💎" },
+];
+
+router.put("/users/me/profile", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+    if (!session || new Date(session.expiresAt) < new Date()) {
+      return res.status(401).json({ error: "Session expired" });
+    }
+
+    const { bio, avatarUrl, profileSlug, isPublic, selectedBadge } = req.body;
+
+    if (profileSlug !== undefined) {
+      const slug = profileSlug.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30);
+      if (slug.length < 3) {
+        return res.status(400).json({ error: "Profile slug must be at least 3 characters" });
+      }
+      const [existing] = await db.select().from(usersTable)
+        .where(and(eq(usersTable.profileSlug, slug), sql`${usersTable.id} != ${session.userId}`)).limit(1);
+      if (existing) {
+        return res.status(400).json({ error: "This profile link is already taken" });
+      }
+    }
+
+    const updateData: any = {};
+    if (bio !== undefined) updateData.bio = bio.slice(0, 200);
+    if (avatarUrl !== undefined) updateData.avatarUrl = avatarUrl;
+    if (profileSlug !== undefined) updateData.profileSlug = profileSlug.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30);
+    if (isPublic !== undefined) updateData.isPublic = Boolean(isPublic);
+    if (selectedBadge !== undefined) {
+      if (selectedBadge === null || selectedBadge === "") {
+        updateData.selectedBadge = null;
+      } else {
+        const [hasBadge] = await db.select().from(userBadgesTable)
+          .where(and(eq(userBadgesTable.userId, session.userId), eq(userBadgesTable.badgeId, selectedBadge))).limit(1);
+        if (!hasBadge) {
+          return res.status(400).json({ error: "You haven't earned this badge yet" });
+        }
+        updateData.selectedBadge = selectedBadge;
+      }
+    }
+
+    const [updated] = await db.update(usersTable).set(updateData).where(eq(usersTable.id, session.userId)).returning();
+    const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, session.userId));
+
+    return res.json({
+      id: updated.id,
+      fullName: updated.fullName,
+      bio: updated.bio,
+      avatarUrl: updated.avatarUrl,
+      profileSlug: updated.profileSlug,
+      isPublic: updated.isPublic,
+      isVerified: updated.isVerified,
+      selectedBadge: updated.selectedBadge,
+      badges: badges.map(b => b.badgeId),
+    });
+  } catch (err) {
+    console.error("Profile update error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/users/profile/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.profileSlug, slug)).limit(1);
+
+    if (!user || !user.isPublic) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+
+    const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id));
+
+    const entries = await db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.userId, user.id));
+    const totalEntries = entries.reduce((sum, e) => sum + (e.entryCount || 0), 0);
+
+    return res.json({
+      fullName: user.fullName,
+      bio: user.bio,
+      avatarUrl: user.avatarUrl,
+      isVerified: user.isVerified,
+      selectedBadge: user.selectedBadge,
+      badges: badges.map(b => b.badgeId),
+      membershipTier: getActiveTier(user),
+      stats: {
+        entries: totalEntries,
+        contestsJoined: entries.length,
+      },
+      memberSince: user.createdAt,
+    });
+  } catch (err) {
+    console.error("Public profile error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/users/me/badges", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+    if (!session || new Date(session.expiresAt) < new Date()) {
+      return res.status(401).json({ error: "Session expired" });
+    }
+
+    const earned = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, session.userId));
+    const earnedIds = earned.map(b => b.badgeId);
+
+    return res.json({
+      available: AVAILABLE_BADGES,
+      earned: earnedIds,
+    });
+  } catch (err) {
+    console.error("Badges error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/membership/purchase", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+    if (!session || new Date(session.expiresAt) < new Date()) {
+      return res.status(401).json({ error: "Session expired" });
+    }
+
+    const { planId } = req.body;
+    const plan = MEMBERSHIP_PLANS.find(p => p.id === planId);
+    if (!plan || plan.id === "free") {
+      return res.status(400).json({ error: "Invalid plan" });
+    }
+
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    const isVerified = planId === "premium";
+
+    const [updated] = await db.update(usersTable).set({
+      membershipTier: planId,
+      membershipExpiresAt: expiresAt,
+      isVerified,
+    }).where(eq(usersTable.id, session.userId)).returning();
+
+    if (isVerified) {
+      const [existingBadge] = await db.select().from(userBadgesTable)
+        .where(and(eq(userBadgesTable.userId, session.userId), eq(userBadgesTable.badgeId, "early-adopter"))).limit(1);
+      if (!existingBadge) {
+        await db.insert(userBadgesTable).values({ userId: session.userId, badgeId: "early-adopter" });
+      }
+    }
+
+    return res.json({
+      success: true,
+      membershipTier: planId,
+      isVerified,
+      expiresAt,
+    });
+  } catch (err) {
+    console.error("Membership purchase error:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 });
 

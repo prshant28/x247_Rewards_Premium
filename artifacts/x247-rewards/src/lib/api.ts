@@ -379,6 +379,74 @@ export function getUserTokenValue(): string | null {
   return getUserToken();
 }
 
+export async function updateProfile(data: {
+  bio?: string;
+  avatarUrl?: string;
+  profileSlug?: string;
+  isPublic?: boolean;
+  selectedBadge?: string | null;
+}): Promise<{ success: boolean; error?: string; data?: any }> {
+  const token = getUserToken();
+  if (!token) return { success: false, error: "Not authenticated" };
+  try {
+    const res = await fetch(`${API_BASE}/users/me/profile`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      return { success: false, error: err.error || "Update failed" };
+    }
+    return { success: true, data: await res.json() };
+  } catch {
+    return { success: false, error: "Network error" };
+  }
+}
+
+export async function getPublicProfile(slug: string): Promise<any | null> {
+  try {
+    const res = await fetch(`${API_BASE}/users/profile/${slug}`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function getUserBadges(): Promise<{ available: any[]; earned: string[] }> {
+  const token = getUserToken();
+  if (!token) return { available: [], earned: [] };
+  try {
+    const res = await fetch(`${API_BASE}/users/me/badges`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return { available: [], earned: [] };
+    return res.json();
+  } catch {
+    return { available: [], earned: [] };
+  }
+}
+
+export async function purchaseMembership(planId: string): Promise<{ success: boolean; error?: string; data?: any }> {
+  const token = getUserToken();
+  if (!token) return { success: false, error: "Not authenticated" };
+  try {
+    const res = await fetch(`${API_BASE}/membership/purchase`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ planId }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      return { success: false, error: err.error || "Purchase failed" };
+    }
+    return { success: true, data: await res.json() };
+  } catch {
+    return { success: false, error: "Network error" };
+  }
+}
+
 export interface WinnerData {
   id: number;
   winnerName: string;
