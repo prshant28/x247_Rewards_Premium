@@ -256,14 +256,14 @@ function HeroBannerSlider() {
                       <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
                       {slide.badge}
                     </div>
-                    <span className="text-[10px] text-white/20 font-mono tracking-wider">{String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}</span>
+                    <span className="text-[10px] text-white/30 font-mono tracking-wider">{String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}</span>
                   </div>
 
                   <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-light text-white mb-3 tracking-tight leading-tight">
                     {slide.title}
                   </h3>
 
-                  <p className="text-sm sm:text-base text-white/55 font-light leading-relaxed mb-6 max-w-lg">
+                  <p className="text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-lg">
                     {slide.desc}
                   </p>
 
@@ -809,7 +809,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-sm sm:text-base md:text-lg lg:text-xl text-white/70 mb-12 max-w-2xl mx-auto font-light leading-relaxed tracking-wide"
+              className="text-sm sm:text-base md:text-lg lg:text-xl text-white/55 mb-12 max-w-2xl mx-auto font-light leading-relaxed tracking-wide"
             >
               Sign up through our partner links below, fill the entry form, and you're in. Every completed registration = one giveaway entry. Winners are picked daily — gift cards, premium swag, gadgets & more.
             </motion.p>
@@ -836,16 +836,16 @@ export default function Home() {
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/15 text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/20 text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/30 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/15 text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
+                      <span className="text-white/20 text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
@@ -878,7 +878,7 @@ export default function Home() {
                 Step-by-Step Guide
               </div>
               <h2 className="text-2xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
+              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
             </motion.div>
@@ -951,13 +951,13 @@ export default function Home() {
                     </div>
                     <div className="relative z-[2] pt-1 flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-[11px] font-display font-medium text-white/15 tracking-widest">{item.step}</span>
+                        <span className="text-[11px] font-display font-medium text-white/30 tracking-widest">{item.step}</span>
                         {item.tip && (
                           <span className="text-[10px] font-display font-medium text-white/55 bg-white/[0.04] border border-white/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
                         )}
                       </div>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                      <p className="text-white/50 font-light leading-relaxed text-sm">
+                      <p className="text-white/55 font-light leading-relaxed text-sm">
                         {item.desc}
                       </p>
                     </div>
@@ -985,7 +985,7 @@ export default function Home() {
                 Step 1 — Register
               </div>
               <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Complete Partner Registration" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 This is how you enter the giveaway — register with our partner links below. Each completed registration earns you one entry into the daily prize draw.
               </p>
             </motion.div>
@@ -1001,7 +1001,7 @@ export default function Home() {
                     <ExternalLink className="w-7 h-7" />
                   </BorderGlow>
                   <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">View All Partner Registrations</h3>
-                  <p className="text-white/50 font-light text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
+                  <p className="text-white/55 font-light text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
                     Browse all available partner links, check which registrations are live, and complete them to earn your giveaway entries.
                   </p>
                   <BorderGlow as={Link} href="/partners" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn">
@@ -1025,21 +1025,21 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                       <span className="text-xs font-display text-white/60">1</span>
                     </div>
-                    <span className="text-sm text-white/50 font-light">Register with partners</span>
+                    <span className="text-sm text-white/55 font-light">Register with partners</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-white/20 hidden sm:block" />
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                       <span className="text-xs font-display text-white/60">2</span>
                     </div>
-                    <span className="text-sm text-white/50 font-light">Fill entry form</span>
+                    <span className="text-sm text-white/55 font-light">Fill entry form</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-white/20 hidden sm:block" />
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                       <span className="text-xs font-display text-white/60">3</span>
                     </div>
-                    <span className="text-sm text-white/50 font-light">Win daily prizes</span>
+                    <span className="text-sm text-white/55 font-light">Win daily prizes</span>
                   </div>
                 </div>
               </TiltCard>
@@ -1067,7 +1067,7 @@ export default function Home() {
                 Prizes & Rewards
               </div>
               <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
             </motion.div>
@@ -1096,7 +1096,7 @@ export default function Home() {
                 Partner Analytics
               </div>
               <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Track Everything" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Monitor your referral performance in real-time. Track link clicks, verified signups, giveaway entries, and conversion rates.
               </p>
             </motion.div>
@@ -1112,7 +1112,7 @@ export default function Home() {
                   <div className="flex items-start justify-between mb-6">
                     <div>
                       <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">Real-Time Analytics</h3>
-                      <p className="text-sm text-white/40 font-light max-w-sm">Monitor every click, signup, and conversion as it happens. Your performance data, always live.</p>
+                      <p className="text-sm text-white/50 font-light max-w-sm">Monitor every click, signup, and conversion as it happens. Your performance data, always live.</p>
                     </div>
                     <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle shrink-0">
                       <Activity className="w-5 h-5" />
@@ -1123,7 +1123,7 @@ export default function Home() {
                       <motion.div
                         key={i}
                         className="flex-1 rounded-t-md relative overflow-hidden"
-                        style={{ background: "linear-gradient(to top, rgba(255,255,255,0.06), rgba(255,255,255,0.18))" }}
+                        style={{ background: "linear-gradient(to top, rgba(255,255,255,0.08), rgba(255,255,255,0.25))" }}
                         initial={{ height: 0 }}
                         whileInView={{ height: `${h}%` }}
                         viewport={{ once: true }}
@@ -1144,7 +1144,7 @@ export default function Home() {
                     <BarChart3 className="w-5 h-5" />
                   </BorderGlow>
                   <h3 className="text-lg font-display font-light text-white mb-2">Performance Trends</h3>
-                  <p className="text-xs text-white/40 font-light mb-5">Daily & weekly breakdowns of your referral metrics.</p>
+                  <p className="text-xs text-white/50 font-light mb-5">Daily & weekly breakdowns of your referral metrics.</p>
                   <div className="mt-auto grid grid-cols-2 gap-2">
                     {[
                       { label: "Clicks", value: "2.4K" },
@@ -1152,7 +1152,7 @@ export default function Home() {
                     ].map((s, i) => (
                       <div key={i} className="stat-card text-center py-3">
                         <div className="text-lg font-display font-light text-white">{s.value}</div>
-                        <div className="text-[8px] text-white/25 uppercase tracking-widest font-display mt-1">{s.label}</div>
+                        <div className="text-[8px] text-white/40 uppercase tracking-widest font-display mt-1">{s.label}</div>
                       </div>
                     ))}
                   </div>
@@ -1167,12 +1167,12 @@ export default function Home() {
                     <Trophy className="w-5 h-5" />
                   </BorderGlow>
                   <h3 className="text-lg font-display font-light text-white mb-2">Milestones</h3>
-                  <p className="text-xs text-white/40 font-light mb-5">Automated progress tracking with milestone rewards.</p>
+                  <p className="text-xs text-white/50 font-light mb-5">Automated progress tracking with milestone rewards.</p>
                   <div className="mt-auto space-y-3">
                     <div>
                       <div className="flex justify-between text-xs mb-1.5">
-                        <span className="text-white/35 font-light">Milestone I</span>
-                        <span className="text-white/50 font-display">18/20</span>
+                        <span className="text-white/45 font-light">Milestone I</span>
+                        <span className="text-white/60 font-display">18/20</span>
                       </div>
                       <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <motion.div
@@ -1181,7 +1181,7 @@ export default function Home() {
                           viewport={{ once: true }}
                           transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
                           className="h-full rounded-full relative overflow-hidden"
-                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.8))" }}
+                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.35), rgba(255,255,255,0.9))" }}
                         >
                           <div className="absolute inset-0 shimmer-bar" />
                         </motion.div>
@@ -1189,8 +1189,8 @@ export default function Home() {
                     </div>
                     <div>
                       <div className="flex justify-between text-xs mb-1.5">
-                        <span className="text-white/35 font-light">Milestone II</span>
-                        <span className="text-white/50 font-display">5/50</span>
+                        <span className="text-white/45 font-light">Milestone II</span>
+                        <span className="text-white/60 font-display">5/50</span>
                       </div>
                       <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <motion.div
@@ -1199,7 +1199,7 @@ export default function Home() {
                           viewport={{ once: true }}
                           transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
                           className="h-full rounded-full relative overflow-hidden"
-                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,255,0.5))" }}
+                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.25), rgba(255,255,255,0.6))" }}
                         >
                           <div className="absolute inset-0 shimmer-bar" />
                         </motion.div>
@@ -1217,7 +1217,7 @@ export default function Home() {
                     <Users className="w-5 h-5" />
                   </BorderGlow>
                   <h3 className="text-lg font-display font-light text-white mb-2">Share & Earn</h3>
-                  <p className="text-xs text-white/40 font-light mb-5">Distribute your link across WhatsApp, Telegram, and social platforms.</p>
+                  <p className="text-xs text-white/50 font-light mb-5">Distribute your link across WhatsApp, Telegram, and social platforms.</p>
                   <div className="mt-auto flex items-center gap-3">
                     {[SiWhatsapp, SiTelegram, SiInstagram].map((Icon, i) => (
                       <motion.div
@@ -1226,7 +1226,7 @@ export default function Home() {
                         animate={{ y: [0, -3, 0] }}
                         transition={{ duration: 3, delay: i * 0.6, repeat: Infinity, ease: "easeInOut" }}
                       >
-                        <Icon className="w-4 h-4 text-white/40" />
+                        <Icon className="w-4 h-4 text-white/50" />
                       </motion.div>
                     ))}
                   </div>
@@ -1239,7 +1239,7 @@ export default function Home() {
                 <div className="relative z-[2] flex flex-col sm:flex-row items-center justify-between gap-6">
                   <div>
                     <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">Ready to start earning?</h3>
-                    <p className="text-sm text-white/40 font-light">Join the partner program and unlock your personal analytics dashboard.</p>
+                    <p className="text-sm text-white/50 font-light">Join the partner program and unlock your personal analytics dashboard.</p>
                   </div>
                   <div className="flex gap-3 shrink-0">
                     <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group">
@@ -1270,7 +1270,7 @@ export default function Home() {
                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-white/30 via-white/10 to-transparent"></div>
                 <div className="relative z-[2]">
                   <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-white">Verification Protocol</h3>
-                  <p className="text-white/50 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
+                  <p className="text-white/55 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
                     To maintain the integrity of the ecosystem, strict verification measures are in place. Fraudulent referrals will result in permanent disqualification.
                   </p>
                   
@@ -1279,20 +1279,20 @@ export default function Home() {
                       <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white mb-4 flex items-center">
                         <CheckCircle2 className="w-4 h-4 mr-2 text-white/60" /> Authorized
                       </h4>
-                      <ul className="space-y-3 text-xs sm:text-sm text-white/50 font-light">
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Real attendees</li>
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Completed registrations</li>
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Valid contact details</li>
+                      <ul className="space-y-3 text-xs sm:text-sm text-white/55 font-light">
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Real attendees</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Completed registrations</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Valid contact details</li>
                       </ul>
                     </div>
                     <div>
                       <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white/55 mb-4 flex items-center">
                         <ShieldCheck className="w-4 h-4 mr-2 text-white/50" /> Disqualified
                       </h4>
-                      <ul className="space-y-3 text-xs sm:text-sm text-white/50 font-light">
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Bot/Script traffic</li>
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Duplicate IPs</li>
-                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/30" /> Fake registrations</li>
+                      <ul className="space-y-3 text-xs sm:text-sm text-white/55 font-light">
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Bot/Script traffic</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Duplicate IPs</li>
+                        <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Fake registrations</li>
                       </ul>
                     </div>
                   </div>
@@ -1318,7 +1318,7 @@ export default function Home() {
                 Inner Circle
               </div>
               <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
             </motion.div>
@@ -1337,10 +1337,10 @@ export default function Home() {
                         <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle">
                           <Globe className="w-5 h-5" />
                         </BorderGlow>
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-display">Network</span>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-display">Network</span>
                       </div>
                       <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">A Community Built Different</h3>
-                      <p className="text-sm sm:text-base text-white/40 font-light leading-relaxed mb-6">
+                      <p className="text-sm sm:text-base text-white/50 font-light leading-relaxed mb-6">
                         X247 isn't just a rewards platform — it's an ecosystem of builders, early adopters, and tech enthusiasts who believe in growing together.
                       </p>
                       <div className="flex gap-6">
@@ -1357,7 +1357,7 @@ export default function Home() {
                             transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
                           >
                             <div className="text-xl sm:text-2xl font-display font-light text-white">{stat.value}</div>
-                            <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
+                            <div className="text-[9px] text-white/40 uppercase tracking-widest font-display mt-1">{stat.label}</div>
                           </motion.div>
                         ))}
                       </div>
@@ -1426,11 +1426,11 @@ export default function Home() {
                       </motion.div>
                       <div className="text-right">
                         <div className="text-lg font-display font-light text-white">{item.metric}</div>
-                        <div className="text-[8px] text-white/20 uppercase tracking-widest font-display">{item.metricLabel}</div>
+                        <div className="text-[8px] text-white/40 uppercase tracking-widest font-display">{item.metricLabel}</div>
                       </div>
                     </div>
                     <h3 className="text-lg font-display font-light text-white mb-2">{item.title}</h3>
-                    <p className="text-xs text-white/40 font-light leading-relaxed">{item.desc}</p>
+                    <p className="text-xs text-white/50 font-light leading-relaxed">{item.desc}</p>
                     <div className="mt-auto pt-5">
                       <div className="h-px w-full bg-gradient-to-r from-white/[0.06] via-white/[0.12] to-white/[0.06]" />
                     </div>
@@ -1459,7 +1459,7 @@ export default function Home() {
                     </div>
                     <div>
                       <h3 className="text-lg sm:text-xl font-display font-light text-white">Join 2,400+ members</h3>
-                      <p className="text-xs text-white/35 font-light">Be part of the fastest-growing rewards community</p>
+                      <p className="text-xs text-white/45 font-light">Be part of the fastest-growing rewards community</p>
                     </div>
                   </div>
                   <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group shrink-0">
@@ -1491,7 +1491,7 @@ export default function Home() {
                 Testimonials
               </div>
               <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What Our Winners Say" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real feedback from real winners. Hear what our community has to say about the X247 experience.
               </p>
             </motion.div>
@@ -1504,16 +1504,16 @@ export default function Home() {
                   <div key={`r1-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-display font-bold text-white/50">{t.avatar}</span>
+                        <span className="text-[10px] font-display font-bold text-white/60">{t.avatar}</span>
                       </div>
                       <div>
                         <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
-                        <span className="text-[10px] text-white/25 font-mono">{t.handle}</span>
+                        <span className="text-[10px] text-white/35 font-mono">{t.handle}</span>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">{t.text}</p>
+                    <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">{t.text}</p>
                     {t.prize && (
-                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/30 font-display">
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/45 font-display">
                         <Trophy className="w-3 h-3" />
                         <span>Won: {t.prize}</span>
                       </div>
@@ -1529,16 +1529,16 @@ export default function Home() {
                   <div key={`r2-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-display font-bold text-white/50">{t.avatar}</span>
+                        <span className="text-[10px] font-display font-bold text-white/60">{t.avatar}</span>
                       </div>
                       <div>
                         <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
-                        <span className="text-[10px] text-white/25 font-mono">{t.handle}</span>
+                        <span className="text-[10px] text-white/35 font-mono">{t.handle}</span>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">{t.text}</p>
+                    <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">{t.text}</p>
                     {t.prize && (
-                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/30 font-display">
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/45 font-display">
                         <Trophy className="w-3 h-3" />
                         <span>Won: {t.prize}</span>
                       </div>
@@ -1554,16 +1554,16 @@ export default function Home() {
                   <div key={`r3-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-display font-bold text-white/50">{t.avatar}</span>
+                        <span className="text-[10px] font-display font-bold text-white/60">{t.avatar}</span>
                       </div>
                       <div>
                         <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
-                        <span className="text-[10px] text-white/25 font-mono">{t.handle}</span>
+                        <span className="text-[10px] text-white/35 font-mono">{t.handle}</span>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">{t.text}</p>
+                    <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">{t.text}</p>
                     {t.prize && (
-                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/30 font-display">
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/45 font-display">
                         <Trophy className="w-3 h-3" />
                         <span>Won: {t.prize}</span>
                       </div>
@@ -1615,7 +1615,7 @@ export default function Home() {
                         <AccordionTrigger className="text-left font-display font-light text-base sm:text-lg text-white/80 hover:text-white py-5 sm:py-6">
                           {faq.q}
                         </AccordionTrigger>
-                        <AccordionContent className="text-white/50 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
+                        <AccordionContent className="text-white/60 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
                           {faq.a}
                         </AccordionContent>
                       </AccordionItem>
@@ -1646,7 +1646,7 @@ export default function Home() {
               </div>
               <span className="text-xl font-display font-light text-white">X247 Rewards</span>
             </div>
-            <p className="text-sm text-white/25 font-light leading-relaxed max-w-xs">
+            <p className="text-sm text-white/40 font-light leading-relaxed max-w-xs">
               The premier gamified giveaway and referral platform for partner event participants. Register, enter, and win real rewards daily.
             </p>
           </div>
@@ -1670,11 +1670,11 @@ export default function Home() {
           </div>
           <div>
             <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Program Info</h4>
-            <ul className="space-y-3 text-sm text-white/45 font-light">
-              <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/20" /> Global Availability</li>
-              <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/20" /> 24/7 Tracking</li>
-              <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-white/20" /> Verified Referrals Only</li>
-              <li className="flex items-center gap-2"><Award className="w-3.5 h-3.5 text-white/20" /> Real Rewards, No Gimmicks</li>
+            <ul className="space-y-3 text-sm text-white/50 font-light">
+              <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/30" /> Global Availability</li>
+              <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/30" /> 24/7 Tracking</li>
+              <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-white/30" /> Verified Referrals Only</li>
+              <li className="flex items-center gap-2"><Award className="w-3.5 h-3.5 text-white/30" /> Real Rewards, No Gimmicks</li>
             </ul>
           </div>
         </motion.div>
