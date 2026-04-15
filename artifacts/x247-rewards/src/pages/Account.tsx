@@ -229,16 +229,18 @@ function useStreak(): { streak: number; isNew: boolean } {
   return { streak, isNew };
 }
 
+type NotifIconKind = "trophy" | "gift" | "star" | "bell" | "sparkles";
+
 type Notification = {
   id: string;
-  icon: React.ReactNode;
+  icon: NotifIconKind;
   title: string;
   body: string;
   time: string;
   read: boolean;
 };
 
-type NotifEvent = { id: string; icon: string; title: string; body: string; type: "contest" | "winner" | "streak" | "system" };
+type NotifEvent = { id: string; icon: NotifIconKind; title: string; body: string; type: "contest" | "winner" | "streak" | "system" };
 
 const NOTIF_EVENTS: NotifEvent[] = [
   { id: "ev_contest_mega", icon: "trophy", title: "New Contest: Mega Cash Giveaway", body: "A new giveaway just went live — 100 spots available. Enter now before it fills up!", type: "contest" },
@@ -313,7 +315,7 @@ function useNotifications(): {
   return { items, unread: items.filter(n => !n.read).length, markRead, markAllRead, latestToast, dismissToast };
 }
 
-function NotificationIcon({ type }: { type: string }) {
+function NotificationIcon({ type }: { type: NotifIconKind }) {
   if (type === "trophy") return <Trophy className="w-4 h-4 text-white/40" />;
   if (type === "star") return <Star className="w-4 h-4 text-white/40" />;
   if (type === "gift") return <Gift className="w-4 h-4 text-white/40" />;
@@ -370,7 +372,7 @@ function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose }
             className={`notif-item ${!n.read ? "notif-item-unread" : ""}`}
           >
             <div className="notif-item-icon">
-              <NotificationIcon type={n.icon as string} />
+              <NotificationIcon type={n.icon} />
             </div>
             <div className="flex-1 min-w-0 text-left">
               <div className="text-[11px] font-display font-medium text-white/70">{n.title}</div>
@@ -426,10 +428,9 @@ function StreakCelebration({ streak, onDone }: { streak: number; onDone: () => v
 
 function ToastNotifications({ toast, onDismiss }: { toast: Notification | null; onDismiss: () => void }) {
   useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(onDismiss, 6000);
-      return () => clearTimeout(timer);
-    }
+    if (!toast) return undefined;
+    const timer = setTimeout(onDismiss, 6000);
+    return () => clearTimeout(timer);
   }, [toast, onDismiss]);
 
   return (
@@ -448,7 +449,7 @@ function ToastNotifications({ toast, onDismiss }: { toast: Notification | null; 
               {toast.icon === "trophy" && <Trophy className="w-4 h-4 text-white/50" />}
               {toast.icon === "gift" && <Gift className="w-4 h-4 text-white/50" />}
               {toast.icon === "star" && <Star className="w-4 h-4 text-white/50" />}
-              {!["trophy", "gift", "star"].includes(toast.icon) && <Sparkles className="w-4 h-4 text-white/50" />}
+              {toast.icon !== "trophy" && toast.icon !== "gift" && toast.icon !== "star" && <Sparkles className="w-4 h-4 text-white/50" />}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-[11px] font-display font-medium text-white/80">{toast.title}</div>
@@ -1189,10 +1190,9 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
 
   useEffect(() => {
-    if (isStreakNew && streak > 1) {
-      const timer = setTimeout(() => setShowStreakCelebration(true), 800);
-      return () => clearTimeout(timer);
-    }
+    if (!(isStreakNew && streak > 1)) return undefined;
+    const timer = setTimeout(() => setShowStreakCelebration(true), 800);
+    return () => clearTimeout(timer);
   }, [isStreakNew, streak]);
 
   const handleUserUpdate = (updatedUser: any) => {
