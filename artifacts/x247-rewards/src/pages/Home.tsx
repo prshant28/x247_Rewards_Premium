@@ -33,7 +33,7 @@ import Silk from "@/components/Silk";
 import SiteFooter from "@/components/SiteFooter";
 import BorderGlow from "@/components/BorderGlow";
 import DotGrid from "@/components/DotGrid";
-import LiveActivityFeed from "@/components/LiveActivityFeed";
+
 import SocialProofToast from "@/components/SocialProofToast";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import "@/components/DotGrid.css";
@@ -121,6 +121,8 @@ const heroBannerSlides = [
     desc: "X247 is a gamified rewards platform where every registration earns you a shot at winning premium prizes — gift cards, gadgets, and exclusive swag, drawn every single day.",
     icon: <Sparkles className="w-5 h-5" />,
     features: ["Daily Prize Draws", "Zero Cost Entry", "Real Rewards"],
+    cta: "Get Started",
+    href: "/giveaway",
   },
   {
     badge: "How It Works",
@@ -128,6 +130,8 @@ const heroBannerSlides = [
     desc: "Sign up through our partner links, complete a quick registration form, and you're automatically entered into the daily giveaway. More registrations = more entries = higher chances.",
     icon: <Target className="w-5 h-5" />,
     features: ["Partner Signups", "Verified Entries", "Auto Draw System"],
+    cta: "Enter Now",
+    href: "#partners",
   },
   {
     badge: "Live Rewards",
@@ -135,6 +139,8 @@ const heroBannerSlides = [
     desc: "From wireless earbuds and tech gadgets to gift cards and exclusive merch — our reward pool refreshes daily with items worth winning. No catches, no hidden fees.",
     icon: <Gift className="w-5 h-5" />,
     features: ["Gift Cards", "Tech Gadgets", "Exclusive Merch"],
+    cta: "View Rewards",
+    href: "#rewards",
   },
   {
     badge: "Partner Program",
@@ -142,6 +148,8 @@ const heroBannerSlides = [
     desc: "Become a referral partner and track every click, signup, and conversion in real-time. Hit milestones, climb leaderboards, and unlock bonus rewards for your network.",
     icon: <Users className="w-5 h-5" />,
     features: ["Live Analytics", "Milestone Bonuses", "Leaderboard Ranks"],
+    cta: "Open Dashboard",
+    href: "/referral/dashboard",
   },
   {
     badge: "What's New",
@@ -149,6 +157,8 @@ const heroBannerSlides = [
     desc: "Stay tuned for surprise flash giveaways, double-entry weekends, and limited-edition reward drops. The more active you are, the more you win.",
     icon: <Zap className="w-5 h-5" />,
     features: ["Flash Giveaways", "Bonus Events", "Limited Drops"],
+    cta: "See Winners",
+    href: "/winners",
   },
 ];
 
@@ -188,7 +198,9 @@ function HeroBannerSlider() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] bg-gradient-to-br from-white/[0.04] to-white/[0.01]">
+      <div className="relative rounded-2xl overflow-hidden hero-banner-container">
+        <div className="absolute inset-0 hero-banner-glow pointer-events-none" />
+
         <div
           ref={trackRef}
           className="hero-banner-track"
@@ -197,47 +209,77 @@ function HeroBannerSlider() {
             transition: reducedMotion ? "none" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         >
-          {heroBannerSlides.map((slide, i) => (
-            <div
-              key={i}
-              className="hero-banner-slide"
-              aria-hidden={i !== currentSlide}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-white/[0.02] pointer-events-none" />
-              <div className="absolute -top-4 -right-4 w-56 h-56 sm:w-72 sm:h-72 opacity-[0.04] pointer-events-none">
-                <div className="w-full h-full flex items-center justify-center">
-                  {React.cloneElement(slide.icon as React.ReactElement, { className: "w-full h-full" })}
+          {heroBannerSlides.map((slide, i) => {
+            const isInternal = slide.href.startsWith("/");
+            return (
+              <div
+                key={i}
+                className="hero-banner-slide"
+                aria-hidden={i !== currentSlide}
+              >
+                <div className="absolute inset-0 hero-banner-slide-bg pointer-events-none" />
+                <div className="absolute -top-8 -right-8 w-64 h-64 sm:w-80 sm:h-80 opacity-[0.03] pointer-events-none">
+                  <div className="w-full h-full flex items-center justify-center">
+                    {React.cloneElement(slide.icon as React.ReactElement, { className: "w-full h-full" })}
+                  </div>
+                </div>
+                <div className="absolute bottom-0 left-0 w-40 h-40 opacity-[0.015] pointer-events-none blur-3xl bg-white rounded-full" />
+                <div className="absolute top-0 right-0 w-24 h-24 opacity-[0.015] pointer-events-none blur-2xl bg-white rounded-full" />
+
+                <div className="relative z-[2] p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col justify-center min-h-[260px] sm:min-h-[300px]">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="glass-pill-badge !text-[10px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                      {slide.badge}
+                    </div>
+                    <span className="text-[10px] text-white/20 font-mono tracking-wider">{String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}</span>
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-light text-white mb-3 tracking-tight leading-tight">
+                    {slide.title}
+                  </h3>
+
+                  <p className="text-sm sm:text-base text-white/55 font-light leading-relaxed mb-6 max-w-lg">
+                    {slide.desc}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                    {slide.features.map((feat, fi) => (
+                      <span
+                        key={fi}
+                        className="hero-banner-pill"
+                      >
+                        {feat}
+                      </span>
+                    ))}
+
+                    <span className="hidden sm:block w-px h-5 bg-white/[0.08] mx-1" />
+
+                    {isInternal ? (
+                      <Link href={slide.href} className="hero-banner-cta group">
+                        <span>{slide.cta}</span>
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      </Link>
+                    ) : (
+                      <a
+                        href={slide.href}
+                        onClick={(e) => {
+                          if (slide.href.startsWith("#")) {
+                            e.preventDefault();
+                            document.querySelector(slide.href)?.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }}
+                        className="hero-banner-cta group"
+                      >
+                        <span>{slide.cta}</span>
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="absolute bottom-0 left-0 w-32 h-32 opacity-[0.02] pointer-events-none blur-2xl bg-white rounded-full" />
-
-              <div className="relative z-[2] p-6 sm:p-8 md:p-10 flex flex-col justify-center min-h-[240px] sm:min-h-[280px]">
-                <div className="glass-pill-badge mb-4 !text-[10px] w-fit">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
-                  {slide.badge}
-                </div>
-
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-light text-white mb-3 tracking-tight">
-                  {slide.title}
-                </h3>
-
-                <p className="text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-lg">
-                  {slide.desc}
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  {slide.features.map((feat, fi) => (
-                    <span
-                      key={fi}
-                      className="px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.10] text-[10px] sm:text-xs text-white/60 font-display tracking-wide"
-                    >
-                      {feat}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="hero-image-shimmer" />
@@ -246,19 +288,19 @@ function HeroBannerSlider() {
       <button
         onClick={goPrev}
         aria-label="Previous slide"
-        className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-black/80 transition-all backdrop-blur-sm"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 hero-banner-arrow"
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
       <button
         onClick={goNext}
         aria-label="Next slide"
-        className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-black/80 transition-all backdrop-blur-sm"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 hero-banner-arrow"
       >
         <ChevronRight className="w-4 h-4" />
       </button>
 
-      <div className="flex items-center justify-center gap-2 mt-4">
+      <div className="flex items-center justify-center gap-2 mt-5">
         {heroBannerSlides.map((_, i) => (
           <button
             key={i}
@@ -1209,12 +1251,6 @@ export default function Home() {
               </motion.div>
             </div>
 
-            <motion.div
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-              className="mt-10 sm:mt-14"
-            >
-              <LiveActivityFeed />
-            </motion.div>
           </div>
         </section>
 
