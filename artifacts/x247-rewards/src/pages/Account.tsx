@@ -238,20 +238,67 @@ type Notification = {
   read: boolean;
 };
 
-function useNotifications(): { items: Notification[]; unread: number; markRead: (id: string) => void; markAllRead: () => void } {
+type NotifEvent = { id: string; icon: string; title: string; body: string; type: "contest" | "winner" | "streak" | "system" };
+
+const NOTIF_EVENTS: NotifEvent[] = [
+  { id: "ev_contest_mega", icon: "trophy", title: "New Contest: Mega Cash Giveaway", body: "A new giveaway just went live — 100 spots available. Enter now before it fills up!", type: "contest" },
+  { id: "ev_contest_tech", icon: "trophy", title: "New Contest: Tech Gadgets Bonanza", body: "Premium tech gadgets up for grabs! Register with partners to enter.", type: "contest" },
+  { id: "ev_winner_1", icon: "gift", title: "Winner Announced!", body: "A winner has been selected for the latest giveaway. Check the Winners page!", type: "winner" },
+  { id: "ev_streak", icon: "star", title: "Streak Milestone", body: "You've maintained a multi-day visit streak. Keep it going for bonus rewards!", type: "streak" },
+];
+
+function useNotifications(): {
+  items: Notification[];
+  unread: number;
+  markRead: (id: string) => void;
+  markAllRead: () => void;
+  latestToast: Notification | null;
+  dismissToast: () => void;
+} {
   const [items, setItems] = useState<Notification[]>([]);
+  const [latestToast, setLatestToast] = useState<Notification | null>(null);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("x247_notifications") || "[]") as Notification[];
+    const stored: Notification[] = JSON.parse(localStorage.getItem("x247_notifications") || "[]");
+    const readIds = new Set(stored.filter(n => n.read).map(n => n.id));
     const now = Date.now();
-    const seeded: Notification[] = [
-      { id: "n1", icon: "trophy", title: "New Contest Available", body: "Mega Cash Giveaway is now live! Enter before spots fill up.", time: new Date(now - 3600000).toISOString(), read: false },
-      { id: "n2", icon: "star", title: "Streak Milestone", body: "You've maintained a 3-day visit streak. Keep it going!", time: new Date(now - 7200000).toISOString(), read: false },
-      { id: "n3", icon: "gift", title: "Winner Announced", body: "A winner has been selected for Tech Gadgets Bonanza.", time: new Date(now - 86400000).toISOString(), read: true },
+    const existing: Notification[] = NOTIF_EVENTS.map((ev, i) => ({
+      id: ev.id,
+      icon: ev.icon,
+      title: ev.title,
+      body: ev.body,
+      time: new Date(now - (i + 1) * 3600000).toISOString(),
+      read: readIds.has(ev.id),
+    }));
+    setItems(existing);
+  }, []);
+
+  useEffect(() => {
+    const simEvents: NotifEvent[] = [
+      { id: `ev_live_${Date.now()}`, icon: "trophy", title: "Contest Spot Filling Up", body: "Mega Cash Giveaway is 50% full — don't miss your chance!", type: "contest" },
+      { id: `ev_win_${Date.now()}`, icon: "gift", title: "Winner Just Picked!", body: "A lucky winner was just drawn. Could you be next?", type: "winner" },
     ];
-    const readIds = stored.filter(n => n.read).map(n => n.id);
-    const merged = seeded.map(n => ({ ...n, read: readIds.includes(n.id) }));
-    setItems(merged);
+    let idx = 0;
+    const interval = setInterval(() => {
+      if (idx >= simEvents.length) { clearInterval(interval); return; }
+      const ev = simEvents[idx];
+      const notif: Notification = {
+        id: ev.id,
+        icon: ev.icon,
+        title: ev.title,
+        body: ev.body,
+        time: new Date().toISOString(),
+        read: false,
+      };
+      setItems(prev => {
+        const updated = [notif, ...prev];
+        localStorage.setItem("x247_notifications", JSON.stringify(updated));
+        return updated;
+      });
+      setLatestToast(notif);
+      idx++;
+    }, 8000 + Math.random() * 4000);
+    return () => clearInterval(interval);
   }, []);
 
   const persist = (updated: Notification[]) => {
@@ -261,8 +308,9 @@ function useNotifications(): { items: Notification[]; unread: number; markRead: 
 
   const markRead = (id: string) => persist(items.map(n => n.id === id ? { ...n, read: true } : n));
   const markAllRead = () => persist(items.map(n => ({ ...n, read: true })));
+  const dismissToast = () => setLatestToast(null);
 
-  return { items, unread: items.filter(n => !n.read).length, markRead, markAllRead };
+  return { items, unread: items.filter(n => !n.read).length, markRead, markAllRead, latestToast, dismissToast };
 }
 
 function NotificationIcon({ type }: { type: string }) {
@@ -376,29 +424,20 @@ function StreakCelebration({ streak, onDone }: { streak: number; onDone: () => v
   );
 }
 
-function ToastNotifications() {
-  const [toasts, setToasts] = useState<Array<{ id: string; title: string; body: string; icon: string }>>([]);
-
+function ToastNotifications({ toast, onDismiss }: { toast: Notification | null; onDismiss: () => void }) {
   useEffect(() => {
-    const key = "x247_toast_shown";
-    const today = getLocalDate();
-    if (localStorage.getItem(key) === today) return;
-    localStorage.setItem(key, today);
-
-    const timer = setTimeout(() => {
-      setToasts([{ id: "t1", title: "Welcome back!", body: "Your streak is active. Check out new contests.", icon: "sparkles" }]);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const dismiss = (id: string) => setToasts(prev => prev.filter(t => t.id !== id));
+    if (toast) {
+      const timer = setTimeout(onDismiss, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast, onDismiss]);
 
   return (
     <div className="toast-container">
       <AnimatePresence>
-        {toasts.map(t => (
+        {toast && (
           <motion.div
-            key={t.id}
+            key={toast.id}
             initial={{ opacity: 0, x: 60, scale: 0.95 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 60, scale: 0.95 }}
@@ -406,17 +445,20 @@ function ToastNotifications() {
             className="toast-item"
           >
             <div className="toast-icon">
-              <Sparkles className="w-4 h-4 text-white/50" />
+              {toast.icon === "trophy" && <Trophy className="w-4 h-4 text-white/50" />}
+              {toast.icon === "gift" && <Gift className="w-4 h-4 text-white/50" />}
+              {toast.icon === "star" && <Star className="w-4 h-4 text-white/50" />}
+              {!["trophy", "gift", "star"].includes(toast.icon) && <Sparkles className="w-4 h-4 text-white/50" />}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[11px] font-display font-medium text-white/80">{t.title}</div>
-              <div className="text-[10px] text-white/30 font-light mt-0.5">{t.body}</div>
+              <div className="text-[11px] font-display font-medium text-white/80">{toast.title}</div>
+              <div className="text-[10px] text-white/30 font-light mt-0.5">{toast.body}</div>
             </div>
-            <button onClick={() => dismiss(t.id)} className="text-white/20 hover:text-white/40 transition-colors shrink-0">
+            <button onClick={onDismiss} className="text-white/20 hover:text-white/40 transition-colors shrink-0">
               <X className="w-3.5 h-3.5" />
             </button>
           </motion.div>
-        ))}
+        )}
       </AnimatePresence>
     </div>
   );
@@ -1220,7 +1262,7 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
             )}
           </AnimatePresence>
 
-          <ToastNotifications />
+          <ToastNotifications toast={notifs.latestToast} onDismiss={notifs.dismissToast} />
 
           <div className="dash-layout">
             <nav className="dash-sidebar">
