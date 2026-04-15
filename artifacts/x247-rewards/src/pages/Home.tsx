@@ -689,17 +689,18 @@ export default function Home() {
               >
                 <div className="glass-pill-badge mb-6">
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                  Analytics
+                  Partner Analytics
                 </div>
                 <h2 className="text-xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
                 <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
-                  Monitor your impact in real-time. Track clicks, verify signups, and watch your rank climb on the global leaderboard.
+                  Monitor your referral performance in real-time. Track link clicks, verified signups, giveaway entries, and conversion rates — all from your personal partner dashboard.
                 </p>
                 <ul className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
                   {[
-                    { icon: <Activity className="w-4 h-4" />, text: "Real-time referral validation status" },
-                    { icon: <Trophy className="w-4 h-4" />, text: "Automated milestone unlocking" },
-                    { icon: <Users className="w-4 h-4" />, text: "Competitive global leaderboard ranking" }
+                    { icon: <Activity className="w-4 h-4" />, text: "Live click & conversion tracking" },
+                    { icon: <BarChart3 className="w-4 h-4" />, text: "Daily performance trends & analytics" },
+                    { icon: <Trophy className="w-4 h-4" />, text: "Automated milestone progress" },
+                    { icon: <Users className="w-4 h-4" />, text: "Share via WhatsApp, Telegram & more" }
                   ].map((item, i) => (
                     <motion.li 
                       key={i} 
@@ -709,64 +710,105 @@ export default function Home() {
                       viewport={{ once: true }}
                       transition={{ delay: 0.3 + i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <div className="icon-circle icon-circle-sm mr-4 shrink-0">
+                      <motion.div
+                        className="icon-circle icon-circle-sm mr-4 shrink-0"
+                        animate={{ y: [0, -3, 0] }}
+                        transition={{ duration: 3, delay: i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+                      >
                         {item.icon}
-                      </div>
+                      </motion.div>
                       <span className="text-white/60 font-light text-sm sm:text-base">{item.text}</span>
                     </motion.li>
                   ))}
                 </ul>
-                <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                  <span className="relative z-[2]">Start Tracking</span>
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                </BorderGlow>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                    <BarChart3 className="w-4 h-4 mr-2 relative z-[2]" />
+                    <span className="relative z-[2]">Open Dashboard</span>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                  </BorderGlow>
+                  <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group">
+                    <span className="relative z-[2]">Become a Partner</span>
+                  </BorderGlow>
+                </div>
               </motion.div>
 
               <motion.div 
                 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}
                 className="lg:w-7/12 w-full"
               >
-                <TiltCard className="glass-card p-6 sm:p-8 shadow-2xl relative">
+                <TiltCard className="glass-card p-6 sm:p-8 shadow-2xl relative overflow-hidden">
                   <div className="card-top-accent" />
                   <div className="card-shine" />
                   <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-white/10 gap-3 relative z-[2]">
-                    <div>
-                      <h3 className="font-display font-light text-lg sm:text-xl text-white">Agent_X24</h3>
-                      <p className="text-xs sm:text-sm text-white/50 font-light">ID: X247-9982</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                        <span className="text-xs font-display font-bold text-white/60">AX</span>
+                      </div>
+                      <div>
+                        <h3 className="font-display font-light text-lg sm:text-xl text-white">Agent_X24</h3>
+                        <p className="text-[10px] sm:text-xs text-white/30 font-light font-mono">REF-X247-9982</p>
+                      </div>
                     </div>
                     <div className="glass-pill-badge !text-[10px]">
                       <span className="w-1.5 h-1.5 rounded-full bg-white mr-2 animate-pulse" /> ACTIVE
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-10 relative z-[2]">
-                    <div className="stat-card">
-                      <div className="text-white/50 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Verified</div>
-                      <motion.div 
-                        className="text-2xl sm:text-4xl font-display font-light text-white"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
+                  <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-6 sm:mb-8 relative z-[2]">
+                    {[
+                      { label: "Clicks", value: "247", icon: <Activity className="w-3 h-3" /> },
+                      { label: "Signups", value: "42", icon: <Users className="w-3 h-3" /> },
+                      { label: "Entries", value: "38", icon: <Gift className="w-3 h-3" /> },
+                      { label: "Conv.", value: "17%", icon: <Target className="w-3 h-3" /> },
+                    ].map((s, i) => (
+                      <motion.div
+                        key={i}
+                        className="stat-card text-center"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.5, duration: 0.8 }}
-                      >18</motion.div>
+                        transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
+                      >
+                        <div className="text-white/25 mb-1.5 flex justify-center">{s.icon}</div>
+                        <div className="text-lg sm:text-2xl font-display font-light text-white mb-0.5">{s.value}</div>
+                        <div className="text-[8px] sm:text-[9px] text-white/30 uppercase tracking-widest font-display">{s.label}</div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="mb-5 sm:mb-7 relative z-[2]">
+                    <div className="flex justify-between text-[10px] sm:text-xs mb-2.5">
+                      <span className="text-white/40 font-light uppercase tracking-wider font-display">7-Day Performance</span>
                     </div>
-                    <div className="stat-card">
-                      <div className="text-white/50 text-[10px] sm:text-xs uppercase tracking-widest font-display mb-2">Total Clicks</div>
-                      <motion.div 
-                        className="text-2xl sm:text-4xl font-display font-light text-white"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.6, duration: 0.8 }}
-                      >247</motion.div>
+                    <div className="flex items-end gap-1 h-16 sm:h-20">
+                      {[30, 45, 35, 60, 50, 75, 65].map((h, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex-1 rounded-t-sm relative overflow-hidden"
+                          style={{ background: "linear-gradient(to top, rgba(255,255,255,0.08), rgba(255,255,255,0.2))" }}
+                          initial={{ height: 0 }}
+                          whileInView={{ height: `${h}%` }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.6 + i * 0.08, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                          <div className="absolute inset-0 shimmer-bar" />
+                        </motion.div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between mt-1.5">
+                      {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+                        <span key={i} className="flex-1 text-center text-[8px] text-white/15 font-display">{d}</span>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="mb-6 sm:mb-10 relative z-[2]">
-                    <div className="flex justify-between text-xs sm:text-sm mb-3">
-                      <span className="text-white/50 font-light">Milestone I Progress</span>
-                      <span className="text-white/60 font-light">18 / 20</span>
+                  <div className="mb-5 sm:mb-7 relative z-[2]">
+                    <div className="flex justify-between text-xs sm:text-sm mb-2.5">
+                      <span className="text-white/40 font-light">Milestone I Progress</span>
+                      <span className="text-white/50 font-light font-display">18 / 20</span>
                     </div>
                     <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                       <motion.div 
@@ -783,28 +825,45 @@ export default function Home() {
                   </div>
 
                   <div className="relative z-[2]">
-                    <h4 className="text-[10px] sm:text-xs uppercase tracking-widest font-display text-white/50 mb-4">Recent Activity</h4>
-                    <div className="space-y-3 sm:space-y-4">
+                    <h4 className="text-[10px] sm:text-xs uppercase tracking-widest font-display text-white/40 mb-3">Recent Conversions</h4>
+                    <div className="space-y-2">
                       {[
-                        { text: "User ***891 verified", time: "2m ago", icon: <CheckCircle2 className="w-4 h-4" /> },
-                        { text: "User ***342 verified", time: "15m ago", icon: <CheckCircle2 className="w-4 h-4" /> },
-                        { text: "Link 2 click recorded", time: "1h ago", icon: <Activity className="w-4 h-4" /> }
+                        { text: "A***sh K. signed up", time: "2m ago", icon: <CheckCircle2 className="w-3.5 h-3.5" />, type: "signup" },
+                        { text: "R***ya S. entered giveaway", time: "15m ago", icon: <Gift className="w-3.5 h-3.5" />, type: "entry" },
+                        { text: "P***av M. signed up", time: "1h ago", icon: <CheckCircle2 className="w-3.5 h-3.5" />, type: "signup" },
+                        { text: "Link click from Mumbai", time: "2h ago", icon: <Activity className="w-3.5 h-3.5" />, type: "click" }
                       ].map((item, i) => (
                         <motion.div 
                           key={i}
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
-                          transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
-                          className="flex items-center text-xs sm:text-sm"
+                          transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
+                          className="flex items-center text-xs p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.03]"
                         >
-                          <div className="text-white/55 mr-3">{item.icon}</div>
-                          <span className="text-white/60 font-light">{item.text}</span>
-                          <span className="ml-auto text-[10px] sm:text-xs text-white/20">{item.time}</span>
+                          <div className="w-6 h-6 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mr-3 shrink-0">
+                            <span className="text-white/40">{item.icon}</span>
+                          </div>
+                          <span className="text-white/50 font-light flex-1">{item.text}</span>
+                          <span className="px-1.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.05] text-[8px] text-white/25 font-display uppercase tracking-wider mr-2">{item.type}</span>
+                          <span className="text-[10px] text-white/15 shrink-0">{item.time}</span>
                         </motion.div>
                       ))}
                     </div>
                   </div>
+
+                  <motion.div
+                    className="mt-5 relative z-[2]"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 1.2 }}
+                  >
+                    <Link href="/referral/dashboard" className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs text-white/40 hover:bg-white/[0.06] hover:text-white/60 transition-all group">
+                      <span className="font-light">View Full Dashboard</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </motion.div>
                 </TiltCard>
               </motion.div>
             </div>
