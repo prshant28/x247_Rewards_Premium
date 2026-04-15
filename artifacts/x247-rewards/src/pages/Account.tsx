@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
@@ -8,7 +8,7 @@ import {
   MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target,
   Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
   Edit3, Save, X, Award, CreditCard, Settings, LayoutDashboard, Zap,
-  ChevronRight, Star, Bell, Key, Trash2, History
+  ChevronRight, Star, Bell, Key, Trash2, History, PartyPopper
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
@@ -210,21 +210,217 @@ function computeStreak(dates: string[]): number {
   return streak;
 }
 
-function useStreak(): number {
+function useStreak(): { streak: number; isNew: boolean } {
   const [streak, setStreak] = useState(0);
+  const [isNew, setIsNew] = useState(false);
   useEffect(() => {
     const key = "x247_visit_dates";
     const today = getLocalDate();
     const stored = JSON.parse(localStorage.getItem(key) || "[]") as string[];
-    if (!stored.includes(today)) {
+    const wasNew = !stored.includes(today);
+    if (wasNew) {
       stored.push(today);
       localStorage.setItem(key, JSON.stringify(stored.slice(-30)));
     }
-    setStreak(computeStreak(stored));
+    const computed = computeStreak(stored);
+    setStreak(computed);
+    if (wasNew && computed > 1) setIsNew(true);
   }, []);
-  return streak;
+  return { streak, isNew };
 }
 
+type Notification = {
+  id: string;
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  time: string;
+  read: boolean;
+};
+
+function useNotifications(): { items: Notification[]; unread: number; markRead: (id: string) => void; markAllRead: () => void } {
+  const [items, setItems] = useState<Notification[]>([]);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("x247_notifications") || "[]") as Notification[];
+    const now = Date.now();
+    const seeded: Notification[] = [
+      { id: "n1", icon: "trophy", title: "New Contest Available", body: "Mega Cash Giveaway is now live! Enter before spots fill up.", time: new Date(now - 3600000).toISOString(), read: false },
+      { id: "n2", icon: "star", title: "Streak Milestone", body: "You've maintained a 3-day visit streak. Keep it going!", time: new Date(now - 7200000).toISOString(), read: false },
+      { id: "n3", icon: "gift", title: "Winner Announced", body: "A winner has been selected for Tech Gadgets Bonanza.", time: new Date(now - 86400000).toISOString(), read: true },
+    ];
+    const readIds = stored.filter(n => n.read).map(n => n.id);
+    const merged = seeded.map(n => ({ ...n, read: readIds.includes(n.id) }));
+    setItems(merged);
+  }, []);
+
+  const persist = (updated: Notification[]) => {
+    setItems(updated);
+    localStorage.setItem("x247_notifications", JSON.stringify(updated));
+  };
+
+  const markRead = (id: string) => persist(items.map(n => n.id === id ? { ...n, read: true } : n));
+  const markAllRead = () => persist(items.map(n => ({ ...n, read: true })));
+
+  return { items, unread: items.filter(n => !n.read).length, markRead, markAllRead };
+}
+
+function NotificationIcon({ type }: { type: string }) {
+  if (type === "trophy") return <Trophy className="w-4 h-4 text-white/40" />;
+  if (type === "star") return <Star className="w-4 h-4 text-white/40" />;
+  if (type === "gift") return <Gift className="w-4 h-4 text-white/40" />;
+  return <Bell className="w-4 h-4 text-white/40" />;
+}
+
+function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose }: {
+  notifications: Notification[];
+  onMarkRead: (id: string) => void;
+  onMarkAllRead: () => void;
+  onClose: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) onClose();
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+
+  const formatTime = (iso: string) => {
+    const diff = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  };
+
+  return (
+    <motion.div
+      ref={panelRef}
+      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -8, scale: 0.96 }}
+      transition={{ duration: 0.2 }}
+      className="notif-panel"
+    >
+      <div className="notif-header">
+        <span className="text-xs font-display font-medium text-white/70">Notifications</span>
+        {notifications.some(n => !n.read) && (
+          <button onClick={onMarkAllRead} className="text-[10px] text-white/30 hover:text-white/50 transition-colors font-light">
+            Mark all read
+          </button>
+        )}
+      </div>
+      <div className="notif-list">
+        {notifications.map(n => (
+          <button
+            key={n.id}
+            onClick={() => { if (!n.read) onMarkRead(n.id); }}
+            className={`notif-item ${!n.read ? "notif-item-unread" : ""}`}
+          >
+            <div className="notif-item-icon">
+              <NotificationIcon type={n.icon as string} />
+            </div>
+            <div className="flex-1 min-w-0 text-left">
+              <div className="text-[11px] font-display font-medium text-white/70">{n.title}</div>
+              <div className="text-[10px] text-white/30 font-light leading-snug mt-0.5 line-clamp-2">{n.body}</div>
+            </div>
+            <div className="text-[9px] text-white/20 font-light shrink-0">{formatTime(n.time)}</div>
+          </button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+function StreakCelebration({ streak, onDone }: { streak: number; onDone: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(onDone, 3500);
+    return () => clearTimeout(timer);
+  }, [onDone]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      className="streak-celebration"
+    >
+      <div className="streak-particles">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div
+            key={i}
+            className="streak-particle"
+            style={{
+              "--angle": `${i * 30}deg`,
+              "--delay": `${i * 0.05}s`,
+              "--dist": `${30 + Math.random() * 20}px`,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: [0, 1.3, 1] }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
+        className="streak-badge"
+      >
+        <Flame className="w-5 h-5 text-white/80" />
+        <span className="text-lg font-display font-bold text-white">{streak}</span>
+        <span className="text-[9px] text-white/50 font-display uppercase tracking-wider">Day Streak</span>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function ToastNotifications() {
+  const [toasts, setToasts] = useState<Array<{ id: string; title: string; body: string; icon: string }>>([]);
+
+  useEffect(() => {
+    const key = "x247_toast_shown";
+    const today = getLocalDate();
+    if (localStorage.getItem(key) === today) return;
+    localStorage.setItem(key, today);
+
+    const timer = setTimeout(() => {
+      setToasts([{ id: "t1", title: "Welcome back!", body: "Your streak is active. Check out new contests.", icon: "sparkles" }]);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const dismiss = (id: string) => setToasts(prev => prev.filter(t => t.id !== id));
+
+  return (
+    <div className="toast-container">
+      <AnimatePresence>
+        {toasts.map(t => (
+          <motion.div
+            key={t.id}
+            initial={{ opacity: 0, x: 60, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 60, scale: 0.95 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] as const }}
+            className="toast-item"
+          >
+            <div className="toast-icon">
+              <Sparkles className="w-4 h-4 text-white/50" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px] font-display font-medium text-white/80">{t.title}</div>
+              <div className="text-[10px] text-white/30 font-light mt-0.5">{t.body}</div>
+            </div>
+            <button onClick={() => dismiss(t.id)} className="text-white/20 hover:text-white/40 transition-colors shrink-0">
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; streak: number }) {
   const tierLabel = user.membershipTier === "free" ? "Free" : user.membershipTier?.charAt(0).toUpperCase() + user.membershipTier?.slice(1);
@@ -944,12 +1140,25 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
 function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entries: any[]; onLogout: () => void }) {
   const [user, setUser] = useState(initialUser);
   const [activeTab, setActiveTab] = useState<TabId>("overview");
-  const streak = useStreak();
+  const { streak, isNew: isStreakNew } = useStreak();
+  const [showStreakCelebration, setShowStreakCelebration] = useState(false);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const notifs = useNotifications();
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
+
+  useEffect(() => {
+    if (isStreakNew && streak > 1) {
+      const timer = setTimeout(() => setShowStreakCelebration(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [isStreakNew, streak]);
 
   const handleUserUpdate = (updatedUser: any) => {
     setUser(updatedUser);
   };
+
+  const toggleNotifs = useCallback(() => setShowNotifs(prev => !prev), []);
+  const closeNotifs = useCallback(() => setShowNotifs(false), []);
 
   return (
     <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0.5}>
@@ -981,11 +1190,37 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
             </div>
 
             <div className="dash-topbar-actions">
+              <div className="relative">
+                <button onClick={toggleNotifs} className="dash-topbar-btn notif-bell-btn" title="Notifications">
+                  <Bell className="w-3.5 h-3.5" />
+                  {notifs.unread > 0 && (
+                    <span className="notif-badge-count">{notifs.unread}</span>
+                  )}
+                </button>
+                <AnimatePresence>
+                  {showNotifs && (
+                    <NotificationPanel
+                      notifications={notifs.items}
+                      onMarkRead={notifs.markRead}
+                      onMarkAllRead={notifs.markAllRead}
+                      onClose={closeNotifs}
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
               <button onClick={onLogout} className="dash-topbar-btn" title="Sign out">
                 <LogOut className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
+
+          <AnimatePresence>
+            {showStreakCelebration && (
+              <StreakCelebration streak={streak} onDone={() => setShowStreakCelebration(false)} />
+            )}
+          </AnimatePresence>
+
+          <ToastNotifications />
 
           <div className="dash-layout">
             <nav className="dash-sidebar">
