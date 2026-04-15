@@ -4,13 +4,15 @@ import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import {
   User, Trophy, Clock, ArrowRight, LogOut, Mail, Phone,
-  MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target
+  MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target,
+  Palette, Check
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
   logoutUser, isUserLoggedIn, getStoredReferralCode, trackReferralConversion
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import { useTheme, THEMES, type ThemeId } from "@/contexts/ThemeContext";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -204,6 +206,53 @@ function useStreak(): number {
   return streak;
 }
 
+function ThemeSelector() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2.5} className="mb-6">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
+        <Palette className="w-4 h-4 text-white/40" />
+        <h3 className="text-lg font-display font-light text-white">Appearance</h3>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {THEMES.map((t) => {
+          const isActive = theme === t.id;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTheme(t.id)}
+              className={`group relative rounded-2xl p-3 sm:p-4 text-left transition-all duration-300 cursor-pointer border ${
+                isActive
+                  ? "border-white/20 bg-white/[0.06]"
+                  : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]"
+              }`}
+            >
+              {isActive && (
+                <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                  <Check className="w-3 h-3 text-white/80" />
+                </div>
+              )}
+
+              <div className="flex gap-1 mb-3 h-8 rounded-lg overflow-hidden border border-white/[0.06]">
+                <div className="flex-1" style={{ background: t.preview.bg }} />
+                <div className="flex-1" style={{ background: t.preview.card }} />
+                <div className="flex-1" style={{ background: t.preview.border }} />
+                <div className="w-1" style={{ background: t.preview.accent }} />
+              </div>
+
+              <div className="text-xs font-display font-medium text-white/80 mb-0.5">{t.name}</div>
+              <div className="text-[9px] text-white/35 font-light leading-relaxed">{t.description}</div>
+            </button>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
 function Dashboard({ user, entries, onLogout }: { user: any; entries: any[]; onLogout: () => void }) {
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
   const streak = useStreak();
@@ -284,7 +333,9 @@ function Dashboard({ user, entries, onLogout }: { user: any; entries: any[]; onL
         </div>
       </motion.div>
 
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="mb-6">
+      <ThemeSelector />
+
+      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3} className="mb-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
           <h3 className="text-lg font-display font-light text-white">Your Giveaway Entries</h3>
