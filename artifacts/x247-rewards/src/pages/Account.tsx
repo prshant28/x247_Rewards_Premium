@@ -8,7 +8,7 @@ import {
   MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target,
   Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
   Edit3, Save, X, Award, CreditCard, Settings, LayoutDashboard, Zap,
-  ChevronRight, Star, Bell, Key, Trash2, History, PartyPopper
+  ChevronRight, Star, Bell, Key, Trash2, History
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
@@ -262,17 +262,25 @@ function useNotifications(): {
 
   useEffect(() => {
     const stored: Notification[] = JSON.parse(localStorage.getItem("x247_notifications") || "[]");
-    const readIds = new Set(stored.filter(n => n.read).map(n => n.id));
+    const storedMap = new Map(stored.map(n => [n.id, n]));
     const now = Date.now();
-    const existing: Notification[] = NOTIF_EVENTS.map((ev, i) => ({
-      id: ev.id,
-      icon: ev.icon,
-      title: ev.title,
-      body: ev.body,
-      time: new Date(now - (i + 1) * 3600000).toISOString(),
-      read: readIds.has(ev.id),
-    }));
-    setItems(existing);
+    const seedItems: Notification[] = NOTIF_EVENTS.map((ev, i) => {
+      const existing = storedMap.get(ev.id);
+      if (existing) return existing;
+      return {
+        id: ev.id,
+        icon: ev.icon,
+        title: ev.title,
+        body: ev.body,
+        time: new Date(now - (i + 1) * 3600000).toISOString(),
+        read: false,
+      };
+    });
+    const seedIds = new Set(NOTIF_EVENTS.map(e => e.id));
+    const dynamicItems = stored.filter(n => !seedIds.has(n.id));
+    const merged = [...dynamicItems, ...seedItems].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+    setItems(merged);
+    localStorage.setItem("x247_notifications", JSON.stringify(merged));
   }, []);
 
   useEffect(() => {
@@ -322,21 +330,24 @@ function NotificationIcon({ type }: { type: NotifIconKind }) {
   return <Bell className="w-4 h-4 text-white/40" />;
 }
 
-function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose }: {
+function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, containerRef }: {
   notifications: Notification[];
   onMarkRead: (id: string) => void;
   onMarkAllRead: () => void;
   onClose: () => void;
+  containerRef: React.RefObject<HTMLDivElement>;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) onClose();
+      const target = e.target as Node;
+      if (containerRef.current && containerRef.current.contains(target)) return;
+      if (panelRef.current && !panelRef.current.contains(target)) onClose();
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, [onClose]);
+  }, [onClose, containerRef]);
 
   const formatTime = (iso: string) => {
     const diff = Date.now() - new Date(iso).getTime();
@@ -1199,6 +1210,7 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
     setUser(updatedUser);
   };
 
+  const notifContainerRef = useRef<HTMLDivElement>(null);
   const toggleNotifs = useCallback(() => setShowNotifs(prev => !prev), []);
   const closeNotifs = useCallback(() => setShowNotifs(false), []);
 
@@ -1232,7 +1244,7 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
             </div>
 
             <div className="dash-topbar-actions">
-              <div className="relative">
+              <div className="relative" ref={notifContainerRef}>
                 <button onClick={toggleNotifs} className="dash-topbar-btn notif-bell-btn" title="Notifications">
                   <Bell className="w-3.5 h-3.5" />
                   {notifs.unread > 0 && (
@@ -1246,6 +1258,7 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                       onMarkRead={notifs.markRead}
                       onMarkAllRead={notifs.markAllRead}
                       onClose={closeNotifs}
+                      containerRef={notifContainerRef}
                     />
                   )}
                 </AnimatePresence>
