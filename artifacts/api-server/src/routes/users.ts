@@ -28,8 +28,8 @@ const MEMBERSHIP_PLANS = [
     limits: { chatMessagesPerDay: 10, voiceChat: false, entriesPerContest: 2 },
   },
   {
-    id: "basic",
-    name: "Basic",
+    id: "silver",
+    name: "Silver",
     price: 199,
     currency: "INR",
     interval: "month",
@@ -44,20 +44,39 @@ const MEMBERSHIP_PLANS = [
     limits: { chatMessagesPerDay: -1, voiceChat: false, entriesPerContest: 5 },
   },
   {
-    id: "premium",
-    name: "Premium",
+    id: "gold",
+    name: "Gold",
     price: 499,
+    currency: "INR",
+    interval: "month",
+    entriesPerContest: 15,
+    features: [
+      "15 entries per contest",
+      "Voice AI chat (ElevenLabs)",
+      "Unlimited text chat",
+      "Verified badge on profile",
+      "Exclusive partner deals",
+      "Priority everything",
+      "Dedicated VIP support",
+    ],
+    limits: { chatMessagesPerDay: -1, voiceChat: true, entriesPerContest: 15 },
+  },
+  {
+    id: "black",
+    name: "Black",
+    price: 999,
     currency: "INR",
     interval: "month",
     entriesPerContest: -1,
     features: [
       "Unlimited entries per contest",
       "Voice AI chat (ElevenLabs)",
-      "Unlimited text chat",
-      "VIP badge on entries",
-      "Exclusive partner deals",
-      "Priority everything",
-      "Dedicated VIP support",
+      "Verified badge on profile",
+      "Black tier exclusive badge",
+      "Early winner announcements",
+      "Private concierge support",
+      "Exclusive Black events",
+      "Lifetime priority queue",
     ],
     limits: { chatMessagesPerDay: -1, voiceChat: true, entriesPerContest: -1 },
   },
@@ -405,7 +424,7 @@ router.post("/membership/purchase", async (req, res) => {
     }
 
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    const isVerified = planId === "premium";
+    const isVerified = planId === "gold" || planId === "black";
 
     const [updated] = await db.update(usersTable).set({
       membershipTier: planId,

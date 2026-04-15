@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import UserProfileCard from "@/components/UserProfileCard";
@@ -7,7 +7,8 @@ import {
   User, Trophy, Clock, ArrowRight, LogOut, Mail, Phone,
   MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target,
   Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
-  Edit3, Save, X, Award
+  Edit3, Save, X, Award, CreditCard, Settings, LayoutDashboard, Zap,
+  ChevronRight, Star, Bell, Key, Trash2, History
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
@@ -25,7 +26,22 @@ const fadeUp = {
   }),
 };
 
+const tabFade = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+};
+
 type AuthMode = "login" | "register";
+type TabId = "overview" | "profile" | "subscription" | "entries" | "settings";
+
+const TABS: { id: TabId; label: string; icon: any }[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "profile", label: "Profile", icon: User },
+  { id: "subscription", label: "Subscription", icon: CreditCard },
+  { id: "entries", label: "Entries", icon: Trophy },
+  { id: "settings", label: "Settings", icon: Settings },
+];
 
 function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   const [mode, setMode] = useState<AuthMode>("login");
@@ -209,54 +225,124 @@ function useStreak(): number {
   return streak;
 }
 
-function ThemeSelector() {
-  const { theme, setTheme } = useTheme();
-
+function TabNav({ activeTab, onTabChange }: { activeTab: TabId; onTabChange: (t: TabId) => void }) {
   return (
-    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2.5} className="mb-6">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-        <Palette className="w-4 h-4 text-white/40" />
-        <h3 className="text-lg font-display font-light text-white">Appearance</h3>
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {THEMES.map((t) => {
-          const isActive = theme === t.id;
+    <div className="acct-tabs">
+      <div className="acct-tabs-inner">
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
           return (
             <button
-              key={t.id}
-              onClick={() => setTheme(t.id)}
-              className={`group relative rounded-2xl p-3 sm:p-4 text-left transition-all duration-300 cursor-pointer border ${
-                isActive
-                  ? "border-white/20 bg-white/[0.06]"
-                  : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]"
-              }`}
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className={`acct-tab ${isActive ? "acct-tab-active" : ""}`}
             >
-              {isActive && (
-                <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                  <Check className="w-3 h-3 text-white/80" />
-                </div>
-              )}
-
-              <div className="flex gap-1 mb-3 h-8 rounded-lg overflow-hidden border border-white/[0.06]">
-                <div className="flex-1" style={{ background: t.preview.bg }} />
-                <div className="flex-1" style={{ background: t.preview.card }} />
-                <div className="flex-1" style={{ background: t.preview.border }} />
-                <div className="w-1" style={{ background: t.preview.accent }} />
-              </div>
-
-              <div className="text-xs font-display font-medium text-white/80 mb-0.5">{t.name}</div>
-              <div className="text-[9px] text-white/35 font-light leading-relaxed">{t.description}</div>
+              <Icon className="w-4 h-4" />
+              <span className="hidden sm:inline">{tab.label}</span>
             </button>
           );
         })}
       </div>
+    </div>
+  );
+}
+
+function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; streak: number }) {
+  const tierLabel = user.membershipTier === "free" ? "Free" : user.membershipTier?.charAt(0).toUpperCase() + user.membershipTier?.slice(1);
+  const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+
+  return (
+    <motion.div key="overview" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        {[
+          { icon: Flame, label: "Day Streak", value: streak },
+          { icon: Trophy, label: "Entries", value: entries.length },
+          { icon: Target, label: "Partners", value: entries.reduce((s: number, e: any) => s + (e.partnersCompleted || 0), 0) },
+          { icon: Star, label: "Tier", value: tierLabel, isText: true },
+        ].map((stat, i) => (
+          <div key={stat.label} className="acct-stat-card">
+            <stat.icon className="w-4 h-4 text-white/25 mb-2" />
+            {stat.isText ? (
+              <span className="text-lg font-display font-light text-white">{stat.value}</span>
+            ) : (
+              <AnimatedCounter value={stat.value as number} className="text-xl font-display font-light text-white block" />
+            )}
+            <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="glass-card p-5">
+          <div className="card-shine" />
+          <div className="relative z-[2]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
+                <User className="w-5 h-5 text-white/30" />
+              </div>
+              <div>
+                <div className="text-sm font-display font-light text-white">{user.fullName}</div>
+                <div className="text-[10px] text-white/30 font-light">{user.email}</div>
+              </div>
+              {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/50 ml-auto" />}
+            </div>
+            <div className="flex items-center gap-2 text-[10px] text-white/25 font-light">
+              <Calendar className="w-3 h-3" />
+              <span>Member since {memberSince}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={`glass-card p-5 ${user.membershipTier === "black" ? "acct-black-card" : ""}`}>
+          <div className="card-shine" />
+          <div className="relative z-[2]">
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${user.membershipTier === "black" ? "bg-white/[0.08] border-white/[0.15]" : "bg-white/[0.04] border-white/[0.06]"}`}>
+                <Crown className="w-5 h-5 text-white/40" />
+              </div>
+              <div>
+                <div className="text-sm font-display font-light text-white capitalize">{tierLabel} Plan</div>
+                <div className="text-[10px] text-white/30 font-light">
+                  {user.membershipTier === "free" ? "Upgrade for more benefits" : "Active subscription"}
+                </div>
+              </div>
+            </div>
+            {user.membershipTier === "free" && (
+              <div className="text-[10px] text-white/20 font-light">2 entries per contest</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {entries.length > 0 && (
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <h3 className="text-sm font-display font-light text-white/50">Recent Entries</h3>
+            <span className="text-[10px] text-white/20 font-light">{entries.length} total</span>
+          </div>
+          <div className="space-y-2">
+            {entries.slice(0, 3).map((entry: any) => (
+              <div key={entry.id} className="acct-entry-row">
+                <Trophy className="w-3.5 h-3.5 text-white/25 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-light text-white/60 truncate">{entry.contestName}</div>
+                  <div className="text-[9px] text-white/25 font-light">{entry.entryCount} entries · {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
+                </div>
+                <div className="acct-entry-status">
+                  <Clock className="w-3 h-3" />
+                  <span>Pending</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }
 
-function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
+function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -266,6 +352,12 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
   const [profileSlug, setProfileSlug] = useState(user.profileSlug || "");
   const [isPublic, setIsPublic] = useState(user.isPublic || false);
+  const [badges, setBadges] = useState<{ available: any[]; earned: string[] }>({ available: [], earned: [] });
+  const [badgeSaving, setBadgeSaving] = useState(false);
+
+  useEffect(() => {
+    getUserBadges().then(setBadges);
+  }, []);
 
   const profileUrl = profileSlug
     ? `${window.location.origin}${import.meta.env.BASE_URL}profile/${profileSlug}`
@@ -274,14 +366,8 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setError("Please select an image file");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image must be under 5MB");
-      return;
-    }
+    if (!file.type.startsWith("image/")) { setError("Please select an image file"); return; }
+    if (file.size > 5 * 1024 * 1024) { setError("Image must be under 5MB"); return; }
     setUploading(true);
     setError("");
     try {
@@ -327,23 +413,19 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
     }
   };
 
-  return (
-    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="mb-6">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-        <User className="w-4 h-4 text-white/40" />
-        <h3 className="text-lg font-display font-light text-white">Public Profile</h3>
-        <button
-          onClick={() => setEditing(!editing)}
-          className="ml-auto flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
-        >
-          {editing ? <X className="w-3 h-3" /> : <Edit3 className="w-3 h-3" />}
-          {editing ? "Cancel" : "Edit"}
-        </button>
-      </div>
+  const handleSelectBadge = async (badgeId: string | null) => {
+    setBadgeSaving(true);
+    const result = await updateProfile({ selectedBadge: badgeId });
+    if (result.success) {
+      onUpdate({ ...user, selectedBadge: badgeId });
+    }
+    setBadgeSaving(false);
+  };
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
+  return (
+    <motion.div key="profile" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
+        <div className="lg:col-span-2 flex justify-center lg:justify-start">
           <UserProfileCard
             fullName={user.fullName}
             bio={bio || undefined}
@@ -357,11 +439,22 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
           />
         </div>
 
-        <div className="space-y-3">
+        <div className="lg:col-span-3 space-y-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-base font-display font-light text-white">Profile Details</h3>
+            <button
+              onClick={() => setEditing(!editing)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
+            >
+              {editing ? <X className="w-3 h-3" /> : <Edit3 className="w-3 h-3" />}
+              {editing ? "Cancel" : "Edit"}
+            </button>
+          </div>
+
           {editing ? (
-            <>
+            <div className="space-y-3">
               <div>
-                <label className="block text-[10px] text-white/30 uppercase tracking-widest font-display mb-1.5">Avatar</label>
+                <label className="acct-label">Avatar</label>
                 <label className="flex items-center gap-3 p-3 bg-white/[0.03] border border-white/[0.06] rounded-xl cursor-pointer hover:bg-white/[0.04] transition-all">
                   <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
                     {avatarUrl ? (
@@ -379,7 +472,7 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
               </div>
 
               <div>
-                <label className="block text-[10px] text-white/30 uppercase tracking-widest font-display mb-1.5">Bio</label>
+                <label className="acct-label">Bio</label>
                 <textarea
                   value={bio}
                   onChange={(e) => setBio(e.target.value.slice(0, 200))}
@@ -391,7 +484,7 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
               </div>
 
               <div>
-                <label className="block text-[10px] text-white/30 uppercase tracking-widest font-display mb-1.5">Profile Link</label>
+                <label className="acct-label">Profile Link</label>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-white/25 font-light shrink-0">/profile/</span>
                   <input
@@ -427,121 +520,122 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
                 <Save className="w-3.5 h-3.5" />
                 {saving ? "Saving..." : "Save Profile"}
               </button>
-            </>
+            </div>
           ) : (
             <div className="space-y-3">
-              <div className="glass-card p-4">
-                <div className="card-shine" />
-                <div className="relative z-[2]">
-                  <div className="flex items-center gap-2 mb-2">
-                    {isPublic ? <Globe className="w-4 h-4 text-white/40" /> : <Lock className="w-4 h-4 text-white/25" />}
-                    <span className="text-xs text-white/50 font-light">{isPublic ? "Public" : "Private"}</span>
-                  </div>
-                  {profileSlug && isPublic ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 p-2 bg-white/[0.03] border border-white/[0.04] rounded-lg">
-                        <span className="text-[10px] text-white/30 font-mono truncate flex-1">/profile/{profileSlug}</span>
-                        <button onClick={handleCopyLink} className="shrink-0 p-1 hover:bg-white/[0.06] rounded transition-all">
-                          {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3 text-white/30" />}
-                        </button>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleShare}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
-                        >
-                          <Share2 className="w-3 h-3" />
-                          Share
-                        </button>
-                        <Link
-                          href={`/profile/${profileSlug}`}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          View
-                        </Link>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-xs text-white/25 font-light">
-                      {profileSlug ? "Make your profile public to share it" : "Click Edit to set up your profile link"}
-                    </p>
-                  )}
+              <div className="acct-info-row">
+                <Mail className="w-4 h-4 text-white/25" />
+                <div>
+                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">Email</div>
+                  <div className="text-sm text-white/60 font-light">{user.email}</div>
                 </div>
               </div>
+              {user.phone && (
+                <div className="acct-info-row">
+                  <Phone className="w-4 h-4 text-white/25" />
+                  <div>
+                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">Phone</div>
+                    <div className="text-sm text-white/60 font-light">{user.phone}</div>
+                  </div>
+                </div>
+              )}
+              {user.city && (
+                <div className="acct-info-row">
+                  <MapPin className="w-4 h-4 text-white/25" />
+                  <div>
+                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">City</div>
+                    <div className="text-sm text-white/60 font-light">{user.city}</div>
+                  </div>
+                </div>
+              )}
+              {profileSlug && isPublic && (
+                <div className="acct-info-row">
+                  <Globe className="w-4 h-4 text-white/25" />
+                  <div className="flex-1">
+                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">Public Profile</div>
+                    <div className="text-sm text-white/60 font-light font-mono">/profile/{profileSlug}</div>
+                  </div>
+                  <div className="flex gap-1.5">
+                    <button onClick={handleCopyLink} className="p-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg hover:bg-white/[0.06] transition-all">
+                      {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3 text-white/30" />}
+                    </button>
+                    <Link href={`/profile/${profileSlug}`} className="p-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg hover:bg-white/[0.06] transition-all">
+                      <ExternalLink className="w-3 h-3 text-white/30" />
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           )}
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <Award className="w-4 h-4 text-white/40" />
+          <h3 className="text-base font-display font-light text-white">Badges</h3>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {badges.available.map((badge) => {
+            const earned = badges.earned.includes(badge.id);
+            const isSelected = user.selectedBadge === badge.id;
+            return (
+              <button
+                key={badge.id}
+                onClick={() => earned ? handleSelectBadge(isSelected ? null : badge.id) : undefined}
+                disabled={!earned || badgeSaving}
+                className={`relative rounded-2xl p-3 text-center transition-all duration-300 border ${
+                  isSelected
+                    ? "border-white/20 bg-white/[0.06]"
+                    : earned
+                    ? "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:bg-white/[0.05] cursor-pointer"
+                    : "border-white/[0.04] bg-white/[0.01] opacity-40 cursor-not-allowed"
+                }`}
+              >
+                {isSelected && (
+                  <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5 text-white/80" />
+                  </div>
+                )}
+                <div className="text-2xl mb-1.5">{badge.icon}</div>
+                <div className="text-[10px] font-display font-medium text-white/70 mb-0.5">{badge.name}</div>
+                <div className="text-[8px] text-white/30 font-light leading-tight">{badge.description}</div>
+                {!earned && <div className="text-[8px] text-white/20 mt-1 font-display uppercase tracking-wider">Locked</div>}
+              </button>
+            );
+          })}
         </div>
       </div>
     </motion.div>
   );
 }
 
-function BadgeSelector({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
-  const [badges, setBadges] = useState<{ available: any[]; earned: string[] }>({ available: [], earned: [] });
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    getUserBadges().then(setBadges);
-  }, []);
-
-  const handleSelectBadge = async (badgeId: string | null) => {
-    setSaving(true);
-    const result = await updateProfile({ selectedBadge: badgeId });
-    if (result.success) {
-      onUpdate({ ...user, selectedBadge: badgeId });
-    }
-    setSaving(false);
-  };
-
-  return (
-    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2.2} className="mb-6">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-        <Award className="w-4 h-4 text-white/40" />
-        <h3 className="text-lg font-display font-light text-white">Badges</h3>
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {badges.available.map((badge) => {
-          const earned = badges.earned.includes(badge.id);
-          const isSelected = user.selectedBadge === badge.id;
-          return (
-            <button
-              key={badge.id}
-              onClick={() => earned ? handleSelectBadge(isSelected ? null : badge.id) : undefined}
-              disabled={!earned || saving}
-              className={`relative rounded-2xl p-3 text-center transition-all duration-300 border ${
-                isSelected
-                  ? "border-white/20 bg-white/[0.06]"
-                  : earned
-                  ? "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:bg-white/[0.05] cursor-pointer"
-                  : "border-white/[0.04] bg-white/[0.01] opacity-40 cursor-not-allowed"
-              }`}
-            >
-              {isSelected && (
-                <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                  <Check className="w-2.5 h-2.5 text-white/80" />
-                </div>
-              )}
-              <div className="text-2xl mb-1.5">{badge.icon}</div>
-              <div className="text-[10px] font-display font-medium text-white/70 mb-0.5">{badge.name}</div>
-              <div className="text-[8px] text-white/30 font-light leading-tight">{badge.description}</div>
-              {!earned && <div className="text-[8px] text-white/20 mt-1 font-display uppercase tracking-wider">Locked</div>}
-            </button>
-          );
-        })}
-      </div>
-    </motion.div>
-  );
-}
-
-function MembershipSection({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
+function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
   const [purchasing, setPurchasing] = useState<string | null>(null);
 
   const plans = [
-    { id: "basic", name: "Basic", price: 199, features: ["5 entries per contest", "Unlimited chat", "Priority support"] },
-    { id: "premium", name: "Premium", price: 499, features: ["Unlimited entries", "Verified badge", "Voice AI chat", "VIP support"] },
+    {
+      id: "silver",
+      name: "Silver",
+      price: 199,
+      tagline: "For casual participants",
+      features: ["5 entries per contest", "Unlimited text chat", "Priority support", "Early access to new partners", "Partner insights"],
+    },
+    {
+      id: "gold",
+      name: "Gold",
+      price: 499,
+      tagline: "For dedicated members",
+      popular: true,
+      features: ["15 entries per contest", "Voice AI chat", "Verified badge", "Exclusive partner deals", "Priority everything", "VIP support"],
+    },
+    {
+      id: "black",
+      name: "Black",
+      price: 999,
+      tagline: "The ultimate tier",
+      features: ["Unlimited entries", "Voice AI chat", "Verified badge", "Black exclusive badge", "Early winner announcements", "Private concierge", "Exclusive Black events", "Lifetime priority queue"],
+    },
   ];
 
   const handlePurchase = async (planId: string) => {
@@ -557,82 +651,268 @@ function MembershipSection({ user, onUpdate }: { user: any; onUpdate: (u: any) =
     setPurchasing(null);
   };
 
-  return (
-    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2.8} className="mb-6">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-        <Crown className="w-4 h-4 text-white/40" />
-        <h3 className="text-lg font-display font-light text-white">Membership</h3>
-        {user.isVerified && (
-          <div className="flex items-center gap-1 ml-auto px-2.5 py-1 bg-white/[0.04] border border-white/[0.08] rounded-lg">
-            <BadgeCheck className="w-3.5 h-3.5 text-white/60" />
-            <span className="text-[10px] text-white/50 font-light">Verified</span>
-          </div>
-        )}
-      </div>
+  const activeTier = user.membershipTier || "free";
+  const tierOrder = ["free", "silver", "gold", "black"];
+  const activeIndex = tierOrder.indexOf(activeTier);
 
-      {user.membershipTier !== "free" ? (
-        <div className="glass-card p-5">
+  return (
+    <motion.div key="subscription" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+      {activeTier !== "free" && (
+        <div className={`glass-card p-6 mb-8 ${activeTier === "black" ? "acct-black-card" : ""}`}>
           <div className="card-shine" />
           <div className="relative z-[2]">
-            <div className="flex items-center gap-3 mb-3">
-              <Crown className="w-5 h-5 text-white/50" />
+            <div className="flex items-center gap-4 mb-4">
+              <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${activeTier === "black" ? "bg-white/[0.1] border-white/[0.2]" : "bg-white/[0.04] border-white/[0.08]"}`}>
+                <Crown className="w-6 h-6 text-white/50" />
+              </div>
               <div>
-                <div className="text-sm font-display font-light text-white capitalize">{user.membershipTier} Plan</div>
-                <div className="text-[10px] text-white/30 font-light">Active membership</div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-display font-light text-white capitalize">{activeTier} Membership</h3>
+                  {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/50" />}
+                </div>
+                <div className="text-xs text-white/30 font-light">Active · Renews monthly</div>
               </div>
             </div>
-            {user.isVerified && (
-              <div className="flex items-center gap-2 p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                <BadgeCheck className="w-4 h-4 text-white/50" />
-                <span className="text-xs text-white/40 font-light">Verified badge is active on your profile</span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Status</div>
+                <div className="text-xs text-white/60 font-light">Active</div>
               </div>
-            )}
+              <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Entries</div>
+                <div className="text-xs text-white/60 font-light">{activeTier === "black" ? "Unlimited" : activeTier === "gold" ? "15/contest" : "5/contest"}</div>
+              </div>
+              <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Voice Chat</div>
+                <div className="text-xs text-white/60 font-light">{activeTier === "silver" ? "Not included" : "Enabled"}</div>
+              </div>
+            </div>
           </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {plans.map((plan) => (
-            <div key={plan.id} className={`glass-card p-5 ${plan.id === "premium" ? "border border-white/[0.12]" : ""}`}>
-              <div className="card-shine" />
-              <div className="relative z-[2]">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-base font-display font-light text-white">{plan.name}</h4>
-                  {plan.id === "premium" && (
-                    <BadgeCheck className="w-4 h-4 text-white/40" />
-                  )}
+      )}
+
+      <div className="flex items-center gap-3 mb-6">
+        <CreditCard className="w-4 h-4 text-white/40" />
+        <h3 className="text-base font-display font-light text-white">{activeTier === "free" ? "Choose a Plan" : "Available Plans"}</h3>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {plans.map((plan) => {
+          const planIndex = tierOrder.indexOf(plan.id);
+          const isCurrent = activeTier === plan.id;
+          const isDowngrade = planIndex < activeIndex;
+          const isBlack = plan.id === "black";
+
+          return (
+            <div
+              key={plan.id}
+              className={`acct-plan-card ${isBlack ? "acct-plan-black" : ""} ${plan.popular && activeTier === "free" ? "acct-plan-popular" : ""} ${isCurrent ? "acct-plan-current" : ""}`}
+            >
+              {plan.popular && activeTier === "free" && (
+                <div className="acct-plan-badge">Most Popular</div>
+              )}
+              {isCurrent && (
+                <div className="acct-plan-badge">Current Plan</div>
+              )}
+
+              <div className="acct-plan-head">
+                <h4 className="text-base font-display font-medium text-white">{plan.name}</h4>
+                <p className="text-[10px] text-white/30 font-light mt-0.5">{plan.tagline}</p>
+              </div>
+
+              <div className="acct-plan-price">
+                <span className="text-[10px] text-white/30 font-light">₹</span>
+                <span className="text-3xl font-display font-light text-white">{plan.price}</span>
+                <span className="text-xs text-white/25 font-light">/mo</span>
+              </div>
+
+              <ul className="acct-plan-features">
+                {plan.features.map((f) => (
+                  <li key={f}>
+                    <Check className="w-3 h-3 text-white/30 shrink-0 mt-0.5" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => !isCurrent && !isDowngrade && handlePurchase(plan.id)}
+                disabled={purchasing !== null || isCurrent || isDowngrade}
+                className={`acct-plan-btn ${isBlack && !isCurrent ? "acct-plan-btn-black" : ""}`}
+              >
+                {purchasing === plan.id ? "Processing..." : isCurrent ? "Current Plan" : isDowngrade ? "Downgrade" : `Get ${plan.name}`}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+function EntriesTab({ entries }: { entries: any[] }) {
+  return (
+    <motion.div key="entries" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+      <div className="flex items-center gap-3 mb-4">
+        <Trophy className="w-4 h-4 text-white/40" />
+        <h3 className="text-base font-display font-light text-white">Giveaway Entries</h3>
+        <span className="text-[10px] text-white/20 font-light ml-auto">{entries.length} total</span>
+      </div>
+
+      {entries.length > 0 ? (
+        <div className="space-y-2">
+          {entries.map((entry: any) => (
+            <div key={entry.id} className="acct-entry-row">
+              <Trophy className="w-4 h-4 text-white/25 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-light text-white/60 truncate">{entry.contestName}</div>
+                <div className="flex items-center gap-3 text-[10px] text-white/25 font-light mt-0.5">
+                  <span className="font-mono">{entry.entryCode}</span>
+                  <span className="text-white/10">·</span>
+                  <span>{entry.entryCount} {entry.entryCount === 1 ? "entry" : "entries"}</span>
+                  <span className="text-white/10">·</span>
+                  <span>{entry.partnersCompleted} partners</span>
                 </div>
-                <div className="mb-3">
-                  <span className="text-2xl font-display font-light text-white">{plan.price}</span>
-                  <span className="text-xs text-white/30 font-light"> /mo</span>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="acct-entry-status">
+                  <Clock className="w-3 h-3" />
+                  <span>Pending</span>
                 </div>
-                <ul className="space-y-1.5 mb-4">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-xs text-white/40 font-light">
-                      <Check className="w-3 h-3 text-white/30" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={() => handlePurchase(plan.id)}
-                  disabled={purchasing !== null}
-                  className="w-full py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-xs text-white font-light hover:bg-white/[0.08] transition-all disabled:opacity-30"
-                >
-                  {purchasing === plan.id ? "Processing..." : `Get ${plan.name}`}
-                </button>
+                <div className="text-[9px] text-white/20 font-light mt-0.5">
+                  {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                </div>
               </div>
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="glass-card p-10 sm:p-14 text-center">
+          <div className="card-shine" />
+          <div className="relative z-[2]">
+            <Gift className="w-12 h-12 text-white/10 mx-auto mb-4" />
+            <h4 className="text-lg font-display font-light text-white/40 mb-2">No Entries Yet</h4>
+            <p className="text-sm text-white/25 font-light mb-6">You haven't entered any giveaway contests yet</p>
+            <Link href="/giveaway" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white/60 font-light hover:bg-white/[0.08] transition-all">
+              <Sparkles className="w-4 h-4" />
+              Browse Contests
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       )}
     </motion.div>
   );
 }
 
+function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
+  const { theme, setTheme } = useTheme();
+  const [notif, setNotif] = useState(true);
+
+  return (
+    <motion.div key="settings" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+      <div className="space-y-6">
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <Palette className="w-4 h-4 text-white/40" />
+            <h3 className="text-base font-display font-light text-white">Appearance</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {THEMES.map((t) => {
+              const isActive = theme === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setTheme(t.id)}
+                  className={`group relative rounded-2xl p-3 text-left transition-all duration-300 cursor-pointer border ${
+                    isActive
+                      ? "border-white/20 bg-white/[0.06]"
+                      : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]"
+                  }`}
+                >
+                  {isActive && (
+                    <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white/80" />
+                    </div>
+                  )}
+                  <div className="flex gap-1 mb-2.5 h-7 rounded-lg overflow-hidden border border-white/[0.06]">
+                    <div className="flex-1" style={{ background: t.preview.bg }} />
+                    <div className="flex-1" style={{ background: t.preview.card }} />
+                    <div className="flex-1" style={{ background: t.preview.border }} />
+                    <div className="w-1" style={{ background: t.preview.accent }} />
+                  </div>
+                  <div className="text-[10px] font-display font-medium text-white/80">{t.name}</div>
+                  <div className="text-[8px] text-white/30 font-light leading-relaxed mt-0.5">{t.description}</div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="section-divider" />
+
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <Bell className="w-4 h-4 text-white/40" />
+            <h3 className="text-base font-display font-light text-white">Notifications</h3>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+              <div>
+                <div className="text-sm text-white/60 font-light">Contest alerts</div>
+                <div className="text-[10px] text-white/25 font-light">Get notified about new giveaways</div>
+              </div>
+              <button
+                onClick={() => setNotif(!notif)}
+                className={`relative w-10 h-5 rounded-full transition-all ${notif ? "bg-white/20" : "bg-white/[0.06]"}`}
+              >
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${notif ? "left-5.5 bg-white" : "left-0.5 bg-white/40"}`} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+              <div>
+                <div className="text-sm text-white/60 font-light">Winner announcements</div>
+                <div className="text-[10px] text-white/25 font-light">Be first to know when winners are drawn</div>
+              </div>
+              <button
+                onClick={() => {}}
+                className="relative w-10 h-5 rounded-full transition-all bg-white/20"
+              >
+                <div className="absolute top-0.5 left-5.5 w-4 h-4 rounded-full bg-white transition-all" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="section-divider" />
+
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <Shield className="w-4 h-4 text-white/40" />
+            <h3 className="text-base font-display font-light text-white">Account</h3>
+          </div>
+          <div className="space-y-2">
+            <button
+              onClick={onLogout}
+              className="w-full flex items-center gap-3 p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl text-left hover:bg-white/[0.04] transition-all group"
+            >
+              <LogOut className="w-4 h-4 text-white/25 group-hover:text-white/40 transition-colors" />
+              <div>
+                <div className="text-sm text-white/60 font-light">Sign out</div>
+                <div className="text-[10px] text-white/25 font-light">Log out of your account</div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-white/15 ml-auto" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entries: any[]; onLogout: () => void }) {
   const [user, setUser] = useState(initialUser);
-  const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
+  const [activeTab, setActiveTab] = useState<TabId>("overview");
   const streak = useStreak();
 
   const handleUserUpdate = (updatedUser: any) => {
@@ -641,146 +921,43 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
 
   return (
     <>
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1} className="mb-6">
-        <div className="glass-card p-6 sm:p-8">
-          <div className="card-shine" />
-          <div className="relative z-[2]">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0">
-                <User className="w-7 h-7 text-white/40" />
+      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0.5} className="mb-6">
+        <div className="acct-header">
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center shrink-0 overflow-hidden ${user.membershipTier === "black" ? "bg-white/[0.08] border-white/[0.15]" : "bg-white/[0.04] border-white/[0.08]"}`}>
+              {user.avatarUrl ? (
+                <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-6 h-6 text-white/40" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-display font-light text-white truncate">{user.fullName}</h2>
+                {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/50 shrink-0" />}
+                {user.membershipTier && user.membershipTier !== "free" && (
+                  <span className={`acct-tier-pill ${user.membershipTier === "black" ? "acct-tier-black" : ""}`}>
+                    {user.membershipTier}
+                  </span>
+                )}
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-xl sm:text-2xl font-display font-light text-white">{user.fullName}</h2>
-                  {user.isVerified && <BadgeCheck className="w-5 h-5 text-white/50" />}
-                </div>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-white/30 font-light">
-                  <div className="flex items-center gap-1.5">
-                    <Mail className="w-3 h-3" />
-                    <span>{user.email}</span>
-                  </div>
-                  {user.phone && (
-                    <div className="flex items-center gap-1.5">
-                      <Phone className="w-3 h-3" />
-                      <span>{user.phone}</span>
-                    </div>
-                  )}
-                  {user.city && (
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="w-3 h-3" />
-                      <span>{user.city}</span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="w-3 h-3" />
-                    <span>Member since {memberSince}</span>
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={onLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.06] rounded-xl text-xs text-white/40 font-light hover:bg-white/[0.06] hover:text-white/60 transition-all"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                Logout
-              </button>
+              <div className="text-xs text-white/30 font-light truncate">{user.email}</div>
             </div>
           </div>
         </div>
       </motion.div>
 
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5} className="mb-6">
-        <div className="grid grid-cols-3 gap-3">
-          <div className="glass-card p-4 text-center">
-            <div className="card-shine" />
-            <div className="relative z-[2]">
-              <Flame className="w-4 h-4 text-white/30 mx-auto mb-2" />
-              <AnimatedCounter value={streak} className="text-xl font-display font-light text-white block" />
-              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">Day Streak</div>
-            </div>
-          </div>
-          <div className="glass-card p-4 text-center">
-            <div className="card-shine" />
-            <div className="relative z-[2]">
-              <Trophy className="w-4 h-4 text-white/30 mx-auto mb-2" />
-              <AnimatedCounter value={entries.length} className="text-xl font-display font-light text-white block" />
-              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">Entries</div>
-            </div>
-          </div>
-          <div className="glass-card p-4 text-center">
-            <div className="card-shine" />
-            <div className="relative z-[2]">
-              <Target className="w-4 h-4 text-white/30 mx-auto mb-2" />
-              <AnimatedCounter value={entries.reduce((s: number, e: any) => s + (e.partnersCompleted || 0), 0)} className="text-xl font-display font-light text-white block" />
-              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">Partners</div>
-            </div>
-          </div>
-        </div>
+      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0.8} className="mb-8">
+        <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
       </motion.div>
 
-      <ProfileEditor user={user} onUpdate={handleUserUpdate} />
-
-      <BadgeSelector user={user} onUpdate={handleUserUpdate} />
-
-      <MembershipSection user={user} onUpdate={handleUserUpdate} />
-
-      <ThemeSelector />
-
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3} className="mb-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-          <h3 className="text-lg font-display font-light text-white">Your Giveaway Entries</h3>
-          <span className="text-[10px] text-white/25 font-light">{entries.length} total</span>
-        </div>
-
-        {entries.length > 0 ? (
-          <div className="space-y-3">
-            {entries.map((entry: any, i: number) => (
-              <motion.div key={entry.id} custom={i + 3} variants={fadeUp} initial="hidden" animate="visible">
-                <div className="glass-card p-4 sm:p-5">
-                  <div className="card-shine" />
-                  <div className="relative z-[2]">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <Trophy className="w-4 h-4 text-white/30" />
-                          <span className="text-sm font-display font-light text-white">{entry.contestName}</span>
-                        </div>
-                        <div className="text-xs text-white/30 font-mono mb-1">{entry.entryCode}</div>
-                        <div className="flex items-center gap-3 text-[10px] text-white/25 font-light">
-                          <span>{entry.entryCount} {entry.entryCount === 1 ? "entry" : "entries"}</span>
-                          <span className="text-white/10">•</span>
-                          <span>{entry.partnersCompleted} partners</span>
-                          <span className="text-white/10">•</span>
-                          <span>{new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg">
-                        <Clock className="w-3 h-3 text-white/25" />
-                        <span className="text-[10px] text-white/30 font-light">Pending</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="glass-card p-8 sm:p-12 text-center">
-            <div className="card-shine" />
-            <div className="relative z-[2]">
-              <Gift className="w-10 h-10 text-white/15 mx-auto mb-3" />
-              <h4 className="text-base font-display font-light text-white/50 mb-2">No Entries Yet</h4>
-              <p className="text-xs text-white/30 font-light mb-4">You haven't entered any giveaway contests yet</p>
-              <Link href="/giveaway" className="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.06] border border-white/[0.08] rounded-xl text-xs text-white/60 font-light hover:bg-white/[0.08] transition-all">
-                <Sparkles className="w-3.5 h-3.5" />
-                Browse Contests
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-        )}
-      </motion.div>
+      <AnimatePresence mode="wait">
+        {activeTab === "overview" && <OverviewTab user={user} entries={entries} streak={streak} />}
+        {activeTab === "profile" && <ProfileTab user={user} onUpdate={handleUserUpdate} />}
+        {activeTab === "subscription" && <SubscriptionTab user={user} onUpdate={handleUserUpdate} />}
+        {activeTab === "entries" && <EntriesTab entries={entries} />}
+        {activeTab === "settings" && <SettingsTab user={user} onLogout={onLogout} />}
+      </AnimatePresence>
     </>
   );
 }
@@ -818,7 +995,7 @@ export default function Account() {
       <div className="vignette-overlay" />
 
       <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
-        <div className="container mx-auto px-4 max-w-3xl">
+        <div className="container mx-auto px-4 max-w-4xl">
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] mb-4">
@@ -829,7 +1006,7 @@ export default function Account() {
               {user ? "Dashboard" : "Account"}
             </h1>
             <p className="text-sm sm:text-base text-white/35 font-light max-w-xl mx-auto leading-relaxed">
-              {user ? "Track your giveaway entries and manage your profile" : "Sign in or create an account to track your giveaway entries"}
+              {user ? "Manage your profile, subscription, and giveaway entries" : "Sign in or create an account to track your giveaway entries"}
             </p>
           </motion.div>
 
