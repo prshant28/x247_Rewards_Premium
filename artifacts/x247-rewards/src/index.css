@@ -992,6 +992,58 @@
     100% { transform: translateX(100%); }
   }
 
+  .hero-banner-track {
+    display: flex;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .hero-banner-slide {
+    min-width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-banner-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .hero-banner-dot-active {
+    width: 24px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .hero-banner-progress {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .hero-banner-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.35));
+    border-radius: 1px;
+    animation: hero-banner-fill 5s linear forwards;
+    transform-origin: left;
+  }
+
+  @keyframes hero-banner-fill {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+
   .reward-card-image {
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
