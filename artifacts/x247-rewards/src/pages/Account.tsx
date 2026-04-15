@@ -16,7 +16,9 @@ import {
   updateProfile, getUserBadges, purchaseMembership, uploadScreenshot
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import { Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap } from "@/components/MiniCharts";
 import { useTheme, THEMES, type ThemeId } from "@/contexts/ThemeContext";
+import { TrendingUp, BarChart3, Activity } from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -477,22 +479,66 @@ function ToastNotifications({ toast, onDismiss }: { toast: Notification | null; 
   );
 }
 
+function toDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function buildEntryHistoryData(entries: any[]) {
+  const dateCounts: Record<string, number> = {};
+  const activityDates: string[] = [];
+
+  entries.forEach((e: any) => {
+    const ds = toDateStr(new Date(e.submittedAt));
+    dateCounts[ds] = (dateCounts[ds] || 0) + 1;
+    activityDates.push(ds);
+  });
+
+  const last7: { label: string; value: number }[] = [];
+  const sparkData: number[] = [];
+  let thisWeekTotal = 0;
+  let lastWeekTotal = 0;
+
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const ds = toDateStr(d);
+    const count = dateCounts[ds] || 0;
+
+    if (i <= 6) {
+      const dayLabel = d.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 2);
+      last7.push({ label: dayLabel, value: count });
+      sparkData.push(count);
+      thisWeekTotal += count;
+    } else {
+      lastWeekTotal += count;
+    }
+  }
+
+  return { last7, sparkData, activityDates, thisWeekTotal, lastWeekTotal };
+}
+
 function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; streak: number }) {
   const tierLabel = user.membershipTier === "free" ? "Free" : user.membershipTier?.charAt(0).toUpperCase() + user.membershipTier?.slice(1);
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
   const totalPartners = entries.reduce((s: number, e: any) => s + (e.partnersCompleted || 0), 0);
-  const entryLimit = user.membershipTier === "black" ? "Unlimited" : user.membershipTier === "gold" ? "15" : user.membershipTier === "silver" ? "5" : "2";
+  const entryLimitNum = user.membershipTier === "black" ? null : user.membershipTier === "gold" ? 15 : user.membershipTier === "silver" ? 5 : 2;
+  const entryLimit = entryLimitNum === null ? "Unlimited" : String(entryLimitNum);
+
+  const { last7, sparkData, activityDates, thisWeekTotal, lastWeekTotal } = React.useMemo(
+    () => buildEntryHistoryData(entries), [entries]
+  );
+  const weekTrend = thisWeekTotal > lastWeekTotal ? "up" : thisWeekTotal < lastWeekTotal ? "down" : "flat";
 
   return (
     <motion.div key="overview" variants={tabFade} initial="hidden" animate="visible" exit="exit">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {[
-          { icon: Flame, label: "Day Streak", value: streak, sub: streak > 0 ? "Active" : "Start today" },
-          { icon: Trophy, label: "Total Entries", value: entries.length, sub: `${entryLimit}/contest` },
+          { icon: Flame, label: "Day Streak", value: streak, sub: streak > 0 ? "Active" : "Start today", spark: sparkData },
+          { icon: Trophy, label: "Total Entries", value: entries.length, sub: `${entryLimit}/contest`, spark: sparkData },
           { icon: Target, label: "Partners Done", value: totalPartners, sub: "Completed" },
           { icon: Star, label: "Current Tier", value: tierLabel, isText: true, sub: user.membershipTier === "free" ? "Upgrade available" : "Active" },
         ].map((stat) => (
-          <div key={stat.label} className="acct-stat-card">
+          <div key={stat.label} className="acct-stat-card relative overflow-hidden">
             <div className="flex items-center justify-between mb-3">
               <stat.icon className="w-4 h-4 text-white/20" />
               <span className="text-[8px] text-white/20 uppercase tracking-widest font-display">{stat.sub}</span>
@@ -503,8 +549,48 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
               <AnimatedCounter value={stat.value as number} className="text-2xl font-display font-light text-white block" />
             )}
             <div className="text-[10px] text-white/30 font-light mt-1">{stat.label}</div>
+            {"spark" in stat && stat.spark && stat.spark.length >= 2 && (
+              <div className="absolute bottom-0 right-0 opacity-50 pointer-events-none">
+                <Sparkline data={stat.spark} width={60} height={24} />
+              </div>
+            )}
           </div>
         ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+        <div className="dash-chart-card">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-3.5 h-3.5 text-white/25" />
+              <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Entry History</h3>
+            </div>
+            <div className="flex items-center gap-1">
+              <TrendingUp className={`w-3 h-3 ${weekTrend === "up" ? "text-emerald-400/40" : weekTrend === "down" ? "text-red-400/40 rotate-180" : "text-white/20"}`} />
+              <span className="text-[9px] text-white/25 font-light">{thisWeekTotal} this week</span>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <MiniBarChart data={last7} width={200} height={64} />
+          </div>
+        </div>
+
+        <div className="dash-chart-card">
+          <div className="flex items-center gap-2 mb-3">
+            <Activity className="w-3.5 h-3.5 text-white/25" />
+            <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Activity Map</h3>
+          </div>
+          <div className="flex justify-center overflow-x-auto">
+            <ActivityHeatmap dates={activityDates} weeks={8} />
+          </div>
+          <div className="flex items-center justify-end gap-1 mt-2">
+            <span className="text-[8px] text-white/15 font-light">Less</span>
+            {[0.03, 0.1, 0.2, 0.35].map((op, i) => (
+              <div key={i} className="w-[8px] h-[8px] rounded-[2px]" style={{ background: `rgba(255,255,255,${op})` }} />
+            ))}
+            <span className="text-[8px] text-white/15 font-light">More</span>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
@@ -581,6 +667,12 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
               </div>
               {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/40 ml-auto" />}
             </div>
+
+            <div className="mb-3">
+              <div className="text-[8px] text-white/20 uppercase tracking-wider font-display mb-1.5">Usage This Contest</div>
+              <UsageGauge used={entries.length} limit={entryLimitNum} />
+            </div>
+
             <div className="grid grid-cols-2 gap-2">
               <div className="p-2.5 bg-white/[0.02] border border-white/[0.04] rounded-lg">
                 <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Entries</div>

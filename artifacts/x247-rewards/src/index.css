@@ -2882,6 +2882,13 @@
   text-align: center;
 }
 
+.dash-chart-card {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+}
+
 .acct-info-row {
   display: flex;
   align-items: center;
@@ -3576,6 +3583,26 @@
   background: rgba(0, 0, 0, 0.05) !important;
 }
 [data-theme="pristine-light"] .acct-stat-card {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+[data-theme="pristine-light"] .dash-chart-card {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+[data-theme="pristine-light"] .dash-qa-icon {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+[data-theme="pristine-light"] .dash-activity-dot {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="pristine-light"] .dash-activity-line {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+[data-theme="pristine-light"] .dash-chart-card {
   background: rgba(0, 0, 0, 0.02) !important;
   border-color: rgba(0, 0, 0, 0.06) !important;
 }
