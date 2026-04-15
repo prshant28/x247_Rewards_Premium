@@ -1304,6 +1304,177 @@ export default function Home() {
 
         <GlowLine />
 
+        <section className="py-20 sm:py-32 relative">
+          <FloatingParticles />
+          <GlowOrb className="top-10 left-[5%] hidden lg:block" size={220} opacity={0.03} />
+          <GlowOrb className="bottom-20 right-[8%] hidden lg:block" size={180} opacity={0.025} />
+          <div className="container mx-auto px-4 max-w-6xl">
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="text-center mb-16 sm:mb-24"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Inner Circle
+              </div>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+                Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+              className="bento-grid"
+            >
+              <motion.div variants={fadeUp} className="bento-card bento-card-wide bento-card-featured">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
+                <div className="relative z-[2]">
+                  <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-4">
+                        <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle">
+                          <Globe className="w-5 h-5" />
+                        </BorderGlow>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-display">Network</span>
+                      </div>
+                      <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">A Community Built Different</h3>
+                      <p className="text-sm sm:text-base text-white/40 font-light leading-relaxed mb-6">
+                        X247 isn't just a rewards platform — it's an ecosystem of builders, early adopters, and tech enthusiasts who believe in growing together.
+                      </p>
+                      <div className="flex gap-6">
+                        {[
+                          { value: "2.4K+", label: "Members" },
+                          { value: "180+", label: "Partners" },
+                          { value: "₹5L+", label: "Distributed" },
+                        ].map((stat, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
+                          >
+                            <div className="text-xl sm:text-2xl font-display font-light text-white">{stat.value}</div>
+                            <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="lg:w-[280px] w-full shrink-0">
+                      <div className="relative rounded-2xl overflow-hidden aspect-square max-w-[220px] mx-auto border border-white/[0.06]">
+                        <img src="/images/abstract-sphere.png" alt="" className="w-full h-full object-cover opacity-25" loading="lazy" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <motion.div
+                            className="w-16 h-16 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center backdrop-blur-sm"
+                            animate={{ y: [0, -6, 0], rotate: [0, 3, -3, 0] }}
+                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                          >
+                            <Sparkles className="w-7 h-7 text-white/50" />
+                          </motion.div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {[
+                {
+                  title: "Hackathons & Build Sessions",
+                  desc: "Access to private building sessions, coding sprints, and team challenges with real prizes.",
+                  icon: <TerminalSquare className="w-5 h-5" />,
+                  metric: "12+",
+                  metricLabel: "Events/Year",
+                },
+                {
+                  title: "Expert Workshops",
+                  desc: "Industry-led technical deep dives on Web3, AI, cloud infrastructure, and product growth.",
+                  icon: <Zap className="w-5 h-5" />,
+                  metric: "24+",
+                  metricLabel: "Sessions",
+                },
+                {
+                  title: "1:1 Mentorship",
+                  desc: "Direct access to industry leaders, founders, and senior engineers for career guidance.",
+                  icon: <Users className="w-5 h-5" />,
+                  metric: "50+",
+                  metricLabel: "Mentors",
+                },
+                {
+                  title: "Partner Network",
+                  desc: "Collaborate with verified partners, access exclusive deals, and grow your reach together.",
+                  icon: <Star className="w-5 h-5" />,
+                  metric: "180+",
+                  metricLabel: "Partners",
+                },
+              ].map((item, i) => (
+                <motion.div key={i} variants={fadeUp} className="bento-card group">
+                  <div className="card-top-accent" />
+                  <div className="card-shine" />
+                  <div className="relative z-[2] flex flex-col h-full">
+                    <div className="flex items-start justify-between mb-5">
+                      <motion.div
+                        animate={{ y: [0, -4, 0] }}
+                        transition={{ duration: 4, delay: i * 0.7, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle">
+                          {item.icon}
+                        </BorderGlow>
+                      </motion.div>
+                      <div className="text-right">
+                        <div className="text-lg font-display font-light text-white">{item.metric}</div>
+                        <div className="text-[8px] text-white/20 uppercase tracking-widest font-display">{item.metricLabel}</div>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-display font-light text-white mb-2">{item.title}</h3>
+                    <p className="text-xs text-white/40 font-light leading-relaxed">{item.desc}</p>
+                    <div className="mt-auto pt-5">
+                      <div className="h-px w-full bg-gradient-to-r from-white/[0.06] via-white/[0.12] to-white/[0.06]" />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              <motion.div variants={fadeUp} className="bento-card bento-card-wide">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
+                <div className="relative z-[2] flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="flex -space-x-2">
+                      {["AK", "SR", "VP", "MJ", "DP"].map((initials, i) => (
+                        <motion.div
+                          key={i}
+                          className="w-9 h-9 rounded-xl bg-white/[0.06] border-2 border-black flex items-center justify-center"
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.3 + i * 0.08, duration: 0.5 }}
+                        >
+                          <span className="text-[8px] font-display font-bold text-white/50">{initials}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-white">Join 2,400+ members</h3>
+                      <p className="text-xs text-white/35 font-light">Be part of the fastest-growing rewards community</p>
+                    </div>
+                  </div>
+                  <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group shrink-0">
+                    <SiWhatsapp className="mr-2 w-4 h-4 relative z-[2]" />
+                    <span className="relative z-[2]">Join the Network</span>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                  </BorderGlow>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        <GlowLine />
+
         <section className="py-20 sm:py-32 relative overflow-hidden">
           <GlowOrb className="top-10 left-[5%] hidden lg:block" size={200} opacity={0.025} />
           <GlowOrb className="bottom-20 right-[8%] hidden lg:block" size={160} opacity={0.02} />
