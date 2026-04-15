@@ -286,7 +286,8 @@ function ProfileEditor({ user, onUpdate }: { user: any; onUpdate: (u: any) => vo
     setError("");
     try {
       const objectPath = await uploadScreenshot(file);
-      const url = `/api/storage/public/${objectPath}`;
+      const cleanPath = objectPath.startsWith("/objects/") ? objectPath.slice("/objects/".length) : objectPath.replace(/^\//, "");
+      const url = `/api/storage/objects/${cleanPath}`;
       setAvatarUrl(url);
       await updateProfile({ avatarUrl: url });
       onUpdate({ ...user, avatarUrl: url });
