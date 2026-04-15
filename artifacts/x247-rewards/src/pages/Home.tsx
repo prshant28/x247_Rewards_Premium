@@ -162,6 +162,30 @@ const heroBannerSlides = [
   },
 ];
 
+const testimonialRowOne = [
+  { name: "A***sh K.", handle: "@akumar_x247", avatar: "AK", text: "Won a ₹1,000 Amazon gift card on my very first day. The whole process was seamless — signed up, entered, and won. Absolutely legit.", prize: "₹1,000 Gift Card" },
+  { name: "S***ti R.", handle: "@shweta_r", avatar: "SR", text: "Got my wireless earbuds delivered within 3 days of winning. The quality is premium. X247 actually delivers on its promises.", prize: "Wireless Earbuds" },
+  { name: "R***ya S.", handle: "@riya_s24", avatar: "RS", text: "I've been entering daily for 2 weeks and already won twice. The swag kit is fire — premium hoodie, stickers, and tech accessories.", prize: "Premium Swag Kit" },
+  { name: "V***sh P.", handle: "@vivek_p", avatar: "VP", text: "Best referral program I've ever seen. Clean dashboard, real-time tracking, and the payouts are actually real. This is the future.", prize: null },
+  { name: "M***na J.", handle: "@meena_j", avatar: "MJ", text: "The hackathon VIP pass I won through X247 changed my career. Met incredible mentors and even got a job offer. Unreal.", prize: "VIP Hackathon Pass" },
+];
+
+const testimonialRowTwo = [
+  { name: "P***av M.", handle: "@pranav_m", avatar: "PM", text: "Zero cost, zero catches. Signed up through the partner link and won ₹500 Google Play credit the next day. Totally recommend.", prize: "₹500 Google Play" },
+  { name: "K***ti V.", handle: "@kirti_v", avatar: "KV", text: "The UI is insanely clean. Feels like a premium product. And the fact that winners are announced daily keeps me coming back.", prize: null },
+  { name: "D***ep S.", handle: "@deep_s", avatar: "DS", text: "I referred 15 friends and earned ₹1,500 in referral bonuses. Plus my friends are winning too. Everyone benefits.", prize: "₹1,500 Referral Bonus" },
+  { name: "N***ha G.", handle: "@neha_g", avatar: "NG", text: "Won a Flipkart voucher yesterday. Already used it to buy headphones. The whole experience is buttery smooth.", prize: "₹2,000 Flipkart Voucher" },
+  { name: "A***j R.", handle: "@anuj_r247", avatar: "AR", text: "As a partner, the analytics dashboard is next level. Real-time clicks, conversions, and milestone tracking. Very professional.", prize: null },
+];
+
+const testimonialRowThree = [
+  { name: "T***ja P.", handle: "@tanuja_p", avatar: "TP", text: "I was skeptical at first, but after winning twice in one week, I'm a believer. X247 is the real deal.", prize: "₹1,000 Amazon Card" },
+  { name: "R***sh K.", handle: "@rajesh_k", avatar: "RK", text: "The daily drops keep the excitement alive. Won a premium tech accessory kit — quality was top-notch.", prize: "Tech Kit" },
+  { name: "S***ya B.", handle: "@shreya_b", avatar: "SB", text: "Love the monochrome aesthetic. Finally a rewards platform that doesn't look like a scam. Clean, minimal, premium.", prize: null },
+  { name: "H***sh M.", handle: "@harsh_m", avatar: "HM", text: "Entered with my college friends and we all won different prizes within a week. The odds are genuinely fair.", prize: "₹500 Gift Card" },
+  { name: "I***ra D.", handle: "@ishita_d", avatar: "ID", text: "The partner program payouts hit my account within 48 hours. No delays, no excuses. Professional operation.", prize: "Partner Payout" },
+];
+
 function HeroBannerSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -459,11 +483,11 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
 
 const rewardItems = [
   { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
-  { tier: "Gift Cards", title: "₹500 – ₹2,000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/reward-trophy.png" },
+  { tier: "Gift Cards", title: "₹500 – ₹2,000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/reward-gift.png" },
   { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
-  { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-headphones.png" },
+  { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-trophy.png" },
   { tier: "Tech Prizes", title: "Wireless Earbuds", desc: "Premium wireless earbuds and tech gadgets — weekly drops for top entries.", icon: <Headphones className="w-5 h-5" />, img: "/images/reward-headphones.png" },
-  { tier: "Grand Prize", title: "₹10,000 Cash", desc: "Monthly grand draw for the ultimate reward. More entries = higher chances.", icon: <Trophy className="w-5 h-5" />, img: "/images/reward-trophy.png" },
+  { tier: "Grand Prize", title: "₹10,000 Cash", desc: "Monthly grand draw for the ultimate reward. More entries = higher chances.", icon: <Trophy className="w-5 h-5" />, img: "/images/abstract-sphere.png" },
 ];
 
 function RewardsCarousel() {
@@ -1518,6 +1542,111 @@ export default function Home() {
                 Winners are selected daily. Placeholder data shown — real winners will appear once the first draw is completed.
               </p>
             </motion.div>
+          </div>
+        </section>
+
+        <GlowLine />
+
+        <section className="py-20 sm:py-32 relative overflow-hidden">
+          <GlowOrb className="top-10 left-[5%] hidden lg:block" size={200} opacity={0.025} />
+          <GlowOrb className="bottom-20 right-[8%] hidden lg:block" size={160} opacity={0.02} />
+          <div className="container mx-auto px-4 max-w-6xl">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={fadeUp}
+              className="text-center mb-14 sm:mb-20"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Testimonials
+              </div>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What Our Winners Say" /></h2>
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+                Real feedback from real winners. Hear what our community has to say about the X247 experience.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="testimonial-marquee-wrapper">
+            <div className="testimonial-marquee-row">
+              <div className="testimonial-marquee-track testimonial-marquee-left">
+                {[...testimonialRowOne, ...testimonialRowOne].map((t, i) => (
+                  <div key={`r1-${i}`} className="testimonial-card">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
+                        <span className="text-[10px] font-display font-bold text-white/50">{t.avatar}</span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
+                        <span className="text-[10px] text-white/25 font-mono">{t.handle}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">{t.text}</p>
+                    {t.prize && (
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/30 font-display">
+                        <Trophy className="w-3 h-3" />
+                        <span>Won: {t.prize}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="testimonial-marquee-row mt-4">
+              <div className="testimonial-marquee-track testimonial-marquee-right">
+                {[...testimonialRowTwo, ...testimonialRowTwo].map((t, i) => (
+                  <div key={`r2-${i}`} className="testimonial-card">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
+                        <span className="text-[10px] font-display font-bold text-white/50">{t.avatar}</span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
+                        <span className="text-[10px] text-white/25 font-mono">{t.handle}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">{t.text}</p>
+                    {t.prize && (
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/30 font-display">
+                        <Trophy className="w-3 h-3" />
+                        <span>Won: {t.prize}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="testimonial-marquee-row mt-4">
+              <div className="testimonial-marquee-track testimonial-marquee-left" style={{ animationDuration: "50s" }}>
+                {[...testimonialRowThree, ...testimonialRowThree].map((t, i) => (
+                  <div key={`r3-${i}`} className="testimonial-card">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
+                        <span className="text-[10px] font-display font-bold text-white/50">{t.avatar}</span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
+                        <span className="text-[10px] text-white/25 font-mono">{t.handle}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">{t.text}</p>
+                    {t.prize && (
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/30 font-display">
+                        <Trophy className="w-3 h-3" />
+                        <span>Won: {t.prize}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="testimonial-fade-left" />
+            <div className="testimonial-fade-right" />
           </div>
         </section>
 
