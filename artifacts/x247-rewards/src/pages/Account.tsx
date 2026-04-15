@@ -312,8 +312,9 @@ function useNotifications(): {
   }, []);
 
   const persist = (updated: Notification[]) => {
-    setItems(updated);
-    localStorage.setItem("x247_notifications", JSON.stringify(updated));
+    const capped = updated.slice(0, 50);
+    setItems(capped);
+    localStorage.setItem("x247_notifications", JSON.stringify(capped));
   };
 
   const markRead = (id: string) => persist(items.map(n => n.id === id ? { ...n, read: true } : n));
