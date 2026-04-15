@@ -92,25 +92,11 @@ const verifiedBy = [
   { name: "Daily Audited", icon: <BarChart3 className="w-5 h-5" /> },
 ];
 
-function getAccentClasses(accent: string) {
-  if (accent === "navy") return { card: "glass-card-accent-navy", icon: "icon-circle-navy", topAccent: "card-top-accent card-top-accent-navy" };
-  if (accent === "red") return { card: "glass-card-accent-red", icon: "icon-circle-red", topAccent: "card-top-accent card-top-accent-red" };
+function getAccentClasses(_accent: string) {
   return { card: "", icon: "", topAccent: "card-top-accent" };
 }
 
-function getSecondaryBadgeStyle(accent: string) {
-  if (accent === "navy") return {
-    bg: "linear-gradient(135deg, rgba(14, 16, 30, 0.95) 0%, rgba(10, 11, 22, 0.95) 100%)",
-    border: "rgba(255, 255, 255, 0.1)",
-    textClass: "text-white/65",
-    iconClass: "text-white/40",
-  };
-  if (accent === "red") return {
-    bg: "linear-gradient(135deg, rgba(22, 12, 14, 0.95) 0%, rgba(14, 8, 10, 0.95) 100%)",
-    border: "rgba(255, 255, 255, 0.1)",
-    textClass: "text-white/65",
-    iconClass: "text-white/40",
-  };
+function getSecondaryBadgeStyle(_accent: string) {
   return {
     bg: "linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%)",
     border: "rgba(255, 255, 255, 0.1)",
@@ -479,7 +465,7 @@ export default function Partners() {
             variants={fadeUp}
           >
             <div className="glass-card p-6 sm:p-10 text-center">
-              <div className="card-top-accent card-top-accent-navy" />
+              <div className="card-top-accent" />
               <div className="card-shine" />
               <div className="relative z-[2]">
                 <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-4">How It Works</h3>
