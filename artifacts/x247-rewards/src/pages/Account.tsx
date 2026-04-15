@@ -4,7 +4,7 @@ import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import UserProfileCard from "@/components/UserProfileCard";
 import {
-  User, Trophy, Clock, ArrowRight, LogOut, Mail, Phone,
+  User, Users, Trophy, Clock, ArrowRight, LogOut, Mail, Phone,
   MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target,
   Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
   Edit3, Save, X, Award, CreditCard, Settings, LayoutDashboard, Zap,
@@ -28,7 +28,7 @@ const fadeUp = {
 
 const tabFade = {
   hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const } },
   exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
 };
 
@@ -225,119 +225,124 @@ function useStreak(): number {
   return streak;
 }
 
-function TabNav({ activeTab, onTabChange }: { activeTab: TabId; onTabChange: (t: TabId) => void }) {
-  return (
-    <div className="acct-tabs">
-      <div className="acct-tabs-inner">
-        {TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              className={`acct-tab ${isActive ? "acct-tab-active" : ""}`}
-            >
-              <Icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; streak: number }) {
   const tierLabel = user.membershipTier === "free" ? "Free" : user.membershipTier?.charAt(0).toUpperCase() + user.membershipTier?.slice(1);
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+  const totalPartners = entries.reduce((s: number, e: any) => s + (e.partnersCompleted || 0), 0);
+  const entryLimit = user.membershipTier === "black" ? "Unlimited" : user.membershipTier === "gold" ? "15" : user.membershipTier === "silver" ? "5" : "2";
 
   return (
     <motion.div key="overview" variants={tabFade} initial="hidden" animate="visible" exit="exit">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {[
-          { icon: Flame, label: "Day Streak", value: streak },
-          { icon: Trophy, label: "Entries", value: entries.length },
-          { icon: Target, label: "Partners", value: entries.reduce((s: number, e: any) => s + (e.partnersCompleted || 0), 0) },
-          { icon: Star, label: "Tier", value: tierLabel, isText: true },
-        ].map((stat, i) => (
+          { icon: Flame, label: "Day Streak", value: streak, sub: streak > 0 ? "Active" : "Start today" },
+          { icon: Trophy, label: "Total Entries", value: entries.length, sub: `${entryLimit}/contest` },
+          { icon: Target, label: "Partners Done", value: totalPartners, sub: "Completed" },
+          { icon: Star, label: "Current Tier", value: tierLabel, isText: true, sub: user.membershipTier === "free" ? "Upgrade available" : "Active" },
+        ].map((stat) => (
           <div key={stat.label} className="acct-stat-card">
-            <stat.icon className="w-4 h-4 text-white/25 mb-2" />
+            <div className="flex items-center justify-between mb-3">
+              <stat.icon className="w-4 h-4 text-white/20" />
+              <span className="text-[8px] text-white/20 uppercase tracking-widest font-display">{stat.sub}</span>
+            </div>
             {stat.isText ? (
-              <span className="text-lg font-display font-light text-white">{stat.value}</span>
+              <span className="text-xl font-display font-light text-white block">{stat.value}</span>
             ) : (
-              <AnimatedCounter value={stat.value as number} className="text-xl font-display font-light text-white block" />
+              <AnimatedCounter value={stat.value as number} className="text-2xl font-display font-light text-white block" />
             )}
-            <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
+            <div className="text-[10px] text-white/30 font-light mt-1">{stat.label}</div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div className="glass-card p-5">
-          <div className="card-shine" />
-          <div className="relative z-[2]">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                <User className="w-5 h-5 text-white/30" />
-              </div>
-              <div>
-                <div className="text-sm font-display font-light text-white">{user.fullName}</div>
-                <div className="text-[10px] text-white/30 font-light">{user.email}</div>
-              </div>
-              {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/50 ml-auto" />}
-            </div>
-            <div className="flex items-center gap-2 text-[10px] text-white/25 font-light">
-              <Calendar className="w-3 h-3" />
-              <span>Member since {memberSince}</span>
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+        <Link href="/giveaway" className="dash-quick-action group">
+          <div className="dash-qa-icon"><Sparkles className="w-4 h-4" /></div>
+          <div>
+            <div className="text-xs font-display font-light text-white/70 group-hover:text-white transition-colors">Enter Giveaway</div>
+            <div className="text-[9px] text-white/25 font-light">Browse active contests</div>
           </div>
+          <ChevronRight className="w-3.5 h-3.5 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+        </Link>
+        <Link href="/partners" className="dash-quick-action group">
+          <div className="dash-qa-icon"><Users className="w-4 h-4" /></div>
+          <div>
+            <div className="text-xs font-display font-light text-white/70 group-hover:text-white transition-colors">Visit Partners</div>
+            <div className="text-[9px] text-white/25 font-light">Earn more entries</div>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+        </Link>
+        <Link href="/winners" className="dash-quick-action group">
+          <div className="dash-qa-icon"><Award className="w-4 h-4" /></div>
+          <div>
+            <div className="text-xs font-display font-light text-white/70 group-hover:text-white transition-colors">View Winners</div>
+            <div className="text-[9px] text-white/25 font-light">Hall of fame</div>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <History className="w-3.5 h-3.5 text-white/25" />
+            <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Recent Activity</h3>
+          </div>
+          {entries.length > 0 ? (
+            <div className="dash-activity">
+              {entries.slice(0, 4).map((entry: any, i: number) => (
+                <div key={entry.id} className="dash-activity-item">
+                  <div className="dash-activity-dot" />
+                  {i < Math.min(entries.length - 1, 3) && <div className="dash-activity-line" />}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[11px] font-light text-white/55 truncate">Entered {entry.contestName}</div>
+                    <div className="text-[9px] text-white/20 font-light">{entry.entryCount} entries · {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
+                  </div>
+                  <div className="acct-entry-status">
+                    <Clock className="w-3 h-3" />
+                    <span>Pending</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 text-center bg-white/[0.02] border border-white/[0.04] rounded-xl">
+              <Gift className="w-8 h-8 text-white/10 mx-auto mb-2" />
+              <p className="text-[11px] text-white/25 font-light">No activity yet</p>
+            </div>
+          )}
         </div>
 
-        <div className={`glass-card p-5 ${user.membershipTier === "black" ? "acct-black-card" : ""}`}>
-          <div className="card-shine" />
-          <div className="relative z-[2]">
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${user.membershipTier === "black" ? "bg-white/[0.08] border-white/[0.15]" : "bg-white/[0.04] border-white/[0.06]"}`}>
-                <Crown className="w-5 h-5 text-white/40" />
-              </div>
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Crown className="w-3.5 h-3.5 text-white/25" />
+            <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Membership</h3>
+          </div>
+          <div className={`p-4 rounded-xl border ${user.membershipTier === "black" ? "bg-white/[0.04] border-white/[0.1]" : "bg-white/[0.02] border-white/[0.05]"}`}>
+            <div className="flex items-center gap-3 mb-3">
+              <Crown className="w-5 h-5 text-white/30" />
               <div>
-                <div className="text-sm font-display font-light text-white capitalize">{tierLabel} Plan</div>
-                <div className="text-[10px] text-white/30 font-light">
-                  {user.membershipTier === "free" ? "Upgrade for more benefits" : "Active subscription"}
+                <div className="text-sm font-display font-light text-white capitalize">{tierLabel}</div>
+                <div className="text-[9px] text-white/25 font-light">
+                  {user.membershipTier === "free" ? "Free plan" : "Active subscription"}
                 </div>
               </div>
+              {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/40 ml-auto" />}
             </div>
-            {user.membershipTier === "free" && (
-              <div className="text-[10px] text-white/20 font-light">2 entries per contest</div>
-            )}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-2.5 bg-white/[0.02] border border-white/[0.04] rounded-lg">
+                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Entries</div>
+                <div className="text-xs text-white/50 font-light mt-0.5">{entryLimit}/contest</div>
+              </div>
+              <div className="p-2.5 bg-white/[0.02] border border-white/[0.04] rounded-lg">
+                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Voice Chat</div>
+                <div className="text-xs text-white/50 font-light mt-0.5">{user.membershipTier === "silver" || user.membershipTier === "free" ? "Off" : "On"}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      {entries.length > 0 && (
-        <div>
-          <div className="flex items-center gap-3 mb-3">
-            <h3 className="text-sm font-display font-light text-white/50">Recent Entries</h3>
-            <span className="text-[10px] text-white/20 font-light">{entries.length} total</span>
-          </div>
-          <div className="space-y-2">
-            {entries.slice(0, 3).map((entry: any) => (
-              <div key={entry.id} className="acct-entry-row">
-                <Trophy className="w-3.5 h-3.5 text-white/25 shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-light text-white/60 truncate">{entry.contestName}</div>
-                  <div className="text-[9px] text-white/25 font-light">{entry.entryCount} entries · {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
-                </div>
-                <div className="acct-entry-status">
-                  <Clock className="w-3 h-3" />
-                  <span>Pending</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </motion.div>
   );
 }
@@ -914,51 +919,99 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
   const [user, setUser] = useState(initialUser);
   const [activeTab, setActiveTab] = useState<TabId>("overview");
   const streak = useStreak();
+  const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
 
   const handleUserUpdate = (updatedUser: any) => {
     setUser(updatedUser);
   };
 
   return (
-    <>
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0.5} className="mb-6">
-        <div className="acct-header">
-          <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center shrink-0 overflow-hidden ${user.membershipTier === "black" ? "bg-white/[0.08] border-white/[0.15]" : "bg-white/[0.04] border-white/[0.08]"}`}>
-              {user.avatarUrl ? (
-                <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <User className="w-6 h-6 text-white/40" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg sm:text-xl font-display font-light text-white truncate">{user.fullName}</h2>
-                {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/50 shrink-0" />}
-                {user.membershipTier && user.membershipTier !== "free" && (
-                  <span className={`acct-tier-pill ${user.membershipTier === "black" ? "acct-tier-black" : ""}`}>
-                    {user.membershipTier}
-                  </span>
+    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0.5}>
+      <div className="dash-frame">
+        <div className="dash-frame-glow" />
+        <div className="dash-frame-inner">
+
+          <div className="dash-topbar">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className={`dash-avatar ${user.membershipTier === "black" ? "dash-avatar-black" : ""}`}>
+                {user.avatarUrl ? (
+                  <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-5 h-5 text-white/40" />
                 )}
               </div>
-              <div className="text-xs text-white/30 font-light truncate">{user.email}</div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-sm sm:text-base font-display font-medium text-white truncate">{user.fullName}</h2>
+                  {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-white/50 shrink-0" />}
+                  {user.membershipTier && user.membershipTier !== "free" && (
+                    <span className={`acct-tier-pill ${user.membershipTier === "black" ? "acct-tier-black" : ""}`}>
+                      {user.membershipTier}
+                    </span>
+                  )}
+                </div>
+                <div className="text-[10px] text-white/25 font-light truncate">{user.email} · Joined {memberSince}</div>
+              </div>
+            </div>
+
+            <div className="dash-topbar-actions">
+              <button onClick={onLogout} className="dash-topbar-btn" title="Sign out">
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
+
+          <div className="dash-layout">
+            <nav className="dash-sidebar">
+              {TABS.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`dash-nav-item ${isActive ? "dash-nav-active" : ""}`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="dash-mobile-tabs">
+              <div className="acct-tabs-inner">
+                {TABS.map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`acct-tab ${isActive ? "acct-tab-active" : ""}`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="hidden sm:inline">{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="dash-content">
+              <AnimatePresence mode="wait">
+                {activeTab === "overview" && <OverviewTab user={user} entries={entries} streak={streak} />}
+                {activeTab === "profile" && <ProfileTab user={user} onUpdate={handleUserUpdate} />}
+                {activeTab === "subscription" && <SubscriptionTab user={user} onUpdate={handleUserUpdate} />}
+                {activeTab === "entries" && <EntriesTab entries={entries} />}
+                {activeTab === "settings" && <SettingsTab user={user} onLogout={onLogout} />}
+              </AnimatePresence>
+            </div>
+          </div>
+
         </div>
-      </motion.div>
-
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0.8} className="mb-8">
-        <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
-      </motion.div>
-
-      <AnimatePresence mode="wait">
-        {activeTab === "overview" && <OverviewTab user={user} entries={entries} streak={streak} />}
-        {activeTab === "profile" && <ProfileTab user={user} onUpdate={handleUserUpdate} />}
-        {activeTab === "subscription" && <SubscriptionTab user={user} onUpdate={handleUserUpdate} />}
-        {activeTab === "entries" && <EntriesTab entries={entries} />}
-        {activeTab === "settings" && <SettingsTab user={user} onLogout={onLogout} />}
-      </AnimatePresence>
-    </>
+      </div>
+    </motion.div>
   );
 }
 
@@ -995,20 +1048,22 @@ export default function Account() {
       <div className="vignette-overlay" />
 
       <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className={`container mx-auto px-4 ${user ? "max-w-5xl" : "max-w-4xl"}`}>
 
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] mb-4">
-              <Shield className="w-3 h-3 text-white/40" />
-              <span className="text-[10px] text-white/40 font-display uppercase tracking-widest">My Account</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-display font-extralight text-white mb-4 tracking-tight">
-              {user ? "Dashboard" : "Account"}
-            </h1>
-            <p className="text-sm sm:text-base text-white/35 font-light max-w-xl mx-auto leading-relaxed">
-              {user ? "Manage your profile, subscription, and giveaway entries" : "Sign in or create an account to track your giveaway entries"}
-            </p>
-          </motion.div>
+          {!user && (
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] mb-4">
+                <Shield className="w-3 h-3 text-white/40" />
+                <span className="text-[10px] text-white/40 font-display uppercase tracking-widest">My Account</span>
+              </div>
+              <h1 className="text-3xl sm:text-5xl font-display font-extralight text-white mb-4 tracking-tight">
+                Account
+              </h1>
+              <p className="text-sm sm:text-base text-white/35 font-light max-w-xl mx-auto leading-relaxed">
+                Sign in or create an account to track your giveaway entries
+              </p>
+            </motion.div>
+          )}
 
           {loading ? (
             <div className="flex justify-center py-20">
