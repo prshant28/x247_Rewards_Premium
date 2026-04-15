@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import PageLoader from "@/components/PageLoader";
 import ChatBot from "@/components/ChatBot";
 import SiteNav from "@/components/SiteNav";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const Offers = lazy(() => import("@/pages/Offers"));
 const Partners = lazy(() => import("@/pages/Partners"));
@@ -128,16 +129,18 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <GlobalNav />
-          <PageLoader>
-            <Router />
-          </PageLoader>
-        </WouterRouter>
-        <ChatBot />
-        <Toaster />
-      </TooltipProvider>
+      <ThemeProvider>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <GlobalNav />
+            <PageLoader>
+              <Router />
+            </PageLoader>
+          </WouterRouter>
+          <ChatBot />
+          <Toaster />
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
