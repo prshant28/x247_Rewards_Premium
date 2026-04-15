@@ -24,3 +24,39 @@ id = "RW0fHHmXZi1EVirEg6YXd"
 uri = "file://attached_assets/favicon_v4_trophy.png"
 type = "image"
 title = "generated_image"
+
+[[generated]]
+id = "nNNC0tw302SkE_1trW5Mj"
+uri = "file://artifacts/x247-rewards/public/images/hero-metallic.png"
+type = "image"
+title = "hero metallic sculpture"
+
+[[generated]]
+id = "rYYZKn_kuat_VWcn6Iimy"
+uri = "file://artifacts/x247-rewards/public/images/reward-gift.png"
+type = "image"
+title = "dark metallic gift box"
+
+[[generated]]
+id = "_UAIKm9djCVpo5re2FYJw"
+uri = "file://artifacts/x247-rewards/public/images/reward-trophy.png"
+type = "image"
+title = "dark metallic trophy"
+
+[[generated]]
+id = "CA_S_axlwnvZTaYmCem3K"
+uri = "file://artifacts/x247-rewards/public/images/shield-emblem.png"
+type = "image"
+title = "metallic shield emblem"
+
+[[generated]]
+id = "cEMnP9ArTH_fuac5y4TPG"
+uri = "file://artifacts/x247-rewards/public/images/reward-headphones.png"
+type = "image"
+title = "dark metallic headphones"
+
+[[generated]]
+id = "SqtFi6Eod7frwiC9T53-0"
+uri = "file://artifacts/x247-rewards/public/images/abstract-sphere.png"
+type = "image"
+title = "metallic hexagonal sphere"

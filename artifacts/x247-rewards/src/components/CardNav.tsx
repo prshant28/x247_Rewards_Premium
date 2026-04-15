@@ -109,12 +109,13 @@ const CardNav = ({
         contentEl.style.position = "static";
         contentEl.style.height = "auto";
         contentEl.offsetHeight;
-        const h = 60 + contentEl.scrollHeight + 16;
+        const naturalH = 60 + contentEl.scrollHeight + 16;
         contentEl.style.visibility = wasVis;
         contentEl.style.pointerEvents = wasPE;
         contentEl.style.position = wasPos;
         contentEl.style.height = wasH;
-        return h;
+        const maxH = window.innerHeight - 32;
+        return Math.min(naturalH, maxH);
       }
     }
     return 350;

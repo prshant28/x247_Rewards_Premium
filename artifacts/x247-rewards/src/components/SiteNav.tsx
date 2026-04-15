@@ -100,7 +100,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
             { label: "Giveaways", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
             { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
             { label: "Winners", href: "/winners", spa: true, icon: <Star className="w-3.5 h-3.5" /> },
-            { label: "Referral", href: "/referral", spa: true, icon: <Share2 className="w-3.5 h-3.5" /> },
+          
           ],
         },
         {
@@ -126,6 +126,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
                 { label: "My Account", href: "/account", spa: true, icon: <UserPlus className="w-3.5 h-3.5" /> },
                 { label: "My Entries", href: "/account", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
                 { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
+              { label: "Referral", href: "/referral", spa: true, icon: <Share2 className="w-3.5 h-3.5" /> },
               ]
             : [
                 { label: "Get Started", href: "/account", spa: false, icon: <UserPlus className="w-3.5 h-3.5" /> },
