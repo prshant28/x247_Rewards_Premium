@@ -28,7 +28,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import { SiWhatsapp } from "react-icons/si";
+import { SiWhatsapp, SiTelegram, SiInstagram } from "react-icons/si";
 import Silk from "@/components/Silk";
 import SiteFooter from "@/components/SiteFooter";
 import BorderGlow from "@/components/BorderGlow";
@@ -926,7 +926,7 @@ export default function Home() {
                   {
                     step: "06",
                     title: "Check Daily Winners",
-                    desc: "Winners are announced daily on this page in the Winners Section. Make sure to check back regularly — your name could appear anytime.",
+                    desc: "Winners are announced daily. Check our social channels and the Winners page regularly — your name could appear anytime.",
                     icon: <Trophy className="w-4 h-4" />,
                     tip: null
                   },
@@ -1086,195 +1086,174 @@ export default function Home() {
         <section id="dashboard" className="py-20 sm:py-32 relative">
           <FloatingParticles />
           <GlowOrb className="top-20 right-10 hidden lg:block" size={250} opacity={0.03} />
-          <FloatingIcon icon={<BarChart3 className="w-12 h-12" />} className="top-32 right-[15%] hidden lg:block" delay={1} />
-          <FloatingIcon icon={<Trophy className="w-10 h-10" />} className="bottom-20 left-[10%] hidden lg:block" delay={2.5} />
           <div className="container mx-auto px-4 max-w-6xl">
-            <div className="flex flex-col lg:flex-row gap-10 sm:gap-16 items-center">
-              <motion.div 
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideLeft}
-                className="lg:w-1/2 w-full"
-              >
-                <div className="glass-pill-badge mb-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                  Partner Analytics
-                </div>
-                <h2 className="text-xl sm:text-4xl md:text-5xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Live Tracking Dashboard" /></h2>
-                <p className="text-white/50 text-base sm:text-lg font-display font-light mb-8 sm:mb-10 leading-relaxed tracking-wide">
-                  Monitor your referral performance in real-time. Track link clicks, verified signups, giveaway entries, and conversion rates — all from your personal partner dashboard.
-                </p>
-                <ul className="space-y-4 sm:space-y-6 mb-8 sm:mb-12">
-                  {[
-                    { icon: <Activity className="w-4 h-4" />, text: "Live click & conversion tracking" },
-                    { icon: <BarChart3 className="w-4 h-4" />, text: "Daily performance trends & analytics" },
-                    { icon: <Trophy className="w-4 h-4" />, text: "Automated milestone progress" },
-                    { icon: <Users className="w-4 h-4" />, text: "Share via WhatsApp, Telegram & more" }
-                  ].map((item, i) => (
-                    <motion.li 
-                      key={i} 
-                      className="flex items-center"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      <motion.div
-                        className="icon-circle icon-circle-sm mr-4 shrink-0"
-                        animate={{ y: [0, -3, 0] }}
-                        transition={{ duration: 3, delay: i * 0.5, repeat: Infinity, ease: "easeInOut" }}
-                      >
-                        {item.icon}
-                      </motion.div>
-                      <span className="text-white/60 font-light text-sm sm:text-base">{item.text}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                    <BarChart3 className="w-4 h-4 mr-2 relative z-[2]" />
-                    <span className="relative z-[2]">Open Dashboard</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                  </BorderGlow>
-                  <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group">
-                    <span className="relative z-[2]">Become a Partner</span>
-                  </BorderGlow>
-                </div>
-              </motion.div>
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+              className="text-center mb-16 sm:mb-24"
+            >
+              <div className="glass-pill-badge mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Partner Analytics
+              </div>
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Track Everything" /></h2>
+              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+                Monitor your referral performance in real-time. Track link clicks, verified signups, giveaway entries, and conversion rates.
+              </p>
+            </motion.div>
 
-              <motion.div 
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideRight}
-                className="lg:w-1/2 w-full"
-              >
-                <TiltCard className="glass-card p-5 sm:p-6 shadow-2xl relative overflow-hidden">
-                  <div className="card-top-accent" />
-                  <div className="card-shine" />
-                  <div className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
-
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-5 pb-3 sm:pb-4 border-b border-white/10 gap-3 relative z-[2]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                        <span className="text-xs font-display font-bold text-white/60">AX</span>
-                      </div>
-                      <div>
-                        <h3 className="font-display font-light text-lg sm:text-xl text-white">Agent_X24</h3>
-                        <p className="text-[10px] sm:text-xs text-white/30 font-light font-mono">REF-X247-9982</p>
-                      </div>
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+              className="bento-grid"
+            >
+              <motion.div variants={fadeUp} className="bento-card bento-card-wide">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
+                <div className="relative z-[2] flex flex-col h-full">
+                  <div className="flex items-start justify-between mb-6">
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">Real-Time Analytics</h3>
+                      <p className="text-sm text-white/40 font-light max-w-sm">Monitor every click, signup, and conversion as it happens. Your performance data, always live.</p>
                     </div>
-                    <div className="glass-pill-badge !text-[10px]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white mr-2 animate-pulse" /> ACTIVE
-                    </div>
+                    <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle shrink-0">
+                      <Activity className="w-5 h-5" />
+                    </BorderGlow>
                   </div>
-
-                  <div className="grid grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5 relative z-[2]">
-                    {[
-                      { label: "Clicks", value: "247", icon: <Activity className="w-3 h-3" /> },
-                      { label: "Signups", value: "42", icon: <Users className="w-3 h-3" /> },
-                      { label: "Entries", value: "38", icon: <Gift className="w-3 h-3" /> },
-                      { label: "Conv.", value: "17%", icon: <Target className="w-3 h-3" /> },
-                    ].map((s, i) => (
+                  <div className="flex items-end gap-1.5 h-20 sm:h-24 mt-auto">
+                    {[25, 40, 30, 55, 45, 70, 60, 80, 50, 65, 75, 85].map((h, i) => (
                       <motion.div
                         key={i}
-                        className="stat-card text-center"
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        className="flex-1 rounded-t-md relative overflow-hidden"
+                        style={{ background: "linear-gradient(to top, rgba(255,255,255,0.06), rgba(255,255,255,0.18))" }}
+                        initial={{ height: 0 }}
+                        whileInView={{ height: `${h}%` }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
-                      >
-                        <div className="text-white/25 mb-1.5 flex justify-center">{s.icon}</div>
-                        <div className="text-lg sm:text-2xl font-display font-light text-white mb-0.5">{s.value}</div>
-                        <div className="text-[8px] sm:text-[9px] text-white/30 uppercase tracking-widest font-display">{s.label}</div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  <div className="mb-4 sm:mb-5 relative z-[2]">
-                    <div className="flex justify-between text-[10px] sm:text-xs mb-2">
-                      <span className="text-white/40 font-light uppercase tracking-wider font-display">7-Day Performance</span>
-                    </div>
-                    <div className="flex items-end gap-1 h-14 sm:h-16">
-                      {[30, 45, 35, 60, 50, 75, 65].map((h, i) => (
-                        <motion.div
-                          key={i}
-                          className="flex-1 rounded-t-sm relative overflow-hidden"
-                          style={{ background: "linear-gradient(to top, rgba(255,255,255,0.08), rgba(255,255,255,0.2))" }}
-                          initial={{ height: 0 }}
-                          whileInView={{ height: `${h}%` }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.6 + i * 0.08, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                        >
-                          <div className="absolute inset-0 shimmer-bar" />
-                        </motion.div>
-                      ))}
-                    </div>
-                    <div className="flex justify-between mt-1.5">
-                      {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
-                        <span key={i} className="flex-1 text-center text-[8px] text-white/15 font-display">{d}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mb-4 sm:mb-5 relative z-[2]">
-                    <div className="flex justify-between text-xs sm:text-sm mb-2">
-                      <span className="text-white/40 font-light">Milestone I Progress</span>
-                      <span className="text-white/50 font-light font-display">18 / 20</span>
-                    </div>
-                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        whileInView={{ width: "90%" }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-                        className="h-full rounded-full relative overflow-hidden"
-                        style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.8))" }}
+                        transition={{ delay: 0.3 + i * 0.06, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                       >
                         <div className="absolute inset-0 shimmer-bar" />
                       </motion.div>
-                    </div>
+                    ))}
                   </div>
-
-                  <div className="relative z-[2]">
-                    <h4 className="text-[10px] sm:text-xs uppercase tracking-widest font-display text-white/40 mb-3">Recent Conversions</h4>
-                    <div className="space-y-2">
-                      {[
-                        { text: "A***sh K. signed up", time: "2m ago", icon: <CheckCircle2 className="w-3.5 h-3.5" />, type: "signup" },
-                        { text: "R***ya S. entered giveaway", time: "15m ago", icon: <Gift className="w-3.5 h-3.5" />, type: "entry" },
-                        { text: "P***av M. signed up", time: "1h ago", icon: <CheckCircle2 className="w-3.5 h-3.5" />, type: "signup" },
-                        { text: "Link click from Mumbai", time: "2h ago", icon: <Activity className="w-3.5 h-3.5" />, type: "click" }
-                      ].map((item, i) => (
-                        <motion.div 
-                          key={i}
-                          initial={{ opacity: 0, x: -10 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
-                          className="flex items-center text-xs p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.03]"
-                        >
-                          <div className="w-6 h-6 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mr-3 shrink-0">
-                            <span className="text-white/40">{item.icon}</span>
-                          </div>
-                          <span className="text-white/50 font-light flex-1">{item.text}</span>
-                          <span className="px-1.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.05] text-[8px] text-white/25 font-display uppercase tracking-wider mr-2">{item.type}</span>
-                          <span className="text-[10px] text-white/15 shrink-0">{item.time}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <motion.div
-                    className="mt-5 relative z-[2]"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 1.2 }}
-                  >
-                    <Link href="/referral/dashboard" className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs text-white/40 hover:bg-white/[0.06] hover:text-white/60 transition-all group">
-                      <span className="font-light">View Full Dashboard</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </motion.div>
-                </TiltCard>
+                </div>
               </motion.div>
-            </div>
 
+              <motion.div variants={fadeUp} className="bento-card">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
+                <div className="relative z-[2] flex flex-col h-full">
+                  <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
+                    <BarChart3 className="w-5 h-5" />
+                  </BorderGlow>
+                  <h3 className="text-lg font-display font-light text-white mb-2">Performance Trends</h3>
+                  <p className="text-xs text-white/40 font-light mb-5">Daily & weekly breakdowns of your referral metrics.</p>
+                  <div className="mt-auto grid grid-cols-2 gap-2">
+                    {[
+                      { label: "Clicks", value: "2.4K" },
+                      { label: "Conv.", value: "17%" },
+                    ].map((s, i) => (
+                      <div key={i} className="stat-card text-center py-3">
+                        <div className="text-lg font-display font-light text-white">{s.value}</div>
+                        <div className="text-[8px] text-white/25 uppercase tracking-widest font-display mt-1">{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="bento-card">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
+                <div className="relative z-[2] flex flex-col h-full">
+                  <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
+                    <Trophy className="w-5 h-5" />
+                  </BorderGlow>
+                  <h3 className="text-lg font-display font-light text-white mb-2">Milestones</h3>
+                  <p className="text-xs text-white/40 font-light mb-5">Automated progress tracking with milestone rewards.</p>
+                  <div className="mt-auto space-y-3">
+                    <div>
+                      <div className="flex justify-between text-xs mb-1.5">
+                        <span className="text-white/35 font-light">Milestone I</span>
+                        <span className="text-white/50 font-display">18/20</span>
+                      </div>
+                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: "90%" }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+                          className="h-full rounded-full relative overflow-hidden"
+                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.8))" }}
+                        >
+                          <div className="absolute inset-0 shimmer-bar" />
+                        </motion.div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1.5">
+                        <span className="text-white/35 font-light">Milestone II</span>
+                        <span className="text-white/50 font-display">5/50</span>
+                      </div>
+                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: "10%" }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+                          className="h-full rounded-full relative overflow-hidden"
+                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,255,0.5))" }}
+                        >
+                          <div className="absolute inset-0 shimmer-bar" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="bento-card">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
+                <div className="relative z-[2] flex flex-col h-full">
+                  <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
+                    <Users className="w-5 h-5" />
+                  </BorderGlow>
+                  <h3 className="text-lg font-display font-light text-white mb-2">Share & Earn</h3>
+                  <p className="text-xs text-white/40 font-light mb-5">Distribute your link across WhatsApp, Telegram, and social platforms.</p>
+                  <div className="mt-auto flex items-center gap-3">
+                    {[SiWhatsapp, SiTelegram, SiInstagram].map((Icon, i) => (
+                      <motion.div
+                        key={i}
+                        className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center"
+                        animate={{ y: [0, -3, 0] }}
+                        transition={{ duration: 3, delay: i * 0.6, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Icon className="w-4 h-4 text-white/40" />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="bento-card bento-card-wide">
+                <div className="card-top-accent" />
+                <div className="card-shine" />
+                <div className="relative z-[2] flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">Ready to start earning?</h3>
+                    <p className="text-sm text-white/40 font-light">Join the partner program and unlock your personal analytics dashboard.</p>
+                  </div>
+                  <div className="flex gap-3 shrink-0">
+                    <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group">
+                      <BarChart3 className="w-4 h-4 mr-2 relative z-[2]" />
+                      <span className="relative z-[2]">Open Dashboard</span>
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                    </BorderGlow>
+                    <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-md premium-btn-ghost glass-btn-effect group hidden sm:flex">
+                      <span className="relative z-[2]">Become a Partner</span>
+                    </BorderGlow>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
@@ -1319,228 +1298,6 @@ export default function Home() {
                   </div>
                 </div>
               </TiltCard>
-            </motion.div>
-          </div>
-        </section>
-
-        <GlowLine />
-
-        <section className="py-20 sm:py-32 relative">
-          <FloatingParticles />
-          <GlowOrb className="top-10 left-[5%] hidden lg:block" size={200} opacity={0.03} />
-          <GlowOrb className="bottom-20 right-[8%] hidden lg:block" size={180} opacity={0.025} />
-          <FloatingIcon icon={<Sparkles className="w-10 h-10" />} className="top-24 right-[12%] hidden lg:block" delay={0} />
-          <FloatingIcon icon={<Gem className="w-8 h-8" />} className="bottom-32 left-[8%] hidden lg:block" delay={3} />
-          <div className="container mx-auto px-4 max-w-6xl">
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-              className="text-center mb-16 sm:mb-24"
-            >
-              <div className="glass-pill-badge mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                Inner Circle
-              </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-                Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full max-w-md mx-auto mb-14 sm:mb-20"
-            >
-              <div className="relative rounded-full overflow-hidden aspect-square max-w-[200px] mx-auto border border-white/[0.06]">
-                <img src="/images/abstract-sphere.png" alt="" className="w-full h-full object-cover opacity-30" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
-              </div>
-              <GlowOrb className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1]" size={250} opacity={0.04} />
-            </motion.div>
-
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16"
-            >
-              {[
-                { title: "Hackathons", desc: "Access to private building sessions.", icon: <TerminalSquare className="w-5 h-5" /> },
-                { title: "Workshops", desc: "Expert-led technical deep dives.", icon: <Zap className="w-5 h-5" /> },
-                { title: "Mentorship", desc: "Direct access to industry leaders.", icon: <Users className="w-5 h-5" /> }
-              ].map((item, i) => (
-                <motion.div key={i} variants={fadeUp}>
-                  <TiltCard className="glass-card p-6 sm:p-8 text-center group">
-                    <div className="card-top-accent" />
-                    <div className="card-shine" />
-                    <div className="relative z-[2]">
-                      <motion.div
-                        animate={{ y: [0, -5, 0] }}
-                        transition={{ duration: 4, delay: i * 0.8, repeat: Infinity, ease: "easeInOut" }}
-                      >
-                        <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mx-auto mb-5">
-                          {item.icon}
-                        </BorderGlow>
-                      </motion.div>
-                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3">{item.title}</h3>
-                      <p className="text-xs sm:text-sm text-white/45 font-light">{item.desc}</p>
-                    </div>
-                  </TiltCard>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            <motion.div 
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-              className="flex justify-center"
-            >
-              <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                <SiWhatsapp className="mr-3 w-5 h-5 relative z-[2]" />
-                <span className="relative z-[2]">Join the Network</span>
-              </BorderGlow>
-            </motion.div>
-          </div>
-        </section>
-
-        <GlowLine />
-
-        <section className="py-20 sm:py-32 relative">
-          <FloatingParticles />
-          <div className="container mx-auto px-4 max-w-6xl">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={fadeUp}
-              className="text-center mb-16 sm:mb-20"
-            >
-              <div className="glass-pill-badge mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                Quick Access
-              </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Explore Everything" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-                Jump straight to what matters — active offers, your dashboard, partner perks, and more.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-            >
-              {[
-                { title: "Active Offers", desc: "2x bonuses, cashback deals, and exclusive drops updated weekly.", icon: <Gift className="w-5 h-5" />, href: "/offers", spa: true, badge: "5 Live" },
-                { title: "How to Enter", desc: "Step-by-step guide to register, submit entries, and start winning.", icon: <Target className="w-5 h-5" />, href: "#how-it-works", spa: false, badge: null },
-                { title: "Your Dashboard", desc: "Track clicks, verified referrals, milestones, and leaderboard rank.", icon: <Activity className="w-5 h-5" />, href: "#dashboard", spa: false, badge: null },
-                { title: "Rewards Gallery", desc: "See the full list of prizes — swag kits, gift cards, gadgets, and more.", icon: <Trophy className="w-5 h-5" />, href: "#rewards", spa: false, badge: null },
-                { title: "All Partners", desc: "View all partner registrations, trust verification, and live stats.", icon: <Star className="w-5 h-5" />, href: "/partners", spa: true, badge: "Coming Soon" },
-                { title: "Community Hub", desc: "Join our WhatsApp group for flash giveaways and surprise drops.", icon: <Users className="w-5 h-5" />, href: "#register", spa: false, badge: null },
-              ].map((item, i) => {
-                const WrapTag = item.spa ? Link : "a";
-                return (
-                  <motion.div key={i} variants={fadeUp}>
-                    <WrapTag href={item.href} className="block">
-                      <TiltCard className="glass-card p-5 sm:p-7 group h-full relative">
-                        <div className="card-top-accent" />
-                        <div className="card-shine" />
-                        <div className="relative z-[2] flex flex-col h-full">
-                          <div className="flex items-start justify-between mb-5">
-                            <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle">
-                              {item.icon}
-                            </BorderGlow>
-                            {item.badge && (
-                              <div className="premium-badge premium-badge-hot !text-[9px]">
-                                <Zap className="w-2.5 h-2.5 mr-1" />
-                                {item.badge}
-                              </div>
-                            )}
-                          </div>
-                          <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                          <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{item.desc}</p>
-                          <div className="mt-auto flex items-center text-white/30 group-hover:text-white/60 transition-colors text-xs font-display">
-                            <span>Explore</span>
-                            <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </div>
-                      </TiltCard>
-                    </WrapTag>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-
-          </div>
-        </section>
-
-        <GlowLine />
-
-        <section id="winners" className="py-20 sm:py-32 relative">
-          <FloatingParticles />
-          <div className="container mx-auto px-4 max-w-6xl">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={fadeUp}
-              className="text-center mb-16 sm:mb-24"
-            >
-              <div className="glass-pill-badge mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-                Daily Winners
-              </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Winner Showcase" /></h2>
-              <p className="text-white/50 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-                Real people winning real rewards — every single day. Check back daily to see if your name appears here.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-12"
-            >
-              {[
-                { name: "A***sh K.", prize: "₹1,000 Amazon Gift Card", date: "Today", avatar: "AK", tier: "Gift Card" },
-                { name: "R***ya S.", prize: "Premium Swag Kit", date: "Today", avatar: "RS", tier: "Daily Drop" },
-                { name: "P***av M.", prize: "₹500 Google Play Credit", date: "Yesterday", avatar: "PM", tier: "Gift Card" },
-                { name: "S***ti R.", prize: "Wireless Earbuds", date: "Yesterday", avatar: "SR", tier: "Tech Prize" },
-                { name: "V***sh P.", prize: "₹2,000 Flipkart Voucher", date: "2 days ago", avatar: "VP", tier: "Gift Card" },
-                { name: "M***na J.", prize: "Hackathon VIP Pass", date: "2 days ago", avatar: "MJ", tier: "Event Access" },
-              ].map((winner, i) => (
-                <motion.div key={i} variants={fadeUp}>
-                  <TiltCard className="glass-card p-5 sm:p-6 group h-full">
-                    <div className="card-top-accent" />
-                    <div className="card-shine" />
-                    <div className="relative z-[2] flex flex-col h-full">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-11 h-11 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
-                          <span className="text-xs font-display text-white/60">{winner.avatar}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-display font-light text-white truncate">{winner.name}</h4>
-                          <span className="text-[10px] text-white/30 font-light">{winner.date}</span>
-                        </div>
-                        <div className="premium-badge !text-[8px] !py-1 !px-2" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                          <Trophy className="w-2.5 h-2.5 mr-1" />
-                          {winner.tier}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                        <Gift className="w-4 h-4 text-white/30 shrink-0" />
-                        <span className="text-sm text-white/60 font-light">{winner.prize}</span>
-                      </div>
-                    </div>
-                  </TiltCard>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            <motion.div
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-              className="text-center"
-            >
-              <p className="text-xs text-white/25 font-light mb-6">
-                Winners are selected daily. Placeholder data shown — real winners will appear once the first draw is completed.
-              </p>
             </motion.div>
           </div>
         </section>
@@ -1676,7 +1433,7 @@ export default function Home() {
                     {[
                       { q: "How do I enter the giveaway?", a: "Register with the partner links provided on this page, then fill the giveaway entry form with your details. You'll receive a confirmation email once your entry is submitted successfully." },
                       { q: "Can I enter multiple times?", a: "Yes! You can submit multiple entries to increase your chances. Each entry must use a different email address and mobile number — duplicate details will be disqualified." },
-                      { q: "When are daily winners announced?", a: "Winners are selected and announced daily on this page in the Winners Section. Check back regularly — your name could appear anytime." },
+                      { q: "When are daily winners announced?", a: "Winners are selected and announced daily. Check the Winners page and our social channels regularly — your name could appear anytime." },
                       { q: "What rewards can I win?", a: "Daily swag kits, gift cards (₹500–₹2000), wireless earbuds & gadgets, cloud credits (₹5,000), hackathon passes, and even a brand new laptop in the monthly grand draw." },
                       { q: "How does the referral bonus work?", a: "Share your unique referral code with others. For every person who registers and completes their entry using your code, you earn ₹100. There's no earning limit — refer as many as you can." },
                       { q: "Do I need to register with all partners?", a: "You must register with at least the primary partner link — that's mandatory to enter. The second partner link is optional but recommended to increase your winning chances." },

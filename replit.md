@@ -34,7 +34,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **Hero**: Silk WebGL background (React Three Fiber shader, with CSS radial-gradient fallback when WebGL unavailable) + gradient overlays
 - **Pages**: Home (/), Offers (/offers), Partners (/partners)
 - **Admin Pages**: Admin Login (/x247-admin-login), Control Panel (/x247-control-panel)
-- **Sections**: Hero, How it Works (8-step timeline), Rewards (6 cards in 3-col grid), Dashboard Preview, Verification Policy, Community/Ecosystem, Winner Showcase, Testimonials (3-row auto-scrolling marquee), FAQ, Footer
+- **Sections**: Hero, How it Works (8-step timeline), Rewards (6 cards in 3-col grid), Dashboard (bento-grid: Analytics, Trends, Milestones, Share & Earn, CTA), Verification Policy, Testimonials (3-row auto-scrolling marquee), FAQ, Footer
 - **Layout**: Section-divider wrapper (rounded-28px card with lateral white edge glow) wraps content sections; GlowLine separators between each section
 - **Buttons**: Premium button system (premium-btn, premium-btn-sm/md/lg/ghost) with lateral box-shadow glow, inner radial glow on hover, arrow icons, glassmorphism via `.glass-btn-effect` (backdrop-filter blur)
 - **Cursor**: Default browser cursor (AnimatedCursor component exists but is not rendered)
