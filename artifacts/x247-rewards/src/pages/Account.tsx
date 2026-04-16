@@ -1461,16 +1461,60 @@ export default function Account() {
 
           {!user && (
             <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] mb-4">
-                <Shield className="w-3 h-3 text-white/40" />
-                <span className="text-[10px] text-white/40 font-display uppercase tracking-widest">My Account</span>
+              <div className="acct-hero-banner">
+                <div className="acct-hero-banner-glow" />
+                <div className="acct-hero-banner-inner">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 14 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="glass-pill-badge mb-6"
+                  >
+                    <Shield className="w-3 h-3 text-white/50 mr-2" />
+                    My Account
+                  </motion.div>
+
+                  <motion.h1
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-4 tracking-tight leading-[1.1]"
+                  >
+                    <span className="text-gradient">Your Rewards Hub</span>
+                  </motion.h1>
+
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed mb-8"
+                  >
+                    Sign in or create an account to track your giveaway entries
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="acct-steps-bar"
+                  >
+                    <div className="acct-step-item">
+                      <div className="acct-step-num">1</div>
+                      <span className="acct-step-label">Register</span>
+                    </div>
+                    <div className="acct-step-divider" />
+                    <div className="acct-step-item">
+                      <div className="acct-step-num">2</div>
+                      <span className="acct-step-label">Enter</span>
+                    </div>
+                    <div className="acct-step-divider" />
+                    <div className="acct-step-item">
+                      <div className="acct-step-num">3</div>
+                      <span className="acct-step-label">Win Daily</span>
+                    </div>
+                  </motion.div>
+                </div>
               </div>
-              <h1 className="text-3xl sm:text-5xl font-display font-extralight text-white mb-4 tracking-tight">
-                Account
-              </h1>
-              <p className="text-sm sm:text-base text-white/35 font-light max-w-xl mx-auto leading-relaxed">
-                Sign in or create an account to track your giveaway entries
-              </p>
             </motion.div>
           )}
 

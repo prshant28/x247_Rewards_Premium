@@ -785,7 +785,8 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="glass-pill-badge mb-8 mt-12 font-display"
+              className="glass-pill-badge mb-8 mt-12"
+              style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif" }}
             >
               <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse mr-3 inline-block"></span>
               Register. Enter. Win Daily.
@@ -1025,21 +1026,21 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                       <span className="text-xs font-display text-white/60">1</span>
                     </div>
-                    <span className="text-sm text-white/55 font-light">Register with partners</span>
+                    <span className="text-sm text-white/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Register with partners</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-white/20 hidden sm:block" />
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                       <span className="text-xs font-display text-white/60">2</span>
                     </div>
-                    <span className="text-sm text-white/55 font-light">Fill entry form</span>
+                    <span className="text-sm text-white/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Fill entry form</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-white/20 hidden sm:block" />
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                       <span className="text-xs font-display text-white/60">3</span>
                     </div>
-                    <span className="text-sm text-white/55 font-light">Win daily prizes</span>
+                    <span className="text-sm text-white/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Win daily prizes</span>
                   </div>
                 </div>
               </TiltCard>
