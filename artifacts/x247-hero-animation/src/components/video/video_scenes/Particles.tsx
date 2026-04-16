@@ -1,21 +1,21 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
-export function Particles() {
+export function Particles({ count = 80 }: { count?: number }) {
   const particles = useMemo(() => {
-    return Array.from({ length: 60 }).map((_, i) => ({
+    return Array.from({ length: count }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       size: Math.random() * 1 + 1, // 1-2px dots
-      opacity: Math.random() * 0.25 + 0.05, // 0.05 - 0.3
+      opacity: Math.random() * 0.21 + 0.04, // 0.04 - 0.25
       duration: Math.random() * 20 + 10,
       delay: Math.random() * -20,
     }));
-  }, []);
+  }, [count]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       {particles.map((p) => (
         <motion.div
           key={p.id}
@@ -27,8 +27,8 @@ export function Particles() {
             top: `${p.y}%`,
           }}
           animate={{
-            y: ['0vh', '-30vh', '10vh', '0vh'],
-            x: ['0vw', `${(Math.random() - 0.5) * 15}vw`, `${(Math.random() - 0.5) * 15}vw`, '0vw'],
+            y: ['0vh', '-20vh', '10vh', '0vh'],
+            x: ['0vw', `${(Math.random() - 0.5) * 10}vw`, `${(Math.random() - 0.5) * 10}vw`, '0vw'],
             opacity: [p.opacity, p.opacity * 1.5, p.opacity * 0.5, p.opacity],
           }}
           transition={{

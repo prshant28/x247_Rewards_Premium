@@ -60,3 +60,21 @@ id = "SqtFi6Eod7frwiC9T53-0"
 uri = "file://artifacts/x247-rewards/public/images/abstract-sphere.png"
 type = "image"
 title = "network ecosystem sphere"
+
+[[generated]]
+id = "yL0UZHODy424MzbUS4KeO"
+uri = "file://artifacts/x247-hero-animation/public/images/smoke-bg.png"
+type = "image"
+title = "dramatic dark cinematic abstract"
+
+[[generated]]
+id = "29Gb84PM1OpIBrPQ-AcIn"
+uri = "file://artifacts/x247-hero-animation/public/images/prize-burst.png"
+type = "image"
+title = "dramatic gift box explosion"
+
+[[generated]]
+id = "x_JHUS4VmmiAaGY9ZCK7s"
+uri = "file://artifacts/x247-hero-animation/public/images/trophy.png"
+type = "image"
+title = "dark abstract trophy silhouette"
