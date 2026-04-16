@@ -5,7 +5,8 @@ import {
   ArrowRight, ArrowLeft, ExternalLink, Gift, Zap, Lock, CheckCircle2,
   Star, Info, ListChecks, Trophy, Camera, Sparkles, BadgeCheck, Copy,
   Share2, ChevronRight, ShieldCheck, Clock, Users, Target, Rocket,
-  BookOpen, AlertCircle, CheckSquare, Square, TrendingUp,
+  BookOpen, AlertCircle, CheckSquare, Square, TrendingUp, Send, Loader2,
+  MessageSquare, BarChart2, Flame,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -175,6 +176,219 @@ function useShare(partner: PartnerData) {
     setTimeout(() => setCopied(false), 2000);
   };
   return { share, copyRegUrl, copied };
+}
+
+/* ─── promo banner ─── */
+function PartnerPromoBanner({ partner, onRegister }: { partner: PartnerData; onRegister: () => void }) {
+  const pts = partner.entryPoints ?? 1;
+  if (!partner.registrationUrl) return null;
+  return (
+    <a
+      href={partner.registrationUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={onRegister}
+      className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-5 py-4 sm:px-6 hover:border-white/[0.14] hover:bg-white/[0.06] transition-all duration-300 group cursor-pointer"
+    >
+      <div className="flex items-center gap-4 min-w-0">
+        <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-white/[0.1] bg-white/[0.04] flex items-center justify-center">
+          {getPartnerIcon(partner.accent)}
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm sm:text-[13px] font-medium text-white/90 font-display tracking-wide leading-tight truncate">{partner.name}</p>
+          <p className="text-xs text-white/45 font-light mt-0.5 truncate">
+            Earn {pts} draw {pts === 1 ? "entry" : "entries"} on registration
+          </p>
+        </div>
+      </div>
+      <div className="flex-shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white/70 group-hover:text-white/90 transition-colors duration-200 whitespace-nowrap">
+        Register Now
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
+      </div>
+    </a>
+  );
+}
+
+/* ─── know more with AI ─── */
+function PartnerAIChat({ partner }: { partner: PartnerData }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const endRef = useRef<HTMLDivElement>(null);
+
+  const suggestions = [
+    `Who is eligible to register for ${partner.name}?`,
+    "How does the prize draw entry system work?",
+    "What do I win from this partner?",
+    "How do I submit proof of registration?",
+  ];
+
+  const sendMessage = async (content: string) => {
+    if (!content.trim() || isLoading) return;
+    const newMessages = [...messages, { role: "user" as const, content }];
+    setMessages(newMessages);
+    setInput("");
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: newMessages,
+          currentPage: `Partner detail page for "${partner.name}" — ${partner.description || partner.tagline}. Category: ${partner.category}. Earns ${partner.entryPoints ?? 1} draw entries. ${partner.whatYouGet ? "What you get: " + partner.whatYouGet : ""}`,
+        }),
+      });
+      if (!res.ok || !res.body) throw new Error();
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let assistantContent = "";
+      setMessages(prev => [...prev, { role: "assistant", content: "" }]);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        for (const line of decoder.decode(value).split("\n")) {
+          if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.content) {
+                assistantContent += data.content;
+                setMessages(prev => {
+                  const upd = [...prev];
+                  upd[upd.length - 1] = { role: "assistant", content: assistantContent };
+                  return upd;
+                });
+              }
+            } catch {}
+          }
+        }
+      }
+    } catch {
+      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, couldn't reach the AI. Please try again shortly." }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  return (
+    <div className="glass-card overflow-hidden">
+      <div className="card-shine" />
+      <button
+        onClick={() => setIsOpen(v => !v)}
+        className="relative z-[2] w-full flex items-center justify-between px-6 py-4 text-left hover:bg-white/[0.02] transition-colors group"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
+            <MessageSquare className="w-4 h-4 text-white/60" />
+          </div>
+          <div>
+            <p className="text-sm font-display font-light text-white">Know More with AI</p>
+            <p className="text-[10px] text-white/35 font-light">Ask anything about {partner.name}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {messages.length > 0 && (
+            <span className="text-[9px] font-display text-white/25 uppercase tracking-widest">{messages.filter(m => m.role === "user").length} asked</span>
+          )}
+          <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`} />
+        </div>
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden relative z-[2]"
+          >
+            <div className="border-t border-white/[0.05] px-5 pb-5 pt-4">
+              {messages.length === 0 && (
+                <div className="mb-4">
+                  <p className="text-[9px] font-display uppercase tracking-widest text-white/25 mb-3">Suggested Questions</p>
+                  <div className="flex flex-wrap gap-2">
+                    {suggestions.map((q, i) => (
+                      <button
+                        key={i}
+                        onClick={() => sendMessage(q)}
+                        className="text-[11px] px-3 py-1.5 rounded-lg border border-white/[0.07] bg-white/[0.02] text-white/45 hover:text-white/70 hover:border-white/[0.13] hover:bg-white/[0.05] transition-all font-light text-left"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {messages.length > 0 && (
+                <div className="space-y-3 mb-4 max-h-60 overflow-y-auto pr-1 scrollbar-thin">
+                  {messages.map((msg, i) => (
+                    <div key={i} className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                      {msg.role === "assistant" && (
+                        <div className="w-5 h-5 rounded-md bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0 mt-0.5">
+                          <Sparkles className="w-2.5 h-2.5 text-white/50" />
+                        </div>
+                      )}
+                      <div className={`max-w-[88%] text-xs font-light leading-relaxed rounded-xl px-3.5 py-2.5 ${
+                        msg.role === "user"
+                          ? "bg-white/[0.07] border border-white/[0.1] text-white/80"
+                          : "bg-white/[0.03] border border-white/[0.05] text-white/60"
+                      }`}>
+                        {msg.role === "assistant" && isLoading && i === messages.length - 1 && msg.content === "" ? (
+                          <span className="flex gap-1 items-center h-3">
+                            {[0, 150, 300].map(d => (
+                              <span key={d} className="w-1 h-1 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: `${d}ms` }} />
+                            ))}
+                          </span>
+                        ) : msg.content}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={endRef} />
+                </div>
+              )}
+
+              {messages.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {["What are the prizes?", "Step-by-step guide?", "Any restrictions?"].map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => sendMessage(q)}
+                      disabled={isLoading}
+                      className="text-[10px] px-2.5 py-1 rounded-lg border border-white/[0.06] text-white/35 hover:text-white/55 hover:border-white/[0.12] transition-all font-light disabled:opacity-30"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <form onSubmit={e => { e.preventDefault(); sendMessage(input); }} className="flex gap-2">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder={`Ask about ${partner.name}…`}
+                  disabled={isLoading}
+                  className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-white/70 placeholder-white/20 font-light focus:outline-none focus:border-white/[0.15] focus:bg-white/[0.05] transition-all disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={isLoading || !input.trim()}
+                  className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white/50 hover:text-white/80 hover:bg-white/[0.09] transition-all disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                >
+                  {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                </button>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 /* ─── main component ─── */
@@ -493,18 +707,22 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   </div>
 
                   {!isComingSoon && (
-                    <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
-                      {partner.registrationUrl && (
-                        <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                          <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                          <span className="relative z-[2]">Register &amp; Claim</span>
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                    <div className="space-y-3">
+                      <PartnerPromoBanner partner={partner} onRegister={handleRegisterClick} />
+                      <div className="flex flex-col sm:flex-row justify-center gap-3">
+                        {partner.registrationUrl && (
+                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                            <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                            <span className="relative z-[2]">Register &amp; Claim</span>
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                          </BorderGlow>
+                        )}
+                        <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.7)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group">
+                          <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                          <span className="relative z-[2]">Enter Giveaway</span>
                         </BorderGlow>
-                      )}
-                      <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.7)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group">
-                        <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Enter Giveaway</span>
-                      </BorderGlow>
+                      </div>
+                      <PartnerAIChat partner={partner} />
                     </div>
                   )}
                 </motion.div>
@@ -632,18 +850,22 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   )}
 
                   {!isComingSoon && (
-                    <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
-                      {partner.registrationUrl && (
-                        <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                          <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                          <span className="relative z-[2]">Register Now</span>
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                    <div className="space-y-3">
+                      <PartnerPromoBanner partner={partner} onRegister={handleRegisterClick} />
+                      <div className="flex flex-col sm:flex-row justify-center gap-3">
+                        {partner.registrationUrl && (
+                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                            <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                            <span className="relative z-[2]">Register Now</span>
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                          </BorderGlow>
+                        )}
+                        <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.7)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group">
+                          <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                          <span className="relative z-[2]">Enter Giveaway</span>
                         </BorderGlow>
-                      )}
-                      <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.7)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group">
-                        <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Enter Giveaway</span>
-                      </BorderGlow>
+                      </div>
+                      <PartnerAIChat partner={partner} />
                     </div>
                   )}
                 </motion.div>
@@ -722,18 +944,22 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   </div>
 
                   {!isComingSoon && (
-                    <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
-                      {partner.registrationUrl && (
-                        <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
-                          <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
-                          <span className="relative z-[2]">Register Now</span>
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                    <div className="space-y-3">
+                      <PartnerPromoBanner partner={partner} onRegister={handleRegisterClick} />
+                      <div className="flex flex-col sm:flex-row justify-center gap-3">
+                        {partner.registrationUrl && (
+                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                            <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
+                            <span className="relative z-[2]">Register Now</span>
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                          </BorderGlow>
+                        )}
+                        <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.7)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect">
+                          <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
+                          <span className="relative z-[2]">Enter Giveaway</span>
                         </BorderGlow>
-                      )}
-                      <BorderGlow as={Link} href="/giveaway" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.7)" className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect">
-                        <Trophy className="w-4 h-4 mr-2 relative z-[2]" />
-                        <span className="relative z-[2]">Enter Giveaway</span>
-                      </BorderGlow>
+                      </div>
+                      <PartnerAIChat partner={partner} />
                     </div>
                   )}
                 </motion.div>

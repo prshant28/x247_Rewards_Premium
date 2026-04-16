@@ -820,36 +820,6 @@ export default function Home() {
               </BorderGlow>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.75, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full max-w-3xl mx-auto mb-8 px-4 sm:px-0"
-            >
-              <a
-                href="#partners"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.querySelector("#partners")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-5 py-4 sm:px-6 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-300 group cursor-pointer"
-              >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-white/[0.1] bg-white/[0.04] flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white/70" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm sm:text-[13px] font-medium text-white/90 font-display tracking-wide leading-tight truncate">Solution Challenge 2026</p>
-                    <p className="text-xs text-white/45 font-light mt-0.5 truncate">Earn 1 draw entry on registration</p>
-                  </div>
-                </div>
-                <div className="flex-shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white/70 group-hover:text-white/90 transition-colors duration-200 whitespace-nowrap">
-                  Register Now
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
-                </div>
-              </a>
-            </motion.div>
-
             <HeroBannerSlider />
 
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
