@@ -577,7 +577,7 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
 
   return (
     <motion.div key="overview" variants={tabFade} initial="hidden" animate="visible" exit="exit">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-7">
         {[
           { icon: Flame, label: "Day Streak", value: streak, sub: streak > 0 ? "Active" : "Start today", spark: sparkData },
           { icon: Trophy, label: "Total Entries", value: entries.length, sub: `${entryLimit}/contest`, spark: sparkData },
@@ -585,92 +585,92 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
           { icon: Star, label: "Current Tier", value: tierLabel, isText: true, sub: user.membershipTier === "free" ? "Upgrade available" : "Active" },
         ].map((stat) => (
           <div key={stat.label} className="acct-stat-card relative overflow-hidden">
-            <div className="flex items-center justify-between mb-3">
-              <stat.icon className="w-4 h-4 text-white/20" />
-              <span className="text-[8px] text-white/20 uppercase tracking-widest font-display">{stat.sub}</span>
+            <div className="flex items-center justify-between mb-4">
+              <stat.icon className="w-5 h-5 text-white/25" />
+              <span className="text-[9px] text-white/25 uppercase tracking-widest font-display">{stat.sub}</span>
             </div>
             {stat.isText ? (
-              <span className="text-xl font-display font-light text-white block">{stat.value}</span>
+              <span className="text-2xl sm:text-3xl font-display font-light text-white block">{stat.value}</span>
             ) : (
-              <AnimatedCounter value={stat.value as number} className="text-2xl font-display font-light text-white block" />
+              <AnimatedCounter value={stat.value as number} className="text-2xl sm:text-3xl font-display font-light text-white block" />
             )}
-            <div className="text-[10px] text-white/30 font-light mt-1">{stat.label}</div>
+            <div className="text-[11px] text-white/35 font-light mt-2">{stat.label}</div>
             {"spark" in stat && stat.spark && stat.spark.length >= 2 && (
               <div className="absolute bottom-0 right-0 opacity-50 pointer-events-none">
-                <Sparkline data={stat.spark} width={60} height={24} />
+                <Sparkline data={stat.spark} width={70} height={28} />
               </div>
             )}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-7">
         <div className="dash-chart-card">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-3.5 h-3.5 text-white/25" />
-              <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Entry History</h3>
+              <BarChart3 className="w-4 h-4 text-white/30" />
+              <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Entry History</h3>
             </div>
-            <div className="flex items-center gap-1">
-              <TrendingUp className={`w-3 h-3 ${weekTrend === "up" ? "text-emerald-400/40" : weekTrend === "down" ? "text-red-400/40 rotate-180" : "text-white/20"}`} />
-              <span className="text-[9px] text-white/25 font-light">{thisWeekTotal} this week</span>
+            <div className="flex items-center gap-1.5">
+              <TrendingUp className={`w-3.5 h-3.5 ${weekTrend === "up" ? "text-emerald-400/40" : weekTrend === "down" ? "text-red-400/40 rotate-180" : "text-white/20"}`} />
+              <span className="text-[10px] text-white/30 font-light">{thisWeekTotal} this week</span>
             </div>
           </div>
           <div className="flex justify-center">
-            <MiniBarChart data={last7} width={200} height={64} />
+            <MiniBarChart data={last7} width={260} height={80} />
           </div>
         </div>
 
         <div className="dash-chart-card">
-          <div className="flex items-center gap-2 mb-3">
-            <Activity className="w-3.5 h-3.5 text-white/25" />
-            <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Activity Map</h3>
+          <div className="flex items-center gap-2 mb-5">
+            <Activity className="w-4 h-4 text-white/30" />
+            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Activity Map</h3>
           </div>
           <div className="flex justify-center overflow-x-auto">
             <ActivityHeatmap dates={activityDates} weeks={8} />
           </div>
-          <div className="flex items-center justify-end gap-1 mt-2">
-            <span className="text-[8px] text-white/15 font-light">Less</span>
+          <div className="flex items-center justify-end gap-1.5 mt-3">
+            <span className="text-[9px] text-white/20 font-light">Less</span>
             {[0.03, 0.1, 0.2, 0.35].map((op, i) => (
-              <div key={i} className="w-[8px] h-[8px] rounded-[2px]" style={{ background: `rgba(255,255,255,${op})` }} />
+              <div key={i} className="w-[9px] h-[9px] rounded-[2px]" style={{ background: `rgba(255,255,255,${op})` }} />
             ))}
-            <span className="text-[8px] text-white/15 font-light">More</span>
+            <span className="text-[9px] text-white/20 font-light">More</span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7">
         <Link href="/giveaway" className="dash-quick-action group">
           <div className="dash-qa-icon"><Sparkles className="w-4 h-4" /></div>
           <div>
-            <div className="text-xs font-display font-light text-white/70 group-hover:text-white transition-colors">Enter Giveaway</div>
-            <div className="text-[9px] text-white/25 font-light">Browse active contests</div>
+            <div className="text-sm font-display font-light text-white/70 group-hover:text-white transition-colors">Enter Giveaway</div>
+            <div className="text-[10px] text-white/30 font-light">Browse active contests</div>
           </div>
-          <ChevronRight className="w-3.5 h-3.5 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
         </Link>
         <Link href="/partners" className="dash-quick-action group">
           <div className="dash-qa-icon"><Users className="w-4 h-4" /></div>
           <div>
-            <div className="text-xs font-display font-light text-white/70 group-hover:text-white transition-colors">Visit Partners</div>
-            <div className="text-[9px] text-white/25 font-light">Earn more entries</div>
+            <div className="text-sm font-display font-light text-white/70 group-hover:text-white transition-colors">Visit Partners</div>
+            <div className="text-[10px] text-white/30 font-light">Earn more entries</div>
           </div>
-          <ChevronRight className="w-3.5 h-3.5 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
         </Link>
         <Link href="/winners" className="dash-quick-action group">
           <div className="dash-qa-icon"><Award className="w-4 h-4" /></div>
           <div>
-            <div className="text-xs font-display font-light text-white/70 group-hover:text-white transition-colors">View Winners</div>
-            <div className="text-[9px] text-white/25 font-light">Hall of fame</div>
+            <div className="text-sm font-display font-light text-white/70 group-hover:text-white transition-colors">View Winners</div>
+            <div className="text-[10px] text-white/30 font-light">Hall of fame</div>
           </div>
-          <ChevronRight className="w-3.5 h-3.5 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <History className="w-3.5 h-3.5 text-white/25" />
-            <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Recent Activity</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="dash-chart-card">
+          <div className="flex items-center gap-2 mb-4">
+            <History className="w-4 h-4 text-white/30" />
+            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Recent Activity</h3>
           </div>
           {entries.length > 0 ? (
             <div className="dash-activity">
@@ -679,8 +679,8 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
                   <div className="dash-activity-dot" />
                   {i < Math.min(entries.length - 1, 3) && <div className="dash-activity-line" />}
                   <div className="flex-1 min-w-0">
-                    <div className="text-[11px] font-light text-white/55 truncate">Entered {entry.contestName}</div>
-                    <div className="text-[9px] text-white/20 font-light">{entry.entryCount} entries · {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
+                    <div className="text-xs font-light text-white/60 truncate">Entered {entry.contestName}</div>
+                    <div className="text-[10px] text-white/25 font-light">{entry.entryCount} entries · {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
                   </div>
                   <div className="acct-entry-status">
                     <Clock className="w-3 h-3" />
@@ -690,19 +690,19 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
               ))}
             </div>
           ) : (
-            <div className="p-6 text-center bg-white/[0.02] border border-white/[0.04] rounded-xl">
-              <Gift className="w-8 h-8 text-white/10 mx-auto mb-2" />
-              <p className="text-[11px] text-white/25 font-light">No activity yet</p>
+            <div className="p-8 text-center">
+              <Gift className="w-10 h-10 text-white/10 mx-auto mb-3" />
+              <p className="text-xs text-white/30 font-light">No activity yet</p>
             </div>
           )}
         </div>
 
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <Crown className="w-3.5 h-3.5 text-white/25" />
-            <h3 className="text-xs font-display font-medium text-white/40 uppercase tracking-wider">Membership</h3>
+        <div className="dash-chart-card">
+          <div className="flex items-center gap-2 mb-4">
+            <Crown className="w-4 h-4 text-white/30" />
+            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Membership</h3>
           </div>
-          <div className={`p-4 rounded-xl border ${user.membershipTier === "black" ? "bg-white/[0.04] border-white/[0.1]" : "bg-white/[0.02] border-white/[0.05]"}`}>
+          <div className={`p-5 rounded-xl border ${user.membershipTier === "black" ? "bg-white/[0.04] border-white/[0.1]" : "bg-white/[0.02] border-white/[0.05]"}`}>
             <div className="flex items-center gap-3 mb-3">
               <Crown className="w-5 h-5 text-white/30" />
               <div>

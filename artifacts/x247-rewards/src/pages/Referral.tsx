@@ -213,22 +213,17 @@ export default function Referral() {
       <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
         <div className="container mx-auto px-4 max-w-5xl">
 
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
-            <div className="page-hero-banner">
-              <div className="page-hero-glow" />
-              <div className="page-hero-inner">
-                <div className="glass-pill-badge mb-6">
-                  <Share2 className="w-3 h-3 text-white/50 mr-2" />
-                  Referral Program
-                </div>
-                <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-4 tracking-tight leading-[1.1]">
-                  <span className="text-gradient">Become a Referral Partner</span>
-                </h1>
-                <p className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed">
-                  Share X247 Rewards with your network. Track clicks, conversions, and earn recognition as a verified partner.
-                </p>
-              </div>
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-16 sm:mb-24">
+            <div className="glass-pill-badge mb-6">
+              <Share2 className="w-3 h-3 text-white/50 mr-2" />
+              Referral Program
             </div>
+            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
+              Become a Referral Partner
+            </h1>
+            <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              Share X247 Rewards with your network. Track clicks, conversions, and earn recognition as a verified partner.
+            </p>
           </motion.div>
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1} className="mb-12">
