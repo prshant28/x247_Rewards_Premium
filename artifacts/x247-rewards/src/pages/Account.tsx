@@ -1197,16 +1197,22 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
       id: "black",
       name: "Black",
       price: 999,
-      tagline: "The ultimate tier",
+      tagline: "The ultimate luxury tier",
       features: [
         `${TIER_LIMITS.black.perContest} entries per contest`,
         `${TIER_LIMITS.black.perMonth} total entries / month`,
-        "Premium AI voice chat",
-        "Verified + Black badge",
-        "Early winner announcements",
-        "Private concierge",
-        "Exclusive Black events",
-        "Lifetime priority queue",
+        "Unlimited premium AI voice chat",
+        "Verified + Elite Black badge",
+        "Early winner announcements (24h before public)",
+        "Private dedicated concierge",
+        "Exclusive Black-only members events",
+        "Lifetime priority queue across all draws",
+        "Personal account manager",
+        "Annual luxury surprise gift",
+        "Birthday bonus entries (3x for a week)",
+        "Free physical Black VIP card by post",
+        "Custom profile theme on public profile",
+        "First-look access to new partners",
       ],
     },
   ];
@@ -1307,16 +1313,128 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
               </li>
             ))}
           </ul>
-          {activeTier !== "black" && (
-            <div className="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between gap-3 flex-wrap">
-              <div className="text-[11px] text-white/35 font-light">Want more entries and perks? See full plan comparison.</div>
-              <Link href="/#pricing" className="acct-compare-link">
-                <span>Compare All Plans</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-          )}
         </div>
+      </div>
+
+      <div className="acct-pricing-header">
+        <div className="acct-pricing-header-icon">
+          <Crown className="w-4 h-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-display font-light text-white">All Membership Tiers</h3>
+          <p className="text-[10px] text-white/35 font-light mt-0.5">Choose the perfect plan for your X247 journey</p>
+        </div>
+        <div className="acct-pricing-header-pill">
+          <Sparkles className="w-2.5 h-2.5" />
+          <span>Cancel anytime</span>
+        </div>
+      </div>
+
+      <div className="acct-pricing-grid">
+        {plans.map((plan) => {
+          const planIndex = tierOrder.indexOf(plan.id);
+          const isCurrent = activeTier === plan.id;
+          const isDowngrade = planIndex < activeIndex;
+          const isFree = plan.id === "free";
+          const isBlack = plan.id === "black";
+          const isGold = plan.id === "gold";
+          const isSilver = plan.id === "silver";
+          const PlanIcon = isBlack ? Diamond : isGold ? Crown : isSilver ? Star : Sparkles;
+          const limits = TIER_LIMITS[plan.id as TierKey];
+
+          return (
+            <div
+              key={plan.id}
+              className={`acct-plan-card ${isBlack ? "acct-plan-card-black" : ""} ${isGold ? "acct-plan-card-gold" : ""} ${isCurrent ? "acct-plan-card-current" : ""}`}
+            >
+              {isBlack && <div className="acct-black-shimmer" />}
+              <div className="card-shine" />
+              <div className="relative z-[2] flex flex-col h-full">
+                {plan.popular && !isCurrent && (
+                  <div className="acct-plan-ribbon">
+                    <Star className="w-2.5 h-2.5" />
+                    <span>Most Popular</span>
+                  </div>
+                )}
+                {isCurrent && (
+                  <div className="acct-plan-ribbon acct-plan-ribbon-current">
+                    <Check className="w-2.5 h-2.5" />
+                    <span>Active</span>
+                  </div>
+                )}
+                {isBlack && !isCurrent && !plan.popular && (
+                  <div className="acct-plan-ribbon acct-plan-ribbon-elite">
+                    <Diamond className="w-2.5 h-2.5" />
+                    <span>Elite</span>
+                  </div>
+                )}
+
+                <div className={`acct-plan-icon ${isBlack ? "acct-plan-icon-black" : ""}`}>
+                  <PlanIcon className="w-5 h-5" />
+                </div>
+                <h4 className="acct-plan-name">{plan.name}</h4>
+                <p className="acct-plan-tagline">{plan.tagline}</p>
+
+                <div className="acct-plan-price">
+                  {isFree ? (
+                    <>
+                      <span className="acct-plan-amount">Free</span>
+                      <span className="acct-plan-period">forever</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="acct-plan-currency">₹</span>
+                      <span className="acct-plan-amount">{plan.price}</span>
+                      <span className="acct-plan-period">/mo</span>
+                    </>
+                  )}
+                </div>
+
+                <div className="acct-plan-meta">
+                  <div className="acct-plan-meta-item">
+                    <Trophy className="w-3 h-3 text-white/30" />
+                    <span><strong>{limits.perContest}</strong>/contest</span>
+                  </div>
+                  <div className="acct-plan-meta-item">
+                    <CalendarDays className="w-3 h-3 text-white/30" />
+                    <span><strong>{limits.perMonth}</strong>/month</span>
+                  </div>
+                </div>
+
+                <div className="acct-plan-divider" />
+
+                <ul className="acct-plan-features">
+                  {plan.features.slice(2).map((f) => (
+                    <li key={f} className="acct-plan-feature">
+                      <div className="acct-plan-check">
+                        <Check className="w-2.5 h-2.5" />
+                      </div>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => !isCurrent && !isDowngrade && handlePurchase(plan.id)}
+                  disabled={purchasing !== null || isCurrent || isDowngrade}
+                  className={`acct-plan-btn ${isBlack && !isCurrent ? "acct-plan-btn-black" : ""} ${isGold && !isCurrent ? "acct-plan-btn-gold" : ""}`}
+                >
+                  {purchasing === plan.id ? (
+                    <span className="flex items-center gap-2 justify-center">
+                      <div className="w-3 h-3 border border-white/30 border-t-white/80 rounded-full animate-spin" />
+                      Processing
+                    </span>
+                  ) : isCurrent ? "Current Plan" : isDowngrade ? "Downgrade" : isFree ? "Stay on Free" : (
+                    <span className="flex items-center gap-1.5 justify-center">
+                      Get {plan.name}
+                      <ArrowRight className="w-3 h-3" />
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </motion.div>
   );
@@ -1752,8 +1870,9 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                   <h2 className="text-sm sm:text-base font-display font-medium text-white truncate">{user.fullName}</h2>
                   {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-white/50 shrink-0" />}
                   {user.membershipTier && user.membershipTier !== "free" && (
-                    <span className={`acct-tier-pill ${user.membershipTier === "black" ? "acct-tier-black" : ""}`}>
-                      {user.membershipTier}
+                    <span className={`acct-pro-badge acct-pro-${user.membershipTier}`}>
+                      {user.membershipTier === "black" ? <Diamond className="w-2.5 h-2.5" /> : user.membershipTier === "gold" ? <Crown className="w-2.5 h-2.5" /> : <Star className="w-2.5 h-2.5" />}
+                      <span>{user.membershipTier === "black" ? "Elite" : user.membershipTier === "gold" ? "Pro" : "Plus"}</span>
                     </span>
                   )}
                 </div>
