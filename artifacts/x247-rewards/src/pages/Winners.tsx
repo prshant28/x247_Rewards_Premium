@@ -2,10 +2,75 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import {
-  Trophy, Crown, MapPin, Calendar, Gift, Sparkles, ArrowRight, Star
+  Trophy, Crown, MapPin, Calendar, Gift, Sparkles, ArrowRight, Star, Clock
 } from "lucide-react";
 import { getWinners, type WinnerData } from "@/lib/api";
 import SiteFooter from "@/components/SiteFooter";
+
+function DrawCountdown() {
+  const getMidnightSecs = () => {
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0);
+    return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+  };
+
+  const [secs, setSecs] = useState(getMidnightSecs);
+  const [entries, setEntries] = useState(10247);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSecs((p) => (p <= 1 ? getMidnightSecs() : p - 1));
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setEntries((p) => p + Math.floor(Math.random() * 3));
+    }, 4200);
+    return () => clearInterval(id);
+  }, []);
+
+  const hh = String(Math.floor(secs / 3600)).padStart(2, "0");
+  const mm = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
+  const ss = String(secs % 60).padStart(2, "0");
+
+  return (
+    <div className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-sm px-6 py-5 mb-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-0 sm:justify-between">
+      <div className="flex flex-col items-center sm:items-start gap-1">
+        <div className="flex items-center gap-1.5 mb-1">
+          <Clock className="w-3 h-3 text-white/30" />
+          <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Next Draw In</span>
+        </div>
+        <div className="flex items-end gap-1">
+          <span className="text-3xl font-display font-black text-white tabular-nums leading-none">{hh}</span>
+          <span className="text-white/25 text-xl font-light pb-0.5">h</span>
+          <span className="text-3xl font-display font-black text-white tabular-nums leading-none ml-1">{mm}</span>
+          <span className="text-white/25 text-xl font-light pb-0.5">m</span>
+          <span className="text-3xl font-display font-black text-white tabular-nums leading-none ml-1">{ss}</span>
+          <span className="text-white/25 text-xl font-light pb-0.5">s</span>
+        </div>
+      </div>
+
+      <div className="hidden sm:block w-px h-10 bg-white/[0.07]" />
+
+      <div className="flex flex-col items-center gap-0.5">
+        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Live Entries</span>
+        <span className="text-3xl font-display font-black text-white tabular-nums leading-none">{entries.toLocaleString("en-IN")}</span>
+        <span className="text-[10px] text-white/25 font-body mt-0.5">and counting</span>
+      </div>
+
+      <div className="hidden sm:block w-px h-10 bg-white/[0.07]" />
+
+      <div className="flex flex-col items-center gap-0.5">
+        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Winners Today</span>
+        <span className="text-3xl font-display font-black text-white tabular-nums leading-none">11</span>
+        <span className="text-[10px] text-white/25 font-body mt-0.5">prizes claimed</span>
+      </div>
+    </div>
+  );
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -98,6 +163,8 @@ export default function Winners() {
               Celebrating our lucky winners. Complete partner registrations and enter contests for your chance to be featured here!
             </p>
           </motion.div>
+
+          <DrawCountdown />
 
           {loading ? (
             <div className="flex justify-center py-20">

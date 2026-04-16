@@ -1,83 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, type Variants } from "framer-motion";
 
-function DrawCountdown() {
-  const getSecondsUntilMidnight = () => {
-    const now = new Date();
-    const midnight = new Date(now);
-    midnight.setHours(24, 0, 0, 0);
-    return Math.floor((midnight.getTime() - now.getTime()) / 1000);
-  };
 
-  const [secs, setSecs] = useState(getSecondsUntilMidnight);
-  const [entries, setEntries] = useState(10247);
-  const [flipped, setFlipped] = useState({ h: false, m: false, s: false });
-
-  useEffect(() => {
-    const tick = setInterval(() => {
-      setSecs((prev) => {
-        const next = prev <= 1 ? getSecondsUntilMidnight() : prev - 1;
-        const cur = prev;
-        const hPrev = Math.floor(cur / 3600);
-        const mPrev = Math.floor((cur % 3600) / 60);
-        const sPrev = cur % 60;
-        const hNext = Math.floor(next / 3600);
-        const mNext = Math.floor((next % 3600) / 60);
-        const sNext = next % 60;
-        setFlipped({ h: hPrev !== hNext, m: mPrev !== mNext, s: sPrev !== sNext });
-        return next;
-      });
-    }, 1000);
-    return () => clearInterval(tick);
-  }, []);
-
-  useEffect(() => {
-    const entryTick = setInterval(() => {
-      setEntries((p) => p + Math.floor(Math.random() * 3));
-    }, 4200);
-    return () => clearInterval(entryTick);
-  }, []);
-
-  const h = String(Math.floor(secs / 3600)).padStart(2, "0");
-  const m = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
-  const s = String(secs % 60).padStart(2, "0");
-
-  return (
-    <div className="w-full max-w-2xl mx-auto mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-sm px-5 py-5 flex flex-col sm:flex-row items-center gap-5 sm:gap-0 sm:justify-between">
-      <div className="flex flex-col items-center sm:items-start gap-1">
-        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Next Daily Draw In</span>
-        <div className="flex items-center gap-2">
-          <span className={`text-2xl sm:text-3xl font-display font-black text-white tabular-nums transition-transform duration-150 ${flipped.h ? "scale-110" : "scale-100"}`}>{h}</span>
-          <span className="text-white/30 text-xl font-light">:</span>
-          <span className={`text-2xl sm:text-3xl font-display font-black text-white tabular-nums transition-transform duration-150 ${flipped.m ? "scale-110" : "scale-100"}`}>{m}</span>
-          <span className="text-white/30 text-xl font-light">:</span>
-          <span className={`text-2xl sm:text-3xl font-display font-black text-white tabular-nums transition-transform duration-150 ${flipped.s ? "scale-110" : "scale-100"}`}>{s}</span>
-        </div>
-        <div className="flex gap-3 text-[9px] text-white/25 uppercase tracking-widest font-body">
-          <span className="w-[2.5rem] text-center">Hours</span>
-          <span className="w-[2.5rem] text-center">Min</span>
-          <span className="w-[2.5rem] text-center">Sec</span>
-        </div>
-      </div>
-
-      <div className="hidden sm:block w-px h-12 bg-white/[0.08]" />
-
-      <div className="flex flex-col items-center gap-0.5">
-        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Live Entries</span>
-        <span className="text-2xl sm:text-3xl font-display font-black text-white tabular-nums">{entries.toLocaleString("en-IN")}</span>
-        <span className="text-[10px] text-white/25 font-body">and counting</span>
-      </div>
-
-      <div className="hidden sm:block w-px h-12 bg-white/[0.08]" />
-
-      <div className="flex flex-col items-center gap-0.5">
-        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Winners Today</span>
-        <span className="text-2xl sm:text-3xl font-display font-black text-white tabular-nums">11</span>
-        <span className="text-[10px] text-white/25 font-body">prizes claimed</span>
-      </div>
-    </div>
-  );
-}
 import { Link } from "wouter";
 import { storeReferralCode } from "@/lib/api";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -895,8 +819,6 @@ export default function Home() {
                 <span className="relative z-[2]">See Rewards</span>
               </BorderGlow>
             </motion.div>
-
-            <DrawCountdown />
 
             <HeroBannerSlider />
 
