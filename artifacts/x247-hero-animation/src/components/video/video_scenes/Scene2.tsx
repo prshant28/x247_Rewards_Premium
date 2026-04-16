@@ -6,53 +6,44 @@ export function Scene2() {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 300), // Logo small top
-      setTimeout(() => setPhase(2), 1000), // Tagline P1
-      setTimeout(() => setPhase(3), 1800), // Tagline P2
-      setTimeout(() => setPhase(4), 3500), // Exit
+      setTimeout(() => setPhase(1), 200),  // Type characters
+      setTimeout(() => setPhase(2), 1500), // Horizontal rule
+      setTimeout(() => setPhase(3), 2800), // Exit prep
     ];
-    return () => timers.forEach((t) => clearTimeout(t));
+    return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center z-10"
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, y: -50, filter: 'blur(10px)' }}
-      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      exit={{ opacity: 0, y: -50, filter: 'blur(15px)' }}
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.div
-        className="absolute top-[20vh] text-white/40 text-[2vw] tracking-[0.5em] font-medium uppercase"
-        style={{ fontFamily: 'var(--font-mono)' }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      >
-        X247 Rewards
-      </motion.div>
+      <div className="relative flex flex-col items-center">
+        <div className="flex space-x-1 overflow-hidden" style={{ perspective: '1000px' }}>
+          {'247'.split('').map((char, i) => (
+            <motion.span
+              key={i}
+              className="text-[10vw] font-bold leading-none text-white tracking-tighter"
+              style={{ fontFamily: 'var(--font-display)', transformOrigin: 'center center -50px' }}
+              initial={{ opacity: 0, rotateX: -90, y: 50 }}
+              animate={phase >= 1 ? { opacity: 1, rotateX: 0, y: 0 } : { opacity: 0, rotateX: -90, y: 50 }}
+              transition={{ duration: 0.8, delay: i * 0.15, type: 'spring', stiffness: 200, damping: 20 }}
+            >
+              {char}
+            </motion.span>
+          ))}
+        </div>
 
-      <div className="flex flex-col items-center gap-4 text-[6vw] font-bold tracking-tight leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
-        <div className="overflow-hidden">
-          <motion.div
-            initial={{ y: '100%', opacity: 0, rotateX: 45 }}
-            animate={phase >= 2 ? { y: '0%', opacity: 1, rotateX: 0 } : { y: '100%', opacity: 0, rotateX: 45 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-white"
-          >
-            Your Rewards.
-          </motion.div>
-        </div>
-        <div className="overflow-hidden">
-          <motion.div
-            initial={{ y: '100%', opacity: 0, rotateX: 45 }}
-            animate={phase >= 3 ? { y: '0%', opacity: 1, rotateX: 0 } : { y: '100%', opacity: 0, rotateX: 45 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-white/60 italic"
-          >
-            Your Way.
-          </motion.div>
-        </div>
+        {/* Thin horizontal rule */}
+        <motion.div
+          className="h-[2px] bg-white/40 mt-4"
+          initial={{ width: 0, opacity: 0 }}
+          animate={phase >= 2 ? { width: '15vw', opacity: 1 } : { width: 0, opacity: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        />
       </div>
     </motion.div>
   );

@@ -1,38 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC:wght@500;700&family=Poppins:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap');
+
 @import "tailwindcss";
 
-:root {
-  --color-primary: #FFFFFF;
-  --color-secondary: #A1A1AA;
-  --color-accent: #FFFFFF;
-
-  --color-bg-light: #000000;
-  --color-bg-dark: #000000;
-  --color-bg-muted: #09090B;
-
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #A1A1AA;
-  --color-text-muted: #52525B;
-  --color-text-inverse: #000000;
-
+@theme inline {
   --font-display: 'Syne', sans-serif;
   --font-body: 'Poppins', sans-serif;
   --font-mono: 'Alegreya Sans SC', sans-serif;
 }
 
-@theme inline {
-  --color-primary: var(--color-primary);
-  --color-secondary: var(--color-secondary);
-  --color-accent: var(--color-accent);
-  --color-bg-light: var(--color-bg-light);
-  --color-bg-dark: var(--color-bg-dark);
-  --color-bg-muted: var(--color-bg-muted);
-  --color-text-primary: var(--color-text-primary);
-  --color-text-secondary: var(--color-text-secondary);
-  --color-text-muted: var(--color-text-muted);
-  --color-text-inverse: var(--color-text-inverse);
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
-  --font-mono: var(--font-mono);
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  --font-mono: 'Alegreya Sans SC', sans-serif;
 }
 
 body {
@@ -41,4 +20,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #000000;
   color: #FFFFFF;
+}
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }

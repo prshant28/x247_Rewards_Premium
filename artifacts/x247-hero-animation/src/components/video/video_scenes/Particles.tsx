@@ -7,19 +7,19 @@ export function Particles() {
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      opacity: Math.random() * 0.5 + 0.1,
-      duration: Math.random() * 10 + 10,
+      size: Math.random() * 1 + 1, // 1-2px dots
+      opacity: Math.random() * 0.25 + 0.05, // 0.05 - 0.3
+      duration: Math.random() * 20 + 10,
       delay: Math.random() * -20,
     }));
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
       {particles.map((p) => (
         <motion.div
           key={p.id}
-          className="absolute rounded-full bg-white blur-[1px]"
+          className="absolute rounded-full bg-white"
           style={{
             width: p.size,
             height: p.size,
@@ -27,15 +27,13 @@ export function Particles() {
             top: `${p.y}%`,
           }}
           animate={{
-            y: ['0vh', '-20vh'],
-            x: ['0vw', `${(Math.random() - 0.5) * 10}vw`],
-            opacity: [p.opacity * 0.5, p.opacity, p.opacity * 0.5],
-            scale: [1, 1.5, 1],
+            y: ['0vh', '-30vh', '10vh', '0vh'],
+            x: ['0vw', `${(Math.random() - 0.5) * 15}vw`, `${(Math.random() - 0.5) * 15}vw`, '0vw'],
+            opacity: [p.opacity, p.opacity * 1.5, p.opacity * 0.5, p.opacity],
           }}
           transition={{
             duration: p.duration,
             repeat: Infinity,
-            repeatType: 'reverse',
             ease: 'linear',
             delay: p.delay,
           }}
