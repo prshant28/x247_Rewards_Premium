@@ -132,16 +132,21 @@ export default function Community() {
         <div className="container mx-auto px-4 max-w-5xl">
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] mb-4">
-              <Users className="w-3 h-3 text-white/40" />
-              <span className="text-[10px] text-white/40 font-display uppercase tracking-widest">Community</span>
+            <div className="page-hero-banner">
+              <div className="page-hero-glow" />
+              <div className="page-hero-inner">
+                <div className="glass-pill-badge mb-6">
+                  <Users className="w-3 h-3 text-white/50 mr-2" />
+                  Community
+                </div>
+                <h1 className="text-[2rem] sm:text-4xl md:text-5xl font-display font-light text-white mb-4 tracking-tight leading-[1.1]">
+                  <span className="text-gradient">Join the Community</span>
+                </h1>
+                <p className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed">
+                  Connect with thousands of members, get instant contest updates, and never miss a giveaway opportunity.
+                </p>
+              </div>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-display font-extralight text-white mb-4 tracking-tight">
-              Join the Community
-            </h1>
-            <p className="text-sm sm:text-base text-white/35 font-light max-w-xl mx-auto leading-relaxed">
-              Connect with thousands of members, get instant contest updates, and never miss a giveaway opportunity.
-            </p>
           </motion.div>
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1} className="mb-10">

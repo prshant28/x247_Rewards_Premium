@@ -100,16 +100,21 @@ export default function Offers() {
             variants={fadeUp}
             className="text-center mb-16 sm:mb-24"
           >
-            <div className="glass-pill-badge mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-              Active Offers
+            <div className="page-hero-banner">
+              <div className="page-hero-glow" />
+              <div className="page-hero-inner">
+                <div className="glass-pill-badge mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                  Active Offers
+                </div>
+                <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-4 tracking-tight leading-[1.1]">
+                  <span className="text-gradient">Exclusive Offers</span>
+                </h1>
+                <p className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed">
+                  Boost your entries, earn bonus rewards, and unlock exclusive drops. These offers are live — grab them before they expire.
+                </p>
+              </div>
             </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
-              Exclusive Offers
-            </h1>
-            <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-              Boost your entries, earn bonus rewards, and unlock exclusive drops. These offers are live — grab them before they expire.
-            </p>
           </motion.div>
 
           {/* Hero Offer — first card spans full width */}

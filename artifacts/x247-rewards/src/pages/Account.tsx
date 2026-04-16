@@ -121,7 +121,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
-      <div className="glass-card p-6 sm:p-8 max-w-md mx-auto">
+      <div className="glass-card p-6 sm:p-10 max-w-xl mx-auto">
         <div className="card-shine" />
         <div className="relative z-[2]">
           <div className="flex items-center justify-center gap-3 mb-6">

@@ -3328,6 +3328,7 @@
   box-shadow: 0 0 40px rgba(255, 255, 255, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
+.page-hero-banner,
 .acct-hero-banner {
   position: relative;
   border-radius: 28px;
@@ -3344,9 +3345,11 @@
   padding: 48px 28px 40px;
 }
 @media (min-width: 640px) {
+  .page-hero-banner,
   .acct-hero-banner { padding: 60px 40px 52px; border-radius: 32px; }
 }
 
+.page-hero-banner::before,
 .acct-hero-banner::before {
   content: '';
   position: absolute;
@@ -3357,6 +3360,7 @@
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.15) 80%, transparent 100%);
 }
 
+.page-hero-glow,
 .acct-hero-banner-glow {
   position: absolute;
   inset: 0;
@@ -3366,6 +3370,7 @@
     radial-gradient(ellipse 50% 35% at 75% 15%, rgba(255,255,255,0.015) 0%, transparent 50%);
 }
 
+.page-hero-inner,
 .acct-hero-banner-inner {
   position: relative;
   z-index: 2;
@@ -3429,6 +3434,21 @@
   .acct-step-label { font-size: 11px; }
   .acct-step-num { width: 24px; height: 24px; font-size: 10px; }
   .acct-steps-bar { gap: 8px; padding: 12px 16px; }
+}
+
+.page-hero-banner .glass-pill-badge {
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.acct-hero-banner .glass-pill-badge {
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.page-hero-banner h1 .text-gradient,
+.acct-hero-banner h1 .text-gradient {
+  font-style: italic;
 }
 
 .notif-bell-btn {
@@ -3809,11 +3829,13 @@
   border-color: rgba(0, 0, 0, 0.08) !important;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1) !important;
 }
+[data-theme="pristine-light"] .page-hero-banner,
 [data-theme="pristine-light"] .acct-hero-banner {
   background: linear-gradient(168deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 248, 250, 0.98) 100%) !important;
   border-color: rgba(0, 0, 0, 0.06) !important;
   box-shadow: 0 12px 60px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
+[data-theme="pristine-light"] .page-hero-banner::before,
 [data-theme="pristine-light"] .acct-hero-banner::before {
   background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.06) 80%, transparent 100%) !important;
 }

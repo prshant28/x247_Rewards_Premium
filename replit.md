@@ -1,153 +1,66 @@
 # Workspace
 
 ## Overview
+This project is a pnpm workspace monorepo using TypeScript, designed to build a comprehensive rewards platform called X247 Rewards. The platform features an ultra-premium dark monochrome aesthetic with advanced UI/UX elements, including WebGL backgrounds and glassmorphism. It offers user accounts, a sophisticated referral program, contest management, and an AI-powered chatbot. The project aims to provide a highly interactive and engaging user experience, leveraging modern web technologies.
 
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+## User Preferences
+I prefer iterative development and want to be asked before making major architectural changes or introducing new external dependencies. For UI/UX, maintain the ultra-premium dark monochrome aesthetic with pure black backgrounds, Syne and Poppins fonts, white/gray color palette, and glassmorphism cards. Do not introduce color accents. Ensure full mobile-first responsiveness.
 
-## Stack
+## System Architecture
+The system is built as a pnpm monorepo with separate packages for the API server and the frontend.
 
-- **Monorepo tool**: pnpm workspaces
-- **Node.js version**: 24
-- **Package manager**: pnpm
-- **TypeScript version**: 5.9
-- **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
-- **Auth**: bcryptjs for password hashing, random token sessions
+**Frontend (X247 Rewards):**
+- **Framework**: React, Vite, Tailwind CSS v4.
+- **Design System**: Ultra-premium dark monochrome aesthetic with pure black background, Syne and Poppins fonts, white/gray only (no color accents), and glassmorphism cards.
+- **Core UI Components**:
+    - **Hero**: Silk WebGL background (React Three Fiber shader) with CSS radial-gradient fallback.
+    - **Buttons**: Premium button system with lateral box-shadow glow, inner radial glow on hover, and glassmorphism via `.glass-btn-effect`.
+    - **Cards**: Dark metallic glass-cards with animated rotating gray gradient borders.
+    - **Interactive Elements**: TiltCard, MagneticWrap, parallax hero.
+    - **Animations**: Framer Motion for fadeUp/scaleIn/stagger/slideLeft/slideRight, animated progress bars, floating particles. Performance-optimized with `useMotionValue`/`useSpring`.
+- **Pages**: Home, Offers, Partners, Admin Login, Control Panel, Contest Hub, Giveaway Entry Form, Winners Hall of Fame, User Account (Login/Register, Dashboard, Profile Editor, Badges, Membership, Giveaway History), Public User Profile, Community, Referral Partner Program, Referral Dashboard.
+- **User Profile System**: UserProfileCard component with avatar/initials, name, verified badge, bio, stats, and share button. Public profiles at `/profile/:slug`. Eight earnable badges.
+- **Account Dashboard**: Tab-based layout (Overview, Profile, Subscription, Entries, Settings) with stats cards, sparkline overlays, entry history bar chart, activity map heatmap, quick actions, recent activity, and membership card.
+- **Notifications**: Bell icon with unread count, dropdown panel, toast notifications, streak celebration overlay. Persisted in localStorage.
+- **Charts**: Custom SVG mini chart components (Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap) for lightweight visualizations.
+- **Membership Tiers**: Silver, Gold, Black with varying entry limits and features (e.g., chat, verified badge, concierge support).
+- **Theme System**: 7 selectable themes (Metallic Glass, Frosted Aurora, Brushed Steel, Smoky Glass, Noir Minimal, Liquid Dark, Pristine Light) with `ThemeContext` and `localStorage` persistence.
+- **CSS**: Pure monochrome utility classes and `@property` declarations for dynamic styling.
 
-## Key Commands
-
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
-
-See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
-
-## X247 Rewards (artifacts/x247-rewards)
-
-- **Framework**: React + Vite + Tailwind CSS v4
-- **Design**: Ultra-premium dark monochrome aesthetic — pure black background, Syne + Poppins + Alegreya Sans SC fonts, white/gray only (no color accents), glassmorphism cards
-- **Hero**: Silk WebGL background (React Three Fiber shader, with CSS radial-gradient fallback when WebGL unavailable) + gradient overlays
-- **Pages**: Home (/), Offers (/offers), Partners (/partners)
-- **Admin Pages**: Admin Login (/x247-admin-login), Control Panel (/x247-control-panel)
-- **Sections**: Hero, How it Works (8-step timeline), Rewards (6 cards in 3-col grid), Dashboard (bento-grid: Analytics, Trends, Milestones, Share & Earn, CTA), Verification Policy, Ecosystem (bento-grid: featured community card, 4 sub-cards with metrics, avatar-stack CTA), Testimonials (3-row auto-scrolling marquee), FAQ, Footer
-- **Layout**: Section-divider wrapper (rounded-28px card with lateral white edge glow) wraps content sections; GlowLine separators between each section
-- **Buttons**: Premium button system (premium-btn, premium-btn-sm/md/lg/ghost) with lateral box-shadow glow, inner radial glow on hover, arrow icons, glassmorphism via `.glass-btn-effect` (backdrop-filter blur)
-- **Cursor**: Default browser cursor (AnimatedCursor component exists but is not rendered)
-- **Cards**: Dark metallic glass-card (animated rotating gray gradient border), no hover effects
-- **Interactive**: TiltCard (subtle 4deg tilt, 0.025 glare), MagneticWrap (0.06 multiplier, minimal movement), parallax hero (fade+translate on scroll)
-- **Animations**: Framer Motion fadeUp/scaleIn/stagger/slideLeft/slideRight variants, animated progress bar with shimmer, scroll progress bar, activity feed stagger, floating particles
-- **Performance**: Mouse-driven effects use useMotionValue/useSpring (no React state churn), prefers-reduced-motion disables animations/cursor/shimmer
-- **Responsive**: Full mobile-first responsive design (390px+ to 1280px+), stacked buttons on mobile, adapted typography/spacing, cursor hidden on touch devices
-- **Navbar**: SiteNav component (shared across all pages), fixed position, 60px height, dropdown expands to 350px. When logged in: shows avatar circle with user initials + dropdown (My Account, Settings, Log Out). When not logged in: shows "Get Started" button. Auth state syncs via storage events + polling. Navigation cards: Pages, Quick Links, Account.
-- **Chatbot**: AI-powered ChatBot component (global, appears on every page), OpenRouter integration (Llama 4 Scout), streaming SSE responses, partner card previews in responses, context-aware based on current page, premium glassmorphism design
-- **Routes**: `/` (Home), `/offers` (Offers), `/partners` (Partners — loads from API), `/partners/:slug` (Partner Detail), `/giveaway` (Contest Hub — Dream11-style contest cards), `/giveaway/:slug` (Giveaway Entry Form for specific contest), `/winners` (Winners Hall of Fame), `/account` (User account — login/register, dashboard with profile editor, badges, membership, giveaway history), `/profile/:slug` (Public user profile), `/community` (Community page — social links, stats, guidelines), `/referral` (Referral Partner Program — info + apply), `/referral/dashboard` (Referral partner dashboard — stats, share links, conversions), `/x247-admin-login` (Admin Login), `/x247-control-panel` (Admin Dashboard)
-- **Profile System**: UserProfileCard component (src/components/UserProfileCard.tsx) — card-style profile with avatar/initials, name, verified badge, bio, stats, share button. Users can set bio, avatar (file upload to /api/storage/objects/), profile slug, public/private visibility. Public profiles accessible at /profile/:slug. Badge system with 8 earnable badges stored in user_badges table.
-- **Account Page Header**: Premium curved hero banner (acct-hero-banner) when logged out — glass-pill-badge "MY ACCOUNT", gradient title "Your Rewards Hub", steps bar showing "1 REGISTER — 2 ENTER — 3 WIN DAILY" using Alegreya Sans SC font. Matching hero-banner-container styling from landing page.
-- **Account Dashboard**: Tab-based layout (Overview, Profile, Subscription, Entries, Settings). Overview shows stats cards (with sparkline overlays) + Entry History bar chart + Activity Map heatmap + quick actions + recent activity + membership card with usage gauge. Profile tab has card preview + editor + badges. Subscription tab has 3-tier pricing (Silver ₹199, Gold ₹499, Black ₹999). Entries tab lists giveaway history. Settings tab has appearance/themes + notifications + account management.
-- **Notifications System**: Bell icon in dashboard topbar with unread count badge. Notification panel dropdown with mark-read/mark-all-read. Simulated real-time event stream (contest/winner notifications at ~8-12s intervals). Toast notifications slide in from right for new events (auto-dismiss 6s). Streak celebration overlay with particle burst animation on multi-day visit streaks. All persisted in localStorage with 50-item cap.
-- **Dashboard Charts**: Custom SVG mini chart components (src/components/MiniCharts.tsx) — Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap. Lightweight, monochrome-styled, no external chart library needed for these mini visualizations. Entry history computed from real entry dates with week-over-week trend comparison.
-- **Membership Tiers**: Silver (5 entries/contest, text chat), Gold (15 entries, voice chat, verified badge), Black (unlimited entries, verified badge, black exclusive badge, concierge support, exclusive events). Gold and Black grant verified badge. Plans in api-server/src/routes/users.ts MEMBERSHIP_PLANS array.
-- **Theme System**: 7 themes selectable from Account settings: Metallic Glass (default), Frosted Aurora, Brushed Steel, Smoky Glass, Noir Minimal, Liquid Dark, Pristine Light. ThemeContext (src/contexts/ThemeContext.tsx) with localStorage persistence (`x247_theme` key), applies `data-theme` attribute on `<html>`. CSS overrides per theme in index.css using `[data-theme="..."]` selectors. Pristine Light is a full white/light-gray theme with inverted text colors.
-- **CSS Theme**: Pure monochrome (black/white/gray), utility classes (glass-card, card-header-area, card-icon-wrap, premium-btn, glass-btn-effect, icon-circle, stat-card, nav-link, section-divider, section-glow-line, glass-pill-badge, premium-badge, floating-particle, cursor-dot/ring/glass, shimmer-bar, scroll-progress-bar) in index.css
-- **@property declarations**: --card-border-angle, --btn-border-angle, --hero-text-angle, --cursor-ring-angle (must be outside @layer)
-- **Fonts**: Poppins (body text), Syne (headings/display, font-light weight)
-- **WebGL**: React Three Fiber + three.js for Silk shader hero background (replaced OGL); ErrorBoundary + WebGL probe fallback
-
-## API Server (artifacts/api-server)
-
-- **Port**: 8080 (frontend Vite proxy: `/api → localhost:8080`)
+**API Server:**
+- **Framework**: Express 5.
+- **Authentication**: `bcryptjs` for password hashing, random token sessions.
 - **Routes**:
-  - `GET /api/partners` — public partner list with stats
-  - `POST /api/partners` — create partner (admin-protected)
-  - `PUT /api/partners/:id` — update partner (admin-protected)
-  - `DELETE /api/partners/:id` — delete partner (admin-protected)
-  - `POST /api/partners/:id/click` — track click
-  - `POST /api/partners/:id/impression` — track impression
-  - `POST /api/partners/:id/form-fill` — track form fill
-  - `POST /api/admin/login` — admin login (bcrypt password verification)
-  - `POST /api/admin/verify` — verify session token
-  - `POST /api/admin/logout` — logout (delete session)
-  - `GET /api/admin/analytics` — analytics dashboard data (admin-protected)
-  - `POST /api/chat` — AI chatbot (streaming SSE, OpenRouter Llama 4 Scout, context-aware with partner data)
-  - `GET /api/giveaway/status` — giveaway spots remaining, max spots, isFull
-  - `POST /api/giveaway/enter` — submit giveaway entry (validates partners, age, screenshot, terms); returns entryCode
-  - `GET /api/giveaway/check/:code` — check entry code status
-  - `POST /api/storage/uploads/request-url` — request presigned upload URL (images only, max 10MB)
-  - `GET /api/storage/public-objects/*` — serve public objects
-  - `GET /api/storage/objects/*` — serve private objects
-  - `GET /api/contests` — list all contests with entry stats
-  - `GET /api/contests/:slug` — get contest detail by slug
-  - `POST /api/contests` — create contest (admin-protected)
-  - `PUT /api/contests/:id` — update contest (admin-protected)
-  - `DELETE /api/contests/:id` — delete contest (admin-protected)
-  - `POST /api/users/register` — user registration (returns token)
-  - `POST /api/users/login` — user login (returns token)
-  - `GET /api/users/me` — get current user profile (auth required)
-  - `GET /api/users/me/entries` — get user's giveaway entries (auth required)
-  - `POST /api/users/logout` — user logout
-  - `GET /api/winners` — list all winners with contest names
-  - `GET /api/activity/feed` — public activity feed (recent entries + winners, anonymized names)
-  - `POST /api/voice/synthesize` — ElevenLabs TTS (membership gated)
-  - `POST /api/referral/apply` — apply as referral partner (user auth required)
-  - `GET /api/referral/me` — get own referral profile + stats (user auth required)
-  - `GET /api/referral/me/stats` — detailed stats with daily breakdown (user auth required)
-  - `GET /api/r/:code` — track referral click + redirect to home with ?ref= param
-  - `GET /api/admin/referrals` — list all referral applications (admin-protected)
-  - `PUT /api/admin/referrals/:id/status` — approve/reject/suspend referral partner (admin-protected)
-  - `POST /api/referral/track-conversion` — track signup/entry conversion (deduped per user+type)
-  - `GET /api/notifications/vapid-key` — get VAPID public key for push subscriptions
-  - `GET /api/notifications` — list user's notifications (user auth required)
-  - `POST /api/notifications/read/:id` — mark notification as read (user auth required)
-  - `POST /api/notifications/read-all` — mark all notifications as read (user auth required)
-  - `POST /api/notifications/subscribe` — register push subscription (user auth required)
-  - `DELETE /api/notifications/subscribe` — remove push subscription (user auth required)
-  - `GET /api/notifications/preferences` — get notification preferences (user auth required)
-  - `PUT /api/notifications/preferences` — update notification preferences (user auth required)
+    - **Partners**: CRUD operations, click/impression/form-fill tracking.
+    - **Admin**: Login, session verification, logout, analytics.
+    - **Chat**: AI chatbot (streaming SSE, context-aware).
+    - **Giveaway**: Status, entry submission, entry code checking.
+    - **Storage**: Presigned upload URLs, public/private object serving.
+    - **Contests**: CRUD operations, contest details.
+    - **Users**: Registration, login, profile management, entries.
+    - **Winners**: Listing.
+    - **Activity Feed**: Public feed of recent entries/winners.
+    - **Voice**: ElevenLabs TTS integration.
+    - **Referral**: Partner application, user stats, click tracking, conversion tracking, admin management.
+    - **Notifications**: VAPID key retrieval, user notification listing, read/unread management, push subscription management, preference updates.
 
-## Interactive Components
+**Database Schema (PostgreSQL + Drizzle ORM):**
+- **Entities**: `partners`, `clicks`, `impressions`, `form_fills`, `admin_users`, `admin_sessions`, `conversations`, `messages`, `giveaway_entries`, `contests`, `users`, `user_sessions`, `winners`, `referral_partners`, `referral_clicks`, `referral_conversions`, `notifications`, `push_subscriptions`, `notification_preferences`.
 
-- **LiveActivityFeed**: Rotating ticker showing recent entries/winners from `/api/activity/feed`
-- **SocialProofToast**: Floating toast notifications ("Someone just entered...")
-- **AnimatedCounter**: Count-up animation on scroll (used in stats cards)
-- **CountdownTimer**: Live contest countdown (compact mode for cards, full mode standalone)
-- **ConfettiEffect**: Monochrome particle burst on valid entry code check
-- **FAQ Accordion**: Interactive expand/collapse FAQ on Community page
-- **Streak Tracker**: Daily visit streak counter in Account dashboard (localStorage-based)
-
-## Database Schema (lib/db)
-
-- **partners**: id, slug, name, tagline, description, category, registrationUrl, accent, badge, badgeSecondary, isActive, isRequired, sortOrder, timestamps
-- **clicks**: id, partnerId, ipHash, userAgent, referrer, createdAt
-- **impressions**: id, partnerId, ipHash, createdAt
-- **form_fills**: id, partnerId, ipHash, createdAt
-- **admin_users**: id, username, passwordHash (bcrypt), createdAt
-- **admin_sessions**: id, token, adminId, expiresAt, createdAt
-- **conversations**: id, title, createdAt, updatedAt
-- **messages**: id, conversationId, role, content, createdAt
-- **giveaway_entries**: id, contestId, userId, fullName, email, phone, age, city, completedPartners (JSON array of partner IDs), screenshotConfirmed, screenshotUrl, agreedToTerms, ipHash, entryCount, entryCode (X247-XXXX-XXXX format), isAnonymous, createdAt
-- **contests**: id, name, description, prize, prizeValue, maxSpots, status (active/upcoming/completed), imageUrl, slug (unique), partnerIds (JSON array of linked partner IDs), createdAt, endsAt
-- **users**: id, fullName, email (unique), phone, passwordHash, city, createdAt
-- **user_sessions**: id, token (unique), userId, expiresAt, createdAt
-- **winners**: id, contestId, entryId, winnerName, winnerCity, prize, entryCode, announcedAt
-- **referral_partners**: id, userId, name, email, phone, code (unique), status (pending/approved/rejected/suspended), bio, motivation, audienceSize, socialMedia (JSON), isVerified, approvedAt, rejectedAt, rejectionReason, createdAt
-- **referral_clicks**: id, referralPartnerId, ipHash, userAgent, source, createdAt
-- **referral_conversions**: id, referralPartnerId, referredUserId, contestId, type (signup/entry), createdAt
-- **notifications**: id, userId, type, icon, title, body, read, data (JSON), createdAt
-- **push_subscriptions**: id, userId, endpoint, p256dh, auth, createdAt
-- **notification_preferences**: id, userId (unique), contestAlerts, winnerAnnouncements, pushEnabled, createdAt
-
-## Admin Credentials
-
-- Username: `ceo@prshant.dev`
-- Password: `Admin@0007`
-- Login URL: `/x247-admin-login`
-- Dashboard: `/x247-control-panel`
-
-## DotGrid Settings
-
-- dotSize=2, gap=28, baseColor=#1a1a1a, activeColor=#666666
+## External Dependencies
+- **Monorepo Tool**: pnpm workspaces
+- **Node.js**: 24
+- **TypeScript**: 5.9
+- **API Framework**: Express 5
+- **Database**: PostgreSQL
+- **ORM**: Drizzle ORM
+- **Validation**: Zod (`zod/v4`), `drizzle-zod`
+- **API Codegen**: Orval (from OpenAPI spec)
+- **Build Tool**: esbuild (CJS bundle)
+- **Auth**: bcryptjs
+- **UI Framework**: React
+- **Styling**: Tailwind CSS v4
+- **WebGL**: React Three Fiber, three.js
+- **Animations**: Framer Motion
+- **AI Chatbot**: OpenRouter (Llama 4 Scout)
+- **Text-to-Speech**: ElevenLabs
