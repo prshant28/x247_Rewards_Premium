@@ -6,7 +6,7 @@ import {
   Star, Info, ListChecks, Trophy, Camera, Sparkles, BadgeCheck, Copy,
   Share2, ChevronRight, ShieldCheck, Clock, Users, Target, Rocket,
   BookOpen, AlertCircle, CheckSquare, Square, TrendingUp, Send, Loader2,
-  MessageSquare, BarChart2, Flame,
+  MessageSquare, BarChart2, Flame, Mic, MicOff, Volume2, VolumeX, Crown,
 } from "lucide-react";
 import { Link, useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -178,44 +178,33 @@ function useShare(partner: PartnerData) {
   return { share, copyRegUrl, copied };
 }
 
-/* ─── promo banner ─── */
-function PartnerPromoBanner({ partner, onRegister }: { partner: PartnerData; onRegister: () => void }) {
-  const pts = partner.entryPoints ?? 1;
-  if (!partner.registrationUrl) return null;
-  return (
-    <a
-      href={partner.registrationUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={onRegister}
-      className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-5 py-4 sm:px-6 hover:border-white/[0.14] hover:bg-white/[0.06] transition-all duration-300 group cursor-pointer"
-    >
-      <div className="flex items-center gap-4 min-w-0">
-        <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-white/[0.1] bg-white/[0.04] flex items-center justify-center">
-          {getPartnerIcon(partner.accent)}
-        </div>
-        <div className="min-w-0">
-          <p className="text-sm sm:text-[13px] font-medium text-white/90 font-display tracking-wide leading-tight truncate">{partner.name}</p>
-          <p className="text-xs text-white/45 font-light mt-0.5 truncate">
-            Earn {pts} draw {pts === 1 ? "entry" : "entries"} on registration
-          </p>
-        </div>
-      </div>
-      <div className="flex-shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white/70 group-hover:text-white/90 transition-colors duration-200 whitespace-nowrap">
-        Register Now
-        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
-      </div>
-    </a>
-  );
+/* ─── know more with AI (with premium voice) ─── */
+function cleanForTTS(text: string): string {
+  return text
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/^#+\s+/gm, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-/* ─── know more with AI ─── */
 function PartnerAIChat({ partner }: { partner: PartnerData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Array<{ role: "user" | "assistant"; content: string }>>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceError, setVoiceError] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
 
   const suggestions = [
     `Who is eligible to register for ${partner.name}?`,
@@ -224,7 +213,38 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
     "How do I submit proof of registration?",
   ];
 
-  const sendMessage = async (content: string) => {
+  function stopSpeaking() {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current = null;
+    }
+    setIsSpeaking(false);
+  }
+
+  async function speak(text: string) {
+    const clean = cleanForTTS(text);
+    if (!clean) return;
+    try {
+      stopSpeaking();
+      setIsSpeaking(true);
+      const res = await fetch("/api/voice/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: clean.slice(0, 1500) }),
+      });
+      if (!res.ok) { setIsSpeaking(false); return; }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => { URL.revokeObjectURL(url); audioRef.current = null; setIsSpeaking(false); };
+      audio.onerror = () => { URL.revokeObjectURL(url); audioRef.current = null; setIsSpeaking(false); };
+      await audio.play();
+    } catch { setIsSpeaking(false); }
+  }
+
+  async function sendMessage(content: string, fromVoice = false) {
     if (!content.trim() || isLoading) return;
     const newMessages = [...messages, { role: "user" as const, content }];
     setMessages(newMessages);
@@ -263,34 +283,98 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
           }
         }
       }
+      if ((voiceEnabled || fromVoice) && assistantContent) {
+        speak(assistantContent);
+      }
     } catch {
       setMessages(prev => [...prev, { role: "assistant", content: "Sorry, couldn't reach the AI. Please try again shortly." }]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
+
+  function getMime(): string {
+    const types = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
+    for (const t of types) if (MediaRecorder.isTypeSupported(t)) return t;
+    return "audio/webm";
+  }
+
+  async function startRecording() {
+    setVoiceError("");
+    stopSpeaking();
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream, { mimeType: getMime() });
+      chunksRef.current = [];
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop());
+        const mime = recorder.mimeType || "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: mime });
+        if (blob.size < 500) { setIsRecording(false); return; }
+        await transcribe(blob);
+      };
+      recorder.start(250);
+      recorderRef.current = recorder;
+      setIsRecording(true);
+    } catch {
+      setVoiceError("Mic permission denied.");
+      setIsRecording(false);
+    }
+  }
+
+  function stopRecording() {
+    if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+    setIsRecording(false);
+  }
+
+  async function transcribe(blob: Blob) {
+    setIsTranscribing(true);
+    try {
+      const fd = new FormData();
+      fd.append("audio", blob, "rec.webm");
+      const res = await fetch("/api/voice/stt", { method: "POST", body: fd });
+      if (!res.ok) throw new Error();
+      const data = await res.json() as { transcript?: string };
+      const transcript = (data.transcript || "").trim();
+      if (!transcript) { setVoiceError("Couldn't catch that — try again."); return; }
+      await sendMessage(transcript, true);
+    } catch {
+      setVoiceError("Transcription failed.");
+    } finally {
+      setIsTranscribing(false);
+    }
+  }
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+  useEffect(() => () => { stopSpeaking(); if (recorderRef.current?.state === "recording") recorderRef.current.stop(); }, []);
+
+  const micState: "idle" | "listening" | "transcribing" = isRecording ? "listening" : isTranscribing ? "transcribing" : "idle";
 
   return (
     <div className="glass-card overflow-hidden">
       <div className="card-shine" />
       <button
         onClick={() => setIsOpen(v => !v)}
-        className="relative z-[2] w-full flex items-center justify-between px-6 py-4 text-left hover:bg-white/[0.02] transition-colors group"
+        className="relative z-[2] w-full flex items-center justify-between px-5 py-4 text-left hover:bg-white/[0.02] transition-colors"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
             <MessageSquare className="w-4 h-4 text-white/60" />
           </div>
-          <div>
-            <p className="text-sm font-display font-light text-white">Know More with AI</p>
-            <p className="text-[10px] text-white/35 font-light">Ask anything about {partner.name}</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-display font-light text-white">Ask AI about {partner.name}</p>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[8.5px] font-display uppercase tracking-[0.18em] px-1.5 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.1] text-white/55">
+                <Crown className="w-2.5 h-2.5" /> Voice
+              </span>
+            </div>
+            <p className="text-[10px] text-white/35 font-light truncate">Eligibility, prizes, how to enter — typed or spoken</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {messages.length > 0 && (
-            <span className="text-[9px] font-display text-white/25 uppercase tracking-widest">{messages.filter(m => m.role === "user").length} asked</span>
+            <span className="hidden sm:inline text-[9px] font-display text-white/25 uppercase tracking-widest">{messages.filter(m => m.role === "user").length} asked</span>
           )}
           <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`} />
         </div>
@@ -306,6 +390,38 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
             className="overflow-hidden relative z-[2]"
           >
             <div className="border-t border-white/[0.05] px-5 pb-5 pt-4">
+              {/* premium voice toggle row */}
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.04]">
+                <div className="flex items-center gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full ${voiceEnabled ? "bg-white/80 animate-pulse" : "bg-white/15"}`} />
+                  <span className="text-[10px] font-display uppercase tracking-[0.18em] text-white/40">
+                    {voiceEnabled ? "Voice replies on" : "Voice replies off"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {isSpeaking && (
+                    <button
+                      onClick={stopSpeaking}
+                      className="text-[9px] px-2 py-1 rounded-md border border-white/[0.08] text-white/55 hover:text-white/80 hover:border-white/[0.15] transition-all font-display uppercase tracking-wider"
+                    >
+                      Stop
+                    </button>
+                  )}
+                  <button
+                    onClick={() => { const next = !voiceEnabled; setVoiceEnabled(next); if (!next) stopSpeaking(); }}
+                    className={`flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-md border transition-all font-display ${
+                      voiceEnabled
+                        ? "border-white/[0.18] bg-white/[0.06] text-white/85"
+                        : "border-white/[0.08] text-white/45 hover:text-white/70 hover:border-white/[0.13]"
+                    }`}
+                    title="Premium AI voice via ElevenLabs"
+                  >
+                    {voiceEnabled ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />}
+                    {voiceEnabled ? "On" : "Off"}
+                  </button>
+                </div>
+              </div>
+
               {messages.length === 0 && (
                 <div className="mb-4">
                   <p className="text-[9px] font-display uppercase tracking-widest text-white/25 mb-3">Suggested Questions</p>
@@ -366,15 +482,43 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                 </div>
               )}
 
+              {voiceError && (
+                <p className="text-[10px] text-white/45 font-light mb-2">{voiceError}</p>
+              )}
+              {micState === "listening" && (
+                <p className="text-[10px] text-white/55 font-light mb-2 flex items-center gap-1.5">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
+                  Listening… tap mic again to send
+                </p>
+              )}
+              {micState === "transcribing" && (
+                <p className="text-[10px] text-white/45 font-light mb-2 flex items-center gap-1.5">
+                  <Loader2 className="w-2.5 h-2.5 animate-spin" /> Transcribing…
+                </p>
+              )}
+
               <form onSubmit={e => { e.preventDefault(); sendMessage(input); }} className="flex gap-2">
                 <input
                   type="text"
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   placeholder={`Ask about ${partner.name}…`}
-                  disabled={isLoading}
+                  disabled={isLoading || micState !== "idle"}
                   className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-white/70 placeholder-white/20 font-light focus:outline-none focus:border-white/[0.15] focus:bg-white/[0.05] transition-all disabled:opacity-50"
                 />
+                <button
+                  type="button"
+                  onClick={() => isRecording ? stopRecording() : startRecording()}
+                  disabled={isLoading || isTranscribing}
+                  title={isRecording ? "Stop recording" : "Speak your question"}
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
+                    isRecording
+                      ? "bg-white/[0.12] border-white/[0.22] text-white animate-pulse"
+                      : "bg-white/[0.06] border-white/[0.1] text-white/50 hover:text-white/80 hover:bg-white/[0.09]"
+                  } disabled:opacity-30 disabled:cursor-not-allowed`}
+                >
+                  {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                </button>
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
@@ -708,7 +852,6 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
 
                   {!isComingSoon && (
                     <div className="space-y-3">
-                      <PartnerPromoBanner partner={partner} onRegister={handleRegisterClick} />
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
                           <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
@@ -851,7 +994,6 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
 
                   {!isComingSoon && (
                     <div className="space-y-3">
-                      <PartnerPromoBanner partner={partner} onRegister={handleRegisterClick} />
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
                           <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
@@ -945,7 +1087,6 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
 
                   {!isComingSoon && (
                     <div className="space-y-3">
-                      <PartnerPromoBanner partner={partner} onRegister={handleRegisterClick} />
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
                           <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">

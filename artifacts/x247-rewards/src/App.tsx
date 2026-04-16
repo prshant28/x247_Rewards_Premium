@@ -27,6 +27,12 @@ const NotFound = lazy(() => import("@/pages/not-found"));
 
 const queryClient = new QueryClient();
 
+function ChatBotGate() {
+  const [location] = useLocation();
+  if (location.startsWith("/partners/")) return null;
+  return <ChatBot />;
+}
+
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
   enter: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
@@ -137,7 +143,7 @@ function App() {
               <Router />
             </PageLoader>
           </WouterRouter>
-          <ChatBot />
+          <ChatBotGate />
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
