@@ -434,7 +434,7 @@ function StepIcon({ icon, index, containerRef }: { icon: React.ReactNode; index:
 
   return (
     <motion.div
-      className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-2xl bg-black flex items-center justify-center transition-all duration-500"
+      className="w-[48px] h-[48px] sm:w-[56px] sm:h-[56px] rounded-2xl step-icon-box flex items-center justify-center transition-all duration-500"
       style={{
         borderWidth: 1,
         borderStyle: "solid",

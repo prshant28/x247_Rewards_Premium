@@ -5366,9 +5366,10 @@
   border: 1px solid hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .glass-pill-badge {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border: 1px solid hsl(var(--foreground) / 0.08) !important;
-  color: hsl(var(--foreground) / 0.6) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border: 1px solid hsl(var(--foreground) / 0.14) !important;
+  color: hsl(var(--foreground) / 0.72) !important;
+  box-shadow: 0 1px 4px hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .premium-badge {
   background: hsl(var(--foreground) / 0.06) !important;
@@ -6648,4 +6649,103 @@
 }
 [data-theme="pristine-light"] .sitenav-logo-text {
   color: hsl(var(--foreground)) !important;
+}
+
+/* ===== STEP ICON BOX — always dark regardless of theme ===== */
+.step-icon-box {
+  background: #000;
+}
+[data-light] .step-icon-box {
+  background: hsl(var(--foreground)) !important;
+}
+
+/* ===== HERO BANNER DARK CARD — preserve white content in light theme ===== */
+/* The hero-banner-container uses hardcoded near-black bg so it stays dark
+   in all themes. Restore white text/elements inside it so they're visible. */
+[data-light] .hero-banner-container h3,
+[data-light] .hero-banner-container .text-white {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+[data-light] .hero-banner-container p,
+[data-light] .hero-banner-container .text-white\/60,
+[data-light] .hero-banner-container .text-white\/50 {
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+[data-light] .hero-banner-container .text-white\/30,
+[data-light] .hero-banner-container .text-white\/40 {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+[data-light] .hero-banner-container .glass-pill-badge {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: none !important;
+}
+[data-light] .hero-banner-container .glass-pill-badge span {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+[data-light] .hero-banner-container .icon-circle {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+[data-light] .hero-banner-pill {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+[data-light] .hero-banner-cta {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+[data-light] .hero-banner-cta:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
+  color: #fff !important;
+}
+[data-light] .hero-banner-dot {
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+[data-light] .hero-banner-dot-active {
+  background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.8)) !important;
+}
+[data-light] .hero-banner-progress {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+[data-light] .hero-banner-progress-bar {
+  background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.5)) !important;
+}
+
+/* ===== PREMIUM LIGHT THEME — improved glass & card styles ===== */
+/* Richer card shadow */
+[data-light] .glass-card {
+  box-shadow:
+    0 4px 24px hsl(var(--foreground) / 0.09),
+    0 1px 6px hsl(var(--foreground) / 0.05),
+    0 0 0 1px hsl(var(--foreground) / 0.04) !important;
+}
+/* Stat card premium shadow */
+[data-light] .stat-card {
+  box-shadow:
+    0 2px 16px hsl(var(--foreground) / 0.07),
+    0 1px 4px hsl(var(--foreground) / 0.04),
+    0 0 0 1px hsl(var(--foreground) / 0.04) !important;
+}
+/* Icon circle more defined */
+[data-light] .icon-circle {
+  background: hsl(var(--foreground) / 0.06) !important;
+  border: 1px solid hsl(var(--foreground) / 0.1) !important;
+}
+/* Section glow line more visible */
+[data-light] .section-glow-line {
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.1) 50%, transparent 100%) !important;
+}
+/* How-it-works scroll track line — more visible in light */
+[data-light] #how-it-works .bg-white\/\[0\.04\] {
+  background-color: hsl(var(--foreground) / 0.12) !important;
+}
+/* How-it-works tip pill */
+[data-light] #how-it-works .bg-white\/\[0\.04\].border {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
 }
