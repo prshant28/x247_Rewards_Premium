@@ -13,12 +13,30 @@ import {
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
   logoutUser, isUserLoggedIn, getStoredReferralCode, trackReferralConversion,
-  updateProfile, getUserBadges, purchaseMembership, uploadScreenshot
+  updateProfile, getUserBadges, purchaseMembership, uploadScreenshot,
+  getNotifications, markNotificationRead, markAllNotificationsRead,
+  getNotificationPreferences, updateNotificationPreferences,
+  subscribePush, unsubscribePush, getVapidPublicKey
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import { Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap } from "@/components/MiniCharts";
 import { useTheme, THEMES, type ThemeId } from "@/contexts/ThemeContext";
 import { TrendingUp, BarChart3, Activity } from "lucide-react";
+
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -233,8 +251,8 @@ function useStreak(): { streak: number; isNew: boolean } {
 
 type NotifIconKind = "trophy" | "gift" | "star" | "bell" | "sparkles";
 
-type Notification = {
-  id: string;
+type NotificationItem = {
+  id: number;
   icon: NotifIconKind;
   title: string;
   body: string;
@@ -242,85 +260,55 @@ type Notification = {
   read: boolean;
 };
 
-type NotifEvent = { id: string; icon: NotifIconKind; title: string; body: string; type: "contest" | "winner" | "streak" | "system" };
-
-const NOTIF_EVENTS: NotifEvent[] = [
-  { id: "ev_contest_mega", icon: "trophy", title: "New Contest: Mega Cash Giveaway", body: "A new giveaway just went live — 100 spots available. Enter now before it fills up!", type: "contest" },
-  { id: "ev_contest_tech", icon: "trophy", title: "New Contest: Tech Gadgets Bonanza", body: "Premium tech gadgets up for grabs! Register with partners to enter.", type: "contest" },
-  { id: "ev_winner_1", icon: "gift", title: "Winner Announced!", body: "A winner has been selected for the latest giveaway. Check the Winners page!", type: "winner" },
-  { id: "ev_streak", icon: "star", title: "Streak Milestone", body: "You've maintained a multi-day visit streak. Keep it going for bonus rewards!", type: "streak" },
-];
-
 function useNotifications(): {
-  items: Notification[];
+  items: NotificationItem[];
   unread: number;
   markRead: (id: string) => void;
   markAllRead: () => void;
-  latestToast: Notification | null;
+  latestToast: NotificationItem | null;
   dismissToast: () => void;
 } {
-  const [items, setItems] = useState<Notification[]>([]);
-  const [latestToast, setLatestToast] = useState<Notification | null>(null);
+  const [items, setItems] = useState<NotificationItem[]>([]);
+  const [latestToast, setLatestToast] = useState<NotificationItem | null>(null);
+  const prevCountRef = useRef(0);
 
-  useEffect(() => {
-    const stored: Notification[] = JSON.parse(localStorage.getItem("x247_notifications") || "[]");
-    const storedMap = new Map(stored.map(n => [n.id, n]));
-    const now = Date.now();
-    const seedItems: Notification[] = NOTIF_EVENTS.map((ev, i) => {
-      const existing = storedMap.get(ev.id);
-      if (existing) return existing;
-      return {
-        id: ev.id,
-        icon: ev.icon,
-        title: ev.title,
-        body: ev.body,
-        time: new Date(now - (i + 1) * 3600000).toISOString(),
-        read: false,
-      };
-    });
-    const seedIds = new Set(NOTIF_EVENTS.map(e => e.id));
-    const dynamicItems = stored.filter(n => !seedIds.has(n.id));
-    const merged = [...dynamicItems, ...seedItems].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-    setItems(merged);
-    localStorage.setItem("x247_notifications", JSON.stringify(merged));
+  const fetchNotifs = useCallback(async () => {
+    const raw = await getNotifications();
+    const mapped: NotificationItem[] = raw.map((n: any) => ({
+      id: n.id,
+      icon: (n.icon || "bell") as NotifIconKind,
+      title: n.title,
+      body: n.body,
+      time: n.createdAt,
+      read: n.read,
+    }));
+    setItems(mapped);
+
+    const unreadCount = mapped.filter(n => !n.read).length;
+    if (prevCountRef.current > 0 && unreadCount > prevCountRef.current) {
+      const newest = mapped.find(n => !n.read);
+      if (newest) setLatestToast(newest);
+    }
+    prevCountRef.current = unreadCount;
   }, []);
 
   useEffect(() => {
-    const simEvents: NotifEvent[] = [
-      { id: `ev_live_${Date.now()}`, icon: "trophy", title: "Contest Spot Filling Up", body: "Mega Cash Giveaway is 50% full — don't miss your chance!", type: "contest" },
-      { id: `ev_win_${Date.now()}`, icon: "gift", title: "Winner Just Picked!", body: "A lucky winner was just drawn. Could you be next?", type: "winner" },
-    ];
-    let idx = 0;
-    const interval = setInterval(() => {
-      if (idx >= simEvents.length) { clearInterval(interval); return; }
-      const ev = simEvents[idx];
-      const notif: Notification = {
-        id: ev.id,
-        icon: ev.icon,
-        title: ev.title,
-        body: ev.body,
-        time: new Date().toISOString(),
-        read: false,
-      };
-      setItems(prev => {
-        const updated = [notif, ...prev];
-        localStorage.setItem("x247_notifications", JSON.stringify(updated));
-        return updated;
-      });
-      setLatestToast(notif);
-      idx++;
-    }, 8000 + Math.random() * 4000);
+    fetchNotifs();
+    const interval = setInterval(fetchNotifs, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchNotifs]);
 
-  const persist = (updated: Notification[]) => {
-    const capped = updated.slice(0, 50);
-    setItems(capped);
-    localStorage.setItem("x247_notifications", JSON.stringify(capped));
+  const markRead = (id: string) => {
+    const numId = Number(id);
+    markNotificationRead(numId);
+    setItems(prev => prev.map(n => n.id === numId ? { ...n, read: true } : n));
   };
 
-  const markRead = (id: string) => persist(items.map(n => n.id === id ? { ...n, read: true } : n));
-  const markAllRead = () => persist(items.map(n => ({ ...n, read: true })));
+  const markAllRead = () => {
+    markAllNotificationsRead();
+    setItems(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
   const dismissToast = () => setLatestToast(null);
 
   return { items, unread: items.filter(n => !n.read).length, markRead, markAllRead, latestToast, dismissToast };
@@ -334,7 +322,7 @@ function NotificationIcon({ type }: { type: NotifIconKind }) {
 }
 
 function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, containerRef }: {
-  notifications: Notification[];
+  notifications: NotificationItem[];
   onMarkRead: (id: string) => void;
   onMarkAllRead: () => void;
   onClose: () => void;
@@ -382,7 +370,7 @@ function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, 
         {notifications.map(n => (
           <button
             key={n.id}
-            onClick={() => { if (!n.read) onMarkRead(n.id); }}
+            onClick={() => { if (!n.read) onMarkRead(String(n.id)); }}
             className={`notif-item ${!n.read ? "notif-item-unread" : ""}`}
           >
             <div className="notif-item-icon">
@@ -440,7 +428,7 @@ function StreakCelebration({ streak, onDone }: { streak: number; onDone: () => v
   );
 }
 
-function ToastNotifications({ toast, onDismiss }: { toast: Notification | null; onDismiss: () => void }) {
+function ToastNotifications({ toast, onDismiss }: { toast: NotificationItem | null; onDismiss: () => void }) {
   useEffect(() => {
     if (!toast) return undefined;
     const timer = setTimeout(onDismiss, 6000);
@@ -1181,7 +1169,61 @@ function EntriesTab({ entries }: { entries: any[] }) {
 
 function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
   const { theme, setTheme } = useTheme();
-  const [notif, setNotif] = useState(true);
+  const [contestAlerts, setContestAlerts] = useState(true);
+  const [winnerAnnouncements, setWinnerAnnouncements] = useState(true);
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushSupported] = useState(() => "serviceWorker" in navigator && "PushManager" in window);
+
+  useEffect(() => {
+    getNotificationPreferences().then(prefs => {
+      setContestAlerts(prefs.contestAlerts);
+      setWinnerAnnouncements(prefs.winnerAnnouncements);
+      setPushEnabled(prefs.pushEnabled);
+    });
+  }, []);
+
+  const toggleContestAlerts = () => {
+    const next = !contestAlerts;
+    setContestAlerts(next);
+    updateNotificationPreferences({ contestAlerts: next });
+  };
+
+  const toggleWinnerAnnouncements = () => {
+    const next = !winnerAnnouncements;
+    setWinnerAnnouncements(next);
+    updateNotificationPreferences({ winnerAnnouncements: next });
+  };
+
+  const togglePush = async () => {
+    if (!pushSupported) return;
+    if (pushEnabled) {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        await sub.unsubscribe();
+        await unsubscribePush(sub.endpoint);
+      }
+      setPushEnabled(false);
+      updateNotificationPreferences({ pushEnabled: false });
+    } else {
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") return;
+        const vapidKey = await getVapidPublicKey();
+        if (!vapidKey) return;
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidKey),
+        });
+        await subscribePush(sub);
+        setPushEnabled(true);
+        updateNotificationPreferences({ pushEnabled: true });
+      } catch (err) {
+        console.error("Push subscription failed:", err);
+      }
+    }
+  };
 
   return (
     <motion.div key="settings" variants={tabFade} initial="hidden" animate="visible" exit="exit">
@@ -1237,10 +1279,10 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                 <div className="text-[10px] text-white/25 font-light">Get notified about new giveaways</div>
               </div>
               <button
-                onClick={() => setNotif(!notif)}
-                className={`relative w-10 h-5 rounded-full transition-all ${notif ? "bg-white/20" : "bg-white/[0.06]"}`}
+                onClick={toggleContestAlerts}
+                className={`relative w-10 h-5 rounded-full transition-all ${contestAlerts ? "bg-white/20" : "bg-white/[0.06]"}`}
               >
-                <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${notif ? "left-5.5 bg-white" : "left-0.5 bg-white/40"}`} />
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${contestAlerts ? "left-5.5 bg-white" : "left-0.5 bg-white/40"}`} />
               </button>
             </div>
             <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl">
@@ -1249,12 +1291,26 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                 <div className="text-[10px] text-white/25 font-light">Be first to know when winners are drawn</div>
               </div>
               <button
-                onClick={() => {}}
-                className="relative w-10 h-5 rounded-full transition-all bg-white/20"
+                onClick={toggleWinnerAnnouncements}
+                className={`relative w-10 h-5 rounded-full transition-all ${winnerAnnouncements ? "bg-white/20" : "bg-white/[0.06]"}`}
               >
-                <div className="absolute top-0.5 left-5.5 w-4 h-4 rounded-full bg-white transition-all" />
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${winnerAnnouncements ? "left-5.5 bg-white" : "left-0.5 bg-white/40"}`} />
               </button>
             </div>
+            {pushSupported && (
+              <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+                <div>
+                  <div className="text-sm text-white/60 font-light">Push notifications</div>
+                  <div className="text-[10px] text-white/25 font-light">Receive alerts even when the page is closed</div>
+                </div>
+                <button
+                  onClick={togglePush}
+                  className={`relative w-10 h-5 rounded-full transition-all ${pushEnabled ? "bg-white/20" : "bg-white/[0.06]"}`}
+                >
+                  <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-all ${pushEnabled ? "left-5.5 bg-white" : "left-0.5 bg-white/40"}`} />
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

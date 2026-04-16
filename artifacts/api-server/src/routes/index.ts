@@ -10,6 +10,7 @@ import usersRouter from "./users";
 import winnersRouter from "./winners";
 import voiceRouter from "./voice";
 import referralsRouter from "./referrals";
+import notificationsRouter from "./notifications";
 
 const router: IRouter = Router();
 
@@ -24,5 +25,6 @@ router.use(usersRouter);
 router.use(winnersRouter);
 router.use(voiceRouter);
 router.use(referralsRouter);
+router.use(notificationsRouter);
 
 export default router;

@@ -3,6 +3,7 @@ import { db } from "@workspace/db";
 import { contestsTable, giveawayEntriesTable, adminSessionsTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 import { openrouter } from "@workspace/integrations-openrouter-ai";
+import { broadcastNotification } from "../lib/notifications";
 
 const router = Router();
 
@@ -89,6 +90,17 @@ router.post("/contests", requireAdmin, async (req, res) => {
       partnerIds: partnerIds || [],
       endsAt: endsAt ? new Date(endsAt) : null,
     }).returning();
+
+    if (contest.status === "active") {
+      broadcastNotification({
+        type: "contest",
+        icon: "trophy",
+        title: `New Contest: ${contest.name}`,
+        body: `A new giveaway just went live — ${contest.maxSpots} spots available. Enter now!`,
+        data: { contestSlug: contest.slug, url: `/giveaway/${contest.slug}` },
+      }, "contestAlerts").catch(err => console.error("Broadcast notification error:", err));
+    }
+
     return res.json(contest);
   } catch (err) {
     console.error("Create contest error:", err);
@@ -111,8 +123,30 @@ router.put("/contests/:id", requireAdmin, async (req, res) => {
     if (partnerIds !== undefined) updates.partnerIds = partnerIds;
     if (endsAt !== undefined) updates.endsAt = endsAt ? new Date(endsAt) : null;
 
+    const [oldContest] = await db.select().from(contestsTable).where(eq(contestsTable.id, id)).limit(1);
     const [updated] = await db.update(contestsTable).set(updates).where(eq(contestsTable.id, id)).returning();
     if (!updated) return res.status(404).json({ error: "Contest not found" });
+
+    if (oldContest && oldContest.status !== "active" && updated.status === "active") {
+      broadcastNotification({
+        type: "contest",
+        icon: "trophy",
+        title: `Contest Now Live: ${updated.name}`,
+        body: `${updated.name} is now open for entries! Don't miss out.`,
+        data: { contestSlug: updated.slug, url: `/giveaway/${updated.slug}` },
+      }, "contestAlerts").catch(err => console.error("Broadcast notification error:", err));
+    }
+
+    if (oldContest && oldContest.status !== "completed" && updated.status === "completed") {
+      broadcastNotification({
+        type: "contest",
+        icon: "bell",
+        title: `Contest Ended: ${updated.name}`,
+        body: `${updated.name} has closed. Winners will be announced soon!`,
+        data: { contestSlug: updated.slug, url: `/winners` },
+      }, "contestAlerts").catch(err => console.error("Broadcast notification error:", err));
+    }
+
     return res.json(updated);
   } catch (err) {
     console.error("Update contest error:", err);

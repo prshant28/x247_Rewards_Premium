@@ -100,6 +100,14 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - `GET /api/admin/referrals` — list all referral applications (admin-protected)
   - `PUT /api/admin/referrals/:id/status` — approve/reject/suspend referral partner (admin-protected)
   - `POST /api/referral/track-conversion` — track signup/entry conversion (deduped per user+type)
+  - `GET /api/notifications/vapid-key` — get VAPID public key for push subscriptions
+  - `GET /api/notifications` — list user's notifications (user auth required)
+  - `POST /api/notifications/read/:id` — mark notification as read (user auth required)
+  - `POST /api/notifications/read-all` — mark all notifications as read (user auth required)
+  - `POST /api/notifications/subscribe` — register push subscription (user auth required)
+  - `DELETE /api/notifications/subscribe` — remove push subscription (user auth required)
+  - `GET /api/notifications/preferences` — get notification preferences (user auth required)
+  - `PUT /api/notifications/preferences` — update notification preferences (user auth required)
 
 ## Interactive Components
 
@@ -129,6 +137,9 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 - **referral_partners**: id, userId, name, email, phone, code (unique), status (pending/approved/rejected/suspended), bio, motivation, audienceSize, socialMedia (JSON), isVerified, approvedAt, rejectedAt, rejectionReason, createdAt
 - **referral_clicks**: id, referralPartnerId, ipHash, userAgent, source, createdAt
 - **referral_conversions**: id, referralPartnerId, referredUserId, contestId, type (signup/entry), createdAt
+- **notifications**: id, userId, type, icon, title, body, read, data (JSON), createdAt
+- **push_subscriptions**: id, userId, endpoint, p256dh, auth, createdAt
+- **notification_preferences**: id, userId (unique), contestAlerts, winnerAnnouncements, pushEnabled, createdAt
 
 ## Admin Credentials
 

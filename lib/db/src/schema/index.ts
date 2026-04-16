@@ -8,3 +8,4 @@ export * from "./contests";
 export * from "./users";
 export * from "./winners";
 export * from "./referrals";
+export * from "./notifications";

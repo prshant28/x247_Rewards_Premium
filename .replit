@@ -45,3 +45,8 @@ channel = "stable-25_05"
 
 [objectStorage]
 defaultBucketID = "replit-objstore-ba74a24d-d922-4a5b-bab3-30f1748ae509"
+
+[userenv]
+
+[userenv.shared]
+VAPID_PUBLIC_KEY = "BBuKIc4qPwx7gSxfOllqNoZhU2hMs2JkD6FIVmB64kdsjVxsi2tMrSenmlf9gym8G902xWIvJWX-0YfQB2bgYiM"

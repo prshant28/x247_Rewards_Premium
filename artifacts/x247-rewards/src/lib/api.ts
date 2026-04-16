@@ -621,6 +621,82 @@ export function getStoredReferralCode(): string | null {
   return localStorage.getItem("x247_ref_code");
 }
 
+export async function getNotifications(): Promise<any[]> {
+  const token = getUserToken();
+  if (!token) return [];
+  const res = await fetch(`${API_BASE}/notifications`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export async function markNotificationRead(id: number): Promise<void> {
+  const token = getUserToken();
+  if (!token) return;
+  await fetch(`${API_BASE}/notifications/read/${id}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function markAllNotificationsRead(): Promise<void> {
+  const token = getUserToken();
+  if (!token) return;
+  await fetch(`${API_BASE}/notifications/read-all`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function getNotificationPreferences(): Promise<{ contestAlerts: boolean; winnerAnnouncements: boolean; pushEnabled: boolean }> {
+  const token = getUserToken();
+  if (!token) return { contestAlerts: true, winnerAnnouncements: true, pushEnabled: false };
+  const res = await fetch(`${API_BASE}/notifications/preferences`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return { contestAlerts: true, winnerAnnouncements: true, pushEnabled: false };
+  return res.json();
+}
+
+export async function updateNotificationPreferences(prefs: { contestAlerts?: boolean; winnerAnnouncements?: boolean; pushEnabled?: boolean }): Promise<void> {
+  const token = getUserToken();
+  if (!token) return;
+  await fetch(`${API_BASE}/notifications/preferences`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(prefs),
+  });
+}
+
+export async function subscribePush(subscription: PushSubscription): Promise<void> {
+  const token = getUserToken();
+  if (!token) return;
+  const sub = subscription.toJSON();
+  await fetch(`${API_BASE}/notifications/subscribe`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.keys }),
+  });
+}
+
+export async function unsubscribePush(endpoint?: string): Promise<void> {
+  const token = getUserToken();
+  if (!token) return;
+  await fetch(`${API_BASE}/notifications/subscribe`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ endpoint }),
+  });
+}
+
+export async function getVapidPublicKey(): Promise<string> {
+  const res = await fetch(`${API_BASE}/notifications/vapid-key`);
+  if (!res.ok) return "";
+  const data = await res.json();
+  return data.publicKey || "";
+}
+
 export async function generateContestAI(input: { theme?: string; prize?: string; description?: string }): Promise<{ name: string; slug: string; description: string; prize: string; prizeValue: string; maxSpots: number }> {
   const res = await authFetch("/contests/generate-ai", {
     method: "POST",

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { db } from "@workspace/db";
 import { winnersTable, contestsTable, adminSessionsTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
+import { broadcastNotification } from "../lib/notifications";
 
 async function requireAdmin(req: any, res: any, next: any) {
   const token = req.headers.authorization?.replace("Bearer ", "");
@@ -57,6 +58,21 @@ router.post("/admin/winners", requireAdmin, async (req, res) => {
       prize,
       entryCode: entryCode || null,
     }).returning();
+
+    let contestName = "a giveaway";
+    if (contestId) {
+      const [contest] = await db.select().from(contestsTable).where(eq(contestsTable.id, contestId)).limit(1);
+      if (contest) contestName = contest.name;
+    }
+
+    broadcastNotification({
+      type: "winner",
+      icon: "gift",
+      title: "Winner Announced!",
+      body: `${winnerName} just won ${prize} in ${contestName}! Could you be next?`,
+      data: { url: "/winners" },
+    }, "winnerAnnouncements").catch(err => console.error("Broadcast notification error:", err));
+
     return res.json(winner);
   } catch (err) {
     console.error("Create winner error:", err);
