@@ -1570,67 +1570,86 @@ export default function Account() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
-        <div className={`container mx-auto px-4 ${user ? "max-w-5xl" : "max-w-4xl"}`}>
+      <main className="relative z-10 pt-24 pb-20 sm:pt-32 sm:pb-32">
+        <div className={`container mx-auto px-3 sm:px-4 ${user ? "max-w-5xl" : "max-w-4xl"}`}>
 
-          {!user && (
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
-              <div className="acct-hero-banner">
-                <div className="acct-hero-banner-glow" />
-                <div className="acct-hero-banner-inner">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 14 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="glass-pill-badge mb-6"
-                  >
-                    <Shield className="w-3 h-3 text-white/50 mr-2" />
-                    My Account
-                  </motion.div>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0}
+            className="text-center mb-8 sm:mb-12"
+          >
+            <div className="acct-hero-banner">
+              <div className="acct-hero-banner-glow" />
+              <div className="acct-hero-banner-inner">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 14 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="glass-pill-badge mb-4 sm:mb-6"
+                >
+                  <Shield className="w-3 h-3 text-white/50 mr-2" />
+                  My Account
+                </motion.div>
 
-                  <motion.h1
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-4 tracking-tight leading-[1.1]"
-                  >
-                    <span className="text-gradient">Your Rewards Hub</span>
-                  </motion.h1>
+                {!user && (
+                  <>
+                    <motion.h1
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                      className="text-[1.8rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-3 sm:mb-4 tracking-tight leading-[1.1]"
+                    >
+                      <span className="text-gradient">Your Rewards Hub</span>
+                    </motion.h1>
 
+                    <motion.p
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed mb-6 sm:mb-8"
+                    >
+                      Sign in or create an account to track your giveaway entries
+                    </motion.p>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      className="acct-steps-bar"
+                    >
+                      <div className="acct-step-item">
+                        <div className="acct-step-num">1</div>
+                        <span className="acct-step-label">Register</span>
+                      </div>
+                      <div className="acct-step-divider" />
+                      <div className="acct-step-item">
+                        <div className="acct-step-num">2</div>
+                        <span className="acct-step-label">Enter</span>
+                      </div>
+                      <div className="acct-step-divider" />
+                      <div className="acct-step-item">
+                        <div className="acct-step-num">3</div>
+                        <span className="acct-step-label">Win Daily</span>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+
+                {user && (
                   <motion.p
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed mb-8"
+                    transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="text-xs sm:text-sm text-white/30 font-light max-w-md mx-auto leading-relaxed"
                   >
-                    Sign in or create an account to track your giveaway entries
+                    Manage your entries, membership &amp; rewards in one place
                   </motion.p>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="acct-steps-bar"
-                  >
-                    <div className="acct-step-item">
-                      <div className="acct-step-num">1</div>
-                      <span className="acct-step-label">Register</span>
-                    </div>
-                    <div className="acct-step-divider" />
-                    <div className="acct-step-item">
-                      <div className="acct-step-num">2</div>
-                      <span className="acct-step-label">Enter</span>
-                    </div>
-                    <div className="acct-step-divider" />
-                    <div className="acct-step-item">
-                      <div className="acct-step-num">3</div>
-                      <span className="acct-step-label">Win Daily</span>
-                    </div>
-                  </motion.div>
-                </div>
+                )}
               </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
 
           {loading ? (
             <div className="flex justify-center py-20">
