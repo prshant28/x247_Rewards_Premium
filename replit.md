@@ -24,7 +24,8 @@ The system is built as a pnpm monorepo with separate packages for the API server
 - **Notifications**: Bell icon with unread count, dropdown panel, toast notifications, streak celebration overlay. Persisted in localStorage.
 - **Charts**: Custom SVG mini chart components (Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap) for lightweight visualizations.
 - **Membership Tiers**: Silver, Gold, Black with varying entry limits and features (e.g., chat, verified badge, concierge support).
-- **Theme System**: 7 selectable themes (Metallic Glass, Frosted Aurora, Brushed Steel, Smoky Glass, Noir Minimal, Liquid Dark, Pristine Light) with `ThemeContext` and `localStorage` persistence.
+- **Theme System**: 9 selectable themes — 6 dark (Metallic Glass, Frosted Aurora, Brushed Steel, Smoky Glass, Noir Minimal, Liquid Dark) + 3 light (Pristine Light, Ivory Soft, Silver Mist). Managed by `ThemeContext` with `localStorage` persistence (`x247_theme` key). Light themes remove `.dark` class from `<html>`, add `data-light` attribute, and override `--background`/`--foreground` CSS vars. Flash-prevention inline script in `index.html` pre-applies theme before React loads. Comprehensive `[data-light]` CSS overrides in `index.css` and `CardNav.css` for all UI components.
+- **CSS Variables**: 30+ custom `--x-*` CSS properties control theme-sensitive values (nav bg, hero gradient, dot colors, subtle fills, chat bubble, badges, etc.) across all themes.
 - **CSS**: Pure monochrome utility classes and `@property` declarations for dynamic styling.
 
 **API Server:**

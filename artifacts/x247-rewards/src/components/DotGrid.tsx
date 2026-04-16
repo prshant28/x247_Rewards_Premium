@@ -12,8 +12,17 @@ const throttle = (func: (...args: any[]) => void, limit: number) => {
   };
 };
 
+function resolveColor(color: string): string {
+  if (color.startsWith("var(")) {
+    const prop = color.slice(4, -1).trim();
+    return getComputedStyle(document.documentElement).getPropertyValue(prop).trim() || "#000";
+  }
+  return color;
+}
+
 function hexToRgb(hex: string) {
-  const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  const resolved = resolveColor(hex);
+  const m = resolved.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
   if (!m) return { r: 0, g: 0, b: 0 };
   return {
     r: parseInt(m[1], 16),

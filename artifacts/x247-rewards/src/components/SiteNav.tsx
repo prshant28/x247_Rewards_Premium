@@ -74,10 +74,10 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247</span>
         </div>
       }
-      baseColor="rgba(6, 6, 6, 0.92)"
-      menuColor="#fff"
-      buttonBgColor="rgba(255,255,255,0.06)"
-      buttonTextColor="#fff"
+      baseColor="var(--x-nav-bg)"
+      menuColor="var(--x-nav-text)"
+      buttonBgColor="var(--x-subtle-fill)"
+      buttonTextColor="var(--x-nav-text)"
       isLoggedIn={loggedIn}
       user={user}
       onLogout={handleLogout}

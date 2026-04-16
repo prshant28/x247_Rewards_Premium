@@ -250,18 +250,18 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                         </div>
                       )}
                       {isComingSoon && (
-                        <div className="premium-badge !text-[9px]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                        <div className="premium-badge !text-[9px]" style={{ background: "var(--x-badge-bg)", border: "1px solid var(--x-badge-border)" }}>
                           <Lock className="w-2.5 h-2.5 mr-1" />Coming Soon
                         </div>
                       )}
                       {partner.badgeSecondary && (
-                        <div className="premium-badge !text-[9px]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                        <div className="premium-badge !text-[9px]" style={{ background: "var(--x-badge-bg)", border: "1px solid var(--x-badge-border)" }}>
                           <Star className="w-2.5 h-2.5 mr-1 text-white/50" />
                           <span className="text-white/60">{partner.badgeSecondary}</span>
                         </div>
                       )}
                       {partner.isRequired && (
-                        <div className="premium-badge !text-[9px]" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)" }}>
+                        <div className="premium-badge !text-[9px]" style={{ background: "var(--x-badge-bg)", border: "1px solid var(--x-badge-border)" }}>
                           <AlertCircle className="w-2.5 h-2.5 mr-1 text-white/60" />
                           <span className="text-white/60">Required</span>
                         </div>
@@ -412,7 +412,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   {/* Section header */}
                   <div className="glass-card px-6 sm:px-8 py-5 relative overflow-hidden">
                     <div className="card-shine" />
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% -20%, rgba(255,255,255,0.05) 0%, transparent 65%)" }} />
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% -20%, var(--x-glow-soft) 0%, transparent 65%)" }} />
                     <div className="relative z-[2] flex items-center gap-4">
                       <motion.div variants={scaleIn} className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
                         <Gift className="w-6 h-6 text-white/60" />
@@ -451,7 +451,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   {/* X247 entry benefit chip */}
                   <motion.div variants={itemFade} className="glass-card p-5 relative overflow-hidden">
                     <div className="card-shine" />
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 60%)" }} />
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, var(--x-glow-grad) 0%, transparent 60%)" }} />
                     <div className="relative z-[2] flex items-center gap-4">
                       <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
                         <span className="text-lg font-display font-light text-white leading-none">+{partner.entryPoints ?? 1}</span>
@@ -517,7 +517,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   {/* Your Benefit */}
                   <div className="glass-card p-6 sm:p-8 relative overflow-hidden">
                     <div className="card-shine" />
-                    <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 60%)" }} />
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, var(--x-glow-grad) 0%, transparent 60%)" }} />
                     <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-6">
                       <div className="flex items-center gap-4 flex-1">
                         <div className="w-14 h-14 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">

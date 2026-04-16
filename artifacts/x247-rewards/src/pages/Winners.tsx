@@ -37,7 +37,7 @@ function DrawCountdown() {
   const ss = String(secs % 60).padStart(2, "0");
 
   return (
-    <div className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-sm px-6 py-5 mb-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-0 sm:justify-between">
+    <div className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-6 py-5 mb-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-0 sm:justify-between">
       <div className="flex flex-col items-center sm:items-start gap-1">
         <div className="flex items-center gap-1.5 mb-1">
           <Clock className="w-3 h-3 text-white/30" />

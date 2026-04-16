@@ -753,12 +753,12 @@ export default function Home() {
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <div className="absolute inset-0" style={{background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(30,30,30,0.8) 0%, #000 70%)'}} />
+            <div className="absolute inset-0" style={{background: 'var(--x-hero-grad)'}} />
             <DotGrid
               dotSize={2}
               gap={28}
-              baseColor="#1a1a1a"
-              activeColor="#666666"
+              baseColor="var(--x-dot-base)"
+              activeColor="var(--x-dot-active)"
               proximity={120}
               speedTrigger={80}
               shockRadius={200}
@@ -1114,7 +1114,7 @@ export default function Home() {
                       <motion.div
                         key={i}
                         className="flex-1 rounded-t-md relative overflow-hidden"
-                        style={{ background: "linear-gradient(to top, rgba(255,255,255,0.08), rgba(255,255,255,0.25))" }}
+                        style={{ background: "linear-gradient(to top, var(--x-bar-lo), var(--x-bar-hi))" }}
                         initial={{ height: 0 }}
                         whileInView={{ height: `${h}%` }}
                         viewport={{ once: true }}
@@ -1172,7 +1172,7 @@ export default function Home() {
                           viewport={{ once: true }}
                           transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
                           className="h-full rounded-full relative overflow-hidden"
-                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.35), rgba(255,255,255,0.9))" }}
+                          style={{ background: "linear-gradient(90deg, var(--x-bar-active-lo), var(--x-bar-active-hi))" }}
                         >
                           <div className="absolute inset-0 shimmer-bar" />
                         </motion.div>
@@ -1190,7 +1190,7 @@ export default function Home() {
                           viewport={{ once: true }}
                           transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
                           className="h-full rounded-full relative overflow-hidden"
-                          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.25), rgba(255,255,255,0.6))" }}
+                          style={{ background: "linear-gradient(90deg, var(--x-bar-earned-lo), var(--x-bar-earned-hi))" }}
                         >
                           <div className="absolute inset-0 shimmer-bar" />
                         </motion.div>

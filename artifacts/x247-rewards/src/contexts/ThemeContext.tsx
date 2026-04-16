@@ -7,7 +7,9 @@ export type ThemeId =
   | "smoky-glass"
   | "noir-minimal"
   | "liquid-dark"
-  | "pristine-light";
+  | "pristine-light"
+  | "ivory-soft"
+  | "silver-mist";
 
 export interface ThemeInfo {
   id: ThemeId;
@@ -64,6 +66,18 @@ export const THEMES: ThemeInfo[] = [
     description: "Clean white, soft shadows, minimal elegance",
     preview: { bg: "#f5f5f5", card: "#ffffff", border: "#e0e0e0", accent: "#1a1a1a" },
   },
+  {
+    id: "ivory-soft",
+    name: "Ivory Soft",
+    description: "Warm ivory tones, paper-like texture, cozy premium",
+    preview: { bg: "#f8f6f1", card: "#fffefa", border: "#e2ddd3", accent: "#2a2520" },
+  },
+  {
+    id: "silver-mist",
+    name: "Silver Mist",
+    description: "Cool silver-blue, frosted glass, tech premium",
+    preview: { bg: "#f0f1f5", card: "#f8f9fc", border: "#d4d6e0", accent: "#1c1e28" },
+  },
 ];
 
 const STORAGE_KEY = "x247_theme";
@@ -94,8 +108,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    if (LIGHT_THEMES.includes(theme)) {
+      document.documentElement.setAttribute("data-light", "");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.removeAttribute("data-light");
+      document.documentElement.classList.add("dark");
+    }
     return () => {
       document.documentElement.removeAttribute("data-theme");
+      document.documentElement.removeAttribute("data-light");
     };
   }, [theme]);
 
@@ -108,8 +130,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
+export const LIGHT_THEMES: ThemeId[] = ["pristine-light", "ivory-soft", "silver-mist"];
+
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme must be used inside ThemeProvider");
-  return ctx;
+  return { ...ctx, isLight: LIGHT_THEMES.includes(ctx.theme) };
 }

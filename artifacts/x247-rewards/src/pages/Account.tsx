@@ -632,7 +632,7 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
           <div className="flex items-center justify-end gap-1.5 mt-3">
             <span className="text-[9px] text-white/20 font-light">Less</span>
             {[0.03, 0.1, 0.2, 0.35].map((op, i) => (
-              <div key={i} className="w-[9px] h-[9px] rounded-[2px]" style={{ background: `rgba(255,255,255,${op})` }} />
+              <div key={i} className="w-[9px] h-[9px] rounded-[2px] acct-grid-dot" style={{ opacity: op }} />
             ))}
             <span className="text-[9px] text-white/20 font-light">More</span>
           </div>

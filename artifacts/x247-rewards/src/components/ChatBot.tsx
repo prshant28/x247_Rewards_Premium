@@ -233,7 +233,7 @@ function VoiceOrb({ status }: { status: VoiceStatus }) {
       )}
       <motion.div
         className="w-36 h-36 rounded-full flex items-center justify-center relative"
-        style={{ background: `radial-gradient(circle at 40% 35%, rgba(255,255,255,0.08), ${colors[status]})`, border: "1px solid rgba(255,255,255,0.1)", boxShadow: isActive ? "0 0 40px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.06)" : "none" }}
+        style={{ background: `radial-gradient(circle at 40% 35%, var(--x-chat-fab-glow), ${colors[status]})`, border: `1px solid var(--x-chat-fab-border)`, boxShadow: isActive ? `0 0 40px var(--x-chat-fab-shadow), inset 0 1px 0 var(--x-subtle-fill)` : "none" }}
         animate={isActive ? { scale: [1, 1.03, 1] } : { scale: 1 }}
         transition={{ duration: 2, repeat: isActive ? Infinity : 0, ease: "easeInOut" }}
       >
@@ -897,7 +897,7 @@ export default function ChatBot() {
                   transition={{ duration: 0.2 }}
                   className="flex-1 flex flex-col min-h-0"
                 >
-                  <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.06) transparent" }}>
+                  <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0" style={{ scrollbarWidth: "thin", scrollbarColor: "var(--x-chat-scroll) transparent" }}>
                     {messages.map((msg) => (
                       <div key={msg.id} className={`flex gap-2.5 group ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                         <div className={`w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" ? "bg-white/[0.06] border border-white/[0.1]" : "bg-white/[0.04] border border-white/[0.06]"}`}>
@@ -988,7 +988,7 @@ export default function ChatBot() {
                     )}
                     <div
                       className="flex items-center gap-2 rounded-2xl px-3 py-2.5 transition-all focus-within:border-white/[0.12]"
-                      style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}
+                      style={{ background: "var(--x-chat-bubble)", border: "1px solid var(--x-chat-bubble-border)" }}
                     >
                       <input
                         ref={inputRef}
@@ -1062,7 +1062,7 @@ export default function ChatBot() {
                   exit={{ opacity: 0, x: 10 }}
                   transition={{ duration: 0.2 }}
                   className="flex-1 overflow-y-auto min-h-0"
-                  style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.06) transparent" }}
+                  style={{ scrollbarWidth: "thin", scrollbarColor: "var(--x-chat-scroll) transparent" }}
                 >
                   {conversations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full py-12 px-6">

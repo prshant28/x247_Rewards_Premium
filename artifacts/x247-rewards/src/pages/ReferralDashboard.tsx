@@ -160,7 +160,7 @@ function MiniBarChart({ data, delay = 0 }: { data: number[]; delay?: number }) {
         <motion.div
           key={i}
           className="flex-1 rounded-t-sm relative overflow-hidden"
-          style={{ background: "linear-gradient(to top, rgba(255,255,255,0.06), rgba(255,255,255,0.18))" }}
+          style={{ background: "linear-gradient(to top, var(--x-bar-lo), var(--x-bar-hi))" }}
           initial={reducedMotion ? { height: `${(v / max) * 100}%` } : { height: 0 }}
           animate={{ height: `${Math.max((v / max) * 100, 4)}%` }}
           transition={{ delay: delay + i * 0.06, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -445,7 +445,7 @@ export default function ReferralDashboard() {
                             animate={{ width: `${progress}%` }}
                             transition={{ duration: 1.2, delay: 0.3 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
                             className="h-full rounded-full relative overflow-hidden"
-                            style={{ background: unlocked ? "linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.7))" : "linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.35))" }}
+                            style={{ background: unlocked ? "linear-gradient(90deg, var(--x-bar-active-lo), var(--x-bar-active-hi))" : "linear-gradient(90deg, var(--x-bar-fill-lo), var(--x-bar-fill-hi))" }}
                           >
                             {!unlocked && <div className="absolute inset-0 shimmer-bar" />}
                           </motion.div>

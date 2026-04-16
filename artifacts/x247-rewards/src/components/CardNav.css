@@ -538,3 +538,51 @@
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.8);
 }
+
+[data-light] .card-nav-container {
+  background: linear-gradient(to bottom, hsla(var(--background), 0.95) 0%, hsla(var(--background), 0.8) 70%, transparent 100%) !important;
+}
+[data-light] .card-nav {
+  border-color: hsla(var(--foreground), 0.08) !important;
+  box-shadow: 0 4px 30px hsla(var(--foreground), 0.08), 0 0 0 0.5px hsla(var(--foreground), 0.04) !important;
+}
+[data-light] .card-nav::before {
+  background: linear-gradient(90deg, transparent 0%, hsla(var(--foreground), 0.06) 20%, hsla(var(--foreground), 0.12) 50%, hsla(var(--foreground), 0.06) 80%, transparent 100%) !important;
+}
+[data-light] .hamburger-menu:hover { background: rgba(0,0,0,0.04) !important; }
+[data-light] .avatar-dropdown {
+  background: hsla(var(--card), 0.98) !important;
+  border-color: hsla(var(--foreground), 0.08) !important;
+  box-shadow: 0 16px 48px hsla(var(--foreground), 0.1), 0 0 0 0.5px hsla(var(--foreground), 0.04) !important;
+}
+[data-light] .avatar-dropdown-avatar {
+  background: hsla(var(--foreground), 0.06) !important;
+  border-color: hsla(var(--foreground), 0.1) !important;
+}
+[data-light] .avatar-dropdown-avatar span { color: hsl(var(--foreground)) !important; }
+[data-light] .avatar-dropdown-name { color: hsl(var(--foreground)) !important; }
+[data-light] .avatar-dropdown-email { color: hsla(var(--foreground), 0.4) !important; }
+[data-light] .avatar-dropdown-divider { background: hsla(var(--foreground), 0.06) !important; }
+[data-light] .avatar-dropdown-item { color: hsla(var(--foreground), 0.7) !important; }
+[data-light] .avatar-dropdown-item:hover {
+  background: hsla(var(--foreground), 0.04) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .avatar-dropdown-logout { color: hsla(var(--foreground), 0.5) !important; }
+[data-light] .avatar-dropdown-logout:hover {
+  background: hsla(var(--foreground), 0.04) !important;
+  color: hsla(var(--foreground), 0.8) !important;
+}
+[data-light] .card-nav-content { background: var(--x-nav-bg) !important; }
+[data-light] .card-item { background: hsla(var(--foreground), 0.02) !important; border-color: hsla(var(--foreground), 0.06) !important; }
+[data-light] .card-item:hover { background: hsla(var(--foreground), 0.04) !important; }
+[data-light] .card-item-title { color: hsl(var(--foreground)) !important; }
+[data-light] .card-item-description { color: hsla(var(--foreground), 0.5) !important; }
+[data-light] .cta-button {
+  background: hsla(var(--foreground), 0.06) !important;
+  border-color: hsla(var(--foreground), 0.1) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .cta-button:hover {
+  background: hsla(var(--foreground), 0.1) !important;
+}
