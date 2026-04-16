@@ -609,49 +609,90 @@
 }
 
 [data-light] .card-nav-container {
-  background: linear-gradient(to bottom, hsla(var(--background), 0.95) 0%, hsla(var(--background), 0.8) 70%, transparent 100%) !important;
+  background: linear-gradient(to bottom, hsl(var(--background) / 0.95) 0%, hsl(var(--background) / 0.8) 70%, transparent 100%) !important;
 }
 [data-light] .card-nav {
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 4px 30px hsla(var(--foreground), 0.08), 0 0 0 0.5px hsla(var(--foreground), 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 4px 30px hsl(var(--foreground) / 0.08), 0 0 0 0.5px hsl(var(--foreground) / 0.04) !important;
 }
 [data-light] .card-nav::before {
-  background: linear-gradient(90deg, transparent 0%, hsla(var(--foreground), 0.06) 20%, hsla(var(--foreground), 0.12) 50%, hsla(var(--foreground), 0.06) 80%, transparent 100%) !important;
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.06) 20%, hsl(var(--foreground) / 0.12) 50%, hsl(var(--foreground) / 0.06) 80%, transparent 100%) !important;
 }
-[data-light] .hamburger-menu:hover { background: rgba(0,0,0,0.04) !important; }
+[data-light] .hamburger-menu { color: hsl(var(--foreground)) !important; }
+[data-light] .hamburger-menu:hover { background: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .hamburger-line { background: hsl(var(--foreground)) !important; }
 [data-light] .avatar-dropdown {
-  background: hsla(var(--card), 0.98) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 16px 48px hsla(var(--foreground), 0.1), 0 0 0 0.5px hsla(var(--foreground), 0.04) !important;
+  background: hsl(var(--card) / 0.98) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 16px 48px hsl(var(--foreground) / 0.1), 0 0 0 0.5px hsl(var(--foreground) / 0.04) !important;
 }
 [data-light] .avatar-dropdown-avatar {
-  background: hsla(var(--foreground), 0.06) !important;
-  border-color: hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
 }
 [data-light] .avatar-dropdown-avatar span { color: hsl(var(--foreground)) !important; }
 [data-light] .avatar-dropdown-name { color: hsl(var(--foreground)) !important; }
-[data-light] .avatar-dropdown-email { color: hsla(var(--foreground), 0.4) !important; }
-[data-light] .avatar-dropdown-divider { background: hsla(var(--foreground), 0.06) !important; }
-[data-light] .avatar-dropdown-item { color: hsla(var(--foreground), 0.7) !important; }
+[data-light] .avatar-dropdown-email { color: hsl(var(--foreground) / 0.45) !important; }
+[data-light] .avatar-dropdown-divider { background: hsl(var(--foreground) / 0.07) !important; }
+[data-light] .avatar-dropdown-item { color: hsl(var(--foreground) / 0.75) !important; }
 [data-light] .avatar-dropdown-item:hover {
-  background: hsla(var(--foreground), 0.04) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
   color: hsl(var(--foreground)) !important;
 }
-[data-light] .avatar-dropdown-logout { color: hsla(var(--foreground), 0.5) !important; }
+[data-light] .avatar-dropdown-logout { color: hsl(var(--foreground) / 0.5) !important; }
 [data-light] .avatar-dropdown-logout:hover {
-  background: hsla(var(--foreground), 0.04) !important;
-  color: hsla(var(--foreground), 0.8) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  color: hsl(var(--foreground) / 0.8) !important;
 }
 [data-light] .card-nav-content { background: var(--x-nav-bg) !important; }
-[data-light] .card-item { background: hsla(var(--foreground), 0.02) !important; border-color: hsla(var(--foreground), 0.06) !important; }
-[data-light] .card-item:hover { background: hsla(var(--foreground), 0.04) !important; }
+[data-light] .nav-card {
+  border-color: hsl(var(--foreground) / 0.07) !important;
+  background: hsl(var(--foreground) / 0.025) !important;
+}
+[data-light] .nav-card:hover {
+  border-color: hsl(var(--foreground) / 0.12) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .nav-card-label { color: hsl(var(--foreground)) !important; }
+[data-light] .nav-card-label-icon {
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .nav-card-link { color: hsl(var(--foreground) / 0.8) !important; }
+[data-light] .nav-card-link:hover {
+  background: hsl(var(--foreground) / 0.05) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .nav-card-link-icon-wrap {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.07) !important;
+}
+[data-light] .nav-card-link:hover .nav-card-link-icon-wrap {
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+}
+[data-light] .nav-card-link-divider { background: hsl(var(--foreground) / 0.07) !important; }
+[data-light] .avatar-button:hover { background: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .avatar-circle {
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+}
+[data-light] .avatar-button:hover .avatar-circle {
+  background: hsl(var(--foreground) / 0.12) !important;
+  border-color: hsl(var(--foreground) / 0.22) !important;
+}
+[data-light] .avatar-initials { color: hsl(var(--foreground)) !important; }
+[data-light] .avatar-chevron { color: hsl(var(--foreground) / 0.5) !important; }
+[data-light] .card-item { background: hsl(var(--foreground) / 0.02) !important; border-color: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .card-item:hover { background: hsl(var(--foreground) / 0.04) !important; }
 [data-light] .card-item-title { color: hsl(var(--foreground)) !important; }
-[data-light] .card-item-description { color: hsla(var(--foreground), 0.5) !important; }
+[data-light] .card-item-description { color: hsl(var(--foreground) / 0.5) !important; }
 [data-light] .cta-button {
-  background: hsla(var(--foreground), 0.06) !important;
-  border-color: hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
   color: hsl(var(--foreground)) !important;
 }
 [data-light] .cta-button:hover {
-  background: hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--foreground) / 0.1) !important;
 }

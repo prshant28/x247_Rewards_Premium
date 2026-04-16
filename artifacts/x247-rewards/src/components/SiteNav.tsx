@@ -68,10 +68,10 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
     <CardNav
       logo={
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
-            <Sparkles className="w-4 h-4 text-white" />
+          <div className="sitenav-logo-icon">
+            <Sparkles className="w-4 h-4" />
           </div>
-          <span className="font-display text-base sm:text-lg tracking-wide text-white font-normal">X247</span>
+          <span className="sitenav-logo-text font-display text-base sm:text-lg tracking-wide font-normal">X247</span>
         </div>
       }
       baseColor="var(--x-nav-bg)"
