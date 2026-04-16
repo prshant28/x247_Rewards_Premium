@@ -9,7 +9,7 @@ import {
   Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
   Edit3, Save, X, Award, CreditCard, Settings, LayoutDashboard, Zap,
   ChevronRight, Star, Bell, Key, Trash2, History, Rocket, Medal, TrendingDown,
-  CalendarDays, Infinity as InfinityIcon
+  CalendarDays, Infinity as InfinityIcon, Receipt, Diamond
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
@@ -18,7 +18,7 @@ import {
   getNotifications, markNotificationRead, markAllNotificationsRead,
   getNotificationPreferences, updateNotificationPreferences,
   subscribePush, unsubscribePush, getVapidPublicKey,
-  getPartners
+  getPartners, getReferralStats, getReferralProfile
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import { Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap } from "@/components/MiniCharts";
@@ -55,13 +55,15 @@ const tabFade = {
 };
 
 type AuthMode = "login" | "register";
-type TabId = "overview" | "profile" | "subscription" | "entries" | "settings";
+type TabId = "overview" | "profile" | "subscription" | "entries" | "referrals" | "billing" | "settings";
 
 const TABS: { id: TabId; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "profile", label: "Profile", icon: User },
   { id: "subscription", label: "Subscription", icon: CreditCard },
   { id: "entries", label: "Entries", icon: Trophy },
+  { id: "referrals", label: "Referrals", icon: Share2 },
+  { id: "billing", label: "Billing", icon: Receipt },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -1226,24 +1228,47 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
   const tierOrder = ["free", "silver", "gold", "black"];
   const activeIndex = tierOrder.indexOf(activeTier);
 
+  const currentPlan = plans.find((p) => p.id === activeTier) ?? plans[0];
+  const isBlackTier = activeTier === "black";
+
   return (
     <motion.div key="subscription" variants={tabFade} initial="hidden" animate="visible" exit="exit">
-      {activeTier !== "free" && (
-        <div className={`glass-card p-6 mb-8 ${activeTier === "black" ? "acct-black-card" : ""}`}>
-          <div className="card-shine" />
-          <div className="relative z-[2]">
-            <div className="flex items-center gap-4 mb-4">
-              <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${activeTier === "black" ? "bg-white/[0.1] border-white/[0.2]" : "bg-white/[0.04] border-white/[0.08]"}`}>
-                <Crown className="w-6 h-6 text-white/50" />
+      <div className={`glass-card p-6 mb-6 ${isBlackTier ? "acct-black-card-elite" : ""}`}>
+        {isBlackTier && <div className="acct-black-shimmer" />}
+        <div className="card-shine" />
+        <div className="relative z-[2]">
+          <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${isBlackTier ? "acct-black-icon" : "bg-white/[0.04] border-white/[0.08]"}`}>
+                {isBlackTier ? <Diamond className="w-5 h-5 text-white" /> : <Crown className="w-6 h-6 text-white/50" />}
               </div>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="text-lg font-display font-light text-white capitalize">{activeTier} Membership</h3>
                   {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/50" />}
+                  {isBlackTier && (
+                    <span className="acct-black-badge">
+                      <Diamond className="w-2.5 h-2.5" />
+                      <span>Elite Member</span>
+                    </span>
+                  )}
                 </div>
-                <div className="text-xs text-white/30 font-light">Active · Renews monthly</div>
+                <div className="text-xs text-white/30 font-light">{activeTier === "free" ? "No commitment · Upgrade anytime" : "Active · Renews monthly"}</div>
               </div>
             </div>
+            {activeTier !== "black" && (
+              <button
+                type="button"
+                onClick={() => handlePurchase(activeTier === "free" ? "silver" : tierOrder[Math.min(tierOrder.length - 1, activeIndex + 1)])}
+                disabled={purchasing !== null}
+                className="acct-upgrade-pill"
+              >
+                <Rocket className="w-3 h-3" />
+                <span>Upgrade Plan</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            )}
+          </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
                 <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Status</div>
@@ -1264,99 +1289,193 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
             </div>
           </div>
         </div>
-      )}
 
-      <div className="flex items-center gap-3 mb-6">
-        <CreditCard className="w-4 h-4 text-white/40" />
-        <h3 className="text-base font-display font-light text-white">{activeTier === "free" ? "Choose a Plan" : "Available Plans"}</h3>
+      <div className={`glass-card p-5 mb-6 ${isBlackTier ? "acct-black-card-elite" : ""}`}>
+        <div className="card-shine" />
+        <div className="relative z-[2]">
+          <div className="flex items-center gap-3 mb-4">
+            <Check className="w-4 h-4 text-white/40" />
+            <h3 className="text-sm font-display font-light text-white">What's included in {currentPlan.name}</h3>
+          </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+            {currentPlan.features.map((f) => (
+              <li key={f} className="flex items-start gap-2.5 text-xs text-white/55 font-light">
+                <div className="w-4 h-4 rounded-md bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="w-2.5 h-2.5 text-white/40" />
+                </div>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+          {activeTier !== "black" && (
+            <div className="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between gap-3 flex-wrap">
+              <div className="text-[11px] text-white/35 font-light">Want more entries and perks? See full plan comparison.</div>
+              <Link href="/#pricing" className="acct-compare-link">
+                <span>Compare All Plans</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ReferralsTab({ user }: { user: any }) {
+  const [stats, setStats] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    getReferralStats().then(setStats).catch(() => {});
+    getReferralProfile().then((d) => setProfile(d.partner)).catch(() => {});
+  }, []);
+
+  const refCode = profile?.referralCode || `X247-${user.id}`;
+  const refLink = `${window.location.origin}/?ref=${refCode}`;
+
+  const copy = () => {
+    navigator.clipboard.writeText(refLink).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    });
+  };
+
+  return (
+    <motion.div key="referrals" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+      <div className="flex items-center gap-3 mb-5">
+        <Share2 className="w-4 h-4 text-white/40" />
+        <h3 className="text-base font-display font-light text-white">Referrals</h3>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {plans.map((plan) => {
-          const planIndex = tierOrder.indexOf(plan.id);
-          const isCurrent = activeTier === plan.id;
-          const isDowngrade = planIndex < activeIndex;
-          const isFree = plan.id === "free";
-          const isBlack = plan.id === "black";
-          const isGold = plan.id === "gold";
-          const isSilver = plan.id === "silver";
-
-          return (
-            <div
-              key={plan.id}
-              className={`pricing-card ${isBlack ? "pricing-card-black" : ""} ${isGold && plan.popular ? "pricing-card-popular" : ""} ${isCurrent ? "pricing-card-current" : ""}`}
-            >
-              <div className="pricing-card-glow" />
-
-              {plan.popular && (
-                <div className="pricing-badge pricing-badge-popular">
-                  <Star className="w-2.5 h-2.5" />
-                  <span>Most Popular</span>
-                </div>
-              )}
-              {isCurrent && (
-                <div className="pricing-badge pricing-badge-current">
-                  <Check className="w-2.5 h-2.5" />
-                  <span>Current</span>
-                </div>
-              )}
-
-              <div className="pricing-head">
-                <div className="pricing-tier-icon">
-                  {isBlack ? <Crown className="w-5 h-5" /> : isGold ? <Award className="w-5 h-5" /> : isSilver ? <Shield className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
-                </div>
-                <h4 className="pricing-tier-name">{plan.name}</h4>
-                <p className="pricing-tier-tagline">{plan.tagline}</p>
-              </div>
-
-              <div className="pricing-price">
-                {isFree ? (
-                  <>
-                    <span className="pricing-amount">Free</span>
-                    <span className="pricing-period">forever</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="pricing-currency">₹</span>
-                    <span className="pricing-amount">{plan.price}</span>
-                    <span className="pricing-period">/mo</span>
-                  </>
-                )}
-              </div>
-
-              <div className="pricing-divider" />
-
-              <ul className="pricing-features">
-                {plan.features.map((f) => (
-                  <li key={f} className="pricing-feature-item">
-                    <div className="pricing-feature-check">
-                      <Check className="w-2.5 h-2.5" />
-                    </div>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => !isCurrent && !isDowngrade && handlePurchase(plan.id)}
-                disabled={purchasing !== null || isCurrent || isDowngrade}
-                className={`pricing-btn ${isBlack && !isCurrent ? "pricing-btn-black" : ""}`}
-              >
-                {purchasing === plan.id ? (
-                  <span className="flex items-center gap-2 justify-center">
-                    <div className="w-3.5 h-3.5 border border-white/30 border-t-white/80 rounded-full animate-spin" />
-                    Processing
-                  </span>
-                ) : isCurrent ? "Current Plan" : isDowngrade ? "Downgrade" : (
-                  <span className="flex items-center gap-2 justify-center">
-                    Get {plan.name}
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                )}
-              </button>
+      <div className="glass-card p-6 mb-5">
+        <div className="card-shine" />
+        <div className="relative z-[2]">
+          <div className="text-[10px] uppercase tracking-wider font-display text-white/30 mb-2">Your Referral Code</div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <code className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] font-mono text-sm text-white/85 flex-1 min-w-[160px] truncate">{refCode}</code>
+            <button onClick={copy} className="acct-copy-btn">
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copied ? "Copied" : "Copy Link"}</span>
+            </button>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+              <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Total Referrals</div>
+              <div className="text-lg font-display font-light text-white">{stats?.totalReferrals ?? 0}</div>
             </div>
-          );
-        })}
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+              <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Conversions</div>
+              <div className="text-lg font-display font-light text-white">{stats?.conversions ?? 0}</div>
+            </div>
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+              <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Earnings</div>
+              <div className="text-lg font-display font-light text-white">₹{stats?.earnings ?? 0}</div>
+            </div>
+          </div>
+          <Link href="/referral-dashboard" className="mt-5 acct-compare-link inline-flex">
+            <span>Open Full Referral Dashboard</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
+
+      <div className="glass-card p-5">
+        <div className="card-shine" />
+        <div className="relative z-[2]">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-white/40" />
+            <h4 className="text-sm font-display font-light text-white">How it works</h4>
+          </div>
+          <ol className="space-y-2 text-xs text-white/50 font-light">
+            <li className="flex gap-3"><span className="text-white/30 font-mono">01</span><span>Share your unique link with friends and on social.</span></li>
+            <li className="flex gap-3"><span className="text-white/30 font-mono">02</span><span>They register and complete partner tasks for entries.</span></li>
+            <li className="flex gap-3"><span className="text-white/30 font-mono">03</span><span>You earn bonus entries and rewards for every conversion.</span></li>
+          </ol>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function BillingTab({ user }: { user: any }) {
+  const tier = (user.membershipTier as TierKey) || "free";
+  const isFree = tier === "free";
+  const tierPrice = tier === "silver" ? 199 : tier === "gold" ? 499 : tier === "black" ? 999 : 0;
+  const memberSince = new Date(user.createdAt);
+  const nextRenewal = new Date();
+  nextRenewal.setDate(nextRenewal.getDate() + 30);
+
+  const invoices = isFree ? [] : [
+    { id: `INV-${memberSince.getFullYear()}${String(memberSince.getMonth() + 1).padStart(2, "0")}-001`, date: memberSince, amount: tierPrice, plan: tier },
+  ];
+
+  return (
+    <motion.div key="billing" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+      <div className="flex items-center gap-3 mb-5">
+        <Receipt className="w-4 h-4 text-white/40" />
+        <h3 className="text-base font-display font-light text-white">Billing</h3>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+        <div className="glass-card p-4">
+          <div className="card-shine" />
+          <div className="relative z-[2]">
+            <div className="flex items-center gap-2 mb-2"><CreditCard className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">Current Plan</div></div>
+            <div className="text-sm font-display font-light text-white capitalize">{tier}</div>
+            <div className="text-[10px] text-white/35 font-light mt-0.5">{isFree ? "Free forever" : `₹${tierPrice}/mo`}</div>
+          </div>
+        </div>
+        <div className="glass-card p-4">
+          <div className="card-shine" />
+          <div className="relative z-[2]">
+            <div className="flex items-center gap-2 mb-2"><CalendarDays className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">Next Renewal</div></div>
+            <div className="text-sm font-display font-light text-white">{isFree ? "—" : nextRenewal.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+            <div className="text-[10px] text-white/35 font-light mt-0.5">{isFree ? "No active subscription" : "Auto-renews"}</div>
+          </div>
+        </div>
+        <div className="glass-card p-4">
+          <div className="card-shine" />
+          <div className="relative z-[2]">
+            <div className="flex items-center gap-2 mb-2"><Calendar className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">Member Since</div></div>
+            <div className="text-sm font-display font-light text-white">{memberSince.toLocaleDateString("en-IN", { month: "short", year: "numeric" })}</div>
+            <div className="text-[10px] text-white/35 font-light mt-0.5">{Math.floor((Date.now() - memberSince.getTime()) / 86400000)} days</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="glass-card p-5">
+        <div className="card-shine" />
+        <div className="relative z-[2]">
+          <div className="flex items-center gap-2 mb-4">
+            <History className="w-3.5 h-3.5 text-white/40" />
+            <h4 className="text-sm font-display font-light text-white">Invoice History</h4>
+            <span className="text-[10px] text-white/25 font-light ml-auto">{invoices.length} {invoices.length === 1 ? "invoice" : "invoices"}</span>
+          </div>
+          {invoices.length > 0 ? (
+            <div className="space-y-2">
+              {invoices.map((inv) => (
+                <div key={inv.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                  <Receipt className="w-3.5 h-3.5 text-white/30 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-white/65 font-mono truncate">{inv.id}</div>
+                    <div className="text-[10px] text-white/30 font-light capitalize">{inv.plan} · {inv.date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+                  </div>
+                  <div className="text-sm text-white/75 font-display font-light shrink-0">₹{inv.amount}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-10 h-10 rounded-2xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center mx-auto mb-3">
+                <Receipt className="w-4 h-4 text-white/20" />
+              </div>
+              <div className="text-xs text-white/40 font-light">No invoices yet</div>
+              <div className="text-[10px] text-white/25 font-light mt-1">Upgrade to a paid plan to see invoices here</div>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
@@ -1719,6 +1838,8 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                 {activeTab === "profile" && <ProfileTab user={user} onUpdate={handleUserUpdate} />}
                 {activeTab === "subscription" && <SubscriptionTab user={user} onUpdate={handleUserUpdate} />}
                 {activeTab === "entries" && <EntriesTab entries={entries} />}
+                {activeTab === "referrals" && <ReferralsTab user={user} />}
+                {activeTab === "billing" && <BillingTab user={user} />}
                 {activeTab === "settings" && <SettingsTab user={user} onLogout={onLogout} />}
               </AnimatePresence>
             </div>
