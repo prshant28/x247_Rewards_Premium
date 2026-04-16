@@ -197,22 +197,17 @@ export default function Giveaway() {
 
           <section className="relative mb-12 sm:mb-16">
             <FloatingParticles />
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
-              <div className="page-hero-banner">
-                <div className="page-hero-glow" />
-                <div className="page-hero-inner">
-                  <div className="glass-pill-badge mb-6">
-                    <Crown className="w-3 h-3 text-white/50 mr-2" />
-                    Daily Prize Draws
-                  </div>
-                  <h1 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-4 tracking-tight leading-[1.1]">
-                    <span className="text-gradient">Contest Hub</span>
-                  </h1>
-                  <p className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed">
-                    Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes. Each contest has limited spots — act fast!
-                  </p>
-                </div>
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-16 sm:mb-24">
+              <div className="glass-pill-badge mb-6">
+                <Crown className="w-3 h-3 text-white/50 mr-2" />
+                Daily Prize Draws
               </div>
+              <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
+                Contest Hub
+              </h1>
+              <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+                Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes. Each contest has limited spots — act fast!
+              </p>
             </motion.div>
 
             <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>

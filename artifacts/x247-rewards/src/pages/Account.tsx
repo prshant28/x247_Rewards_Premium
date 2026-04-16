@@ -16,7 +16,8 @@ import {
   updateProfile, getUserBadges, purchaseMembership, uploadScreenshot,
   getNotifications, markNotificationRead, markAllNotificationsRead,
   getNotificationPreferences, updateNotificationPreferences,
-  subscribePush, unsubscribePush, getVapidPublicKey
+  subscribePush, unsubscribePush, getVapidPublicKey,
+  getPartners
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import { Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap } from "@/components/MiniCharts";
@@ -62,6 +63,63 @@ const TABS: { id: TabId; label: string; icon: any }[] = [
   { id: "entries", label: "Entries", icon: Trophy },
   { id: "settings", label: "Settings", icon: Settings },
 ];
+
+function OurPartnersSection() {
+  const [partners, setPartners] = useState<any[]>([]);
+
+  useEffect(() => {
+    getPartners().then((data) => {
+      setPartners(data.filter((p: any) => p.isActive).slice(0, 6));
+    }).catch(() => {});
+  }, []);
+
+  if (partners.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-8 max-w-xl mx-auto"
+    >
+      <div className="metallic-partners-box">
+        <div className="metallic-partners-glow" />
+        <div className="metallic-partners-shine" />
+        <div className="relative z-[2]">
+          <div className="flex items-center justify-center gap-2 mb-5">
+            <div className="glass-pill-badge">
+              <Sparkles className="w-3 h-3 text-white/50 mr-2" />
+              Our Partners
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {partners.map((partner) => (
+              <Link
+                key={partner.id}
+                href="/partners"
+                className="metallic-partner-chip group"
+              >
+                <div className="metallic-partner-chip-inner">
+                  <span className="text-xs font-display font-light text-white/70 group-hover:text-white/90 transition-colors truncate">
+                    {partner.name}
+                  </span>
+                  <ExternalLink className="w-2.5 h-2.5 text-white/20 group-hover:text-white/40 transition-colors flex-shrink-0" />
+                </div>
+              </Link>
+            ))}
+          </div>
+          <Link
+            href="/partners"
+            className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/50 font-display uppercase tracking-widest transition-colors"
+          >
+            View All Partners
+            <ChevronRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   const [mode, setMode] = useState<AuthMode>("login");
@@ -1581,7 +1639,10 @@ export default function Account() {
           ) : user ? (
             <Dashboard user={user} entries={entries} onLogout={handleLogout} />
           ) : (
-            <AuthForm onSuccess={loadUser} />
+            <>
+              <OurPartnersSection />
+              <AuthForm onSuccess={loadUser} />
+            </>
           )}
 
         </div>
