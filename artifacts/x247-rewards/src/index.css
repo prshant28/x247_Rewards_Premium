@@ -4521,388 +4521,388 @@
 [data-light] .text-white\/95,
 [data-light] .text-white\/90,
 [data-light] .text-white\/80,
-[data-light] .text-white\/70 { color: hsla(var(--foreground), 0.8) !important; }
+[data-light] .text-white\/70 { color: hsl(var(--foreground) / 0.8) !important; }
 [data-light] .text-white\/60,
-[data-light] .text-white\/50 { color: hsla(var(--foreground), 0.55) !important; }
+[data-light] .text-white\/50 { color: hsl(var(--foreground) / 0.55) !important; }
 [data-light] .text-white\/40,
 [data-light] .text-white\/35,
-[data-light] .text-white\/30 { color: hsla(var(--foreground), 0.45) !important; }
+[data-light] .text-white\/30 { color: hsl(var(--foreground) / 0.45) !important; }
 [data-light] .text-white\/25,
 [data-light] .text-white\/20,
 [data-light] .text-white\/15,
-[data-light] .text-white\/10 { color: hsla(var(--foreground), 0.3) !important; }
+[data-light] .text-white\/10 { color: hsl(var(--foreground) / 0.3) !important; }
 [data-light] .bg-white\/\[0\.02\],
 [data-light] .bg-white\/\[0\.03\],
 [data-light] .bg-white\/\[0\.04\] { background-color: var(--x-subtle-fill) !important; }
 [data-light] .bg-white\/\[0\.06\],
 [data-light] .bg-white\/\[0\.08\] { background-color: var(--x-subtle-fill-hover) !important; }
 [data-light] .border-white\/\[0\.04\],
-[data-light] .border-white\/\[0\.06\] { border-color: hsla(var(--foreground), 0.06) !important; }
+[data-light] .border-white\/\[0\.06\] { border-color: hsl(var(--foreground) / 0.06) !important; }
 [data-light] .border-white\/\[0\.08\],
 [data-light] .border-white\/\[0\.1\],
-[data-light] .border-white\/\[0\.12\] { border-color: hsla(var(--foreground), 0.1) !important; }
+[data-light] .border-white\/\[0\.12\] { border-color: hsl(var(--foreground) / 0.1) !important; }
 [data-light] .border-white\/20,
-[data-light] .border-white\/15 { border-color: hsla(var(--foreground), 0.12) !important; }
-[data-light] .border-white\/10 { border-color: hsla(var(--foreground), 0.06) !important; }
-[data-light] .placeholder-white\/20::placeholder { color: hsla(var(--foreground), 0.3) !important; }
+[data-light] .border-white\/15 { border-color: hsl(var(--foreground) / 0.12) !important; }
+[data-light] .border-white\/10 { border-color: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .placeholder-white\/20::placeholder { color: hsl(var(--foreground) / 0.3) !important; }
 [data-light] .hover\:bg-white\/\[0\.06\]:hover,
 [data-light] .hover\:bg-white\/\[0\.08\]:hover { background-color: var(--x-subtle-fill-hover) !important; }
 [data-light] .hover\:border-white\/\[0\.12\]:hover,
-[data-light] .hover\:border-white\/\[0\.15\]:hover { border-color: hsla(var(--foreground), 0.15) !important; }
+[data-light] .hover\:border-white\/\[0\.15\]:hover { border-color: hsl(var(--foreground) / 0.15) !important; }
 [data-light] .hover\:text-white\/40:hover,
-[data-light] .hover\:text-white\/60:hover { color: hsla(var(--foreground), 0.6) !important; }
-[data-light] .border-t-white\/60 { border-top-color: hsla(var(--foreground), 0.5) !important; }
-[data-light] .border-white\/20 { border-color: hsla(var(--foreground), 0.12) !important; }
+[data-light] .hover\:text-white\/60:hover { color: hsl(var(--foreground) / 0.6) !important; }
+[data-light] .border-t-white\/60 { border-top-color: hsl(var(--foreground) / 0.5) !important; }
+[data-light] .border-white\/20 { border-color: hsl(var(--foreground) / 0.12) !important; }
 [data-light] .from-white\/0 { --tw-gradient-from: transparent !important; }
 [data-light] .floating-particle { background: var(--x-grid-dot) !important; }
 [data-light] .glass-card {
-  background: hsla(var(--card), 0.85) !important;
-  border: 1px solid hsla(var(--foreground), 0.08) !important;
+  background: hsl(var(--card) / 0.85) !important;
+  border: 1px solid hsl(var(--foreground) / 0.08) !important;
   backdrop-filter: blur(20px) !important;
-  box-shadow: 0 2px 16px hsla(var(--foreground), 0.06), 0 1px 4px hsla(var(--foreground), 0.04) !important;
+  box-shadow: 0 2px 16px hsl(var(--foreground) / 0.06), 0 1px 4px hsl(var(--foreground) / 0.04) !important;
 }
 [data-light] .glass-card::before,
 [data-light] .glass-card::after { background: none !important; border: none !important; }
 [data-light] .glass-card .card-shine { opacity: 0 !important; }
 [data-light] .bento-card {
-  background: hsla(var(--card), 0.9) !important;
-  border: 1px solid hsla(var(--foreground), 0.07) !important;
+  background: hsl(var(--card) / 0.9) !important;
+  border: 1px solid hsl(var(--foreground) / 0.07) !important;
   backdrop-filter: blur(16px) !important;
-  box-shadow: 0 2px 12px hsla(var(--foreground), 0.05) !important;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .bento-card::before,
 [data-light] .bento-card::after { display: none !important; }
 [data-light] .testimonial-card {
-  background: hsla(var(--card), 0.8) !important;
-  border: 1px solid hsla(var(--foreground), 0.06) !important;
-  box-shadow: 0 1px 8px hsla(var(--foreground), 0.04) !important;
+  background: hsl(var(--card) / 0.8) !important;
+  border: 1px solid hsl(var(--foreground) / 0.06) !important;
+  box-shadow: 0 1px 8px hsl(var(--foreground) / 0.04) !important;
 }
 [data-light] .testimonial-card::before,
 [data-light] .testimonial-card::after { display: none !important; }
 [data-light] .premium-btn {
-  background: hsla(var(--foreground), 0.06) !important;
-  border: 1px solid hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border: 1px solid hsl(var(--foreground) / 0.1) !important;
   color: hsl(var(--foreground)) !important;
-  box-shadow: 0 1px 4px hsla(var(--foreground), 0.06) !important;
+  box-shadow: 0 1px 4px hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .premium-btn:hover {
-  background: hsla(var(--foreground), 0.1) !important;
-  box-shadow: 0 2px 8px hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--foreground) / 0.1) !important;
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.1) !important;
 }
 [data-light] .premium-btn::before,
 [data-light] .premium-btn::after { display: none !important; }
 [data-light] .glass-btn-effect {
-  background: hsla(var(--card), 0.7) !important;
-  border: 1px solid hsla(var(--foreground), 0.08) !important;
+  background: hsl(var(--card) / 0.7) !important;
+  border: 1px solid hsl(var(--foreground) / 0.08) !important;
   color: hsl(var(--foreground)) !important;
 }
 [data-light] .glass-btn-effect:hover {
-  background: hsla(var(--card), 0.9) !important;
+  background: hsl(var(--card) / 0.9) !important;
 }
 [data-light] .nav-pill {
   background: var(--x-nav-bg) !important;
-  border: 1px solid hsla(var(--foreground), 0.08) !important;
+  border: 1px solid hsl(var(--foreground) / 0.08) !important;
   backdrop-filter: blur(20px) !important;
-  box-shadow: 0 2px 16px hsla(var(--foreground), 0.06) !important;
+  box-shadow: 0 2px 16px hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .nav-pill-scrolled {
   background: var(--x-nav-bg) !important;
-  border-color: hsla(var(--foreground), 0.1) !important;
-  box-shadow: 0 4px 24px hsla(var(--foreground), 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
+  box-shadow: 0 4px 24px hsl(var(--foreground) / 0.08) !important;
 }
 [data-light] .section-divider {
-  background: hsla(var(--card), 0.6) !important;
-  border: 1px solid hsla(var(--foreground), 0.06) !important;
-  box-shadow: 0 2px 20px hsla(var(--foreground), 0.04) !important;
+  background: hsl(var(--card) / 0.6) !important;
+  border: 1px solid hsl(var(--foreground) / 0.06) !important;
+  box-shadow: 0 2px 20px hsl(var(--foreground) / 0.04) !important;
 }
-[data-light] .section-divider::before { background: hsla(var(--foreground), 0.03) !important; }
+[data-light] .section-divider::before { background: hsl(var(--foreground) / 0.03) !important; }
 [data-light] .section-divider::after { background: none !important; }
 [data-light] .stat-card {
-  background: hsla(var(--card), 0.8) !important;
-  border: 1px solid hsla(var(--foreground), 0.06) !important;
-  box-shadow: 0 1px 6px hsla(var(--foreground), 0.04) !important;
+  background: hsl(var(--card) / 0.8) !important;
+  border: 1px solid hsl(var(--foreground) / 0.06) !important;
+  box-shadow: 0 1px 6px hsl(var(--foreground) / 0.04) !important;
 }
 [data-light] .stat-card::before,
 [data-light] .stat-card::after { display: none !important; }
 [data-light] .icon-circle {
-  background: hsla(var(--foreground), 0.04) !important;
-  border: 1px solid hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border: 1px solid hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .glass-pill-badge {
-  background: hsla(var(--foreground), 0.04) !important;
-  border: 1px solid hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.6) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border: 1px solid hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.6) !important;
 }
 [data-light] .premium-badge {
-  background: hsla(var(--foreground), 0.06) !important;
-  border: 1px solid hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border: 1px solid hsl(var(--foreground) / 0.1) !important;
 }
 [data-light] .text-gradient {
-  background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsla(var(--foreground), 0.5) 50%, hsl(var(--foreground)) 100%) !important;
+  background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.5) 50%, hsl(var(--foreground)) 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 [data-light] .card-top-accent::before {
-  background: linear-gradient(90deg, transparent, hsla(var(--foreground), 0.08), transparent) !important;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.08), transparent) !important;
 }
 [data-light] .section-glow-line {
-  background: linear-gradient(90deg, transparent 0%, hsla(var(--foreground), 0.06) 50%, transparent 100%) !important;
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.06) 50%, transparent 100%) !important;
 }
 [data-light] .hero-banner {
-  background: linear-gradient(180deg, var(--x-page-bg) 0%, hsla(var(--foreground), 0.04) 50%, var(--x-page-bg) 100%) !important;
+  background: linear-gradient(180deg, var(--x-page-bg) 0%, hsl(var(--foreground) / 0.04) 50%, var(--x-page-bg) 100%) !important;
 }
 [data-light] input,
 [data-light] textarea {
   color: hsl(var(--foreground)) !important;
-  background: hsla(var(--foreground), 0.03) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
 }
 [data-light] input::placeholder,
-[data-light] textarea::placeholder { color: hsla(var(--foreground), 0.3) !important; }
+[data-light] textarea::placeholder { color: hsl(var(--foreground) / 0.3) !important; }
 [data-light] input:focus,
-[data-light] textarea:focus { border-color: hsla(var(--foreground), 0.2) !important; }
-[data-light] .scroll-progress-bar { background: hsla(var(--foreground), 0.6) !important; }
+[data-light] textarea:focus { border-color: hsl(var(--foreground) / 0.2) !important; }
+[data-light] .scroll-progress-bar { background: hsl(var(--foreground) / 0.6) !important; }
 [data-light] .acct-grid-dot { background: hsl(var(--foreground)) !important; }
 [data-light] .dash-frame {
-  background: hsla(var(--card), 0.95) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 8px 40px hsla(var(--foreground), 0.06), 0 0 0 1px hsla(var(--foreground), 0.03) !important;
+  background: hsl(var(--card) / 0.95) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 8px 40px hsl(var(--foreground) / 0.06), 0 0 0 1px hsl(var(--foreground) / 0.03) !important;
 }
 [data-light] .dash-frame-glow {
-  background: linear-gradient(90deg, transparent 5%, hsla(var(--foreground), 0.04) 30%, hsla(var(--foreground), 0.06) 50%, hsla(var(--foreground), 0.04) 70%, transparent 95%) !important;
+  background: linear-gradient(90deg, transparent 5%, hsl(var(--foreground) / 0.04) 30%, hsl(var(--foreground) / 0.06) 50%, hsl(var(--foreground) / 0.04) 70%, transparent 95%) !important;
 }
-[data-light] .dash-topbar { border-bottom-color: hsla(var(--foreground), 0.05) !important; }
+[data-light] .dash-topbar { border-bottom-color: hsl(var(--foreground) / 0.05) !important; }
 [data-light] .dash-avatar {
-  background: hsla(var(--foreground), 0.03) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
 }
 [data-light] .dash-topbar-btn {
-  background: hsla(var(--foreground), 0.03) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
-  color: hsla(var(--foreground), 0.3) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
+  color: hsl(var(--foreground) / 0.3) !important;
 }
-[data-light] .dash-sidebar { border-right-color: hsla(var(--foreground), 0.05) !important; }
-[data-light] .dash-nav-item { color: hsla(var(--foreground), 0.35) !important; }
+[data-light] .dash-sidebar { border-right-color: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .dash-nav-item { color: hsl(var(--foreground) / 0.35) !important; }
 [data-light] .dash-nav-item:hover {
-  color: hsla(var(--foreground), 0.55) !important;
-  background: hsla(var(--foreground), 0.03) !important;
+  color: hsl(var(--foreground) / 0.55) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
 }
 [data-light] .dash-nav-active {
-  color: hsla(var(--foreground), 0.85) !important;
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  color: hsl(var(--foreground) / 0.85) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
-[data-light] .dash-mobile-tabs { border-bottom-color: hsla(var(--foreground), 0.05) !important; }
+[data-light] .dash-mobile-tabs { border-bottom-color: hsl(var(--foreground) / 0.05) !important; }
 [data-light] .acct-tabs-inner {
-  background: hsla(var(--foreground), 0.02) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
-[data-light] .acct-tab { color: hsla(var(--foreground), 0.35) !important; }
+[data-light] .acct-tab { color: hsl(var(--foreground) / 0.35) !important; }
 [data-light] .acct-tab:hover {
-  color: hsla(var(--foreground), 0.55) !important;
-  background: hsla(var(--foreground), 0.03) !important;
+  color: hsl(var(--foreground) / 0.55) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
 }
 [data-light] .acct-tab-active {
-  color: hsla(var(--foreground), 0.85) !important;
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
+  color: hsl(var(--foreground) / 0.85) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
 }
 [data-light] .dash-quick-action {
-  background: hsla(var(--foreground), 0.02) !important;
-  border-color: hsla(var(--foreground), 0.05) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .dash-qa-icon {
-  background: hsla(var(--foreground), 0.03) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
-  color: hsla(var(--foreground), 0.3) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
+  color: hsl(var(--foreground) / 0.3) !important;
 }
 [data-light] .dash-activity-dot {
-  background: hsla(var(--foreground), 0.1) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
+  background: hsl(var(--foreground) / 0.1) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
 }
-[data-light] .dash-activity-line { background: hsla(var(--foreground), 0.05) !important; }
+[data-light] .dash-activity-line { background: hsl(var(--foreground) / 0.05) !important; }
 [data-light] .acct-stat-card {
-  background: hsla(var(--foreground), 0.02) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .dash-chart-card {
-  background: hsla(var(--foreground), 0.02) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .acct-info-row {
-  background: hsla(var(--foreground), 0.02) !important;
-  border-color: hsla(var(--foreground), 0.05) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .acct-entry-row {
-  background: hsla(var(--foreground), 0.02) !important;
-  border-color: hsla(var(--foreground), 0.05) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .contest-card {
-  background: linear-gradient(165deg, hsla(var(--card), 1) 0%, hsla(var(--muted), 1) 100%) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 4px 20px hsla(var(--foreground), 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
+  background: linear-gradient(165deg, hsl(var(--card) / 1) 0%, hsl(var(--muted) / 1) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 4px 20px hsl(var(--foreground) / 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
 }
 [data-light] .contest-card-glow {
-  background: linear-gradient(90deg, transparent 10%, hsla(var(--foreground), 0.04) 40%, hsla(var(--foreground), 0.06) 50%, hsla(var(--foreground), 0.04) 60%, transparent 90%) !important;
+  background: linear-gradient(90deg, transparent 10%, hsl(var(--foreground) / 0.04) 40%, hsl(var(--foreground) / 0.06) 50%, hsl(var(--foreground) / 0.04) 60%, transparent 90%) !important;
 }
 [data-light] .contest-badge-live {
-  background: hsla(var(--foreground), 0.05) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.7) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.7) !important;
 }
 [data-light] .contest-icon-box,
 [data-light] .contest-prize-icon,
 [data-light] .contest-prize-box {
-  background: hsla(var(--foreground), 0.03) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
-[data-light] .contest-progress-track { background: hsla(var(--foreground), 0.05) !important; }
+[data-light] .contest-progress-track { background: hsl(var(--foreground) / 0.05) !important; }
 [data-light] .contest-progress-fill {
-  background: linear-gradient(90deg, hsla(var(--foreground), 0.1), hsla(var(--foreground), 0.3)) !important;
+  background: linear-gradient(90deg, hsl(var(--foreground) / 0.1), hsl(var(--foreground) / 0.3)) !important;
 }
 [data-light] .contest-enter-btn {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
-  color: hsla(var(--foreground), 0.6) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
+  color: hsl(var(--foreground) / 0.6) !important;
 }
 [data-light] .pricing-card {
-  background: linear-gradient(165deg, hsla(var(--card), 1) 0%, hsla(var(--muted), 1) 100%) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 4px 20px hsla(var(--foreground), 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
+  background: linear-gradient(165deg, hsl(var(--card) / 1) 0%, hsl(var(--muted) / 1) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 4px 20px hsl(var(--foreground) / 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
 }
 [data-light] .pricing-card-glow {
-  background: linear-gradient(90deg, transparent 10%, hsla(var(--foreground), 0.04) 40%, hsla(var(--foreground), 0.06) 50%, hsla(var(--foreground), 0.04) 60%, transparent 90%) !important;
+  background: linear-gradient(90deg, transparent 10%, hsl(var(--foreground) / 0.04) 40%, hsl(var(--foreground) / 0.06) 50%, hsl(var(--foreground) / 0.04) 60%, transparent 90%) !important;
 }
 [data-light] .pricing-tier-icon,
 [data-light] .pricing-feature-check {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
-  color: hsla(var(--foreground), 0.3) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
+  color: hsl(var(--foreground) / 0.3) !important;
 }
 [data-light] .pricing-badge-popular {
-  background: hsla(var(--foreground), 0.05) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.6) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.6) !important;
 }
 [data-light] .pricing-divider {
-  background: linear-gradient(90deg, transparent, hsla(var(--foreground), 0.06), transparent) !important;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.06), transparent) !important;
 }
 [data-light] .pricing-btn {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.7) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.7) !important;
 }
 [data-light] .acct-tier-pill {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.5) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.5) !important;
 }
 [data-light] .notif-badge-count {
-  background: hsla(var(--foreground), 0.8) !important;
+  background: hsl(var(--foreground) / 0.8) !important;
   color: white !important;
 }
 [data-light] .notif-panel {
-  background: hsla(var(--card), 0.98) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 12px 40px hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--card) / 0.98) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 12px 40px hsl(var(--foreground) / 0.1) !important;
 }
-[data-light] .notif-header { border-bottom-color: hsla(var(--foreground), 0.06) !important; }
-[data-light] .notif-item { border-bottom-color: hsla(var(--foreground), 0.04) !important; }
-[data-light] .notif-item:hover { background: hsla(var(--foreground), 0.03) !important; }
-[data-light] .notif-item-unread { background: hsla(var(--foreground), 0.02) !important; }
-[data-light] .notif-item-unread::before { background: hsla(var(--foreground), 0.5) !important; }
+[data-light] .notif-header { border-bottom-color: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .notif-item { border-bottom-color: hsl(var(--foreground) / 0.04) !important; }
+[data-light] .notif-item:hover { background: hsl(var(--foreground) / 0.03) !important; }
+[data-light] .notif-item-unread { background: hsl(var(--foreground) / 0.02) !important; }
+[data-light] .notif-item-unread::before { background: hsl(var(--foreground) / 0.5) !important; }
 [data-light] .notif-item-icon {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .toast-item {
-  background: hsla(var(--card), 0.96) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 8px 30px hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--card) / 0.96) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 8px 30px hsl(var(--foreground) / 0.1) !important;
 }
 [data-light] .toast-icon {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .streak-badge {
-  background: hsla(var(--card), 0.95) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  box-shadow: 0 20px 60px hsla(var(--foreground), 0.1) !important;
+  background: hsl(var(--card) / 0.95) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 20px 60px hsl(var(--foreground) / 0.1) !important;
 }
-[data-light] .streak-particle { background: hsla(var(--foreground), 0.3) !important; }
+[data-light] .streak-particle { background: hsl(var(--foreground) / 0.3) !important; }
 [data-light] .page-hero-banner,
 [data-light] .acct-hero-banner {
-  background: linear-gradient(168deg, hsla(var(--card), 0.98) 0%, hsla(var(--muted), 0.98) 100%) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
-  box-shadow: 0 12px 60px hsla(var(--foreground), 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
+  background: linear-gradient(168deg, hsl(var(--card) / 0.98) 0%, hsl(var(--muted) / 0.98) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
+  box-shadow: 0 12px 60px hsl(var(--foreground) / 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
 }
 [data-light] .page-hero-banner::before,
 [data-light] .acct-hero-banner::before {
-  background: linear-gradient(90deg, transparent 0%, hsla(var(--foreground), 0.06) 20%, hsla(var(--foreground), 0.1) 50%, hsla(var(--foreground), 0.06) 80%, transparent 100%) !important;
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.06) 20%, hsl(var(--foreground) / 0.1) 50%, hsl(var(--foreground) / 0.06) 80%, transparent 100%) !important;
 }
 [data-light] .acct-steps-bar {
-  background: hsla(var(--foreground), 0.02) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .acct-step-num {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.5) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.5) !important;
 }
-[data-light] .acct-step-label { color: hsla(var(--foreground), 0.45) !important; }
+[data-light] .acct-step-label { color: hsl(var(--foreground) / 0.45) !important; }
 [data-light] .acct-step-divider {
-  background: linear-gradient(90deg, transparent, hsla(var(--foreground), 0.1), transparent) !important;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.1), transparent) !important;
 }
 [data-light] .metallic-partners-box {
-  background: linear-gradient(165deg, hsla(var(--card), 0.99) 0%, hsla(var(--muted), 0.98) 100%) !important;
-  border-color: hsla(var(--foreground), 0.06) !important;
-  box-shadow: 0 12px 48px hsla(var(--foreground), 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
+  background: linear-gradient(165deg, hsl(var(--card) / 0.99) 0%, hsl(var(--muted) / 0.98) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
+  box-shadow: 0 12px 48px hsl(var(--foreground) / 0.06), inset 0 1px 0 hsla(0 0% 100%, 0.8) !important;
 }
 [data-light] .metallic-partners-shine {
-  background: linear-gradient(90deg, transparent 0%, hsla(var(--foreground), 0.04) 15%, hsla(var(--foreground), 0.08) 50%, hsla(var(--foreground), 0.04) 85%, transparent 100%) !important;
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.04) 15%, hsl(var(--foreground) / 0.08) 50%, hsl(var(--foreground) / 0.04) 85%, transparent 100%) !important;
 }
 [data-light] .metallic-partner-chip {
-  border-color: hsla(var(--foreground), 0.06) !important;
-  background: hsla(var(--foreground), 0.02) !important;
+  border-color: hsl(var(--foreground) / 0.06) !important;
+  background: hsl(var(--foreground) / 0.02) !important;
 }
 [data-light] .metallic-partner-chip:hover {
-  border-color: hsla(var(--foreground), 0.1) !important;
-  background: hsla(var(--foreground), 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
 }
 [data-light] .upc {
-  background: hsla(var(--card), 0.98) !important;
-  border: 1px solid hsla(var(--foreground), 0.06) !important;
-  box-shadow: 0 8px 32px hsla(var(--foreground), 0.08), 0 1px 3px hsla(var(--foreground), 0.04) !important;
+  background: hsl(var(--card) / 0.98) !important;
+  border: 1px solid hsl(var(--foreground) / 0.06) !important;
+  box-shadow: 0 8px 32px hsl(var(--foreground) / 0.08), 0 1px 3px hsl(var(--foreground) / 0.04) !important;
 }
-[data-light] .upc-photo-area { background: hsla(var(--foreground), 0.03) !important; }
-[data-light] .upc-photo-placeholder { background: linear-gradient(135deg, hsla(var(--foreground), 0.04) 0%, hsla(var(--foreground), 0.02) 100%) !important; }
-[data-light] .upc-initials { color: hsla(var(--foreground), 0.15) !important; }
+[data-light] .upc-photo-area { background: hsl(var(--foreground) / 0.03) !important; }
+[data-light] .upc-photo-placeholder { background: linear-gradient(135deg, hsl(var(--foreground) / 0.04) 0%, hsl(var(--foreground) / 0.02) 100%) !important; }
+[data-light] .upc-initials { color: hsl(var(--foreground) / 0.15) !important; }
 [data-light] .upc-tier {
-  background: hsla(var(--card), 0.85) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.6) !important;
+  background: hsl(var(--card) / 0.85) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.6) !important;
 }
 [data-light] .upc-name { color: hsl(var(--foreground)) !important; }
-[data-light] .upc-verified-svg { color: hsla(var(--foreground), 0.45) !important; }
-[data-light] .upc-bio { color: hsla(var(--foreground), 0.5) !important; }
-[data-light] .upc-stat { color: hsla(var(--foreground), 0.4) !important; }
+[data-light] .upc-verified-svg { color: hsl(var(--foreground) / 0.45) !important; }
+[data-light] .upc-bio { color: hsl(var(--foreground) / 0.5) !important; }
+[data-light] .upc-stat { color: hsl(var(--foreground) / 0.4) !important; }
 [data-light] .upc-follow-btn {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.1) !important;
-  color: hsla(var(--foreground), 0.65) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
+  color: hsl(var(--foreground) / 0.65) !important;
 }
 [data-light] .upc-follow-btn:hover {
-  background: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.85) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.85) !important;
 }
 [data-light] .bg-gradient-to-b.from-transparent.to-black {
   background: linear-gradient(to bottom, transparent, var(--x-page-bg)) !important;
 }
 [data-light] .from-black { --tw-gradient-from: var(--x-page-bg) !important; }
 [data-light] .to-black { --tw-gradient-to: var(--x-page-bg) !important; }
-[data-light] .marquee-content span { color: hsla(var(--foreground), 0.2) !important; }
+[data-light] .marquee-content span { color: hsl(var(--foreground) / 0.2) !important; }
 [data-light] .shimmer-bar {
-  background: linear-gradient(90deg, transparent, hsla(var(--foreground), 0.04), transparent) !important;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.04), transparent) !important;
 }
 
 .site-footer {
@@ -4945,88 +4945,88 @@
   background: var(--x-page-bg) !important;
 }
 [data-light] .footer-bottom-border {
-  border-top-color: hsla(var(--foreground), 0.06) !important;
+  border-top-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .footer-muted-text {
-  color: hsla(var(--foreground), 0.3) !important;
+  color: hsl(var(--foreground) / 0.3) !important;
 }
 [data-light] .footer-link {
-  color: hsla(var(--foreground), 0.3) !important;
+  color: hsl(var(--foreground) / 0.3) !important;
 }
 [data-light] .footer-link:hover {
-  color: hsla(var(--foreground), 0.6) !important;
+  color: hsl(var(--foreground) / 0.6) !important;
 }
 [data-light] .footer-theme-toggle {
-  background: hsla(var(--foreground), 0.04) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.45) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.45) !important;
 }
 [data-light] .footer-theme-toggle:hover {
-  background: hsla(var(--foreground), 0.08) !important;
-  color: hsla(var(--foreground), 0.75) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.75) !important;
 }
 [data-light] .footer-gradient-line {
-  background: linear-gradient(90deg, transparent 0%, hsla(var(--foreground), 0.06) 50%, transparent 100%) !important;
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.06) 50%, transparent 100%) !important;
 }
 [data-light] .bg-white\/80 {
-  background-color: hsla(var(--foreground), 0.4) !important;
+  background-color: hsl(var(--foreground) / 0.4) !important;
 }
 [data-light] .bg-white\/10 {
-  background-color: hsla(var(--foreground), 0.06) !important;
+  background-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .hero-text-stroke {
-  -webkit-text-stroke-color: hsla(var(--foreground), 0.06) !important;
+  -webkit-text-stroke-color: hsl(var(--foreground) / 0.06) !important;
   color: transparent !important;
 }
 [data-light] .from-black\/20 {
-  --tw-gradient-from: hsla(var(--foreground), 0.03) !important;
+  --tw-gradient-from: hsl(var(--foreground) / 0.03) !important;
 }
 [data-light] .bg-white\/\[0\.1\] {
-  background-color: hsla(var(--foreground), 0.06) !important;
+  background-color: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .hover\:text-white\/70:hover {
-  color: hsla(var(--foreground), 0.7) !important;
+  color: hsl(var(--foreground) / 0.7) !important;
 }
 [data-light] .text-white\/45 {
-  color: hsla(var(--foreground), 0.45) !important;
+  color: hsl(var(--foreground) / 0.45) !important;
 }
 [data-light] .text-white\/55 {
-  color: hsla(var(--foreground), 0.55) !important;
+  color: hsl(var(--foreground) / 0.55) !important;
 }
 [data-light] .bg-gradient-to-b.from-black\/20.via-transparent.to-black {
-  background: linear-gradient(to bottom, hsla(var(--foreground), 0.03), transparent, var(--x-page-bg)) !important;
+  background: linear-gradient(to bottom, hsl(var(--foreground) / 0.03), transparent, var(--x-page-bg)) !important;
 }
 [data-light] .animate-pulse {
   animation: none !important;
 }
 [data-light] select {
   color: hsl(var(--foreground)) !important;
-  background: hsla(var(--foreground), 0.03) !important;
-  border-color: hsla(var(--foreground), 0.08) !important;
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
   color-scheme: light !important;
 }
-[data-light] .text-white\/65 { color: hsla(var(--foreground), 0.65) !important; }
-[data-light] .text-white\/12 { color: hsla(var(--foreground), 0.12) !important; }
-[data-light] .hover\:text-white\/80:hover { color: hsla(var(--foreground), 0.8) !important; }
-[data-light] .bg-white\/40 { background-color: hsla(var(--foreground), 0.2) !important; }
-[data-light] .bg-white\/\[0\.3\] { background-color: hsla(var(--foreground), 0.15) !important; }
-[data-light] .border-white\/40 { border-color: hsla(var(--foreground), 0.2) !important; }
-[data-light] .from-black\/80 { --tw-gradient-from: hsla(var(--foreground), 0.06) !important; }
-[data-light] .bg-white\/3 { background-color: hsla(var(--foreground), 0.03) !important; }
-[data-light] .bg-white\/5 { background-color: hsla(var(--foreground), 0.04) !important; }
-[data-light] .bg-white\/\[0\.12\] { background-color: hsla(var(--foreground), 0.07) !important; }
-[data-light] .bg-white\/\[0\.15\] { background-color: hsla(var(--foreground), 0.08) !important; }
-[data-light] .border-white\/\[0\.15\] { border-color: hsla(var(--foreground), 0.1) !important; }
-[data-light] .border-white\/\[0\.2\] { border-color: hsla(var(--foreground), 0.12) !important; }
-[data-light] .hover\:bg-white\/\[0\.1\]:hover { background-color: hsla(var(--foreground), 0.06) !important; }
-[data-light] .hover\:bg-white\/\[0\.12\]:hover { background-color: hsla(var(--foreground), 0.07) !important; }
-[data-light] .hover\:border-white\/\[0\.2\]:hover { border-color: hsla(var(--foreground), 0.14) !important; }
-[data-light] .divide-white\/\[0\.04\] > * + * { border-color: hsla(var(--foreground), 0.04) !important; }
-[data-light] .divide-white\/\[0\.06\] > * + * { border-color: hsla(var(--foreground), 0.06) !important; }
-[data-light] .ring-white\/10 { --tw-ring-color: hsla(var(--foreground), 0.06) !important; }
-[data-light] .focus\:ring-white\/20:focus { --tw-ring-color: hsla(var(--foreground), 0.12) !important; }
+[data-light] .text-white\/65 { color: hsl(var(--foreground) / 0.65) !important; }
+[data-light] .text-white\/12 { color: hsl(var(--foreground) / 0.12) !important; }
+[data-light] .hover\:text-white\/80:hover { color: hsl(var(--foreground) / 0.8) !important; }
+[data-light] .bg-white\/40 { background-color: hsl(var(--foreground) / 0.2) !important; }
+[data-light] .bg-white\/\[0\.3\] { background-color: hsl(var(--foreground) / 0.15) !important; }
+[data-light] .border-white\/40 { border-color: hsl(var(--foreground) / 0.2) !important; }
+[data-light] .from-black\/80 { --tw-gradient-from: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .bg-white\/3 { background-color: hsl(var(--foreground) / 0.03) !important; }
+[data-light] .bg-white\/5 { background-color: hsl(var(--foreground) / 0.04) !important; }
+[data-light] .bg-white\/\[0\.12\] { background-color: hsl(var(--foreground) / 0.07) !important; }
+[data-light] .bg-white\/\[0\.15\] { background-color: hsl(var(--foreground) / 0.08) !important; }
+[data-light] .border-white\/\[0\.15\] { border-color: hsl(var(--foreground) / 0.1) !important; }
+[data-light] .border-white\/\[0\.2\] { border-color: hsl(var(--foreground) / 0.12) !important; }
+[data-light] .hover\:bg-white\/\[0\.1\]:hover { background-color: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .hover\:bg-white\/\[0\.12\]:hover { background-color: hsl(var(--foreground) / 0.07) !important; }
+[data-light] .hover\:border-white\/\[0\.2\]:hover { border-color: hsl(var(--foreground) / 0.14) !important; }
+[data-light] .divide-white\/\[0\.04\] > * + * { border-color: hsl(var(--foreground) / 0.04) !important; }
+[data-light] .divide-white\/\[0\.06\] > * + * { border-color: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .ring-white\/10 { --tw-ring-color: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .focus\:ring-white\/20:focus { --tw-ring-color: hsl(var(--foreground) / 0.12) !important; }
 [data-light] .bg-gradient-to-r.from-white\/\[0\.06\] {
-  background: linear-gradient(to right, hsla(var(--foreground), 0.04), transparent) !important;
+  background: linear-gradient(to right, hsl(var(--foreground) / 0.04), transparent) !important;
 }
 [data-light] .via-transparent { --tw-gradient-via: transparent !important; }
 [data-light] .to-transparent { --tw-gradient-to: transparent !important; }
