@@ -68,58 +68,6 @@ function getBannerGradient(_accent: string) {
   return "linear-gradient(145deg, rgba(40,40,40,0.4) 0%, rgba(10,10,10,0.95) 100%)";
 }
 
-/* ─── sticky CTA ─── */
-function StickyCTA({ partner, onRegister, isComingSoon }: { partner: PartnerData; onRegister: () => void; isComingSoon: boolean }) {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 480);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  if (isComingSoon) return null;
-  return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ y: 80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 80, opacity: 0 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 sm:pb-6"
-        >
-          <div className="max-w-2xl mx-auto">
-            <div className="glass-card p-3 sm:p-4 flex items-center gap-3">
-              <div className="card-shine" />
-              <div className="relative z-[2] flex items-center gap-3 w-full">
-                <div className="hidden sm:flex w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.1] items-center justify-center shrink-0">
-                  {getPartnerIcon(partner.accent)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] text-white/40 font-light truncate">{partner.name}</p>
-                  <p className="text-xs text-white/70 font-display font-light truncate">
-                    Earn {partner.entryPoints ?? 1} draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"} on registration
-                  </p>
-                </div>
-                {partner.registrationUrl && (
-                  <a
-                    href={partner.registrationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={onRegister}
-                    className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black text-sm font-display font-medium hover:bg-white/90 transition-colors"
-                  >
-                    Register Now
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
 
 /* ─── interactive checklist ─── */
 function Checklist({ steps }: { steps: string[] }) {
@@ -569,7 +517,6 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <StickyCTA partner={partner} onRegister={handleRegisterClick} isComingSoon={isComingSoon} />
 
       <main className="relative z-10 pt-32 sm:pt-40 pb-32 sm:pb-40">
         <div className="container mx-auto px-4 max-w-4xl">

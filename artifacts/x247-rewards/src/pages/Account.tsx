@@ -8,7 +8,8 @@ import {
   MapPin, Calendar, Sparkles, Gift, Shield, Eye, EyeOff, Flame, Target,
   Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
   Edit3, Save, X, Award, CreditCard, Settings, LayoutDashboard, Zap,
-  ChevronRight, Star, Bell, Key, Trash2, History
+  ChevronRight, Star, Bell, Key, Trash2, History, Rocket, Medal, TrendingDown,
+  CalendarDays, Infinity as InfinityIcon
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
@@ -63,6 +64,50 @@ const TABS: { id: TabId; label: string; icon: any }[] = [
   { id: "entries", label: "Entries", icon: Trophy },
   { id: "settings", label: "Settings", icon: Settings },
 ];
+
+type TierKey = "free" | "silver" | "gold" | "black";
+const TIER_LIMITS: Record<TierKey, { perContest: number; perMonth: number }> = {
+  free:   { perContest: 1,  perMonth: 29  },
+  silver: { perContest: 3,  perMonth: 69  },
+  gold:   { perContest: 7,  perMonth: 149 },
+  black:  { perContest: 15, perMonth: 299 },
+};
+
+function getTierLimits(tier?: string) {
+  return TIER_LIMITS[(tier as TierKey) || "free"] || TIER_LIMITS.free;
+}
+
+function getMonthlyEntryCount(entries: any[]): number {
+  const now = new Date();
+  return entries.reduce((sum, e) => {
+    const d = new Date(e.submittedAt);
+    if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+      return sum + (e.entryCount || 1);
+    }
+    return sum;
+  }, 0);
+}
+
+const ACHIEVEMENTS: { id: string; label: string; threshold: number; icon: any }[] = [
+  { id: "first",       label: "First Entry",       threshold: 1,   icon: Sparkles },
+  { id: "ten",         label: "10 Entries",        threshold: 10,  icon: Star },
+  { id: "twenty-five", label: "25 Entries",        threshold: 25,  icon: Medal },
+  { id: "fifty",       label: "Half Century",      threshold: 50,  icon: Trophy },
+  { id: "hundred",     label: "Century Club",      threshold: 100, icon: Award },
+  { id: "legend",      label: "X247 Legend",       threshold: 250, icon: Crown },
+];
+
+function getLevelInfo(totalEntries: number) {
+  const levels = [0, 5, 15, 30, 60, 110, 175, 260, 380, 540];
+  let level = 0;
+  for (let i = 0; i < levels.length; i++) {
+    if (totalEntries >= levels[i]) level = i + 1;
+  }
+  const currentBase = levels[level - 1] ?? 0;
+  const nextThreshold = levels[level] ?? currentBase + 200;
+  const progress = nextThreshold > currentBase ? (totalEntries - currentBase) / (nextThreshold - currentBase) : 1;
+  return { level: Math.max(1, level), currentBase, nextThreshold, progress: Math.min(1, Math.max(0, progress)), needed: Math.max(0, nextThreshold - totalEntries) };
+}
 
 function OurPartnersSection() {
   const [partners, setPartners] = useState<any[]>([]);
@@ -563,12 +608,19 @@ function buildEntryHistoryData(entries: any[]) {
   return { last7, sparkData, activityDates, thisWeekTotal, lastWeekTotal };
 }
 
-function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; streak: number }) {
-  const tierLabel = user.membershipTier === "free" ? "Free" : user.membershipTier?.charAt(0).toUpperCase() + user.membershipTier?.slice(1);
+function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entries: any[]; streak: number; onChangeTab?: (id: TabId) => void }) {
+  const tier = (user.membershipTier as TierKey) || "free";
+  const tierLabel = tier === "free" ? "Free" : tier.charAt(0).toUpperCase() + tier.slice(1);
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
   const totalPartners = entries.reduce((s: number, e: any) => s + (e.partnersCompleted || 0), 0);
-  const entryLimitNum = user.membershipTier === "black" ? null : user.membershipTier === "gold" ? 15 : user.membershipTier === "silver" ? 5 : 2;
-  const entryLimit = entryLimitNum === null ? "Unlimited" : String(entryLimitNum);
+  const limits = getTierLimits(tier);
+  const entryLimitNum = limits.perContest;
+  const entryLimit = String(entryLimitNum);
+  const monthlyCap = limits.perMonth;
+  const monthlyUsed = React.useMemo(() => getMonthlyEntryCount(entries), [entries]);
+  const monthlyPct = Math.min(1, monthlyUsed / Math.max(1, monthlyCap));
+  const totalEntries = entries.length;
+  const levelInfo = React.useMemo(() => getLevelInfo(totalEntries), [totalEntries]);
 
   const { last7, sparkData, activityDates, thisWeekTotal, lastWeekTotal } = React.useMemo(
     () => buildEntryHistoryData(entries), [entries]
@@ -715,8 +767,21 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
             </div>
 
             <div className="mb-3">
-              <div className="text-[8px] text-white/20 uppercase tracking-wider font-display mb-1.5">Usage This Contest</div>
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Per Contest</div>
+                <div className="text-[9px] text-white/35 font-light">{Math.min(entries.length, entryLimitNum)}/{entryLimit}</div>
+              </div>
               <UsageGauge used={entries.length} limit={entryLimitNum} />
+            </div>
+
+            <div className="mb-3">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display flex items-center gap-1">
+                  <CalendarDays className="w-2.5 h-2.5" /> Monthly Cap
+                </div>
+                <div className="text-[9px] text-white/35 font-light">{monthlyUsed}/{monthlyCap} · {Math.round(monthlyPct * 100)}%</div>
+              </div>
+              <UsageGauge used={monthlyUsed} limit={monthlyCap} />
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -726,10 +791,85 @@ function OverviewTab({ user, entries, streak }: { user: any; entries: any[]; str
               </div>
               <div className="p-2.5 bg-white/[0.02] border border-white/[0.04] rounded-lg">
                 <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Voice Chat</div>
-                <div className="text-xs text-white/50 font-light mt-0.5">{user.membershipTier === "silver" || user.membershipTier === "free" ? "Off" : "On"}</div>
+                <div className="text-xs text-white/50 font-light mt-0.5">{tier === "silver" || tier === "free" ? "Off" : "On"}</div>
               </div>
             </div>
+            {tier !== "black" && (
+              <button
+                type="button"
+                onClick={() => onChangeTab?.("subscription")}
+                className="w-full mt-3 flex items-center justify-between p-2.5 rounded-lg border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.13] hover:bg-white/[0.04] transition-all group"
+              >
+                <span className="text-[10px] text-white/50 font-light">Upgrade for more entries</span>
+                <ArrowRight className="w-3 h-3 text-white/30 group-hover:text-white/60 group-hover:translate-x-0.5 transition-all" />
+              </button>
+            )}
           </div>
+        </div>
+      </div>
+
+      {/* ─── level progress ─── */}
+      <div className="dash-chart-card mt-7">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Rocket className="w-4 h-4 text-white/30" />
+            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Level {levelInfo.level}</h3>
+          </div>
+          <div className="text-[10px] text-white/30 font-light">
+            {levelInfo.needed > 0 ? `${levelInfo.needed} entries to Level ${levelInfo.level + 1}` : "Max level"}
+          </div>
+        </div>
+        <div className="relative h-2 rounded-full bg-white/[0.04] border border-white/[0.05] overflow-hidden mb-2">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${levelInfo.progress * 100}%` }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-white/30 to-white/60 rounded-full"
+          />
+        </div>
+        <div className="flex items-center justify-between text-[10px] text-white/25 font-light">
+          <span>{totalEntries} total entries</span>
+          <span>{levelInfo.nextThreshold} for next level</span>
+        </div>
+      </div>
+
+      {/* ─── achievements ─── */}
+      <div className="dash-chart-card mt-5">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <Medal className="w-4 h-4 text-white/30" />
+            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Achievements</h3>
+          </div>
+          <span className="text-[10px] text-white/25 font-light">
+            {ACHIEVEMENTS.filter(a => totalEntries >= a.threshold).length}/{ACHIEVEMENTS.length} unlocked
+          </span>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+          {ACHIEVEMENTS.map((a) => {
+            const unlocked = totalEntries >= a.threshold;
+            const Icon = a.icon;
+            return (
+              <div
+                key={a.id}
+                className={`flex flex-col items-center text-center p-3 rounded-xl border transition-all ${
+                  unlocked
+                    ? "bg-white/[0.05] border-white/[0.12] hover:bg-white/[0.07]"
+                    : "bg-white/[0.01] border-white/[0.04] opacity-50"
+                }`}
+                title={unlocked ? `Unlocked at ${a.threshold} entries` : `Reach ${a.threshold} entries to unlock`}
+              >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 border ${
+                  unlocked ? "bg-white/[0.08] border-white/[0.15]" : "bg-white/[0.02] border-white/[0.05]"
+                }`}>
+                  {unlocked ? <Icon className="w-4 h-4 text-white/70" /> : <Lock className="w-3 h-3 text-white/20" />}
+                </div>
+                <div className={`text-[10px] font-display font-light leading-tight ${unlocked ? "text-white/70" : "text-white/25"}`}>
+                  {a.label}
+                </div>
+                <div className="text-[8px] text-white/25 font-light mt-0.5">{a.threshold}</div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </motion.div>
@@ -1009,11 +1149,31 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
 
   const plans = [
     {
+      id: "free",
+      name: "Free",
+      price: 0,
+      tagline: "Start exploring giveaways",
+      features: [
+        `${TIER_LIMITS.free.perContest} entry per contest`,
+        `${TIER_LIMITS.free.perMonth} total entries / month`,
+        "Text AI chat",
+        "Browse all partners",
+        "Standard contest access",
+      ],
+    },
+    {
       id: "silver",
       name: "Silver",
       price: 199,
       tagline: "For casual participants",
-      features: ["5 entries per contest", "Unlimited text chat", "Priority support", "Early access to new partners", "Partner insights"],
+      features: [
+        `${TIER_LIMITS.silver.perContest} entries per contest`,
+        `${TIER_LIMITS.silver.perMonth} total entries / month`,
+        "Unlimited text chat",
+        "Priority support",
+        "Early access to new partners",
+        "Partner insights",
+      ],
     },
     {
       id: "gold",
@@ -1021,14 +1181,31 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
       price: 499,
       tagline: "For dedicated members",
       popular: true,
-      features: ["15 entries per contest", "Voice AI chat", "Verified badge", "Exclusive partner deals", "Priority everything", "VIP support"],
+      features: [
+        `${TIER_LIMITS.gold.perContest} entries per contest`,
+        `${TIER_LIMITS.gold.perMonth} total entries / month`,
+        "Premium AI voice chat",
+        "Verified badge",
+        "Exclusive partner deals",
+        "Priority everything",
+        "VIP support",
+      ],
     },
     {
       id: "black",
       name: "Black",
       price: 999,
       tagline: "The ultimate tier",
-      features: ["Unlimited entries", "Voice AI chat", "Verified badge", "Black exclusive badge", "Early winner announcements", "Private concierge", "Exclusive Black events", "Lifetime priority queue"],
+      features: [
+        `${TIER_LIMITS.black.perContest} entries per contest`,
+        `${TIER_LIMITS.black.perMonth} total entries / month`,
+        "Premium AI voice chat",
+        "Verified + Black badge",
+        "Early winner announcements",
+        "Private concierge",
+        "Exclusive Black events",
+        "Lifetime priority queue",
+      ],
     },
   ];
 
@@ -1067,14 +1244,18 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
                 <div className="text-xs text-white/30 font-light">Active · Renews monthly</div>
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
                 <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Status</div>
                 <div className="text-xs text-white/60 font-light">Active</div>
               </div>
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Entries</div>
-                <div className="text-xs text-white/60 font-light">{activeTier === "black" ? "Unlimited" : activeTier === "gold" ? "15/contest" : "5/contest"}</div>
+                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Per Contest</div>
+                <div className="text-xs text-white/60 font-light">{getTierLimits(activeTier).perContest}</div>
+              </div>
+              <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Per Month</div>
+                <div className="text-xs text-white/60 font-light">{getTierLimits(activeTier).perMonth}</div>
               </div>
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
                 <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Voice Chat</div>
@@ -1090,22 +1271,24 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
         <h3 className="text-base font-display font-light text-white">{activeTier === "free" ? "Choose a Plan" : "Available Plans"}</h3>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {plans.map((plan) => {
           const planIndex = tierOrder.indexOf(plan.id);
           const isCurrent = activeTier === plan.id;
           const isDowngrade = planIndex < activeIndex;
+          const isFree = plan.id === "free";
           const isBlack = plan.id === "black";
           const isGold = plan.id === "gold";
+          const isSilver = plan.id === "silver";
 
           return (
             <div
               key={plan.id}
-              className={`pricing-card ${isBlack ? "pricing-card-black" : ""} ${isGold && plan.popular && activeTier === "free" ? "pricing-card-popular" : ""} ${isCurrent ? "pricing-card-current" : ""}`}
+              className={`pricing-card ${isBlack ? "pricing-card-black" : ""} ${isGold && plan.popular ? "pricing-card-popular" : ""} ${isCurrent ? "pricing-card-current" : ""}`}
             >
               <div className="pricing-card-glow" />
 
-              {plan.popular && activeTier === "free" && (
+              {plan.popular && (
                 <div className="pricing-badge pricing-badge-popular">
                   <Star className="w-2.5 h-2.5" />
                   <span>Most Popular</span>
@@ -1120,16 +1303,25 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
 
               <div className="pricing-head">
                 <div className="pricing-tier-icon">
-                  {isBlack ? <Crown className="w-5 h-5" /> : isGold ? <Award className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
+                  {isBlack ? <Crown className="w-5 h-5" /> : isGold ? <Award className="w-5 h-5" /> : isSilver ? <Shield className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
                 </div>
                 <h4 className="pricing-tier-name">{plan.name}</h4>
                 <p className="pricing-tier-tagline">{plan.tagline}</p>
               </div>
 
               <div className="pricing-price">
-                <span className="pricing-currency">₹</span>
-                <span className="pricing-amount">{plan.price}</span>
-                <span className="pricing-period">/mo</span>
+                {isFree ? (
+                  <>
+                    <span className="pricing-amount">Free</span>
+                    <span className="pricing-period">forever</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="pricing-currency">₹</span>
+                    <span className="pricing-amount">{plan.price}</span>
+                    <span className="pricing-period">/mo</span>
+                  </>
+                )}
               </div>
 
               <div className="pricing-divider" />
@@ -1523,7 +1715,7 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
 
             <div className="dash-content">
               <AnimatePresence mode="wait">
-                {activeTab === "overview" && <OverviewTab user={user} entries={entries} streak={streak} />}
+                {activeTab === "overview" && <OverviewTab user={user} entries={entries} streak={streak} onChangeTab={setActiveTab} />}
                 {activeTab === "profile" && <ProfileTab user={user} onUpdate={handleUserUpdate} />}
                 {activeTab === "subscription" && <SubscriptionTab user={user} onUpdate={handleUserUpdate} />}
                 {activeTab === "entries" && <EntriesTab entries={entries} />}
