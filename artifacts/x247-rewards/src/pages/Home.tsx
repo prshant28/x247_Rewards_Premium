@@ -1,5 +1,83 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useReducedMotion, type Variants } from "framer-motion";
+
+function DrawCountdown() {
+  const getSecondsUntilMidnight = () => {
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0);
+    return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+  };
+
+  const [secs, setSecs] = useState(getSecondsUntilMidnight);
+  const [entries, setEntries] = useState(10247);
+  const [flipped, setFlipped] = useState({ h: false, m: false, s: false });
+
+  useEffect(() => {
+    const tick = setInterval(() => {
+      setSecs((prev) => {
+        const next = prev <= 1 ? getSecondsUntilMidnight() : prev - 1;
+        const cur = prev;
+        const hPrev = Math.floor(cur / 3600);
+        const mPrev = Math.floor((cur % 3600) / 60);
+        const sPrev = cur % 60;
+        const hNext = Math.floor(next / 3600);
+        const mNext = Math.floor((next % 3600) / 60);
+        const sNext = next % 60;
+        setFlipped({ h: hPrev !== hNext, m: mPrev !== mNext, s: sPrev !== sNext });
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(tick);
+  }, []);
+
+  useEffect(() => {
+    const entryTick = setInterval(() => {
+      setEntries((p) => p + Math.floor(Math.random() * 3));
+    }, 4200);
+    return () => clearInterval(entryTick);
+  }, []);
+
+  const h = String(Math.floor(secs / 3600)).padStart(2, "0");
+  const m = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
+  const s = String(secs % 60).padStart(2, "0");
+
+  return (
+    <div className="w-full max-w-2xl mx-auto mb-10 rounded-2xl border border-white/[0.08] bg-white/[0.025] backdrop-blur-sm px-5 py-5 flex flex-col sm:flex-row items-center gap-5 sm:gap-0 sm:justify-between">
+      <div className="flex flex-col items-center sm:items-start gap-1">
+        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Next Daily Draw In</span>
+        <div className="flex items-center gap-2">
+          <span className={`text-2xl sm:text-3xl font-display font-black text-white tabular-nums transition-transform duration-150 ${flipped.h ? "scale-110" : "scale-100"}`}>{h}</span>
+          <span className="text-white/30 text-xl font-light">:</span>
+          <span className={`text-2xl sm:text-3xl font-display font-black text-white tabular-nums transition-transform duration-150 ${flipped.m ? "scale-110" : "scale-100"}`}>{m}</span>
+          <span className="text-white/30 text-xl font-light">:</span>
+          <span className={`text-2xl sm:text-3xl font-display font-black text-white tabular-nums transition-transform duration-150 ${flipped.s ? "scale-110" : "scale-100"}`}>{s}</span>
+        </div>
+        <div className="flex gap-3 text-[9px] text-white/25 uppercase tracking-widest font-body">
+          <span className="w-[2.5rem] text-center">Hours</span>
+          <span className="w-[2.5rem] text-center">Min</span>
+          <span className="w-[2.5rem] text-center">Sec</span>
+        </div>
+      </div>
+
+      <div className="hidden sm:block w-px h-12 bg-white/[0.08]" />
+
+      <div className="flex flex-col items-center gap-0.5">
+        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Live Entries</span>
+        <span className="text-2xl sm:text-3xl font-display font-black text-white tabular-nums">{entries.toLocaleString("en-IN")}</span>
+        <span className="text-[10px] text-white/25 font-body">and counting</span>
+      </div>
+
+      <div className="hidden sm:block w-px h-12 bg-white/[0.08]" />
+
+      <div className="flex flex-col items-center gap-0.5">
+        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Winners Today</span>
+        <span className="text-2xl sm:text-3xl font-display font-black text-white tabular-nums">11</span>
+        <span className="text-[10px] text-white/25 font-body">prizes claimed</span>
+      </div>
+    </div>
+  );
+}
 import { Link } from "wouter";
 import { storeReferralCode } from "@/lib/api";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -29,7 +107,6 @@ import {
   ChevronRight
 } from "lucide-react";
 import { SiWhatsapp, SiTelegram, SiInstagram } from "react-icons/si";
-import Silk from "@/components/Silk";
 import SiteFooter from "@/components/SiteFooter";
 import BorderGlow from "@/components/BorderGlow";
 import DotGrid from "@/components/DotGrid";
@@ -705,8 +782,6 @@ function RewardsCarousel() {
 export default function Home() {
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  const heroY = useTransform(smoothProgress, [0, 0.3], [0, -80]);
-  const heroOpacity = useTransform(smoothProgress, [0, 0.25], [1, 0]);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -754,13 +829,7 @@ export default function Home() {
         
         <section id="register" className="relative min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 px-4 overflow-hidden">
           <div className="absolute inset-0 z-0 overflow-hidden bg-black">
-            <Silk
-              speed={0.1}
-              scale={0.4}
-              color="#1a1a1a"
-              noiseIntensity={0.3}
-              rotation={0}
-            />
+            <div className="absolute inset-0" style={{background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(30,30,30,0.8) 0%, #000 70%)'}} />
             <DotGrid
               dotSize={2}
               gap={28}
@@ -772,15 +841,12 @@ export default function Home() {
               shockStrength={3}
               returnDuration={1.5}
               className="z-[1]"
-              style={{ opacity: 0.6 }}
+              style={{ opacity: 0.55 }}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black z-[2]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black z-[2]" />
           </div>
 
-          <motion.div 
-            style={{ y: heroY, opacity: heroOpacity }}
-            className="relative z-10 text-center w-full max-w-4xl mx-auto flex flex-col items-center px-5 sm:px-6 overflow-hidden"
-          >
+          <div className="relative z-10 text-center w-full max-w-4xl mx-auto flex flex-col items-center px-5 sm:px-6">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -830,6 +896,8 @@ export default function Home() {
               </BorderGlow>
             </motion.div>
 
+            <DrawCountdown />
+
             <HeroBannerSlider />
 
             <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
@@ -853,7 +921,7 @@ export default function Home() {
               </div>
             </div>
 
-          </motion.div>
+          </div>
 
         </section>
 
