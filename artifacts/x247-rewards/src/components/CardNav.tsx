@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { gsap } from "gsap";
-import { ArrowUpRight, User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { ArrowUpRight, User, LogOut, Settings, ChevronDown, BadgeCheck, Diamond, Crown, Star } from "lucide-react";
 import "./CardNav.css";
 
 interface NavLink {
@@ -23,6 +23,8 @@ interface NavItem {
 interface UserInfo {
   fullName: string;
   email: string;
+  membershipTier?: string | null;
+  isVerified?: boolean;
 }
 
 interface CardNavProps {
@@ -265,8 +267,17 @@ const CardNav = ({
                       <span>{getInitials(user.fullName)}</span>
                     </div>
                     <div className="avatar-dropdown-info">
-                      <span className="avatar-dropdown-name">{user.fullName}</span>
+                      <div className="avatar-dropdown-name-row">
+                        <span className="avatar-dropdown-name">{user.fullName}</span>
+                        {user.isVerified && <BadgeCheck className="avatar-dropdown-verified" />}
+                      </div>
                       <span className="avatar-dropdown-email">{user.email}</span>
+                      {user.membershipTier && user.membershipTier !== "free" && (
+                        <span className={`avatar-pro-badge avatar-pro-${user.membershipTier}`}>
+                          {user.membershipTier === "black" ? <Diamond className="w-2.5 h-2.5" /> : user.membershipTier === "gold" ? <Crown className="w-2.5 h-2.5" /> : <Star className="w-2.5 h-2.5" />}
+                          <span>{user.membershipTier === "black" ? "Elite" : user.membershipTier === "gold" ? "Pro" : "Plus"}</span>
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="avatar-dropdown-divider" />

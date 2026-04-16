@@ -471,6 +471,13 @@
   overflow: hidden;
 }
 
+.avatar-dropdown-name-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
 .avatar-dropdown-name {
   font-family: 'Syne', sans-serif;
   font-size: 13px;
@@ -480,6 +487,68 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.avatar-dropdown-verified {
+  width: 13px;
+  height: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  flex-shrink: 0;
+}
+
+.avatar-pro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 999px;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin-top: 4px;
+  width: fit-content;
+}
+.avatar-pro-silver {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.85);
+}
+.avatar-pro-gold {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.avatar-pro-black {
+  background: linear-gradient(135deg, #ffffff 0%, #d8d8d8 50%, #ffffff 100%);
+  background-size: 200% 200%;
+  animation: acctBlackBadgeShine 4s linear infinite;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.avatar-pro-black svg { color: rgba(0, 0, 0, 0.8); }
+
+[data-light] .avatar-dropdown-verified { color: hsl(var(--foreground) / 0.55); }
+[data-light] .avatar-pro-silver {
+  background: hsl(var(--foreground) / 0.08);
+  border-color: hsl(var(--foreground) / 0.18);
+  color: hsl(var(--foreground) / 0.9);
+}
+[data-light] .avatar-pro-gold {
+  background: linear-gradient(135deg, hsl(var(--foreground) / 0.18), hsl(var(--foreground) / 0.05));
+  border-color: hsl(var(--foreground) / 0.3);
+  color: hsl(var(--foreground));
+}
+[data-light] .avatar-pro-black {
+  background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.7) 50%, hsl(var(--foreground)) 100%);
+  background-size: 200% 200%;
+  border-color: hsl(var(--foreground) / 0.5);
+  color: hsl(var(--background));
+}
+[data-light] .avatar-pro-black svg { color: hsl(var(--background)); }
 
 .avatar-dropdown-email {
   font-family: 'Poppins', sans-serif;

@@ -2926,6 +2926,179 @@
   color: rgba(255, 255, 255, 0.8) !important;
 }
 
+.x247-404 {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  overflow: hidden;
+  padding: 24px;
+}
+.x247-404-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  pointer-events: none;
+}
+.x247-404-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, hsl(var(--foreground) / 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.x247-404-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 540px;
+}
+.x247-404-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: hsl(var(--foreground) / 0.05);
+  border: 1px solid hsl(var(--foreground) / 0.1);
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsl(var(--foreground) / 0.6);
+  margin-bottom: 28px;
+}
+.x247-404-number {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(110px, 22vw, 200px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.4) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0 0 12px;
+}
+.x247-404-zero {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.x247-404-sparkle {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  color: hsl(var(--foreground) / 0.4);
+  animation: x247SparkleSpin 6s linear infinite;
+}
+@keyframes x247SparkleSpin {
+  0%, 100% { transform: translateX(-50%) rotate(0deg) scale(1); opacity: 0.4; }
+  50% { transform: translateX(-50%) rotate(180deg) scale(1.15); opacity: 0.8; }
+}
+.x247-404-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(22px, 3.5vw, 30px);
+  font-weight: 500;
+  color: hsl(var(--foreground));
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+.x247-404-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: hsl(var(--foreground) / 0.55);
+  line-height: 1.6;
+  margin: 0 auto 32px;
+  max-width: 420px;
+}
+.x247-404-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.x247-404-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 20px;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+.x247-404-btn-primary {
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+  box-shadow: 0 4px 18px hsl(var(--foreground) / 0.18);
+}
+.x247-404-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px hsl(var(--foreground) / 0.28);
+}
+.x247-404-btn-secondary {
+  background: hsl(var(--foreground) / 0.05);
+  border-color: hsl(var(--foreground) / 0.1);
+  color: hsl(var(--foreground) / 0.8);
+}
+.x247-404-btn-secondary:hover {
+  background: hsl(var(--foreground) / 0.09);
+  border-color: hsl(var(--foreground) / 0.16);
+  color: hsl(var(--foreground));
+}
+.x247-404-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-family: 'Poppins', sans-serif;
+}
+.x247-404-links-label {
+  color: hsl(var(--foreground) / 0.4);
+  font-weight: 300;
+  margin-right: 4px;
+}
+.x247-404-link {
+  color: hsl(var(--foreground) / 0.7);
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+.x247-404-link:hover { color: hsl(var(--foreground)); }
+.x247-404-link-sep { color: hsl(var(--foreground) / 0.2); }
+
 .acct-pro-badge {
   display: inline-flex;
   align-items: center;

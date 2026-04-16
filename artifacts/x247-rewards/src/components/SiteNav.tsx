@@ -26,7 +26,7 @@ interface SiteNavProps {
 export default function SiteNav({ activePage = "home" }: SiteNavProps) {
   const isHome = activePage === "home";
   const [, navigate] = useLocation();
-  const [user, setUser] = useState<{ fullName: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ fullName: string; email: string; membershipTier?: string | null; isVerified?: boolean } | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const checkAuth = () => {
@@ -34,7 +34,7 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
     setLoggedIn(logged);
     if (logged) {
       getCurrentUser().then((u) => {
-        if (u) setUser({ fullName: u.fullName, email: u.email });
+        if (u) setUser({ fullName: u.fullName, email: u.email, membershipTier: (u as any).membershipTier, isVerified: (u as any).isVerified });
         else {
           setLoggedIn(false);
           setUser(null);
