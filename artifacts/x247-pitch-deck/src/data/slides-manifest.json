@@ -1,0 +1,122 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567801",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01Cover.tsx",
+    "title": "Cover — X247 Rewards",
+    "description": "Hero title slide with dark atmospheric background and brand lockup.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567802",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02Problem.tsx",
+    "title": "The Problem",
+    "description": "Three core problems with India's giveaway landscape — no trust, no rewards, no community.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567803",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03Solution.tsx",
+    "title": "The Solution",
+    "description": "X247 Rewards platform overview — four key pillars of the solution.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567804",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04HowItWorks.tsx",
+    "title": "How It Works",
+    "description": "Four-step process: Register → Refer → Enter → Win.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567805",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide05Features.tsx",
+    "title": "Platform Features",
+    "description": "Six core platform features in a 3x2 grid — themes, profiles, verification, referrals, draws, community.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567806",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06Tiers.tsx",
+    "title": "Membership Tiers",
+    "description": "Four membership tiers side by side — Free, Silver, Gold, Black with pricing and benefits.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567807",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07PrizeStats.tsx",
+    "title": "Prize Pool Stats",
+    "description": "Big stat slide — ₹5L+ prizes with interactive donut chart showing prize composition.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567808",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide08ReferralDivider.tsx",
+    "title": "Referral Ecosystem",
+    "description": "Section divider — bold typographic slide introducing the referral program section.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567809",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide09ReferralMechanics.tsx",
+    "title": "Referral Mechanics",
+    "description": "How referrals work — stats on the left, four-step explanation on the right.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567810",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10Partners.tsx",
+    "title": "Partner Network",
+    "description": "15 trusted partners — featuring TenzorX, Solution Challenge, Unstop, and Devfolio.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567811",
+    "position": 11,
+    "filepath": "src/pages/slides/Slide11Community.tsx",
+    "title": "Community Growth",
+    "description": "Member growth from 800 to 10,000+ with interactive area chart — Sep 2025 to Mar 2026.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567812",
+    "position": 12,
+    "filepath": "src/pages/slides/Slide12UX.tsx",
+    "title": "User Experience",
+    "description": "Dashboard feature list — five key capabilities for serious platform users.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567813",
+    "position": 13,
+    "filepath": "src/pages/slides/Slide13Trust.tsx",
+    "title": "Trust & Verification",
+    "description": "Full-bleed dark background slide — verified membership benefits and trust signals.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567814",
+    "position": 14,
+    "filepath": "src/pages/slides/Slide14WhyX247.tsx",
+    "title": "Why X247?",
+    "description": "Four differentiators on the left, interactive bar chart showing daily entries by tier on the right.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567815",
+    "position": 15,
+    "filepath": "src/pages/slides/Slide15Closing.tsx",
+    "title": "Join X247 Rewards",
+    "description": "Closing slide — brand lockup with website link and key metrics.",
+    "speakerNotes": ""
+  }
+]

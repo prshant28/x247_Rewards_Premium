@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/x247-pitch-deck/"
+title = "X247 Rewards — Marketing Deck"
+version = "1.0.0"
+id = "artifacts/x247-pitch-deck"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/x247-pitch-deck/" ]
+localPort = 19295
+
+[services.development]
+run = "pnpm --filter @workspace/x247-pitch-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/x247-pitch-deck", "run", "build" ]
+publicDir = "artifacts/x247-pitch-deck/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19295"
+BASE_PATH = "/x247-pitch-deck/"

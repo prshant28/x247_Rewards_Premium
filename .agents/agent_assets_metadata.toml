@@ -78,3 +78,21 @@ id = "x_JHUS4VmmiAaGY9ZCK7s"
 uri = "file://artifacts/x247-hero-animation/public/images/trophy.png"
 type = "image"
 title = "dark abstract trophy silhouette"
+
+[[generated]]
+id = "kZ3TvB_WgvC8RpxeZfTj8"
+uri = "file://artifacts/x247-pitch-deck/public/slide-hero-bg.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "ljPaFOl_cZZ18VMrvPkma"
+uri = "file://artifacts/x247-pitch-deck/public/slide-grid-bg.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "4zaESUgI8SMa5HU-5uSpo"
+uri = "file://artifacts/x247-pitch-deck/public/slide-prize-bg.png"
+type = "image"
+title = "generated_image"
