@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/x247-hero-animation/"
+title = "X247 Hero Animation"
+version = "1.0.0"
+id = "artifacts/x247-hero-animation"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/x247-hero-animation/" ]
+localPort = 18298
+
+[services.development]
+run = "pnpm --filter @workspace/x247-hero-animation run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/x247-hero-animation", "run", "build" ]
+publicDir = "artifacts/x247-hero-animation/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18298"
+BASE_PATH = "/x247-hero-animation/"
