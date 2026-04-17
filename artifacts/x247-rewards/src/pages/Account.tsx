@@ -1926,7 +1926,7 @@ export default function Account() {
                       transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                       className="text-[1.8rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-3 sm:mb-4 tracking-tight leading-[1.1]"
                     >
-                      <span className="text-gradient">Your Rewards Hub</span>
+                      <span className="text-gradient">Your Rewards Hub </span>
                     </motion.h1>
 
                     <motion.p

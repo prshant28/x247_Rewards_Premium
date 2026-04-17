@@ -20,6 +20,10 @@ author = "agent"
 task = "workflow.run"
 args = "Start application"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start Backend"
+
 [[workflows.workflow]]
 name = "Start application"
 author = "agent"
@@ -31,6 +35,18 @@ outputType = "webview"
 task = "shell.exec"
 args = "PORT=26167 pnpm --filter @workspace/x247-rewards run dev"
 waitForPort = 26167
+
+[[workflows.workflow]]
+name = "Start Backend"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm --filter @workspace/api-server run dev"
+waitForPort = 8080
+
+[workflows.workflow.metadata]
+outputType = "console"
 
 [agent]
 stack = "PNPM_WORKSPACE"
@@ -114,4 +130,5 @@ defaultBucketID = "replit-objstore-ba74a24d-d922-4a5b-bab3-30f1748ae509"
 [userenv]
 
 [userenv.shared]
-VAPID_PUBLIC_KEY = "BBuKIc4qPwx7gSxfOllqNoZhU2hMs2JkD6FIVmB64kdsjVxsi2tMrSenmlf9gym8G902xWIvJWX-0YfQB2bgYiM"
+VAPID_PUBLIC_KEY = "BJ8D-OmQozqchaHrMTvkFdQR8i1psbkvmBA0xxG6WGHRkUE4X26ekTOxLyj_alpAmJ88BWtcpK3zm65M61qVsNI"
+VAPID_PRIVATE_KEY = "RTWSXRH2ukaQiYqOUztu5ptFwXuXoWklCs48BWh0lf0"
