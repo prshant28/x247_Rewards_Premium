@@ -127,19 +127,26 @@ function OurPartnersSection() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-8 max-w-xl mx-auto"
+      className="mb-6"
     >
       <div className="metallic-partners-box">
         <div className="metallic-partners-glow" />
         <div className="metallic-partners-shine" />
         <div className="relative z-[2]">
-          <div className="flex items-center justify-center gap-2 mb-5">
+          <div className="flex items-center justify-between mb-4">
             <div className="glass-pill-badge">
               <Sparkles className="w-3 h-3 text-white/50 mr-2" />
               Our Partners
             </div>
+            <Link
+              href="/partners"
+              className="inline-flex items-center gap-1 text-[10px] text-white/30 hover:text-white/50 font-display uppercase tracking-widest transition-colors"
+            >
+              View All
+              <ChevronRight className="w-3 h-3" />
+            </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {partners.map((partner) => (
               <Link
                 key={partner.id}
@@ -155,18 +162,41 @@ function OurPartnersSection() {
               </Link>
             ))}
           </div>
-          <Link
-            href="/partners"
-            className="mt-4 inline-flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/50 font-display uppercase tracking-widest transition-colors"
-          >
-            View All Partners
-            <ChevronRight className="w-3 h-3" />
-          </Link>
         </div>
       </div>
     </motion.div>
   );
 }
+
+const GUEST_FEATURES = [
+  {
+    icon: Trophy,
+    title: "Daily Giveaways",
+    desc: "Enter premium contests every single day. New prizes added constantly.",
+  },
+  {
+    icon: Zap,
+    title: "Instant Entries",
+    desc: "One-click entry system. Track all your submissions in real time.",
+  },
+  {
+    icon: Shield,
+    title: "Verified Winners",
+    desc: "Transparent draws with publicly announced winners. No catch.",
+  },
+  {
+    icon: Crown,
+    title: "Membership Tiers",
+    desc: "Unlock Silver, Gold & Black tiers for more entries and exclusive perks.",
+  },
+];
+
+const GUEST_STATS = [
+  { value: "10K+", label: "Members" },
+  { value: "₹5L+", label: "Prizes Won" },
+  { value: "Daily", label: "Giveaways" },
+  { value: "100%", label: "Free to Join" },
+];
 
 function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   const [mode, setMode] = useState<AuthMode>("login");
@@ -225,91 +255,183 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
-      <div className="glass-card p-6 sm:p-10 max-w-xl mx-auto">
-        <div className="card-shine" />
+    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
+      <div className="guest-auth-card">
+        <div className="guest-auth-card-glow" />
+        <div className="guest-auth-card-shine" />
         <div className="relative z-[2]">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-              <User className="w-6 h-6 text-white/40" />
+
+          <div className="flex items-center justify-center mb-6">
+            <div className="guest-auth-icon-wrap">
+              <div className="guest-auth-icon-ring" />
+              {mode === "login"
+                ? <Key className="w-5 h-5 text-white/50 relative z-[1]" />
+                : <Sparkles className="w-5 h-5 text-white/50 relative z-[1]" />
+              }
             </div>
           </div>
 
-          <div className="flex gap-1 mb-6 p-1 bg-white/[0.02] rounded-xl border border-white/[0.04]">
+          <h2 className="text-center text-lg font-display font-light text-white/90 mb-1">
+            {mode === "login" ? "Welcome back" : "Join X247 Rewards"}
+          </h2>
+          <p className="text-center text-xs text-white/30 font-light mb-6">
+            {mode === "login" ? "Sign in to your account to continue" : "Create your free account in seconds"}
+          </p>
+
+          <div className="guest-auth-tabs mb-6">
             <button
               onClick={() => { setMode("login"); setError(""); }}
-              className={`flex-1 py-2 px-3 rounded-lg text-sm font-display font-light transition-all ${mode === "login" ? "bg-white/[0.06] text-white border border-white/[0.08]" : "text-white/40"}`}
+              className={`guest-auth-tab ${mode === "login" ? "guest-auth-tab-active" : ""}`}
             >
-              Login
+              <Key className="w-3.5 h-3.5" />
+              Sign In
             </button>
             <button
               onClick={() => { setMode("register"); setError(""); }}
-              className={`flex-1 py-2 px-3 rounded-lg text-sm font-display font-light transition-all ${mode === "register" ? "bg-white/[0.06] text-white border border-white/[0.08]" : "text-white/40"}`}
+              className={`guest-auth-tab ${mode === "register" ? "guest-auth-tab-active" : ""}`}
             >
+              <Sparkles className="w-3.5 h-3.5" />
               Create Account
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            {mode === "register" && (
-              <input
-                type="text"
-                placeholder="Full Name *"
-                value={form.fullName}
-                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12]"
-              />
-            )}
-            <input
-              type="email"
-              placeholder="Email *"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12]"
-            />
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password *"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12] pr-10"
-              />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/40">
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-            {mode === "register" && (
-              <>
-                <input
-                  type="tel"
-                  placeholder="Phone"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12]"
-                />
-                <input
-                  type="text"
-                  placeholder="City"
-                  value={form.city}
-                  onChange={(e) => setForm({ ...form, city: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12]"
-                />
-              </>
-            )}
-
-            {error && (
-              <p className="text-xs text-red-400/60 font-light">{error}</p>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white font-light hover:bg-white/[0.08] transition-all disabled:opacity-30"
+          <AnimatePresence mode="wait">
+            <motion.form
+              key={mode}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25 }}
+              onSubmit={handleSubmit}
+              className="space-y-3"
             >
-              {loading ? "..." : mode === "login" ? "Sign In" : "Create Account"}
-            </button>
-          </form>
+              {mode === "register" && (
+                <div className="guest-input-wrap">
+                  <User className="guest-input-icon" />
+                  <input
+                    type="text"
+                    placeholder="Full Name *"
+                    value={form.fullName}
+                    onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                    className="guest-input"
+                  />
+                </div>
+              )}
+
+              <div className="guest-input-wrap">
+                <Mail className="guest-input-icon" />
+                <input
+                  type="email"
+                  placeholder="Email Address *"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="guest-input"
+                />
+              </div>
+
+              <div className="guest-input-wrap">
+                <Lock className="guest-input-icon" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password *"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="guest-input pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40 transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+
+              {mode === "register" && (
+                <>
+                  <div className="guest-input-wrap">
+                    <Phone className="guest-input-icon" />
+                    <input
+                      type="tel"
+                      placeholder="Phone Number"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      className="guest-input"
+                    />
+                  </div>
+                  <div className="guest-input-wrap">
+                    <MapPin className="guest-input-icon" />
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={form.city}
+                      onChange={(e) => setForm({ ...form, city: e.target.value })}
+                      className="guest-input"
+                    />
+                  </div>
+                </>
+              )}
+
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="flex items-center gap-2 px-3 py-2 bg-red-500/[0.06] border border-red-500/[0.12] rounded-xl"
+                  >
+                    <X className="w-3.5 h-3.5 text-red-400/60 shrink-0" />
+                    <p className="text-xs text-red-400/70 font-light">{error}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="guest-auth-submit-btn"
+              >
+                {loading ? (
+                  <div className="w-4 h-4 border border-white/30 border-t-white/80 rounded-full animate-spin" />
+                ) : mode === "login" ? (
+                  <>
+                    <Key className="w-4 h-4" />
+                    Sign In to Dashboard
+                    <ArrowRight className="w-4 h-4 ml-auto" />
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    Create Free Account
+                    <ArrowRight className="w-4 h-4 ml-auto" />
+                  </>
+                )}
+              </button>
+
+              {mode === "register" && (
+                <p className="text-center text-[10px] text-white/20 font-light pt-1">
+                  By creating an account you agree to our terms. Free forever.
+                </p>
+              )}
+            </motion.form>
+          </AnimatePresence>
+
+          <div className="mt-6 pt-5 border-t border-white/[0.05] flex items-center justify-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <Shield className="w-3 h-3 text-white/20" />
+              <span className="text-[10px] text-white/20 font-light">Secure</span>
+            </div>
+            <div className="w-px h-3 bg-white/[0.06]" />
+            <div className="flex items-center gap-1.5">
+              <BadgeCheck className="w-3 h-3 text-white/20" />
+              <span className="text-[10px] text-white/20 font-light">Verified Platform</span>
+            </div>
+            <div className="w-px h-3 bg-white/[0.06]" />
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-3 h-3 text-white/20" />
+              <span className="text-[10px] text-white/20 font-light">Instant Access</span>
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -1898,6 +2020,7 @@ export default function Account() {
       <main className="relative z-10 pt-24 pb-20 sm:pt-32 sm:pb-32">
         <div className={`container mx-auto px-3 sm:px-4 ${user ? "max-w-5xl" : "max-w-4xl"}`}>
 
+          {/* Hero Banner */}
           <motion.div
             initial="hidden"
             animate="visible"
@@ -1905,7 +2028,7 @@ export default function Account() {
             custom={0}
             className="text-center mb-8 sm:mb-12"
           >
-            <div className="acct-hero-banner">
+            <div className="acct-hero-banner" style={{ overflow: user ? "hidden" : "visible" }}>
               <div className="acct-hero-banner-glow" />
               <div className="acct-hero-banner-inner">
                 <motion.div
@@ -1915,7 +2038,7 @@ export default function Account() {
                   className="glass-pill-badge mb-4 sm:mb-6"
                 >
                   <Shield className="w-3 h-3 text-white/50 mr-2" />
-                  My Account
+                  {user ? "My Account" : "X247 Rewards Platform"}
                 </motion.div>
 
                 {!user && (
@@ -1924,24 +2047,41 @@ export default function Account() {
                       initial={{ opacity: 0, y: 24 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                      className="text-[1.8rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-3 sm:mb-4 tracking-tight leading-[1.1]"
+                      className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-3 sm:mb-4 tracking-tight leading-[1.15] px-2"
+                      style={{ overflow: "visible" }}
                     >
-                      <span className="text-gradient">Your Rewards Hub </span>
+                      <span className="text-gradient" style={{ paddingBottom: "0.1em", display: "inline-block" }}>Your Rewards Hub</span>
                     </motion.h1>
 
                     <motion.p
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                      className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed mb-6 sm:mb-8"
+                      className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed mb-8 sm:mb-10"
                     >
-                      Sign in or create an account to track your giveaway entries
+                      Enter daily giveaways, track your wins, and unlock exclusive membership perks — all in one place.
                     </motion.p>
 
+                    {/* Stats Row */}
                     <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ delay: 0.75, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      className="grid grid-cols-4 gap-3 sm:gap-5 max-w-xl mx-auto mb-8 sm:mb-10"
+                    >
+                      {GUEST_STATS.map((stat) => (
+                        <div key={stat.label} className="guest-stat-cell">
+                          <div className="guest-stat-value">{stat.value}</div>
+                          <div className="guest-stat-label">{stat.label}</div>
+                        </div>
+                      ))}
+                    </motion.div>
+
+                    {/* Steps Bar */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.9, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                       className="acct-steps-bar"
                     >
                       <div className="acct-step-item">
@@ -1983,10 +2123,45 @@ export default function Account() {
           ) : user ? (
             <Dashboard user={user} entries={entries} onLogout={handleLogout} />
           ) : (
-            <>
-              <OurPartnersSection />
-              <AuthForm onSuccess={loadUser} />
-            </>
+            <div className="guest-layout">
+              {/* Left column: Features + Partners */}
+              <div className="guest-left-col">
+                {/* Feature Cards */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="mb-6"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {GUEST_FEATURES.map((feat, i) => (
+                      <motion.div
+                        key={feat.title}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        className="guest-feature-card"
+                      >
+                        <div className="guest-feature-icon-wrap">
+                          <feat.icon className="w-4 h-4 text-white/50" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-display font-light text-white/80 mb-0.5">{feat.title}</div>
+                          <div className="text-xs text-white/35 font-light leading-relaxed">{feat.desc}</div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                <OurPartnersSection />
+              </div>
+
+              {/* Right column: Auth Form */}
+              <div className="guest-right-col">
+                <AuthForm onSuccess={loadUser} />
+              </div>
+            </div>
           )}
 
         </div>

@@ -6749,3 +6749,338 @@
   background: hsl(var(--foreground) / 0.05) !important;
   border-color: hsl(var(--foreground) / 0.1) !important;
 }
+
+/* ─────────────────────────────────────────
+   GUEST / UNAUTHENTICATED PAGE STYLES
+   ───────────────────────────────────────── */
+
+/* Two-column layout for guest view */
+.guest-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 768px) {
+  .guest-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+}
+@media (min-width: 1024px) {
+  .guest-layout {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 32px;
+  }
+}
+
+.guest-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.guest-right-col {
+  position: relative;
+}
+@media (min-width: 768px) {
+  .guest-right-col {
+    position: sticky;
+    top: 100px;
+  }
+}
+
+/* Stats cells in hero */
+.guest-stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+}
+
+.guest-stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+@media (min-width: 640px) {
+  .guest-stat-value { font-size: 1.15rem; }
+}
+
+.guest-stat-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.28);
+  text-transform: uppercase;
+}
+
+/* Feature cards grid */
+.guest-feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  backdrop-filter: blur(16px);
+  transition: background 0.25s, border-color 0.25s;
+}
+.guest-feature-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.guest-feature-icon-wrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Premium Auth Card */
+.guest-auth-card {
+  position: relative;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(160deg,
+    rgba(14, 14, 18, 0.98) 0%,
+    rgba(8, 8, 12, 0.99) 50%,
+    rgba(12, 12, 17, 0.98) 100%
+  );
+  backdrop-filter: blur(48px) saturate(1.4);
+  -webkit-backdrop-filter: blur(48px) saturate(1.4);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 32px 100px rgba(0, 0, 0, 0.6),
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+  padding: 32px 28px;
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .guest-auth-card { padding: 40px 36px; border-radius: 32px; }
+}
+
+.guest-auth-card-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 50% 100%, rgba(255,255,255,0.015) 0%, transparent 60%);
+}
+
+.guest-auth-card-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,0.2) 25%,
+    rgba(255,255,255,0.35) 50%,
+    rgba(255,255,255,0.2) 75%,
+    transparent 100%
+  );
+}
+
+.guest-auth-icon-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.guest-auth-icon-ring {
+  position: absolute;
+  inset: 4px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%);
+}
+
+/* Auth mode tabs */
+.guest-auth-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+}
+
+.guest-auth-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.35);
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+}
+.guest-auth-tab:hover {
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.02);
+}
+.guest-auth-tab-active {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Input fields with icons */
+.guest-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.guest-input-icon {
+  position: absolute;
+  left: 14px;
+  width: 15px;
+  height: 15px;
+  color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.guest-input {
+  width: 100%;
+  padding: 12px 14px 12px 38px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.85);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.guest-input::placeholder {
+  color: rgba(255, 255, 255, 0.18);
+}
+.guest-input:focus {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.03), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* Submit button */
+.guest-auth-submit-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  margin-top: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px rgba(0,0,0,0.2);
+}
+.guest-auth-submit-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 24px rgba(0,0,0,0.28);
+  transform: translateY(-1px);
+}
+.guest-auth-submit-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Light theme overrides */
+[data-light] .guest-stat-cell {
+  background: hsl(var(--foreground) / 0.04);
+  border-color: hsl(var(--foreground) / 0.08);
+}
+[data-light] .guest-stat-value { color: hsl(var(--foreground) / 0.9); }
+[data-light] .guest-stat-label { color: hsl(var(--foreground) / 0.4); }
+[data-light] .guest-feature-card {
+  background: hsl(var(--foreground) / 0.03);
+  border-color: hsl(var(--foreground) / 0.08);
+}
+[data-light] .guest-feature-card:hover {
+  background: hsl(var(--foreground) / 0.05);
+  border-color: hsl(var(--foreground) / 0.12);
+}
+[data-light] .guest-feature-icon-wrap {
+  background: hsl(var(--foreground) / 0.04);
+  border-color: hsl(var(--foreground) / 0.08);
+}
+[data-light] .guest-auth-card {
+  background: hsl(var(--background) / 0.98);
+  border-color: hsl(var(--foreground) / 0.1);
+}
+[data-light] .guest-auth-tabs {
+  background: hsl(var(--foreground) / 0.03);
+  border-color: hsl(var(--foreground) / 0.07);
+}
+[data-light] .guest-auth-tab { color: hsl(var(--foreground) / 0.4); }
+[data-light] .guest-auth-tab-active {
+  background: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+  color: hsl(var(--foreground) / 0.85) !important;
+}
+[data-light] .guest-input {
+  background: hsl(var(--foreground) / 0.03);
+  border-color: hsl(var(--foreground) / 0.08);
+  color: hsl(var(--foreground) / 0.85);
+}
+[data-light] .guest-input:focus {
+  border-color: hsl(var(--foreground) / 0.16);
+  background: hsl(var(--foreground) / 0.04);
+}
+[data-light] .guest-auth-submit-btn {
+  background: hsl(var(--foreground) / 0.07);
+  border-color: hsl(var(--foreground) / 0.12);
+  color: hsl(var(--foreground) / 0.9);
+}
+[data-light] .guest-auth-submit-btn:hover:not(:disabled) {
+  background: hsl(var(--foreground) / 0.1);
+  border-color: hsl(var(--foreground) / 0.18);
+}
