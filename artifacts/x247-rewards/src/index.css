@@ -8120,39 +8120,41 @@
   pointer-events: none;
 }
 
-/* ─ Orbs ─ */
+/* ─ Subtle accent glow points (replacing heavy orbs) ─ */
 .pub2-orb {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(70px);
   pointer-events: none;
   will-change: transform;
 }
 .pub2-orb-1 {
-  width: 420px; height: 420px;
-  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
-  top: -80px; left: -100px;
-  animation: pub2-drift1 12s ease-in-out infinite alternate;
+  width: 1px; height: 1px;
+  background: rgba(255,255,255,0.6);
+  box-shadow: 0 0 80px 60px rgba(255,255,255,0.03);
+  top: 15%; left: 20%;
+  animation: pub2-drift1 14s ease-in-out infinite alternate;
 }
 .pub2-orb-2 {
-  width: 340px; height: 340px;
-  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-  bottom: 20px; right: -80px;
-  animation: pub2-drift2 9s ease-in-out infinite alternate;
+  width: 1px; height: 1px;
+  background: rgba(255,255,255,0.5);
+  box-shadow: 0 0 60px 40px rgba(255,255,255,0.025);
+  top: 30%; right: 18%;
+  animation: pub2-drift2 10s ease-in-out infinite alternate;
 }
 .pub2-orb-3 {
-  width: 280px; height: 280px;
-  background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
-  top: 40%; left: 60%;
-  animation: pub2-drift1 15s ease-in-out infinite alternate-reverse;
+  width: 1px; height: 1px;
+  background: rgba(255,255,255,0.4);
+  box-shadow: 0 0 50px 30px rgba(255,255,255,0.02);
+  top: 60%; left: 55%;
+  animation: pub2-drift1 18s ease-in-out infinite alternate-reverse;
 }
 @keyframes pub2-drift1 {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(30px, 20px) scale(1.08); }
+  from { transform: translate(0, 0); }
+  to   { transform: translate(20px, 14px); }
 }
 @keyframes pub2-drift2 {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(-25px, -15px) scale(0.95); }
+  from { transform: translate(0, 0); }
+  to   { transform: translate(-16px, -10px); }
 }
 
 /* ─ Particles ─ */
@@ -8391,6 +8393,62 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+
+/* ─ Action row (Follow + Share) ─ */
+.pub2-action-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ─ Follow button ─ */
+.pub2-follow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 99px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+.pub2-follow-btn:hover {
+  background: rgba(255,255,255,0.88);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255,255,255,0.18);
+}
+.pub2-follow-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ─ Unfollow button ─ */
+.pub2-unfollow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  background: rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 99px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pub2-unfollow-btn:hover {
+  background: rgba(255,60,60,0.12);
+  border-color: rgba(255,80,80,0.25);
+  color: rgba(255,140,140,0.90);
+}
+.pub2-unfollow-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ─ Share button ─ */
 .pub2-share-btn {

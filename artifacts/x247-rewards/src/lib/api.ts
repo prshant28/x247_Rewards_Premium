@@ -406,11 +406,44 @@ export async function updateProfile(data: {
 
 export async function getPublicProfile(slug: string): Promise<any | null> {
   try {
-    const res = await fetch(`${API_BASE}/users/profile/${slug}`);
+    const token = getUserToken();
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}/users/profile/${slug}`, { headers });
     if (!res.ok) return null;
     return res.json();
   } catch {
     return null;
+  }
+}
+
+export async function followUser(slug: string): Promise<{ success: boolean; action?: string }> {
+  const token = getUserToken();
+  if (!token) return { success: false };
+  try {
+    const res = await fetch(`${API_BASE}/users/profile/${slug}/follow`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    });
+    if (!res.ok) return { success: false };
+    return res.json();
+  } catch {
+    return { success: false };
+  }
+}
+
+export async function unfollowUser(slug: string): Promise<{ success: boolean }> {
+  const token = getUserToken();
+  if (!token) return { success: false };
+  try {
+    const res = await fetch(`${API_BASE}/users/profile/${slug}/follow`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return { success: false };
+    return res.json();
+  } catch {
+    return { success: false };
   }
 }
 

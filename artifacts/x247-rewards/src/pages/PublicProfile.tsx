@@ -6,12 +6,12 @@ import {
   useScroll, useTransform, useInView,
 } from "framer-motion";
 import SiteFooter from "@/components/SiteFooter";
-import { getPublicProfile } from "@/lib/api";
+import { getPublicProfile, followUser, unfollowUser } from "@/lib/api";
 import {
   Calendar, Shield, MapPin, Share2, Copy, Check, Sparkles,
   Trophy, Ticket, BadgeCheck, Crown, Diamond, Zap,
   Users, ArrowRight, ExternalLink, Award, Target, Flame,
-  Star, Quote, Globe, Lock,
+  Star, Quote, Globe, Lock, UserPlus, UserMinus,
 } from "lucide-react";
 
 /* ─── Badge metadata ─── */
@@ -165,6 +165,10 @@ export default function PublicProfile() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followLoading, setFollowLoading] = useState(false);
 
   /* Mouse parallax for hero orbs */
   const heroRef = useRef<HTMLDivElement>(null);
@@ -193,11 +197,30 @@ export default function PublicProfile() {
     (async () => {
       setLoading(true);
       const data = await getPublicProfile(params.slug);
-      if (data) setProfile(data);
-      else setNotFound(true);
+      if (data) {
+        setProfile(data);
+        setIsFollowing(data.isFollowing ?? false);
+        setFollowersCount(data.followersCount ?? 0);
+        setFollowingCount(data.followingCount ?? 0);
+      } else setNotFound(true);
       setLoading(false);
     })();
   }, [params.slug]);
+
+  const handleFollow = async () => {
+    const token = localStorage.getItem("user_token");
+    if (!token) { window.location.href = "/account"; return; }
+    if (followLoading) return;
+    setFollowLoading(true);
+    if (isFollowing) {
+      const res = await unfollowUser(params.slug);
+      if (res.success) { setIsFollowing(false); setFollowersCount(c => Math.max(0, c - 1)); }
+    } else {
+      const res = await followUser(params.slug);
+      if (res.success) { setIsFollowing(true); setFollowersCount(c => c + 1); }
+    }
+    setFollowLoading(false);
+  };
 
   const share = () => {
     const url = window.location.href;
@@ -271,9 +294,8 @@ export default function PublicProfile() {
         <div className="pub2-hero-grid" />
         <div className="pub2-hero-scanlines" />
         <div className="pub2-hero-sweep" />
-        <HeroParticles />
 
-        {/* Animated orbs with mouse parallax */}
+        {/* Subtle glow points with mouse parallax */}
         <motion.div className="pub2-orb pub2-orb-1" style={{ x: orb1x, y: orb1y }} />
         <motion.div className="pub2-orb pub2-orb-2" style={{ x: orb2x, y: orb2y }} />
         <motion.div className="pub2-orb pub2-orb-3" style={{ x: orb1x, y: orb2y }} />
@@ -353,10 +375,10 @@ export default function PublicProfile() {
             {/* Quick stats in hero */}
             <motion.div variants={fadeUp} custom={3} className="pub2-hero-stats">
               {[
-                { v: profile.stats?.entries ?? 0,         l: "Entries" },
+                { v: followersCount,                       l: "Followers" },
+                { v: followingCount,                       l: "Following" },
                 { v: profile.stats?.contestsJoined ?? 0,  l: "Contests" },
                 { v: earnedBadges.length,                  l: "Badges" },
-                { v: profile.stats?.daysActive ?? 0,       l: "Days" },
               ].map(s => (
                 <div key={s.l} className="pub2-hero-stat">
                   <div className="pub2-hero-stat-val"><AnimatedNumber value={s.v} /></div>
@@ -365,19 +387,48 @@ export default function PublicProfile() {
               ))}
             </motion.div>
 
-            {/* Share button */}
-            <motion.button variants={fadeUp} custom={4} onClick={share} className="pub2-share-btn">
-              <AnimatePresence mode="wait">
-                {copied
-                  ? <motion.span key="ok" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5" /> Link Copied!
-                    </motion.span>
-                  : <motion.span key="sh" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
-                      <Share2 className="w-3.5 h-3.5" /> Share Profile
-                    </motion.span>
-                }
-              </AnimatePresence>
-            </motion.button>
+            {/* Action buttons */}
+            <motion.div variants={fadeUp} custom={4} className="pub2-action-row">
+              {/* Follow / Unfollow — hidden for own profile */}
+              {!profile.isOwnProfile && (
+                <motion.button
+                  onClick={handleFollow}
+                  disabled={followLoading}
+                  className={isFollowing ? "pub2-unfollow-btn" : "pub2-follow-btn"}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  <AnimatePresence mode="wait">
+                    {followLoading ? (
+                      <motion.span key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                        <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
+                      </motion.span>
+                    ) : isFollowing ? (
+                      <motion.span key="unfollow" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                        <UserMinus className="w-3.5 h-3.5" /> Following
+                      </motion.span>
+                    ) : (
+                      <motion.span key="follow" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                        <UserPlus className="w-3.5 h-3.5" /> Follow
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              )}
+
+              {/* Share */}
+              <button onClick={share} className="pub2-share-btn">
+                <AnimatePresence mode="wait">
+                  {copied
+                    ? <motion.span key="ok" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5" /> Copied!
+                      </motion.span>
+                    : <motion.span key="sh" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                        <Share2 className="w-3.5 h-3.5" /> Share
+                      </motion.span>
+                  }
+                </AnimatePresence>
+              </button>
+            </motion.div>
           </motion.div>
         </div>
       </motion.div>
