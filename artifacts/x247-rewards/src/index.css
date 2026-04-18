@@ -7087,7 +7087,7 @@
 .auth-hero-orb-2 {
   width: 220px; height: 220px;
   top: -80px; right: -60px;
-  background: radial-gradient(circle, rgba(180,180,200,0.14) 0%, rgba(180,180,200,0) 70%);
+  background: radial-gradient(circle, rgba(220,220,220,0.13) 0%, rgba(220,220,220,0) 70%);
   animation-delay: -4s;
   animation-duration: 18s;
 }
@@ -7154,7 +7154,7 @@
   font-size: 56px;
   font-weight: 800;
   font-style: italic;
-  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(180,180,200,0.7) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(220,220,220,0.72) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -12179,4 +12179,393 @@
 @media (max-width: 480px) {
   .follow-modal-panel { max-height: 92vh; border-radius: 18px; }
   .follow-row-name { max-width: 130px; }
+}
+
+/* ========================================
+   Account Page — Premium Enhancements
+   ======================================== */
+
+/* Rotating accent ring behind X247 monogram (replaces blue feel with subtle motion) */
+.auth-hero-monogram-ring {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    conic-gradient(from 0deg,
+      transparent 0deg,
+      rgba(255,255,255,0.06) 40deg,
+      rgba(255,255,255,0.18) 90deg,
+      rgba(255,255,255,0.06) 140deg,
+      transparent 180deg,
+      transparent 360deg);
+  mask: radial-gradient(circle, transparent 78px, #000 80px, #000 95px, transparent 97px);
+  -webkit-mask: radial-gradient(circle, transparent 78px, #000 80px, #000 95px, transparent 97px);
+  animation: heroRingSpin 18s linear infinite;
+  opacity: 0.55;
+}
+@media (min-width: 640px) {
+  .auth-hero-monogram-ring { width: 250px; height: 250px; }
+}
+@keyframes heroRingSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.auth-hero-monogram-ring::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.06);
+  animation: heroRingSpin 32s linear infinite reverse;
+}
+
+/* Stat strip — surfaces GUEST_STATS under the hero */
+.acct-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  .acct-stat-strip { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+}
+
+.acct-stat-card {
+  position: relative;
+  padding: 18px 16px;
+  border-radius: 18px;
+  background:
+    linear-gradient(165deg,
+      rgba(22,22,28,0.92) 0%,
+      rgba(12,12,16,0.96) 60%,
+      rgba(16,16,22,0.94) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), border-color 0.3s, background 0.3s;
+  isolation: isolate;
+}
+.acct-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+}
+.acct-stat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(255,255,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+.acct-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.12);
+  background:
+    linear-gradient(165deg,
+      rgba(28,28,34,0.95) 0%,
+      rgba(16,16,22,0.97) 60%,
+      rgba(20,20,26,0.95) 100%);
+}
+.acct-stat-card-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(220,220,220,0.7) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+@media (min-width: 640px) {
+  .acct-stat-card-value { font-size: 28px; }
+}
+.acct-stat-card-label {
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.42);
+}
+@media (min-width: 640px) {
+  .acct-stat-card-label { font-size: 11px; }
+}
+
+/* Live winners ticker — social proof strip */
+.acct-ticker {
+  position: relative;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg,
+      rgba(20,20,26,0.85) 0%,
+      rgba(10,10,14,0.92) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.acct-ticker-label {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.acct-ticker-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34,197,94,0.6);
+  animation: tickerDotPulse 1.6s ease-in-out infinite;
+}
+@keyframes tickerDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+.acct-ticker-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+.acct-ticker-strip {
+  display: flex;
+  gap: 36px;
+  animation: tickerSlide 38s linear infinite;
+  width: max-content;
+}
+@keyframes tickerSlide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.acct-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.55);
+  white-space: nowrap;
+}
+.acct-ticker-item strong {
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+}
+.acct-ticker-item-prize {
+  color: rgba(255,255,255,0.95);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.acct-ticker-item-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+}
+
+/* Upgraded feature cards — bigger, bolder, more catchy */
+.acct-feature-card {
+  position: relative;
+  padding: 22px 18px;
+  border-radius: 20px;
+  background:
+    linear-gradient(165deg,
+      rgba(20,20,26,0.92) 0%,
+      rgba(10,10,14,0.96) 60%,
+      rgba(16,16,22,0.94) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border-color 0.3s, background 0.3s;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 180px;
+}
+.acct-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
+}
+.acct-feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 60% at 100% 0%, rgba(255,255,255,0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+.acct-feature-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,0.14);
+}
+.acct-feature-card:hover::after { opacity: 1; }
+
+.acct-feature-icon-tile {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(155deg,
+      rgba(40,40,48,0.95) 0%,
+      rgba(18,18,24,0.98) 100%);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 4px 14px rgba(0,0,0,0.35);
+  color: rgba(255,255,255,0.85);
+  flex-shrink: 0;
+}
+.acct-feature-icon-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+.acct-feature-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 6px;
+}
+.acct-feature-card-desc {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.42);
+  font-weight: 300;
+}
+.acct-feature-card-num {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.18);
+  font-style: italic;
+}
+
+/* Light theme overrides */
+[data-light] .acct-stat-card {
+  background: linear-gradient(165deg, #ffffff 0%, #fafafa 100%);
+  border-color: rgba(0,0,0,0.07);
+}
+[data-light] .acct-stat-card::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.08) 50%, transparent 100%);
+}
+[data-light] .acct-stat-card:hover {
+  background: linear-gradient(165deg, #ffffff 0%, #f4f4f4 100%);
+  border-color: rgba(0,0,0,0.14);
+}
+[data-light] .acct-stat-card-value {
+  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.7) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-light] .acct-stat-card-label { color: hsl(var(--foreground) / 0.55); }
+
+[data-light] .acct-ticker {
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  border-color: rgba(0,0,0,0.07);
+}
+[data-light] .acct-ticker-label {
+  color: hsl(var(--foreground) / 0.7);
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.08);
+}
+[data-light] .acct-ticker-item { color: hsl(var(--foreground) / 0.6); }
+[data-light] .acct-ticker-item strong { color: hsl(var(--foreground) / 0.92); }
+[data-light] .acct-ticker-item-prize { color: hsl(var(--foreground)); }
+[data-light] .acct-ticker-item-dot { background: rgba(0,0,0,0.25); }
+
+[data-light] .acct-feature-card {
+  background: linear-gradient(165deg, #ffffff 0%, #fafafa 100%);
+  border-color: rgba(0,0,0,0.07);
+}
+[data-light] .acct-feature-card::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.08) 50%, transparent 100%);
+}
+[data-light] .acct-feature-card:hover { border-color: rgba(0,0,0,0.14); }
+[data-light] .acct-feature-icon-tile {
+  background: linear-gradient(155deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.85) 100%);
+  border-color: rgba(0,0,0,0.2);
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 14px rgba(0,0,0,0.18);
+}
+[data-light] .acct-feature-card-title { color: hsl(var(--foreground)); }
+[data-light] .acct-feature-card-desc { color: hsl(var(--foreground) / 0.55); }
+[data-light] .acct-feature-card-num { color: hsl(var(--foreground) / 0.18); }
+
+[data-light] .auth-hero-monogram-ring {
+  background:
+    conic-gradient(from 0deg,
+      transparent 0deg,
+      rgba(255,255,255,0.04) 40deg,
+      rgba(255,255,255,0.12) 90deg,
+      rgba(255,255,255,0.04) 140deg,
+      transparent 180deg,
+      transparent 360deg);
+}
+
+/* Section header — "Why X247 / Built for winners" (theme-aware) */
+.acct-why-spark { color: rgba(255,255,255,0.6); }
+.acct-why-title { color: rgba(255,255,255,0.92); }
+.acct-why-emph { color: rgba(255,255,255,1); }
+[data-light] .acct-why-spark { color: hsl(var(--foreground) / 0.6); }
+[data-light] .acct-why-title { color: hsl(var(--foreground) / 0.92); }
+[data-light] .acct-why-emph { color: hsl(var(--foreground)); }
+
+/* Contrast bumps — keep readability strong in both themes */
+.acct-feature-card-desc { color: rgba(255,255,255,0.55); }
+.acct-stat-card-label { color: rgba(255,255,255,0.55); }
+.acct-ticker-item { color: rgba(255,255,255,0.7); }
+
+/* Reduced-motion: honor user preference */
+@media (prefers-reduced-motion: reduce) {
+  .auth-hero-monogram-ring,
+  .auth-hero-monogram-ring::after { animation: none !important; }
+  .auth-hero-orb { animation: none !important; }
+  .acct-ticker-strip { animation: none !important; transform: translateX(0) !important; }
+  .acct-ticker-dot { animation: none !important; opacity: 1; }
 }

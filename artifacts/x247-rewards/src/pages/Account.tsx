@@ -199,6 +199,17 @@ const GUEST_STATS = [
   { value: "100%", label: "Free to Join" },
 ];
 
+const WINNERS_FEED = [
+  { name: "Rohit S.", prize: "iPhone 15 Pro", city: "Mumbai" },
+  { name: "Priya K.", prize: "₹25,000 Cash", city: "Delhi" },
+  { name: "Arjun M.", prize: "MacBook Air", city: "Bengaluru" },
+  { name: "Neha R.", prize: "PS5 Console", city: "Hyderabad" },
+  { name: "Vikram T.", prize: "₹10,000 Voucher", city: "Pune" },
+  { name: "Ananya G.", prize: "AirPods Pro", city: "Chennai" },
+  { name: "Karan J.", prize: "Apple Watch", city: "Ahmedabad" },
+  { name: "Simran B.", prize: "₹50,000 Cash", city: "Jaipur" },
+];
+
 function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   const [mode, setMode] = useState<AuthMode>("login");
   const [error, setError] = useState("");
@@ -272,6 +283,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
           <div className="auth-hero-orb auth-hero-orb-3" />
           <div className="auth-hero-grid" />
           <div className="auth-hero-shine" />
+          <div className="auth-hero-monogram-ring" />
           <div className="auth-hero-monogram">
             <motion.div
               initial={{ opacity: 0, scale: 0.7, rotate: -8 }}
@@ -2250,27 +2262,84 @@ export default function Account() {
             <Dashboard user={user} entries={entries} onLogout={handleLogout} />
           ) : (
             <div className="space-y-8 sm:space-y-12">
-              {/* Feature Cards - Full Width */}
+              {/* Stat Strip — social proof under the hero */}
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="acct-stat-strip"
+              >
+                {GUEST_STATS.map((s, i) => (
+                  <motion.div
+                    key={s.label}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="acct-stat-card"
+                  >
+                    <div className="acct-stat-card-value">{s.value}</div>
+                    <div className="acct-stat-card-label">{s.label}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Live winners ticker */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="acct-ticker"
+              >
+                <span className="acct-ticker-label">
+                  <span className="acct-ticker-dot" />
+                  Live Winners
+                </span>
+                <div className="acct-ticker-track">
+                  <div className="acct-ticker-strip">
+                    {[...WINNERS_FEED, ...WINNERS_FEED].map((w, i) => (
+                      <span key={i} className="acct-ticker-item">
+                        <strong>{w.name}</strong>
+                        <span className="acct-ticker-item-dot" />
+                        <span className="acct-ticker-item-prize">{w.prize}</span>
+                        <span className="acct-ticker-item-dot" />
+                        <span>{w.city}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Premium feature cards */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.7, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
+                <div className="acct-why-header text-center mb-6 sm:mb-8">
+                  <div className="glass-pill-badge inline-flex mb-3">
+                    <Sparkles className="w-3 h-3 mr-2 acct-why-spark" />
+                    Why X247
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-display font-light tracking-tight acct-why-title">
+                    Built for <span className="italic acct-why-emph">winners</span>
+                  </h3>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {GUEST_FEATURES.map((feat, i) => (
                     <motion.div
                       key={feat.title}
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                      className="guest-feature-card"
+                      transition={{ delay: 0.8 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      className="acct-feature-card"
                     >
-                      <div className="guest-feature-icon-wrap">
-                        <feat.icon className="w-4 h-4 text-white/50" />
+                      <span className="acct-feature-card-num">0{i + 1}</span>
+                      <div className="acct-feature-icon-tile">
+                        <feat.icon className="w-5 h-5" strokeWidth={1.6} />
                       </div>
                       <div>
-                        <div className="text-sm font-display font-light text-white/80 mb-0.5">{feat.title}</div>
-                        <div className="text-xs text-white/35 font-light leading-relaxed">{feat.desc}</div>
+                        <div className="acct-feature-card-title">{feat.title}</div>
+                        <div className="acct-feature-card-desc">{feat.desc}</div>
                       </div>
                     </motion.div>
                   ))}
