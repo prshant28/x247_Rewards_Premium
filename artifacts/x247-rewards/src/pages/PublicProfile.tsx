@@ -442,7 +442,7 @@ export default function PublicProfile() {
           <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] xl:grid-cols-[340px_1fr] gap-4 sm:gap-5">
 
             {/* ── LEFT COLUMN (sticky) ── */}
-            <aside className="lg:sticky lg:top-24 lg:self-start space-y-4">
+            <aside className="lg:sticky lg:top-24 lg:self-start space-y-5">
               <TradingCard
                 initials={getInitials(profile.fullName)}
                 fullName={profile.fullName}

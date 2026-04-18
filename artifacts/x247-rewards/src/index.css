@@ -10040,3 +10040,512 @@
 }
 .pub2-level-num-wrap--sm .pub2-level-num { font-size: 24px; }
 .pub2-level-num-wrap--sm .pub2-level-lbl { font-size: 8px; margin-top: 0; }
+
+/* ═══════════════════════════════════════════════════
+   X247 BLACK PHYSICAL CARD VISUAL
+═══════════════════════════════════════════════════ */
+
+.x247-bcv {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1.586;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, #0d0d10 0%, #1a1a1e 40%, #0a0a0c 70%, #050507 100%);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.85),
+    0 0 0 0.5px rgba(255,255,255,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+  overflow: hidden;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: default;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transform: perspective(1000px) rotateX(2deg) rotateY(-3deg);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
+}
+.x247-bcv:hover {
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  box-shadow:
+    0 40px 100px rgba(0,0,0,0.9),
+    0 0 0 0.5px rgba(255,255,255,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+.x247-bcv--compact {
+  max-width: 260px;
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+/* Shimmer sweep */
+.x247-bcv-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    118deg,
+    transparent 25%,
+    rgba(255,255,255,0.055) 40%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.055) 60%,
+    transparent 75%
+  );
+  background-size: 300% 300%;
+  animation: bcvShimmerSweep 6s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes bcvShimmerSweep {
+  0% { background-position: 200% 50%; }
+  100% { background-position: -200% 50%; }
+}
+
+/* Noise texture */
+.x247-bcv-noise {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Edge highlight lines */
+.x247-bcv-edge-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.25) 40%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.25) 60%, transparent 90%);
+  pointer-events: none;
+  z-index: 2;
+}
+.x247-bcv-edge-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.06) 50%, transparent 80%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Top row */
+.x247-bcv-toprow {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Chip */
+.x247-bcv-chip {
+  width: 38px;
+  height: 28px;
+  border-radius: 5px;
+  background: linear-gradient(145deg,
+    rgba(255,255,255,0.22) 0%,
+    rgba(255,255,255,0.08) 40%,
+    rgba(255,255,255,0.16) 100%
+  );
+  border: 1px solid rgba(255,255,255,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.x247-bcv--compact .x247-bcv-chip {
+  width: 30px;
+  height: 22px;
+}
+.x247-bcv-chip-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 60%;
+}
+.x247-bcv-chip-line {
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 999px;
+}
+.x247-bcv--compact .x247-bcv-chip-lines { gap: 3px; }
+
+/* Brand name */
+.x247-bcv-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.80);
+  letter-spacing: 0.10em;
+}
+.x247-bcv--compact .x247-bcv-brand { font-size: 11px; }
+
+/* Wordmark center */
+.x247-bcv-wordmark {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.x247-bcv-black-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #cacaca 20%,
+    #ffffff 40%,
+    #b8b8b8 60%,
+    #ffffff 80%,
+    #c8c8c8 100%
+  );
+  background-size: 300% 300%;
+  animation: bcvMetalShine 4s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+@keyframes bcvMetalShine {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.x247-bcv--compact .x247-bcv-black-text { font-size: 2.2rem; }
+
+.x247-bcv-membership-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-top: 2px;
+}
+.x247-bcv--compact .x247-bcv-membership-text { font-size: 9px; letter-spacing: 0.18em; }
+
+/* Bottom row */
+.x247-bcv-bottomrow {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.x247-bcv-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.28);
+}
+.x247-bcv--compact .x247-bcv-num { font-size: 9px; }
+
+.x247-bcv-icon {
+  width: 20px;
+  height: 20px;
+  color: rgba(255,255,255,0.45);
+}
+.x247-bcv--compact .x247-bcv-icon { width: 16px; height: 16px; }
+
+/* ═══════════════════════════════════════════════════
+   PRICING — Black card name metallic wordmark
+═══════════════════════════════════════════════════ */
+.pricing-card-name--black {
+  background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 30%, #ffffff 55%, #b0b0b0 80%, #ffffff 100%);
+  background-size: 250% 250%;
+  animation: bcvMetalShine 4s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+/* Physical card preview embed inside pricing card */
+.pricing-black-card-preview {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 20px;
+  position: relative;
+  z-index: 3;
+}
+.pricing-black-card-preview .x247-bcv {
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════
+   PRICING — X247 BLACK Showcase section
+═══════════════════════════════════════════════════ */
+.pricing-black-showcase {
+  position: relative;
+  margin-bottom: 56px;
+  border-radius: 28px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 40%, transparent 60%, rgba(255,255,255,0.10));
+  overflow: visible;
+}
+.pricing-black-showcase::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 27px;
+  background: linear-gradient(165deg, rgba(18,18,22,0.98) 0%, rgba(5,5,7,0.99) 100%);
+  z-index: 0;
+}
+
+.pricing-black-showcase-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 120%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.04) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+.pricing-black-showcase-grid {
+  position: absolute;
+  inset: 1px;
+  border-radius: 27px;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pricing-bsc-inner {
+  position: relative;
+  z-index: 2;
+  padding: 40px 44px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 48px;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .pricing-bsc-inner {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+    gap: 28px;
+  }
+}
+
+.pricing-bsc-card-wrap {
+  display: flex;
+  justify-content: center;
+}
+.pricing-bsc-card-wrap .x247-bcv {
+  max-width: 300px;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .pricing-bsc-card-wrap .x247-bcv {
+    max-width: 100%;
+  }
+}
+
+.pricing-bsc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pricing-bsc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.60);
+  width: fit-content;
+  margin-bottom: 16px;
+}
+
+.pricing-bsc-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: white;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px;
+}
+.pricing-bsc-black-word {
+  background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 30%, #ffffff 60%, #b0b0b0 100%);
+  background-size: 250% 250%;
+  animation: bcvMetalShine 4s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pricing-bsc-desc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.40);
+  line-height: 1.65;
+  margin: 0 0 20px;
+  max-width: 440px;
+}
+
+.pricing-bsc-perks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 480px) {
+  .pricing-bsc-perks { grid-template-columns: 1fr; }
+}
+
+.pricing-bsc-perk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.55);
+}
+.pricing-bsc-perk svg {
+  color: rgba(255,255,255,0.35);
+}
+
+.pricing-bsc-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 100%);
+  border: 1px solid rgba(255,255,255,0.18);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.01em;
+  width: fit-content;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 4px 16px rgba(0,0,0,0.3);
+}
+.pricing-bsc-cta:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.08) 100%);
+  border-color: rgba(255,255,255,0.28);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 24px rgba(0,0,0,0.4);
+  transform: translateY(-1px);
+}
+.pricing-bsc-cta:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+/* ═══════════════════════════════════════════════════
+   ACCOUNT — Black card showcase in Subscription tab
+═══════════════════════════════════════════════════ */
+.acct-black-card-showcase {
+  position: relative;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.16), transparent 40%, transparent 60%, rgba(255,255,255,0.10));
+  overflow: hidden;
+}
+.acct-black-card-showcase::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 23px;
+  background: linear-gradient(155deg, rgba(18,18,22,0.97) 0%, rgba(5,5,7,0.99) 100%);
+  z-index: 0;
+}
+
+.acct-bcs-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 150%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.035) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.acct-bcs-inner {
+  position: relative;
+  z-index: 2;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.acct-bcs-card-wrap {
+  flex-shrink: 0;
+}
+.acct-bcs-card-wrap .x247-bcv {
+  width: 200px;
+  max-width: 200px;
+}
+@media (max-width: 480px) {
+  .acct-bcs-inner { padding: 20px; gap: 20px; }
+  .acct-bcs-card-wrap .x247-bcv { width: 160px; max-width: 160px; }
+}
+
+.acct-bcs-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.acct-bcs-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 30%, #ffffff 60%, #b0b0b0 100%);
+  background-size: 250% 250%;
+  animation: bcvMetalShine 4s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.acct-bcs-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.55;
+  max-width: 320px;
+  margin: 0;
+}

@@ -21,6 +21,7 @@ import {
   getPartners, getReferralStats, getReferralProfile
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import X247BlackCard from "@/components/X247BlackCard";
 import { Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap } from "@/components/MiniCharts";
 import { useTheme, THEMES, type ThemeId } from "@/contexts/ThemeContext";
 import { TrendingUp, BarChart3, Activity } from "lucide-react";
@@ -1411,6 +1412,27 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
 
   return (
     <motion.div key="subscription" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+
+      {/* ── Black tier physical card showcase ── */}
+      {isBlackTier && (
+        <div className="acct-black-card-showcase mb-6">
+          <div className="acct-bcs-glow" aria-hidden />
+          <div className="acct-bcs-inner">
+            <div className="acct-bcs-card-wrap">
+              <X247BlackCard variant="compact" animate={false} />
+            </div>
+            <div className="acct-bcs-text">
+              <span className="acct-black-badge mb-3">
+                <Diamond className="w-2.5 h-2.5" />
+                <span>Elite Member</span>
+              </span>
+              <h3 className="acct-bcs-title">X247 Black</h3>
+              <p className="acct-bcs-sub">The most exclusive tier. Your physical Black card will be shipped within 7–14 days.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={`glass-card p-6 mb-6 ${isBlackTier ? "acct-black-card-elite" : ""}`}>
         {isBlackTier && <div className="acct-black-shimmer" />}
         <div className="card-shine" />
