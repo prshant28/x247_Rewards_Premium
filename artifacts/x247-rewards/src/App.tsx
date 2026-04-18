@@ -25,6 +25,7 @@ const ReferralDashboard = lazy(() => import("@/pages/ReferralDashboard"));
 const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const Pricing = lazy(() => import("@/pages/Pricing"));
+const HowItWorks = lazy(() => import("@/pages/HowItWorks"));
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,9 @@ function Router() {
           </Route>
           <Route path="/pricing">
             <AnimatedRoute component={Pricing} />
+          </Route>
+          <Route path="/how-it-works">
+            <AnimatedRoute component={HowItWorks} />
           </Route>
           <Route path="/x247-admin-login">
             <AnimatedRoute component={AdminLogin} />
