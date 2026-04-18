@@ -12916,3 +12916,240 @@
   .acct-ticker-strip { animation: none !important; transform: translateX(0) !important; }
   .acct-ticker-dot { animation: none !important; opacity: 1; }
 }
+
+/* ============================================================
+   GLOBAL THEME NORMALIZATION — Site-wide cards & buttons
+   Ensures every card, button, and surface stays neat, clean
+   and premium across all 9 themes (6 dark + 3 light).
+   This block runs LAST so it overrides earlier hardcoded styles.
+   ============================================================ */
+
+/* ---- Universal card baseline (shadcn Card + bento + glass) ---- */
+.card,
+[class*="bento-card"],
+[class*="glass-card"],
+[class*="stat-card"],
+[class*="testimonial-card"] {
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* ---- Light themes: catch-all for ALL bg-white opacity variants ---- */
+[data-light] .bg-white\/5,
+[data-light] .bg-white\/10,
+[data-light] .bg-white\/15,
+[data-light] .bg-white\/20,
+[data-light] .bg-white\/\[0\.01\],
+[data-light] .bg-white\/\[0\.015\],
+[data-light] .bg-white\/\[0\.025\],
+[data-light] .bg-white\/\[0\.035\],
+[data-light] .bg-white\/\[0\.05\],
+[data-light] .bg-white\/\[0\.07\],
+[data-light] .bg-white\/\[0\.09\],
+[data-light] .bg-white\/\[0\.1\],
+[data-light] .bg-white\/\[0\.12\],
+[data-light] .bg-white\/\[0\.15\] {
+  background-color: hsl(var(--foreground) / 0.04) !important;
+}
+
+[data-light] .hover\:bg-white\/5:hover,
+[data-light] .hover\:bg-white\/10:hover,
+[data-light] .hover\:bg-white\/15:hover,
+[data-light] .hover\:bg-white\/20:hover,
+[data-light] .hover\:bg-white\/\[0\.05\]:hover,
+[data-light] .hover\:bg-white\/\[0\.07\]:hover,
+[data-light] .hover\:bg-white\/\[0\.1\]:hover,
+[data-light] .hover\:bg-white\/\[0\.12\]:hover,
+[data-light] .hover\:bg-white\/\[0\.15\]:hover {
+  background-color: hsl(var(--foreground) / 0.07) !important;
+}
+
+[data-light] .border-white\/5,
+[data-light] .border-white\/\[0\.02\],
+[data-light] .border-white\/\[0\.03\],
+[data-light] .border-white\/\[0\.05\],
+[data-light] .border-white\/\[0\.07\],
+[data-light] .border-white\/\[0\.09\],
+[data-light] .border-white\/25,
+[data-light] .border-white\/30 {
+  border-color: hsl(var(--foreground) / 0.1) !important;
+}
+
+[data-light] .hover\:border-white\/10:hover,
+[data-light] .hover\:border-white\/20:hover,
+[data-light] .hover\:border-white\/\[0\.08\]:hover,
+[data-light] .hover\:border-white\/\[0\.1\]:hover,
+[data-light] .hover\:border-white\/\[0\.18\]:hover,
+[data-light] .hover\:border-white\/\[0\.2\]:hover {
+  border-color: hsl(var(--foreground) / 0.18) !important;
+}
+
+/* ---- Light theme: pure black backgrounds → page bg ---- */
+[data-light] .bg-black,
+[data-light] .bg-black\/50,
+[data-light] .bg-black\/60,
+[data-light] .bg-black\/70,
+[data-light] .bg-black\/80,
+[data-light] .bg-black\/90 {
+  background-color: var(--x-page-bg) !important;
+}
+[data-light] .bg-black\/20,
+[data-light] .bg-black\/30,
+[data-light] .bg-black\/40 {
+  background-color: hsl(var(--foreground) / 0.04) !important;
+}
+
+/* ---- Light theme: gradient stops referencing white/black ---- */
+[data-light] .from-white\/5,
+[data-light] .from-white\/10,
+[data-light] .via-white\/5,
+[data-light] .via-white\/10,
+[data-light] .to-white\/0,
+[data-light] .to-white\/5,
+[data-light] .to-white\/10 {
+  --tw-gradient-from: hsl(var(--foreground) / 0.04) !important;
+  --tw-gradient-via: hsl(var(--foreground) / 0.04) !important;
+  --tw-gradient-to: hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .from-black,
+[data-light] .via-black,
+[data-light] .to-black {
+  --tw-gradient-from: var(--x-page-bg) !important;
+  --tw-gradient-via: var(--x-page-bg) !important;
+  --tw-gradient-to: var(--x-page-bg) !important;
+}
+
+/* ---- Light theme: shadow normalization (no black-glow shadows) ---- */
+[data-light] .shadow-2xl,
+[data-light] .shadow-xl,
+[data-light] .shadow-lg {
+  box-shadow: 0 4px 24px hsl(var(--foreground) / 0.06), 0 1px 4px hsl(var(--foreground) / 0.04) !important;
+}
+
+/* ---- Universal Button consistency across ALL themes ---- */
+/* shadcn Button default variants — keep token-driven & uniform */
+button[data-variant="ghost"],
+.btn-ghost {
+  background: transparent;
+  color: hsl(var(--foreground) / 0.85);
+  border: 1px solid transparent;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+button[data-variant="ghost"]:hover,
+.btn-ghost:hover {
+  background: hsl(var(--foreground) / 0.06);
+  color: hsl(var(--foreground));
+}
+
+/* Primary CTA (white-on-dark in dark themes, dark-on-light in light themes) */
+[data-light] .bg-white {
+  background-color: hsl(var(--foreground)) !important;
+}
+[data-light] .text-black {
+  color: hsl(var(--background)) !important;
+}
+[data-light] .hover\:bg-white\/90:hover {
+  background-color: hsl(var(--foreground) / 0.9) !important;
+}
+
+/* Focus ring uniformity */
+[data-light] *:focus-visible {
+  outline-color: hsl(var(--foreground) / 0.4) !important;
+}
+
+/* ---- Light theme: divider/separator lines ---- */
+[data-light] hr,
+[data-light] .divide-white\/5 > * + *,
+[data-light] .divide-white\/10 > * + *,
+[data-light] [class*="divide-white"] > * + * {
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+
+/* ---- Light theme: ring utilities (focus halos, badges) ---- */
+[data-light] .ring-white\/10,
+[data-light] .ring-white\/20,
+[data-light] .ring-white\/\[0\.06\],
+[data-light] .ring-white\/\[0\.08\],
+[data-light] .ring-white\/\[0\.1\] {
+  --tw-ring-color: hsl(var(--foreground) / 0.1) !important;
+}
+
+/* ---- Account stat cards: theme-aware in light themes ---- */
+[data-light] .acct-stat-card {
+  background: hsl(var(--card) / 0.85) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 1px 6px hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .acct-stat-card:hover {
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.06) !important;
+}
+[data-light] .acct-stat-card-value { color: hsl(var(--foreground)) !important; }
+[data-light] .acct-stat-card-label { color: hsl(var(--foreground) / 0.55) !important; }
+[data-light] .acct-stat-card-icon {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.75) !important;
+}
+
+/* ---- Account ticker: theme-aware ---- */
+[data-light] .acct-ticker {
+  background: hsl(var(--card) / 0.7) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .acct-ticker-item { color: hsl(var(--foreground) / 0.7) !important; }
+[data-light] .acct-ticker-name { color: hsl(var(--foreground)) !important; }
+
+/* ---- Account feature cards: theme-aware ---- */
+[data-light] .acct-feature-card {
+  background: hsl(var(--card) / 0.85) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 1px 6px hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .acct-feature-card:hover {
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.06) !important;
+}
+[data-light] .acct-feature-card-icon {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .acct-feature-card-title { color: hsl(var(--foreground)) !important; }
+[data-light] .acct-feature-card-desc { color: hsl(var(--foreground) / 0.6) !important; }
+[data-light] .acct-feature-card-num { color: hsl(var(--foreground) / 0.18) !important; }
+
+/* ---- Auth hero monogram ring: subtle in light ---- */
+[data-light] .auth-hero-monogram-ring {
+  background:
+    conic-gradient(from 0deg,
+      transparent 0deg,
+      hsl(var(--foreground) / 0.04) 40deg,
+      hsl(var(--foreground) / 0.1) 90deg,
+      hsl(var(--foreground) / 0.04) 140deg,
+      transparent 180deg,
+      transparent 360deg) !important;
+}
+
+/* ---- 404 page: theme-aware terminal & cards ---- */
+[data-light] .x404-grid {
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px) !important;
+}
+[data-light] .x404-scanline {
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.12) 50%, transparent 100%) !important;
+}
+[data-light] .x404-suggest-card,
+[data-light] .x404-terminal,
+[data-light] .x404-search,
+[data-light] .x404-popular-chip {
+  background: hsl(var(--card) / 0.85) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .x404-suggest-card:hover {
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
+}
+
