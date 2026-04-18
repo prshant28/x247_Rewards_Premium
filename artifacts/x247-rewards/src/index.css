@@ -13912,3 +13912,74 @@ svg.lucide,
   border-color: hsl(var(--foreground) / 0.25) !important;
 }
 
+
+/* ============================================================
+   LIGHT THEME — Chat assistant (FAB + panel content)
+   ============================================================ */
+
+/* FAB: dark inverse button on light page so it's clearly visible.
+   In light theme the page bg is light, so a near-white FAB disappears.
+   Force a deep dark bg with subtle highlight ring. */
+[data-light] .chatbot-fab {
+  background: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--foreground)) !important;
+  box-shadow:
+    0 12px 32px hsl(var(--foreground) / 0.32),
+    0 4px 12px hsl(var(--foreground) / 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+[data-light] .chatbot-fab:hover {
+  box-shadow:
+    0 16px 40px hsl(var(--foreground) / 0.4),
+    0 6px 16px hsl(var(--foreground) / 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+/* Hide the white inner highlight overlay in light theme (would darken icon) */
+[data-light] .chatbot-fab > div[class*="absolute"][class*="inset-0"]:first-child {
+  display: none !important;
+}
+/* Force MessageCircle / X icon to white inside the dark FAB */
+[data-light] .chatbot-fab svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  opacity: 0.95 !important;
+}
+/* New-message dot: invert (was bg-black on white border, now white on dark border for visibility) */
+[data-light] .chatbot-fab + * .absolute[class*="bg-black"],
+[data-light] .chatbot-fab .absolute[class*="bg-black"] {
+  background: #ffffff !important;
+  border-color: hsl(var(--foreground)) !important;
+}
+
+/* ── Inside the (intentionally dark) chat panel ──
+   The panel forces #0a0a0d in light theme. Inline styles on the
+   suggestion buttons / partner cards use rgba(4,4,4,0.85) which is
+   *darker* than the panel ⇒ they vanish. Bump them to a slightly
+   lighter dark surface with a brighter border for clear separation. */
+
+/* Suggestion buttons (welcome screen) — inline bg rgba(4,4,4,0.85) */
+[data-light] .chatbot-panel button[class*="text-left"][class*="rounded-2xl"] {
+  background-color: #18181d !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 18px rgba(0, 0, 0, 0.5) !important;
+}
+[data-light] .chatbot-panel button[class*="text-left"][class*="rounded-2xl"]:hover {
+  background-color: #20202a !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+/* Partner recommendation cards inside chat (PartnerCard component).
+   Targets the inner motion.div with a dark gradient inline bg. */
+[data-light] .chatbot-panel .cursor-pointer.select-none > div[class*="rounded-2xl"][class*="overflow-hidden"] {
+  background: linear-gradient(145deg, #1a1a22 0%, #121218 100%) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Voice mode fullscreen overlay — keep dark for premium voice UX */
+[data-light] [class*="fixed"][class*="inset-0"][class*="z-[80]"] {
+  /* No change needed — stays dark by inline style. */
+}
+
