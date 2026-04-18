@@ -818,11 +818,11 @@ export default function ChatBot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 32, scale: 0.9, filter: "blur(8px)" }}
+            initial={{ opacity: 0, y: 28, scale: 0.92, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: 24, scale: 0.94, filter: "blur(4px)" }}
-            transition={{ type: "spring", stiffness: 320, damping: 28, mass: 0.85 }}
-            className="fixed bottom-[92px] right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[440px] max-h-[82vh] flex flex-col"
+            exit={{ opacity: 0, y: 20, scale: 0.95, filter: "blur(4px)" }}
+            transition={{ type: "spring", stiffness: 360, damping: 30, mass: 0.8 }}
+            className="fixed bottom-24 right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[440px] max-h-[80vh] flex flex-col"
             style={{
               background: "rgba(6, 6, 9, 0.99)",
               backdropFilter: "blur(80px)",
@@ -1059,22 +1059,24 @@ export default function ChatBot() {
                               onClick={() => handleSend(s.text)}
                               className="group text-left px-4 py-3 rounded-2xl transition-all duration-200 relative overflow-hidden"
                               style={{
-                                background: "linear-gradient(135deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01))",
-                                border: "1px solid rgba(255,255,255,0.05)",
+                                background: "rgba(4,4,4,0.85)",
+                                border: "1px solid rgba(255,255,255,0.09)",
+                                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.4)",
+                                fontFamily: "'Poppins', sans-serif",
                               }}
                               whileHover={{ scale: 1.01 }}
-                              whileTap={{ scale: 0.99 }}
+                              whileTap={{ scale: 0.98 }}
                             >
-                              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))" }} />
+                              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))" }} />
                               <div className="relative flex items-center gap-3">
-                                <div className="w-7 h-7 rounded-xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-white/25 group-hover:text-white/50 group-hover:border-white/[0.12] transition-all shrink-0">
+                                <div className="w-7 h-7 rounded-xl bg-white/[0.05] border border-white/[0.09] flex items-center justify-center text-white/40 group-hover:text-white/60 group-hover:border-white/[0.15] transition-all shrink-0">
                                   {s.icon}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-[12px] text-white/55 font-light group-hover:text-white/75 transition-colors">{s.text}</p>
-                                  <p className="text-[10px] text-white/20 font-light mt-0.5">{s.desc}</p>
+                                  <p className="text-[12px] text-white/65 font-medium group-hover:text-white/90 transition-colors" style={{ fontFamily: "'Poppins', sans-serif" }}>{s.text}</p>
+                                  <p className="text-[10px] text-white/25 font-light mt-0.5" style={{ fontFamily: "'Poppins', sans-serif" }}>{s.desc}</p>
                                 </div>
-                                <ChevronRight className="w-3.5 h-3.5 text-white/15 group-hover:text-white/40 transition-all group-hover:translate-x-0.5 shrink-0" />
+                                <ChevronRight className="w-3.5 h-3.5 text-white/20 group-hover:text-white/50 transition-all group-hover:translate-x-0.5 shrink-0" />
                               </div>
                             </motion.button>
                           ))}
@@ -1144,13 +1146,14 @@ export default function ChatBot() {
                         onClick={() => handleSend()}
                         disabled={!input.trim() || isStreaming}
                         whileTap={{ scale: 0.88 }}
-                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-all shrink-0 disabled:opacity-20 disabled:cursor-not-allowed"
+                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-all shrink-0 disabled:opacity-25 disabled:cursor-not-allowed"
                         style={{
-                          background: input.trim() && !isStreaming ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)",
-                          border: input.trim() && !isStreaming ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.07)",
+                          background: input.trim() && !isStreaming ? "rgba(4,4,4,0.98)" : "rgba(255,255,255,0.04)",
+                          border: input.trim() && !isStreaming ? "1px solid rgba(255,255,255,0.2)" : "1px solid rgba(255,255,255,0.06)",
+                          boxShadow: input.trim() && !isStreaming ? "inset 0 1px 0 rgba(255,255,255,0.1)" : "none",
                         }}
                       >
-                        <Send className="w-3.5 h-3.5 text-white/60" />
+                        <Send className="w-3.5 h-3.5 text-white" />
                       </motion.button>
                     </div>
 
@@ -1240,10 +1243,15 @@ export default function ChatBot() {
                     <button
                       onClick={startNewChat}
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl transition-all"
-                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+                      style={{
+                        background: "rgba(4,4,4,0.9)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.4)",
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
                     >
-                      <Plus className="w-3.5 h-3.5 text-white/30" />
-                      <span className="text-[12px] text-white/35 font-light">New Conversation</span>
+                      <Plus className="w-3.5 h-3.5 text-white/50" />
+                      <span className="text-[12px] text-white/60 font-medium">New Conversation</span>
                     </button>
                   </div>
                 </motion.div>
@@ -1256,30 +1264,31 @@ export default function ChatBot() {
       {/* ── FAB Button ── */}
       <motion.button
         onClick={() => { setIsOpen(o => !o); setHasNewMessage(false); }}
-        whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.93 }}
-        className="fixed bottom-6 right-4 sm:right-6 z-[60] w-14 h-14 rounded-2xl flex items-center justify-center relative"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.94 }}
+        className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden"
         style={{
           background: isOpen
-            ? "rgba(255,255,255,0.06)"
-            : "linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05))",
-          border: isOpen ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(255,255,255,0.15)",
+            ? "rgba(12,12,14,0.96)"
+            : "rgba(4,4,4,0.98)",
+          border: "1px solid rgba(255,255,255,0.12)",
           boxShadow: isOpen
-            ? "0 8px 30px rgba(0,0,0,0.5)"
-            : "0 12px 50px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.15), 0 0 30px rgba(255,255,255,0.03)",
+            ? "0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06)"
+            : "0 16px 56px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(255,255,255,0.04)",
+          fontFamily: "'Poppins', sans-serif",
         }}
       >
-        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 40% 30%, rgba(255,255,255,0.06), transparent 60%)" }} />
+        <div className="absolute inset-0 pointer-events-none">
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "50%", background: "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%)" }} />
         </div>
         <AnimatePresence mode="wait">
           {isOpen ? (
-            <motion.div key="x" initial={{ scale: 0.5, rotate: -90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-              <X className="w-5 h-5 text-white/50 relative z-10" />
+            <motion.div key="x" initial={{ scale: 0.5, rotate: -90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: 90, opacity: 0 }} transition={{ duration: 0.18 }}>
+              <X className="w-5 h-5 text-white/70 relative z-10" />
             </motion.div>
           ) : (
-            <motion.div key="chat" initial={{ scale: 0.5, rotate: 90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-              <MessageCircle className="w-5 h-5 text-white/75 relative z-10" />
+            <motion.div key="chat" initial={{ scale: 0.5, rotate: 90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }}>
+              <MessageCircle className="w-5 h-5 text-white relative z-10" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -1291,7 +1300,7 @@ export default function ChatBot() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-white/80 border-2 border-[#060609]"
+              className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white border-[1.5px] border-[#040404]"
             />
           )}
         </AnimatePresence>

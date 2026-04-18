@@ -150,8 +150,8 @@ function App() {
             <PageLoader>
               <Router />
             </PageLoader>
+            <ChatBotGate />
           </WouterRouter>
-          <ChatBotGate />
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
