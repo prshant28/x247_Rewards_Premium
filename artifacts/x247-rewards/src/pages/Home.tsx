@@ -790,10 +790,10 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.1] tracking-tight text-white relative z-[1]">
+              <h1 className="text-[1.85rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.12] tracking-tight text-white relative z-[1] break-words">
                 <span className="text-gradient">Win Real Rewards Every Single Day</span>
               </h1>
-              <div aria-hidden="true" className="hero-text-stroke text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.1] tracking-tight">
+              <div aria-hidden="true" className="hero-text-stroke text-[1.85rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.12] tracking-tight break-words">
                 Win Real Rewards Every Single Day
               </div>
             </motion.div>
