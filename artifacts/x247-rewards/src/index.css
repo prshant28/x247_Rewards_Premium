@@ -8491,6 +8491,217 @@
 @media (min-width: 1024px) { .pub2-body { padding: 56px 32px 80px; max-width: 1200px; } }
 @media (min-width: 1280px) { .pub2-body { padding: 64px 40px 96px; max-width: 1320px; } }
 
+/* ──────────── PREMIUM FRAME (wraps entire profile body grid) ──────────── */
+.pub2-frame {
+  position: relative;
+  border-radius: 28px;
+  background:
+    radial-gradient(120% 120% at 0% 0%, rgba(255,255,255,0.025), transparent 55%),
+    radial-gradient(120% 120% at 100% 100%, rgba(255,255,255,0.018), transparent 55%),
+    linear-gradient(180deg, rgba(15,15,18,0.65) 0%, rgba(8,8,10,0.85) 100%);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 16px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.05) inset,
+    0 0 0 1px rgba(0,0,0,0.4),
+    0 30px 80px -30px rgba(0,0,0,0.8);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  overflow: hidden;
+}
+@media (min-width: 640px)  { .pub2-frame { padding: 24px; border-radius: 32px; } }
+@media (min-width: 1024px) { .pub2-frame { padding: 32px; border-radius: 36px; } }
+
+.pub2-frame-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.10), transparent 30%, transparent 70%, rgba(255,255,255,0.06));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  opacity: 0.6;
+}
+.pub2-frame-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask: radial-gradient(circle at 50% 0%, #000 0%, transparent 70%);
+  mask: radial-gradient(circle at 50% 0%, #000 0%, transparent 70%);
+  opacity: 0.5;
+}
+.pub2-frame-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255,255,255,0.18);
+  pointer-events: none;
+}
+.pub2-frame-corner-tl { top: 10px; left: 10px;    border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+.pub2-frame-corner-tr { top: 10px; right: 10px;   border-left: none;  border-bottom: none; border-top-right-radius: 8px; }
+.pub2-frame-corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none;    border-bottom-left-radius: 8px; }
+.pub2-frame-corner-br { bottom: 10px; right: 10px;border-left: none;  border-top: none;    border-bottom-right-radius: 8px; }
+.pub2-frame > .pub2-body-grid { position: relative; z-index: 2; }
+
+/* ──────────── LEVEL CARD ──────────── */
+.pub2-level-card { position: relative; overflow: hidden; }
+.pub2-level-body { display: flex; flex-direction: column; gap: 18px; }
+.pub2-level-hero {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 18px;
+  align-items: center;
+}
+@media (min-width: 640px) {
+  .pub2-level-hero { grid-template-columns: 116px 1fr; gap: 24px; }
+}
+
+.pub2-level-num-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 60%, transparent);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 40px -10px rgba(255,255,255,0.15);
+}
+@media (min-width: 640px) { .pub2-level-num-wrap { width: 116px; height: 116px; } }
+
+.pub2-level-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.12);
+  animation: pub2LevelRing 24s linear infinite;
+}
+@keyframes pub2LevelRing { to { transform: rotate(360deg); } }
+
+.pub2-level-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #fff, rgba(255,255,255,0.5));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+@media (min-width: 640px) { .pub2-level-num { font-size: 46px; } }
+
+.pub2-level-lbl {
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+}
+
+.pub2-level-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.pub2-level-xp {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.pub2-level-xp-unit {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  margin-left: 4px;
+}
+.pub2-level-next {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+.pub2-level-bar {
+  position: relative;
+  margin-top: 6px;
+  height: 8px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+.pub2-level-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.85), rgba(255,255,255,0.55));
+  border-radius: 999px;
+  box-shadow: 0 0 18px rgba(255,255,255,0.25);
+}
+.pub2-level-bar-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  background-size: 200% 100%;
+  animation: pub2LevelShine 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes pub2LevelShine {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
+}
+.pub2-level-pct {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+}
+.pub2-level-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255,255,255,0.06);
+}
+.pub2-level-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 400;
+}
+.pub2-level-chip svg { color: rgba(255,255,255,0.4); }
+.pub2-level-chip-xp {
+  margin-left: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.55);
+  font-weight: 500;
+}
+
 /* ─ Hero spacer (replaces removed hero) — keeps top breathing room below sticky nav ─ */
 .pub2-hero-spacer {
   height: 96px;

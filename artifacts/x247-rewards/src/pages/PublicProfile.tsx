@@ -540,6 +540,13 @@ export default function PublicProfile() {
 
       {/* ══════════ BODY ══════════ */}
       <div className="pub2-body">
+       <div className="pub2-frame">
+        <div className="pub2-frame-glow" />
+        <div className="pub2-frame-grid" />
+        <div className="pub2-frame-corner pub2-frame-corner-tl" />
+        <div className="pub2-frame-corner pub2-frame-corner-tr" />
+        <div className="pub2-frame-corner pub2-frame-corner-bl" />
+        <div className="pub2-frame-corner pub2-frame-corner-br" />
        <div className="pub2-body-grid">
 
         {/* ── LEFT COLUMN (sticky on desktop) ── */}
@@ -577,8 +584,8 @@ export default function PublicProfile() {
         {/* ── RIGHT COLUMN (main content) ── */}
         <div className="pub2-main">
 
-        {/* ── Profile Info Card ── */}
-        {(profile.bio || profile.city || profile.email) && (
+        {/* ── Bio (only if present) ── */}
+        {profile.bio && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -590,38 +597,84 @@ export default function PublicProfile() {
               <Quote className="w-3.5 h-3.5 text-white/30" />
               <span className="pub2-card-title">About</span>
             </div>
-            <div className="pub2-about-body">
-              {profile.bio ? (
-                <blockquote className="pub2-bio-block">
-                  <span className="pub2-bio-quote">"</span>
-                  {profile.bio}
-                  <span className="pub2-bio-quote">"</span>
-                </blockquote>
-              ) : (
-                <p className="text-sm text-white/25 italic font-light">No bio yet.</p>
-              )}
-              <div className="pub2-about-pills">
-                {profile.city && (
-                  <span className="pub2-about-pill"><MapPin className="w-3 h-3" />{profile.city}</span>
-                )}
-                <span className="pub2-about-pill">
-                  <Calendar className="w-3 h-3" />
-                  Member since {new Date(profile.memberSince).toLocaleDateString("en-IN", { month: "long", year: "numeric" })}
-                </span>
-                {tier !== "free" && (
-                  <span className="pub2-about-pill">
-                    <TierIcon className="w-3 h-3" />
-                    {tierLabel}
-                  </span>
-                )}
-                <span className="pub2-about-pill">
-                  <Globe className="w-3 h-3" />
-                  x247.app/profile/{profile.profileSlug}
-                </span>
-              </div>
-            </div>
+            <blockquote className="pub2-bio-block">
+              <span className="pub2-bio-quote">"</span>
+              {profile.bio}
+              <span className="pub2-bio-quote">"</span>
+            </blockquote>
           </motion.div>
         )}
+
+        {/* ── Level / XP Progress ── */}
+        {(() => {
+          const entries = profile.stats?.entries ?? 0;
+          const days = profile.stats?.daysActive ?? 0;
+          const xp = entries * 10 + earnedBadges.length * 100 + days * 5;
+          const level = Math.max(1, Math.floor(xp / 500) + 1);
+          const xpInLevel = xp % 500;
+          const pct = Math.min(100, Math.round((xpInLevel / 500) * 100));
+          const nextNeeded = 500 - xpInLevel;
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="pub2-card pub2-level-card"
+            >
+              <div className="pub2-card-head">
+                <Sparkles className="w-3.5 h-3.5 text-white/30" />
+                <span className="pub2-card-title">Level & Progress</span>
+                <span className="pub2-card-count">LVL {level}</span>
+              </div>
+              <div className="pub2-level-body">
+                <div className="pub2-level-hero">
+                  <div className="pub2-level-num-wrap">
+                    <div className="pub2-level-ring" />
+                    <div className="pub2-level-num">{level}</div>
+                    <div className="pub2-level-lbl">LEVEL</div>
+                  </div>
+                  <div className="pub2-level-meta">
+                    <div className="pub2-level-xp">
+                      <AnimatedNumber value={xp} /> <span className="pub2-level-xp-unit">XP</span>
+                    </div>
+                    <div className="pub2-level-next">
+                      {nextNeeded} XP to Level {level + 1}
+                    </div>
+                    <div className="pub2-level-bar">
+                      <motion.div
+                        className="pub2-level-bar-fill"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${pct}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+                      />
+                      <div className="pub2-level-bar-shine" />
+                    </div>
+                    <div className="pub2-level-pct">{pct}% complete</div>
+                  </div>
+                </div>
+                <div className="pub2-level-breakdown">
+                  <div className="pub2-level-chip">
+                    <Ticket className="w-3 h-3" />
+                    <span>{entries} entries</span>
+                    <span className="pub2-level-chip-xp">+{entries * 10}</span>
+                  </div>
+                  <div className="pub2-level-chip">
+                    <Award className="w-3 h-3" />
+                    <span>{earnedBadges.length} badges</span>
+                    <span className="pub2-level-chip-xp">+{earnedBadges.length * 100}</span>
+                  </div>
+                  <div className="pub2-level-chip">
+                    <Flame className="w-3 h-3" />
+                    <span>{days} days</span>
+                    <span className="pub2-level-chip-xp">+{days * 5}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })()}
 
         {/* ── Featured Badge (large showcase) ── */}
         {featuredBadge && BADGE_META[featuredBadge] && (
@@ -838,6 +891,7 @@ export default function PublicProfile() {
 
         </div>{/* /pub2-main */}
        </div>{/* /pub2-body-grid */}
+       </div>{/* /pub2-frame */}
       </div>
 
       <SiteFooter links={[
