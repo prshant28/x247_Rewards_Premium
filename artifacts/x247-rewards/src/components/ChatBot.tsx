@@ -789,20 +789,25 @@ export default function ChatBot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[420px] max-h-[78vh] flex flex-col"
+            initial={{ opacity: 0, y: 28, scale: 0.92, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: 24, scale: 0.94, filter: "blur(4px)" }}
+            transition={{ type: "spring", stiffness: 340, damping: 30, mass: 0.9 }}
+            className="fixed bottom-[88px] right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[430px] max-h-[80vh] flex flex-col"
             style={{
               background: "rgba(5, 5, 8, 0.98)",
               backdropFilter: "blur(60px)",
               WebkitBackdropFilter: "blur(60px)",
-              borderRadius: "24px",
-              border: "1px solid rgba(255, 255, 255, 0.07)",
-              boxShadow: "0 30px 100px rgba(0, 0, 0, 0.9), 0 0 0 0.5px rgba(255, 255, 255, 0.03), 0 0 60px rgba(255, 255, 255, 0.015), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+              borderRadius: "26px",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              boxShadow: "0 32px 110px rgba(0,0,0,0.92), 0 0 0 0.5px rgba(255,255,255,0.04), 0 0 80px rgba(255,255,255,0.012), inset 0 1px 0 rgba(255,255,255,0.05)",
             }}
           >
+            {/* Top gradient mesh decoration */}
+            <div className="absolute top-0 left-0 right-0 h-32 rounded-t-[26px] pointer-events-none overflow-hidden">
+              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 20% 0%, rgba(255,255,255,0.025) 0%, transparent 70%)" }} />
+              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 50% 40% at 80% 10%, rgba(255,255,255,0.015) 0%, transparent 60%)" }} />
+            </div>
             {/* Header */}
             <div
               className="shrink-0"
@@ -898,8 +903,14 @@ export default function ChatBot() {
                   className="flex-1 flex flex-col min-h-0"
                 >
                   <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0" style={{ scrollbarWidth: "thin", scrollbarColor: "var(--x-chat-scroll) transparent" }}>
-                    {messages.map((msg) => (
-                      <div key={msg.id} className={`flex gap-2.5 group ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+                    {messages.map((msg, idx) => (
+                      <motion.div
+                        key={msg.id}
+                        initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: idx === 0 ? 0 : 0 }}
+                        className={`flex gap-2.5 group ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+                      >
                         <div className={`w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" ? "bg-white/[0.06] border border-white/[0.1]" : "bg-white/[0.04] border border-white/[0.06]"}`}>
                           {msg.role === "user" ? <User className="w-3 h-3 text-white/40" /> : <Bot className="w-3 h-3 text-white/40" />}
                         </div>
@@ -926,35 +937,61 @@ export default function ChatBot() {
                             </div>
                           )}
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
 
                     {isStreaming && currentStreamContent && (
-                      <div className="flex gap-2.5">
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="flex gap-2.5"
+                      >
                         <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.06]">
                           <Bot className="w-3 h-3 text-white/40" />
                         </div>
                         <div className="max-w-[82%] text-white/70">
                           {renderMessageContent(currentStreamContent)}
-                          <span className="inline-block w-1.5 h-4 bg-white/30 animate-pulse ml-0.5 rounded-sm" />
+                          <motion.span
+                            className="inline-block w-[3px] h-4 bg-white/40 ml-0.5 rounded-sm"
+                            animate={{ opacity: [1, 0, 1] }}
+                            transition={{ duration: 0.7, repeat: Infinity, ease: "easeInOut" }}
+                          />
                         </div>
-                      </div>
+                      </motion.div>
                     )}
 
                     {isStreaming && !currentStreamContent && (
-                      <div className="flex gap-2.5">
-                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.06]">
-                          <Bot className="w-3 h-3 text-white/40" />
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex gap-2.5"
+                      >
+                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.06] relative overflow-hidden">
+                          <motion.div
+                            className="absolute inset-0 rounded-xl"
+                            animate={{ opacity: [0, 0.3, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                            style={{ background: "radial-gradient(circle, rgba(255,255,255,0.15), transparent)" }}
+                          />
+                          <Sparkles className="w-3 h-3 text-white/50 relative z-10" />
                         </div>
-                        <div className="flex items-center gap-1.5 px-3.5 py-2.5">
-                          <div className="flex gap-1">
-                            {[0, 150, 300].map((delay) => (
-                              <span key={delay} className="w-1.5 h-1.5 rounded-full bg-white/20 animate-bounce" style={{ animationDelay: `${delay}ms` }} />
+                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
+                          <div className="flex gap-1.5 items-end">
+                            {[0, 120, 240].map((delay, i) => (
+                              <motion.span
+                                key={i}
+                                className="rounded-full bg-white/30"
+                                animate={{ height: ["6px", "14px", "6px"], opacity: [0.3, 0.8, 0.3] }}
+                                transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay: delay / 1000 }}
+                                style={{ width: "3px", display: "inline-block" }}
+                              />
                             ))}
                           </div>
-                          <span className="text-[11px] text-white/20 font-light ml-1">Thinking</span>
+                          <span className="text-[11px] text-white/20 font-light tracking-wide">Thinking</span>
                         </div>
-                      </div>
+                      </motion.div>
                     )}
 
                     {messages.length <= 1 && !isStreaming && (
@@ -1137,37 +1174,81 @@ export default function ChatBot() {
       </AnimatePresence>
 
       {/* ── Floating Button ── */}
-      <motion.button
-        onClick={() => { setIsOpen(!isOpen); setHasNewMessage(false); }}
-        className="fixed bottom-6 right-4 sm:right-6 z-[60] w-14 h-14 rounded-2xl flex items-center justify-center"
-        style={{
-          background: "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-          boxShadow: "0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.05)",
-          backdropFilter: "blur(20px)",
-        }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <AnimatePresence mode="wait">
-          {isOpen ? (
-            <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-              <ChevronDown className="w-5 h-5 text-white/80" />
-            </motion.div>
-          ) : (
-            <motion.div key="open" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.2 }}>
-              <MessageCircle className="w-5 h-5 text-white/80" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {hasNewMessage && !isOpen && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-white border-2 border-black"
-          />
+      <div className="fixed bottom-6 right-4 sm:right-6 z-[60] flex items-center justify-center">
+        {/* Outer pulse ring — only when closed */}
+        {!isOpen && (
+          <>
+            <motion.div
+              className="absolute rounded-[22px] border border-white/[0.07]"
+              animate={{ width: [64, 90, 64], height: [64, 90, 64], opacity: [0.5, 0, 0.5] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute rounded-[26px] border border-white/[0.04]"
+              animate={{ width: [64, 112, 64], height: [64, 112, 64], opacity: [0.35, 0, 0.35] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            />
+          </>
         )}
-      </motion.button>
+
+        <motion.button
+          onClick={() => { setIsOpen(!isOpen); setHasNewMessage(false); }}
+          className="relative w-16 h-16 rounded-[20px] flex items-center justify-center"
+          style={{
+            background: isOpen
+              ? "rgba(10, 10, 14, 0.98)"
+              : "linear-gradient(145deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.08) 100%)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            boxShadow: isOpen
+              ? "0 8px 32px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.06)"
+              : "0 12px 48px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 40px rgba(255,255,255,0.03)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+          }}
+          whileHover={{ scale: 1.06, boxShadow: "0 16px 56px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.15), 0 0 60px rgba(255,255,255,0.04)" }}
+          whileTap={{ scale: 0.93 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        >
+          {/* Inner glow */}
+          <div
+            className="absolute inset-0 rounded-[20px] pointer-events-none"
+            style={{ background: "radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.07) 0%, transparent 65%)" }}
+          />
+
+          <AnimatePresence mode="wait">
+            {isOpen ? (
+              <motion.div key="close"
+                initial={{ rotate: -120, opacity: 0, scale: 0.4 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: 120, opacity: 0, scale: 0.4 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <X className="w-5 h-5 text-white/70" />
+              </motion.div>
+            ) : (
+              <motion.div key="open"
+                initial={{ scale: 0.3, opacity: 0, rotate: -30 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={{ scale: 0.3, opacity: 0, rotate: 30 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <MessageCircle className="w-5 h-5 text-white/85" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* New message badge */}
+          {hasNewMessage && !isOpen && (
+            <motion.div
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-white border-2 border-black flex items-center justify-center"
+            />
+          )}
+        </motion.button>
+      </div>
     </>
   );
 }

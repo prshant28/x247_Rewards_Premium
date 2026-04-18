@@ -2018,7 +2018,7 @@ export default function Account() {
       <div className="vignette-overlay" />
 
       <main className="relative z-10 pt-24 pb-20 sm:pt-32 sm:pb-32">
-        <div className={`container mx-auto px-3 sm:px-4 ${user ? "max-w-5xl" : "max-w-4xl"}`}>
+        <div className={`container mx-auto px-4 sm:px-6 lg:px-8 ${user ? "max-w-6xl" : "max-w-7xl"}`}>
 
           {/* Hero Banner */}
           <motion.div
@@ -2047,10 +2047,9 @@ export default function Account() {
                       initial={{ opacity: 0, y: 24 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                      className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-white mb-3 sm:mb-4 tracking-tight leading-[1.15] px-2"
-                      style={{ overflow: "visible" }}
+                      className="text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-display font-light text-white mb-3 sm:mb-4 tracking-tight leading-[1.15] px-4 sm:px-8"
                     >
-                      <span className="text-gradient" style={{ paddingBottom: "0.1em", display: "inline-block" }}>Your Rewards Hub</span>
+                      <span className="text-gradient" style={{ paddingBottom: "0.12em", display: "inline-block" }}>Your Rewards Hub</span>
                     </motion.h1>
 
                     <motion.p
@@ -2067,7 +2066,7 @@ export default function Account() {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.75, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                      className="grid grid-cols-4 gap-3 sm:gap-5 max-w-xl mx-auto mb-8 sm:mb-10"
+                      className="grid grid-cols-4 gap-3 sm:gap-4 w-full max-w-2xl mx-auto mb-8 sm:mb-10"
                     >
                       {GUEST_STATS.map((stat) => (
                         <div key={stat.label} className="guest-stat-cell">
