@@ -5823,18 +5823,24 @@
 [data-light] h1, [data-light] h2, [data-light] h3, [data-light] h4 { color: hsl(var(--foreground)) !important; }
 [data-light] .text-white { color: hsl(var(--foreground)) !important; }
 [data-light] .text-white\/95,
-[data-light] .text-white\/90,
+[data-light] .text-white\/90 { color: hsl(var(--foreground) / 0.92) !important; }
+[data-light] .text-white\/85,
 [data-light] .text-white\/80,
-[data-light] .text-white\/70 { color: hsl(var(--foreground) / 0.8) !important; }
+[data-light] .text-white\/75,
+[data-light] .text-white\/70 { color: hsl(var(--foreground) / 0.82) !important; }
+[data-light] .text-white\/65,
 [data-light] .text-white\/60,
-[data-light] .text-white\/50 { color: hsl(var(--foreground) / 0.55) !important; }
+[data-light] .text-white\/55,
+[data-light] .text-white\/50 { color: hsl(var(--foreground) / 0.7) !important; }
+[data-light] .text-white\/45,
 [data-light] .text-white\/40,
 [data-light] .text-white\/35,
-[data-light] .text-white\/30 { color: hsl(var(--foreground) / 0.45) !important; }
+[data-light] .text-white\/30 { color: hsl(var(--foreground) / 0.68) !important; }
 [data-light] .text-white\/25,
-[data-light] .text-white\/20,
+[data-light] .text-white\/20 { color: hsl(var(--foreground) / 0.55) !important; }
 [data-light] .text-white\/15,
-[data-light] .text-white\/10 { color: hsl(var(--foreground) / 0.3) !important; }
+[data-light] .text-white\/10,
+[data-light] .text-white\/5 { color: hsl(var(--foreground) / 0.38) !important; }
 [data-light] .bg-white\/\[0\.02\],
 [data-light] .bg-white\/\[0\.03\],
 [data-light] .bg-white\/\[0\.04\] { background-color: var(--x-subtle-fill) !important; }
