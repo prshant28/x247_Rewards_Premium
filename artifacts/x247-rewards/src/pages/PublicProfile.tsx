@@ -412,9 +412,9 @@ export default function PublicProfile() {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <div className="noise-overlay" />
+      <div className="vignette-overlay" />
 
       {/* HERO REMOVED — trading card in sidebar covers identity */}
-      <div className="pub2-hero-spacer" />
       {false && (
       <motion.div
         ref={heroRef}
@@ -539,18 +539,26 @@ export default function PublicProfile() {
       )}
 
       {/* ══════════ BODY ══════════ */}
-      <div className="pub2-body">
-       <div className="pub2-frame">
-        <div className="pub2-frame-glow" />
-        <div className="pub2-frame-grid" />
-        <div className="pub2-frame-corner pub2-frame-corner-tl" />
-        <div className="pub2-frame-corner pub2-frame-corner-tr" />
-        <div className="pub2-frame-corner pub2-frame-corner-bl" />
-        <div className="pub2-frame-corner pub2-frame-corner-br" />
-       <div className="pub2-body-grid">
+      <main className="relative z-10 pt-24 sm:pt-28 pb-16 sm:pb-24">
+       <div className="container mx-auto px-4 max-w-5xl">
+
+        {/* Top pill badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex justify-center mb-6 sm:mb-8"
+        >
+          <div className="glass-pill-badge">
+            <Sparkles className="w-3 h-3" />
+            <span>Public Profile</span>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr] gap-4 sm:gap-6">
 
         {/* ── LEFT COLUMN (sticky on desktop) ── */}
-        <aside className="pub2-side">
+        <aside className="lg:sticky lg:top-24 lg:self-start space-y-4 sm:space-y-5">
           <TradingCard
             initials={getInitials(profile.fullName)}
             fullName={profile.fullName}
@@ -582,7 +590,7 @@ export default function PublicProfile() {
         </aside>
 
         {/* ── RIGHT COLUMN (main content) ── */}
-        <div className="pub2-main">
+        <div className="space-y-4 sm:space-y-5 min-w-0">
 
         {/* ── Bio (only if present) ── */}
         {profile.bio && (
@@ -889,10 +897,10 @@ export default function PublicProfile() {
           </div>
         </motion.div>
 
-        </div>{/* /pub2-main */}
-       </div>{/* /pub2-body-grid */}
-       </div>{/* /pub2-frame */}
-      </div>
+        </div>{/* /right column */}
+        </div>{/* /grid */}
+       </div>{/* /container */}
+      </main>
 
       <SiteFooter links={[
         { label: "Home", href: "/" },

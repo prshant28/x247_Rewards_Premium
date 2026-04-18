@@ -9016,17 +9016,74 @@
 .pub2-heatmap-legend span:first-child { margin-right: 4px; }
 .pub2-heatmap-legend span:last-child  { margin-left: 4px; }
 
-/* ─ Generic card ─ */
+/* ─ Generic card — matches site glass-card aesthetic ─ */
 .pub2-card {
-  background: rgba(255,255,255,0.033);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
-  padding: 22px;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.25s;
+  border-radius: 24px;
+  padding: 22px;
+  background: linear-gradient(
+    168deg,
+    rgba(10,10,12,1) 0%,
+    rgba(6,6,7,1) 40%,
+    rgba(2,2,3,1) 100%
+  );
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow:
+    0 1px 0 0 rgba(255,255,255,0.07) inset,
+    0 0 0 0.5px rgba(255,255,255,0.05) inset,
+    0 16px 64px -8px rgba(0,0,0,0.9),
+    0 6px 24px -4px rgba(0,0,0,0.7);
+  backdrop-filter: blur(40px) saturate(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(1.2);
+  transition: border-color 0.6s ease, box-shadow 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  transform: translateZ(0);
 }
-.pub2-card:hover { border-color: rgba(255,255,255,0.11); }
+.pub2-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.12),
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.18)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+.pub2-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 30% -10%, rgba(255,255,255,0.09) 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 105%, rgba(255,255,255,0.03) 0%, transparent 50%),
+    linear-gradient(168deg, rgba(255,255,255,0.04) 0%, transparent 35%);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.6s ease;
+}
+.pub2-card > * { position: relative; z-index: 2; }
+.pub2-card:hover {
+  border-color: rgba(255,255,255,0.14);
+  box-shadow:
+    0 1px 0 0 rgba(255,255,255,0.09) inset,
+    0 0 0 0.5px rgba(255,255,255,0.06) inset,
+    0 24px 80px -8px rgba(0,0,0,0.95),
+    0 10px 32px -4px rgba(0,0,0,0.8),
+    0 0 100px -15px rgba(255,255,255,0.04);
+  transform: translateY(-2px) translateZ(0);
+}
 .pub2-card-head {
   display: flex;
   align-items: center;
