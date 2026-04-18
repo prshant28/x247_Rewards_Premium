@@ -7,6 +7,7 @@ import {
 } from "framer-motion";
 import SiteFooter from "@/components/SiteFooter";
 import { ActivityHeatmap } from "@/components/MiniCharts";
+import FollowListModal from "@/components/FollowListModal";
 import { getPublicProfile, followUser, unfollowUser } from "@/lib/api";
 import {
   Calendar, Shield, MapPin, Share2, Copy, Check, Sparkles,
@@ -191,6 +192,9 @@ export default function PublicProfile() {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [followLoading, setFollowLoading] = useState(false);
+  const [followsYou, setFollowsYou] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState<"followers" | "following" | "suggestions">("followers");
 
   useEffect(() => {
     (async () => {
@@ -201,6 +205,7 @@ export default function PublicProfile() {
         setIsFollowing(data.isFollowing ?? false);
         setFollowersCount(data.followersCount ?? 0);
         setFollowingCount(data.followingCount ?? 0);
+        setFollowsYou(data.followsYou ?? false);
       } else setNotFound(true);
       setLoading(false);
     })();
@@ -338,6 +343,11 @@ export default function PublicProfile() {
 
               {/* Actions */}
               <div className="prof-id-actions">
+                {!profile.isOwnProfile && followsYou && (
+                  <span className="prof-id-followsyou-badge" title="This user follows you">
+                    <Users className="w-3 h-3" /> Follows you
+                  </span>
+                )}
                 {!profile.isOwnProfile && (
                   <motion.button
                     onClick={handleFollow}
@@ -376,17 +386,30 @@ export default function PublicProfile() {
             {/* Stats strip at bottom of band */}
             <div className="prof-id-stats-strip">
               {[
-                { val: followersCount,                       lbl: "Followers" },
-                { val: followingCount,                       lbl: "Following" },
+                { val: followersCount,                       lbl: "Followers", tab: "followers" as const },
+                { val: followingCount,                       lbl: "Following", tab: "following" as const },
                 { val: profile.stats?.contestsJoined ?? 0,  lbl: "Contests"  },
                 { val: earnedBadges.length,                  lbl: "Badges"    },
                 { val: level,                                lbl: "Level"     },
-              ].map((s, i) => (
-                <div key={s.lbl} className="prof-id-stat">
-                  <div className="prof-id-stat-val"><AnimatedNumber value={s.val} delay={i * 60} /></div>
-                  <div className="prof-id-stat-lbl">{s.lbl}</div>
-                </div>
-              ))}
+              ].map((s, i) => {
+                const clickable = !!s.tab;
+                const Inner = (
+                  <>
+                    <div className="prof-id-stat-val"><AnimatedNumber value={s.val} delay={i * 60} /></div>
+                    <div className="prof-id-stat-lbl">{s.lbl}</div>
+                  </>
+                );
+                return clickable ? (
+                  <button
+                    key={s.lbl}
+                    type="button"
+                    className="prof-id-stat prof-id-stat--clickable"
+                    onClick={() => { setModalTab(s.tab!); setModalOpen(true); }}
+                  >{Inner}</button>
+                ) : (
+                  <div key={s.lbl} className="prof-id-stat">{Inner}</div>
+                );
+              })}
             </div>
           </motion.div>
 
@@ -683,6 +706,15 @@ export default function PublicProfile() {
         { label: "Giveaway", href: "/giveaway" },
         { label: "Account", href: "/account" },
       ]} />
+
+      <FollowListModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        slug={params.slug}
+        initialTab={modalTab}
+        initialFollowersCount={followersCount}
+        initialFollowingCount={followingCount}
+      />
     </div>
   );
 }

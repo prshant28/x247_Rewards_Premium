@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable, userBadgesTable, userFollowsTable } from "@workspace/db";
-import { eq, sql, and, count } from "drizzle-orm";
+import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable, userBadgesTable, userFollowsTable, notificationsTable } from "@workspace/db";
+import { eq, sql, and, count, desc, ne, notInArray, inArray } from "drizzle-orm";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 
@@ -400,11 +400,18 @@ router.get("/users/profile/:slug", async (req, res) => {
     ]);
 
     let isFollowing = false;
+    let followsYou = false;
     if (viewerId && viewerId !== user.id) {
-      const [existingFollow] = await db.select().from(userFollowsTable)
-        .where(and(eq(userFollowsTable.followerId, viewerId), eq(userFollowsTable.followingId, user.id)))
-        .limit(1);
-      isFollowing = !!existingFollow;
+      const [existingFollow, reverseFollow] = await Promise.all([
+        db.select().from(userFollowsTable)
+          .where(and(eq(userFollowsTable.followerId, viewerId), eq(userFollowsTable.followingId, user.id)))
+          .limit(1),
+        db.select().from(userFollowsTable)
+          .where(and(eq(userFollowsTable.followerId, user.id), eq(userFollowsTable.followingId, viewerId)))
+          .limit(1),
+      ]);
+      isFollowing = existingFollow.length > 0;
+      followsYou = reverseFollow.length > 0;
     }
 
     const totalEntries = entries.reduce((sum, e) => sum + (e.entryCount || 0), 0);
@@ -437,6 +444,7 @@ router.get("/users/profile/:slug", async (req, res) => {
       followersCount: Number(followersResult[0]?.count ?? 0),
       followingCount: Number(followingResult[0]?.count ?? 0),
       isFollowing,
+      followsYou,
       isOwnProfile: viewerId === user.id,
       stats: {
         entries: totalEntries,
@@ -477,9 +485,185 @@ router.post("/users/profile/:slug/follow", async (req, res) => {
     if (existing) return res.json({ success: true, action: "already_following" });
 
     await db.insert(userFollowsTable).values({ followerId: session.userId, followingId: target.id });
+
+    // Notify the user who got followed
+    try {
+      const [follower] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+      if (follower) {
+        await db.insert(notificationsTable).values({
+          userId: target.id,
+          type: "follow",
+          icon: "user-plus",
+          title: "New follower",
+          body: `${follower.fullName} started following you`,
+          data: { followerSlug: follower.profileSlug, followerName: follower.fullName, followerId: follower.id },
+        });
+      }
+    } catch (e) { console.error("Follow notification error:", e); }
+
     return res.json({ success: true, action: "followed" });
   } catch (err) {
     console.error("Follow error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* ─── List followers / following / suggestions ───────────────────────── */
+async function getViewerId(req: any): Promise<number | null> {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) return null;
+  const token = authHeader.substring(7);
+  const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+  if (!session || new Date(session.expiresAt) < new Date()) return null;
+  return session.userId;
+}
+
+async function decorateUsers(rows: any[], viewerId: number | null) {
+  if (rows.length === 0) return [];
+  const ids = rows.map(r => r.id);
+  let followingIds = new Set<number>();
+  if (viewerId) {
+    const myFollows = await db.select({ id: userFollowsTable.followingId })
+      .from(userFollowsTable)
+      .where(and(eq(userFollowsTable.followerId, viewerId), inArray(userFollowsTable.followingId, ids)));
+    followingIds = new Set(myFollows.map(f => f.id));
+  }
+  // followers count for each
+  const counts = await db
+    .select({ id: userFollowsTable.followingId, c: count() })
+    .from(userFollowsTable)
+    .where(inArray(userFollowsTable.followingId, ids))
+    .groupBy(userFollowsTable.followingId);
+  const countMap = new Map(counts.map(c => [c.id, Number(c.c)]));
+  return rows.map(u => ({
+    id: u.id,
+    fullName: u.fullName,
+    profileSlug: u.profileSlug,
+    city: u.city,
+    isVerified: u.isVerified,
+    membershipTier: getActiveTier(u),
+    selectedBadge: u.selectedBadge,
+    followersCount: countMap.get(u.id) ?? 0,
+    isFollowing: followingIds.has(u.id),
+    isSelf: viewerId === u.id,
+  }));
+}
+
+router.get("/users/profile/:slug/followers", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const limit = Math.min(50, Math.max(1, parseInt((req.query.limit as string) || "20")));
+    const offset = Math.max(0, parseInt((req.query.offset as string) || "0"));
+    const [target] = await db.select().from(usersTable).where(eq(usersTable.profileSlug, slug)).limit(1);
+    if (!target) return res.status(404).json({ error: "User not found" });
+    const viewerId = await getViewerId(req);
+
+    const rows = await db
+      .select({
+        id: usersTable.id, fullName: usersTable.fullName, profileSlug: usersTable.profileSlug,
+        city: usersTable.city, isVerified: usersTable.isVerified, selectedBadge: usersTable.selectedBadge,
+        membershipTier: usersTable.membershipTier, membershipExpiresAt: usersTable.membershipExpiresAt,
+        createdAt: userFollowsTable.createdAt,
+      })
+      .from(userFollowsTable)
+      .innerJoin(usersTable, eq(usersTable.id, userFollowsTable.followerId))
+      .where(eq(userFollowsTable.followingId, target.id))
+      .orderBy(desc(userFollowsTable.createdAt))
+      .limit(limit).offset(offset);
+
+    const [{ total }] = await db.select({ total: count() }).from(userFollowsTable)
+      .where(eq(userFollowsTable.followingId, target.id));
+
+    const users = await decorateUsers(rows, viewerId);
+    return res.json({ users, total: Number(total), limit, offset });
+  } catch (err) {
+    console.error("List followers error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/users/profile/:slug/following", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const limit = Math.min(50, Math.max(1, parseInt((req.query.limit as string) || "20")));
+    const offset = Math.max(0, parseInt((req.query.offset as string) || "0"));
+    const [target] = await db.select().from(usersTable).where(eq(usersTable.profileSlug, slug)).limit(1);
+    if (!target) return res.status(404).json({ error: "User not found" });
+    const viewerId = await getViewerId(req);
+
+    const rows = await db
+      .select({
+        id: usersTable.id, fullName: usersTable.fullName, profileSlug: usersTable.profileSlug,
+        city: usersTable.city, isVerified: usersTable.isVerified, selectedBadge: usersTable.selectedBadge,
+        membershipTier: usersTable.membershipTier, membershipExpiresAt: usersTable.membershipExpiresAt,
+        createdAt: userFollowsTable.createdAt,
+      })
+      .from(userFollowsTable)
+      .innerJoin(usersTable, eq(usersTable.id, userFollowsTable.followingId))
+      .where(eq(userFollowsTable.followerId, target.id))
+      .orderBy(desc(userFollowsTable.createdAt))
+      .limit(limit).offset(offset);
+
+    const [{ total }] = await db.select({ total: count() }).from(userFollowsTable)
+      .where(eq(userFollowsTable.followerId, target.id));
+
+    const users = await decorateUsers(rows, viewerId);
+    return res.json({ users, total: Number(total), limit, offset });
+  } catch (err) {
+    console.error("List following error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* Suggested users — top by follower count, excluding self & those already followed */
+router.get("/users/suggestions", async (req, res) => {
+  try {
+    const viewerId = await getViewerId(req);
+    const limit = Math.min(20, Math.max(1, parseInt((req.query.limit as string) || "8")));
+
+    let excludeIds: number[] = [];
+    if (viewerId) {
+      const myFollows = await db.select({ id: userFollowsTable.followingId })
+        .from(userFollowsTable)
+        .where(eq(userFollowsTable.followerId, viewerId));
+      excludeIds = [viewerId, ...myFollows.map(f => f.id)];
+    }
+
+    // top users by follower count, must be public
+    const topRows = await db
+      .select({
+        id: usersTable.id, fullName: usersTable.fullName, profileSlug: usersTable.profileSlug,
+        city: usersTable.city, isVerified: usersTable.isVerified, selectedBadge: usersTable.selectedBadge,
+        membershipTier: usersTable.membershipTier, membershipExpiresAt: usersTable.membershipExpiresAt,
+        followers: count(userFollowsTable.id),
+      })
+      .from(usersTable)
+      .leftJoin(userFollowsTable, eq(userFollowsTable.followingId, usersTable.id))
+      .where(
+        excludeIds.length > 0
+          ? and(eq(usersTable.isPublic, true), notInArray(usersTable.id, excludeIds))
+          : eq(usersTable.isPublic, true)
+      )
+      .groupBy(usersTable.id)
+      .orderBy(desc(count(userFollowsTable.id)), desc(usersTable.createdAt))
+      .limit(limit);
+
+    const users = topRows.map(u => ({
+      id: u.id,
+      fullName: u.fullName,
+      profileSlug: u.profileSlug,
+      city: u.city,
+      isVerified: u.isVerified,
+      selectedBadge: u.selectedBadge,
+      membershipTier: getActiveTier(u as any),
+      followersCount: Number(u.followers ?? 0),
+      isFollowing: false,
+      isSelf: false,
+    }));
+
+    return res.json({ users });
+  } catch (err) {
+    console.error("Suggestions error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 });

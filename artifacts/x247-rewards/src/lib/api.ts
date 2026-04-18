@@ -448,6 +448,55 @@ export async function unfollowUser(slug: string): Promise<{ success: boolean }> 
   }
 }
 
+export interface FollowUserItem {
+  id: number;
+  fullName: string;
+  profileSlug: string;
+  city: string | null;
+  isVerified: boolean;
+  membershipTier: string;
+  selectedBadge: string | null;
+  followersCount: number;
+  isFollowing: boolean;
+  isSelf: boolean;
+}
+
+async function fetchUserList(url: string): Promise<{ users: FollowUserItem[]; total: number }> {
+  const token = getUserToken();
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  try {
+    const res = await fetch(url, { headers });
+    if (!res.ok) return { users: [], total: 0 };
+    const data = await res.json();
+    return { users: data.users ?? [], total: data.total ?? (data.users?.length ?? 0) };
+  } catch {
+    return { users: [], total: 0 };
+  }
+}
+
+export async function getFollowers(slug: string, offset = 0, limit = 20) {
+  return fetchUserList(`${API_BASE}/users/profile/${slug}/followers?offset=${offset}&limit=${limit}`);
+}
+
+export async function getFollowing(slug: string, offset = 0, limit = 20) {
+  return fetchUserList(`${API_BASE}/users/profile/${slug}/following?offset=${offset}&limit=${limit}`);
+}
+
+export async function getSuggestedUsers(limit = 8): Promise<FollowUserItem[]> {
+  const token = getUserToken();
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  try {
+    const res = await fetch(`${API_BASE}/users/suggestions?limit=${limit}`, { headers });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.users ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export async function getUserBadges(): Promise<{ available: any[]; earned: string[] }> {
   const token = getUserToken();
   if (!token) return { available: [], earned: [] };
