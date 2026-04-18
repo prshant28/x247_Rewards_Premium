@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -401,6 +402,9 @@ export default function ChatBot() {
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const streamAbortRef = useRef<AbortController | null>(null);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   useEffect(() => { setConversations(loadConversations()); }, []);
 
   useEffect(() => {
@@ -715,7 +719,9 @@ export default function ChatBot() {
     speaking: "Speaking…",
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <>
       {/* ── Voice Mode Overlay ── */}
       <AnimatePresence>
@@ -1264,31 +1270,30 @@ export default function ChatBot() {
       {/* ── FAB Button ── */}
       <motion.button
         onClick={() => { setIsOpen(o => !o); setHasNewMessage(false); }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.94 }}
-        className="fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden"
+        whileHover={{ scale: 1.07 }}
+        whileTap={{ scale: 0.93 }}
+        className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden"
         style={{
           background: isOpen
-            ? "rgba(12,12,14,0.96)"
-            : "rgba(4,4,4,0.98)",
-          border: "1px solid rgba(255,255,255,0.12)",
+            ? "rgba(255,255,255,0.12)"
+            : "rgba(255,255,255,0.95)",
+          border: isOpen ? "1px solid rgba(255,255,255,0.2)" : "1px solid rgba(255,255,255,0.9)",
           boxShadow: isOpen
-            ? "0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06)"
-            : "0 16px 56px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(255,255,255,0.04)",
-          fontFamily: "'Poppins', sans-serif",
+            ? "0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15)"
+            : "0 8px 40px rgba(255,255,255,0.15), 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.5)",
         }}
       >
         <div className="absolute inset-0 pointer-events-none">
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "50%", background: "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%)" }} />
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "55%", background: "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%)" }} />
         </div>
         <AnimatePresence mode="wait">
           {isOpen ? (
             <motion.div key="x" initial={{ scale: 0.5, rotate: -90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: 90, opacity: 0 }} transition={{ duration: 0.18 }}>
-              <X className="w-5 h-5 text-white/70 relative z-10" />
+              <X className="w-5 h-5 text-white/80 relative z-10" />
             </motion.div>
           ) : (
             <motion.div key="chat" initial={{ scale: 0.5, rotate: 90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }}>
-              <MessageCircle className="w-5 h-5 text-white relative z-10" />
+              <MessageCircle className="w-5 h-5 text-black relative z-10" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -1300,11 +1305,12 @@ export default function ChatBot() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white border-[1.5px] border-[#040404]"
+              className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-black border-[1.5px] border-white/90"
             />
           )}
         </AnimatePresence>
       </motion.button>
-    </>
+    </>,
+    document.body
   );
 }
