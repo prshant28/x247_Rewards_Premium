@@ -1446,13 +1446,75 @@
     }
   }
 
-  .reward-card-image {
-    transition: opacity 0.7s ease, transform 0.7s ease;
+  .reward-img-frame {
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%);
   }
-
+  .reward-card-image {
+    opacity: 0.85;
+    filter: saturate(1.05) contrast(1.05);
+    transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1), filter 0.7s ease;
+  }
+  .carousel-card-active .reward-card-image {
+    opacity: 1;
+    filter: saturate(1.15) contrast(1.08);
+  }
+  .carousel-card-adjacent .reward-card-image { opacity: 0.78; }
+  .carousel-card-distant .reward-card-image { opacity: 0.6; }
   .group:hover .reward-card-image {
-    opacity: 0.55;
-    transform: scale(1.05);
+    transform: scale(1.06);
+    filter: saturate(1.2) contrast(1.1);
+  }
+  /* Spotlight: subtle radial highlight to add depth without darkening */
+  .reward-img-spot {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 35%, hsl(var(--foreground) / 0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .carousel-card-active .reward-img-spot { opacity: 1; }
+  /* Bottom fade — token-aware so it works on light themes too */
+  .reward-img-fade {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top,
+      hsl(var(--card)) 0%,
+      hsl(var(--card) / 0.6) 35%,
+      hsl(var(--card) / 0.15) 65%,
+      transparent 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* Premium "Featured" pill */
+  .reward-featured-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: hsl(var(--card) / 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--foreground) / 0.12);
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--foreground) / 0.85);
+    box-shadow: 0 2px 12px hsl(var(--background) / 0.4);
+  }
+  .reward-featured-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: hsl(var(--foreground));
+    box-shadow: 0 0 6px hsl(var(--foreground) / 0.6);
+    animation: rewardDotPulse 2s ease-in-out infinite;
+  }
+  @keyframes rewardDotPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reward-featured-dot { animation: none; }
   }
 
   .carousel-track {

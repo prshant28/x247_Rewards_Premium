@@ -604,23 +604,25 @@ function RewardsCarousel() {
                   <div className="card-top-accent" />
                   <div className="card-shine" />
                   <div className="relative z-[2] flex flex-col h-full">
-                    <div className="relative h-36 sm:h-44 overflow-hidden">
+                    <div className="relative h-40 sm:h-48 overflow-hidden reward-img-frame">
                       <img
                         src={item.img}
                         alt={`${item.tier}: ${item.title}`}
-                        className="w-full h-full object-cover opacity-40 reward-card-image"
+                        className="w-full h-full object-cover reward-card-image"
                         loading="eager"
                         decoding="async"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(6,6,6,0.98)] via-[rgba(6,6,6,0.5)] to-transparent" />
-                      <div className="absolute top-3 right-3">
+                      <div className="reward-img-spot" />
+                      <div className="reward-img-fade" />
+                      <div className="absolute top-3 right-3 z-[3]">
                         <BorderGlow borderRadius={10} glowRadius={8} cardBg="rgba(0,0,0,0.6)" className="icon-circle icon-circle-sm backdrop-blur-sm">
                           {item.icon}
                         </BorderGlow>
                       </div>
                       {isActive && (
-                        <div className="absolute top-3 left-3">
-                          <span className="px-2.5 py-1 rounded-full bg-white/[0.08] backdrop-blur-md text-[9px] uppercase tracking-widest text-white/60 font-display border border-white/[0.06]">
+                        <div className="absolute top-3 left-3 z-[3]">
+                          <span className="reward-featured-pill">
+                            <span className="reward-featured-dot" />
                             Featured
                           </span>
                         </div>
