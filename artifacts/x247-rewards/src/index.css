@@ -2611,18 +2611,15 @@
 }
 
 .upc-initials {
-  font-size: 5rem;
+  font-size: 5.5rem;
   font-family: 'Syne', sans-serif;
-  font-weight: 300;
-  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(180,180,200,0.4) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.02em;
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: -0.03em;
   position: relative;
   z-index: 1;
-  text-shadow: 0 4px 20px rgba(255,255,255,0.1);
-  font-style: italic;
+  line-height: 1;
+  user-select: none;
 }
 
 .upc-tier {
@@ -2660,15 +2657,11 @@
 }
 
 .upc-name {
-  font-size: 1.45rem;
+  font-size: 1.4rem;
   font-family: 'Syne', sans-serif;
   font-weight: 600;
-  color: white;
+  color: rgba(255, 255, 255, 0.95);
   letter-spacing: -0.02em;
-  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(220,220,230,0.85) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .upc-verified {
@@ -2813,15 +2806,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.55);
   cursor: pointer;
   transition: all 0.2s;
 }
 .dash-topbar-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .dash-layout {
@@ -2855,7 +2849,7 @@
   font-size: 0.85rem;
   font-family: 'Poppins', sans-serif;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.52);
   transition: all 0.2s;
   cursor: pointer;
   background: transparent;
@@ -2864,8 +2858,8 @@
   width: 100%;
 }
 .dash-nav-item:hover {
-  color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.05);
 }
 .dash-nav-active {
   color: rgba(255, 255, 255, 0.9) !important;
@@ -3079,21 +3073,28 @@
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.06em;
-  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.4) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: hsl(var(--foreground));
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
   margin: 0 0 12px;
 }
+.x247-404-number > span:not(.x247-404-zero) {
+  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.4) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .x247-404-zero {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.4) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .x247-404-sparkle {
   position: absolute;

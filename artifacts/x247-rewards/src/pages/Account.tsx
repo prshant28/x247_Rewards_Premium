@@ -1507,23 +1507,29 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
 
 function ReferralsTab({ user }: { user: any }) {
   const [stats, setStats] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<any | null | "loading">("loading");
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     getReferralStats().then(setStats).catch(() => {});
-    getReferralProfile().then((d) => setProfile(d.partner)).catch(() => {});
+    getReferralProfile()
+      .then((d) => setProfile(d.partner ?? null))
+      .catch(() => setProfile(null));
   }, []);
 
-  const refCode = profile?.referralCode || `X247-${user.id}`;
-  const refLink = `${window.location.origin}/?ref=${refCode}`;
+  const refCode = profile && profile !== "loading" ? profile.referralCode : null;
+  const refLink = refCode ? `${window.location.origin}/?ref=${refCode}` : "";
 
   const copy = () => {
+    if (!refLink) return;
     navigator.clipboard.writeText(refLink).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     });
   };
+
+  const isEnrolled = profile && profile !== "loading";
+  const isLoading = profile === "loading";
 
   return (
     <motion.div key="referrals" variants={tabFade} initial="hidden" animate="visible" exit="exit">
@@ -1532,52 +1538,85 @@ function ReferralsTab({ user }: { user: any }) {
         <h3 className="text-base font-display font-light text-white">Referrals</h3>
       </div>
 
-      <div className="glass-card p-6 mb-5">
-        <div className="card-shine" />
-        <div className="relative z-[2]">
-          <div className="text-[10px] uppercase tracking-wider font-display text-white/30 mb-2">Your Referral Code</div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <code className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] font-mono text-sm text-white/85 flex-1 min-w-[160px] truncate">{refCode}</code>
-            <button onClick={copy} className="acct-copy-btn">
-              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copied ? "Copied" : "Copy Link"}</span>
-            </button>
-          </div>
-          <div className="mt-4 grid grid-cols-3 gap-3">
-            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-              <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Total Referrals</div>
-              <div className="text-lg font-display font-light text-white">{stats?.totalReferrals ?? 0}</div>
-            </div>
-            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-              <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Conversions</div>
-              <div className="text-lg font-display font-light text-white">{stats?.conversions ?? 0}</div>
-            </div>
-            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-              <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Earnings</div>
-              <div className="text-lg font-display font-light text-white">₹{stats?.earnings ?? 0}</div>
-            </div>
-          </div>
-          <Link href="/referral-dashboard" className="mt-5 acct-compare-link inline-flex">
-            <span>Open Full Referral Dashboard</span>
-            <ArrowRight className="w-3 h-3" />
-          </Link>
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+          <div className="w-5 h-5 border border-white/20 border-t-white/60 rounded-full animate-spin" />
         </div>
-      </div>
+      ) : !isEnrolled ? (
+        /* Not enrolled state */
+        <div className="glass-card p-8 mb-5 text-center">
+          <div className="card-shine" />
+          <div className="relative z-[2] flex flex-col items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center">
+              <Share2 className="w-6 h-6 text-white/25" />
+            </div>
+            <div>
+              <h4 className="text-sm font-display font-light text-white mb-1">Not Enrolled in Referral Program</h4>
+              <p className="text-xs text-white/35 font-light leading-relaxed max-w-xs mx-auto">
+                Join the X247 referral program to earn bonus entries and rewards every time a friend signs up through your link.
+              </p>
+            </div>
+            <Link href="/referral-dashboard" className="mt-2 acct-copy-btn inline-flex">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Join Referral Program</span>
+            </Link>
+            <div className="mt-2 space-y-2 w-full max-w-xs text-left">
+              <div className="flex gap-3 text-xs text-white/40 font-light"><span className="text-white/20 font-mono">01</span><span>Apply to become a referral partner.</span></div>
+              <div className="flex gap-3 text-xs text-white/40 font-light"><span className="text-white/20 font-mono">02</span><span>Get your unique link after approval.</span></div>
+              <div className="flex gap-3 text-xs text-white/40 font-light"><span className="text-white/20 font-mono">03</span><span>Earn bonus entries per successful referral.</span></div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="glass-card p-6 mb-5">
+            <div className="card-shine" />
+            <div className="relative z-[2]">
+              <div className="text-[10px] uppercase tracking-wider font-display text-white/30 mb-2">Your Referral Code</div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <code className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] font-mono text-sm text-white/85 flex-1 min-w-[160px] truncate">{refCode}</code>
+                <button onClick={copy} className="acct-copy-btn">
+                  {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copied ? "Copied" : "Copy Link"}</span>
+                </button>
+              </div>
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Total Referrals</div>
+                  <div className="text-lg font-display font-light text-white">{stats?.totalReferrals ?? 0}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Conversions</div>
+                  <div className="text-lg font-display font-light text-white">{stats?.conversions ?? 0}</div>
+                </div>
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Earnings</div>
+                  <div className="text-lg font-display font-light text-white">₹{stats?.earnings ?? 0}</div>
+                </div>
+              </div>
+              <Link href="/referral-dashboard" className="mt-5 acct-compare-link inline-flex">
+                <span>Open Full Referral Dashboard</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
 
-      <div className="glass-card p-5">
-        <div className="card-shine" />
-        <div className="relative z-[2]">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-white/40" />
-            <h4 className="text-sm font-display font-light text-white">How it works</h4>
+          <div className="glass-card p-5">
+            <div className="card-shine" />
+            <div className="relative z-[2]">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-3.5 h-3.5 text-white/40" />
+                <h4 className="text-sm font-display font-light text-white">How it works</h4>
+              </div>
+              <ol className="space-y-2 text-xs text-white/50 font-light">
+                <li className="flex gap-3"><span className="text-white/30 font-mono">01</span><span>Share your unique link with friends and on social.</span></li>
+                <li className="flex gap-3"><span className="text-white/30 font-mono">02</span><span>They register and complete partner tasks for entries.</span></li>
+                <li className="flex gap-3"><span className="text-white/30 font-mono">03</span><span>You earn bonus entries and rewards for every conversion.</span></li>
+              </ol>
+            </div>
           </div>
-          <ol className="space-y-2 text-xs text-white/50 font-light">
-            <li className="flex gap-3"><span className="text-white/30 font-mono">01</span><span>Share your unique link with friends and on social.</span></li>
-            <li className="flex gap-3"><span className="text-white/30 font-mono">02</span><span>They register and complete partner tasks for entries.</span></li>
-            <li className="flex gap-3"><span className="text-white/30 font-mono">03</span><span>You earn bonus entries and rewards for every conversion.</span></li>
-          </ol>
-        </div>
-      </div>
+        </>
+      )}
     </motion.div>
   );
 }
@@ -1927,7 +1966,9 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                 {user.avatarUrl ? (
                   <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <User className="w-5 h-5 text-white/40" />
+                  <span className="text-base font-display font-semibold text-white/70 tracking-tight select-none">
+                    {user.fullName?.charAt(0).toUpperCase() || "?"}
+                  </span>
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -1941,7 +1982,7 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                     </span>
                   )}
                 </div>
-                <div className="text-[10px] text-white/25 font-light truncate">{user.email} · Joined {memberSince}</div>
+                <div className="text-[10px] text-white/40 font-light truncate">{user.email} · Joined {memberSince}</div>
               </div>
             </div>
 
