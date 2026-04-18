@@ -53,16 +53,12 @@ interface MiniBarChartProps {
   data: { label: string; value: number }[];
   width?: number;
   height?: number;
-  barColor?: string;
-  activeBarColor?: string;
 }
 
 export function MiniBarChart({
   data,
   width = 200,
   height = 64,
-  barColor = "rgba(255,255,255,0.08)",
-  activeBarColor = "rgba(255,255,255,0.25)",
 }: MiniBarChartProps) {
   if (data.length === 0) return null;
 
@@ -73,7 +69,12 @@ export function MiniBarChart({
   const chartH = height - labelH;
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="mini-bar-chart-svg"
+    >
       {data.map((d, i) => {
         const barH = Math.max(2, (d.value / max) * (chartH - 2));
         const x = i * (barWidth + gap);
@@ -87,13 +88,15 @@ export function MiniBarChart({
               width={barWidth}
               height={barH}
               rx={2}
-              fill={isLast ? activeBarColor : barColor}
+              fill="currentColor"
+              opacity={isLast ? 0.45 : 0.15}
             />
             <text
               x={x + barWidth / 2}
               y={height - 1}
               textAnchor="middle"
-              fill="rgba(255,255,255,0.2)"
+              fill="currentColor"
+              opacity={0.3}
               fontSize={8}
               fontFamily="'Syne', sans-serif"
             >
@@ -174,12 +177,17 @@ export function ActivityHeatmap({ dates, weeks = 8 }: ActivityHeatmapProps) {
   const svgH = 7 * (cellSize + gap);
 
   const getOpacity = (count: number) => {
-    if (count === 0) return 0.03;
-    return 0.08 + (count / maxCount) * 0.35;
+    if (count === 0) return 0.06;
+    return 0.15 + (count / maxCount) * 0.65;
   };
 
   return (
-    <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`}>
+    <svg
+      width={svgW}
+      height={svgH}
+      viewBox={`0 0 ${svgW} ${svgH}`}
+      className="activity-heatmap-svg"
+    >
       {cells.map((cell, i) => (
         <rect
           key={i}
@@ -188,7 +196,8 @@ export function ActivityHeatmap({ dates, weeks = 8 }: ActivityHeatmapProps) {
           width={cellSize}
           height={cellSize}
           rx={2}
-          fill={`rgba(255,255,255,${getOpacity(cell.count)})`}
+          fill="currentColor"
+          opacity={getOpacity(cell.count)}
         />
       ))}
     </svg>

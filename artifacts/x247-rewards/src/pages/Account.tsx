@@ -25,6 +25,7 @@ import X247BlackCard from "@/components/X247BlackCard";
 import { Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap } from "@/components/MiniCharts";
 import { useTheme, THEMES, type ThemeId } from "@/contexts/ThemeContext";
 import { TrendingUp, BarChart3, Activity } from "lucide-react";
+import FollowListModal from "@/components/FollowListModal";
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -811,6 +812,7 @@ function buildEntryHistoryData(entries: any[]) {
 }
 
 function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entries: any[]; streak: number; onChangeTab?: (id: TabId) => void }) {
+  const [followModal, setFollowModal] = useState<{ open: boolean; tab: "followers" | "following" | "suggestions" }>({ open: false, tab: "suggestions" });
   const tier = (user.membershipTier as TierKey) || "free";
   const tierLabel = tier === "free" ? "Free" : tier.charAt(0).toUpperCase() + tier.slice(1);
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
@@ -860,27 +862,46 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
 
       {/* Social Stats Strip */}
       <div className="acct-social-strip mb-7">
-        <div className="acct-social-stat">
+        <button
+          className="acct-social-stat acct-social-stat--btn"
+          onClick={() => setFollowModal({ open: true, tab: "followers" })}
+        >
           <AnimatedCounter value={user.followersCount ?? 0} className="acct-social-num" />
           <span className="acct-social-lbl">Followers</span>
-        </div>
+        </button>
         <div className="acct-social-divider" />
-        <div className="acct-social-stat">
+        <button
+          className="acct-social-stat acct-social-stat--btn"
+          onClick={() => setFollowModal({ open: true, tab: "following" })}
+        >
           <AnimatedCounter value={user.followingCount ?? 0} className="acct-social-num" />
           <span className="acct-social-lbl">Following</span>
-        </div>
+        </button>
         <div className="acct-social-divider" />
         <div className="acct-social-stat">
           <AnimatedCounter value={entries.length} className="acct-social-num" />
           <span className="acct-social-lbl">Entries</span>
         </div>
-        {user.profileSlug && (
-          <Link href={`/profile/${user.profileSlug}`} className="acct-social-profile-link ml-auto">
-            <Users className="w-3.5 h-3.5" />
-            <span>View Profile</span>
-          </Link>
-        )}
+        <button
+          className="acct-social-discover-btn ml-auto"
+          onClick={() => setFollowModal({ open: true, tab: "suggestions" })}
+        >
+          <Users className="w-3.5 h-3.5" />
+          <span>Find People</span>
+        </button>
       </div>
+
+      {/* Follow Modal */}
+      {user.profileSlug && (
+        <FollowListModal
+          open={followModal.open}
+          onClose={() => setFollowModal(f => ({ ...f, open: false }))}
+          slug={user.profileSlug}
+          initialTab={followModal.tab}
+          initialFollowersCount={user.followersCount ?? 0}
+          initialFollowingCount={user.followingCount ?? 0}
+        />
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-7">
         <div className="dash-chart-card">
