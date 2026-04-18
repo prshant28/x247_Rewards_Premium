@@ -8758,7 +8758,7 @@
   position: relative;
   width: 100%;
   max-width: 360px;
-  margin: 0 auto;
+  margin: 10px;
   padding: 18px;
   background: linear-gradient(155deg, rgba(28,28,32,0.98) 0%, rgba(15,15,18,0.98) 100%);
   border: 1px solid rgba(255,255,255,0.08);
