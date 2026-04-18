@@ -14601,3 +14601,96 @@ svg.lucide,
   background: hsl(var(--foreground) / 0.08) !important;
   color: hsl(var(--foreground) / 0.85) !important;
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+   HERO BANNER SLIDE — force white text in light theme
+   The banner card has a forced-dark background in all themes.
+   Higher specificity (.hero-banner-slide) beats all earlier overrides.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* ABOUT X247 pill — glass-pill-badge inside slide */
+[data-light] .hero-banner-slide .glass-pill-badge,
+[data-light] .hero-banner-container .glass-pill-badge {
+  background: rgba(255, 255, 255, 0.10) !important;
+  border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  color: rgba(255, 255, 255, 0.90) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.90) !important;
+  box-shadow: none !important;
+}
+
+[data-light] .hero-banner-slide .glass-pill-badge span,
+[data-light] .hero-banner-container .glass-pill-badge span {
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.90) !important;
+  color: rgba(255, 255, 255, 0.90) !important;
+}
+
+/* Slide counter "01 / 05" */
+[data-light] .hero-banner-slide .text-white\/30,
+[data-light] .hero-banner-slide .font-mono {
+  color: rgba(255, 255, 255, 0.42) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.42) !important;
+}
+
+/* Title heading */
+[data-light] .hero-banner-slide h3,
+[data-light] .hero-banner-slide .text-white {
+  color: rgba(255, 255, 255, 0.95) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Body description */
+[data-light] .hero-banner-slide p,
+[data-light] .hero-banner-slide .text-white\/60 {
+  color: rgba(255, 255, 255, 0.65) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.65) !important;
+}
+
+/* Feature pills — "DAILY PRIZE DRAWS", "ZERO COST ENTRY", "REAL REWARDS" */
+[data-light] .hero-banner-slide .hero-banner-pill {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 14px -3px rgba(0,0,0,0.35) !important;
+}
+
+[data-light] .hero-banner-slide .hero-banner-pill:hover {
+  background: rgba(255, 255, 255, 0.13) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* "Get Started →" CTA button */
+[data-light] .hero-banner-slide .hero-banner-cta {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.30) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-light] .hero-banner-slide .hero-banner-cta:hover {
+  background: rgba(255, 255, 255, 0.20) !important;
+  border-color: rgba(255, 255, 255, 0.42) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Arrow nav buttons */
+[data-light] .hero-banner-arrow {
+  background: rgba(0, 0, 0, 0.50) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.55) !important;
+}
+
+[data-light] .hero-banner-arrow:hover {
+  background: rgba(0, 0, 0, 0.70) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* SVG icons inside the slide */
+[data-light] .hero-banner-slide svg {
+  color: inherit !important;
+}
