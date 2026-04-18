@@ -831,6 +831,30 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
         ))}
       </div>
 
+      {/* Social Stats Strip */}
+      <div className="acct-social-strip mb-7">
+        <div className="acct-social-stat">
+          <AnimatedCounter value={user.followersCount ?? 0} className="acct-social-num" />
+          <span className="acct-social-lbl">Followers</span>
+        </div>
+        <div className="acct-social-divider" />
+        <div className="acct-social-stat">
+          <AnimatedCounter value={user.followingCount ?? 0} className="acct-social-num" />
+          <span className="acct-social-lbl">Following</span>
+        </div>
+        <div className="acct-social-divider" />
+        <div className="acct-social-stat">
+          <AnimatedCounter value={entries.length} className="acct-social-num" />
+          <span className="acct-social-lbl">Entries</span>
+        </div>
+        {user.profileSlug && (
+          <Link href={`/profile/${user.profileSlug}`} className="acct-social-profile-link ml-auto">
+            <Users className="w-3.5 h-3.5" />
+            <span>View Profile</span>
+          </Link>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-7">
         <div className="dash-chart-card">
           <div className="flex items-center justify-between mb-5">

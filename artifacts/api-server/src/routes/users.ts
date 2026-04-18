@@ -210,7 +210,11 @@ router.get("/users/me", async (req, res) => {
     const activeTier = getActiveTier(user);
     const plan = MEMBERSHIP_PLANS.find(p => p.id === activeTier);
 
-    const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id));
+    const [badges, followersResult, followingResult] = await Promise.all([
+      db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id)),
+      db.select({ count: count() }).from(userFollowsTable).where(eq(userFollowsTable.followingId, user.id)),
+      db.select({ count: count() }).from(userFollowsTable).where(eq(userFollowsTable.followerId, user.id)),
+    ]);
 
     return res.json({
       id: user.id,
@@ -229,6 +233,8 @@ router.get("/users/me", async (req, res) => {
       membershipTier: activeTier,
       membershipExpiresAt: user.membershipExpiresAt,
       membershipLimits: plan?.limits || MEMBERSHIP_PLANS[0].limits,
+      followersCount: Number(followersResult[0]?.count ?? 0),
+      followingCount: Number(followingResult[0]?.count ?? 0),
     });
   } catch (err) {
     console.error("User me error:", err);
@@ -403,14 +409,21 @@ router.get("/users/profile/:slug", async (req, res) => {
 
     const totalEntries = entries.reduce((sum, e) => sum + (e.entryCount || 0), 0);
     const contestsWithDetails = await db
-      .select({ contestId: giveawayEntriesTable.contestId, entryCount: giveawayEntriesTable.entryCount })
+      .select({ contestId: giveawayEntriesTable.contestId, entryCount: giveawayEntriesTable.entryCount, createdAt: giveawayEntriesTable.createdAt })
       .from(giveawayEntriesTable)
       .where(eq(giveawayEntriesTable.userId, user.id))
-      .limit(20);
+      .limit(100);
 
     const tier = getActiveTier(user);
     const memberSinceDate = new Date(user.createdAt ?? Date.now());
     const daysSinceMember = Math.floor((Date.now() - memberSinceDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    const toDateStr = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+    const activityDates: string[] = contestsWithDetails
+      .filter(e => e.createdAt)
+      .map(e => toDateStr(new Date(e.createdAt!)));
 
     return res.json({
       fullName: user.fullName,
@@ -431,6 +444,7 @@ router.get("/users/profile/:slug", async (req, res) => {
         badgesEarned: badges.length,
         daysActive: daysSinceMember,
       },
+      activityDates,
       recentContests: contestsWithDetails.slice(0, 6).map(e => ({
         contestId: e.contestId,
         entries: e.entryCount,

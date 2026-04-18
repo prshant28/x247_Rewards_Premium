@@ -11429,3 +11429,69 @@
   gap: 5px;
 }
 .hiw-cta-trust svg { color: rgba(255,255,255,0.22); }
+
+/* ═══════════════════════════════════════════════════
+   ACCOUNT SOCIAL STRIP
+═══════════════════════════════════════════════════ */
+.acct-social-strip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+.acct-social-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 24px 4px 0;
+}
+.acct-social-stat:first-child { padding-left: 0; }
+.acct-social-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.acct-social-lbl {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.30);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+.acct-social-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.07);
+  margin-right: 24px;
+  flex-shrink: 0;
+}
+.acct-social-profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.acct-social-profile-link:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.80);
+}
