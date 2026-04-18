@@ -15,22 +15,22 @@ import {
 } from "lucide-react";
 
 /* ─── Badge metadata ─── */
-const BADGE_META: Record<string, { emoji: string; label: string; desc: string; color: string }> = {
-  "early-adopter":    { emoji: "🚀", label: "Early Adopter",    desc: "Joined during the first wave of X247 members", color: "rgba(139,92,246,0.25)" },
-  "streak-master":    { emoji: "🔥", label: "Streak Master",    desc: "Maintained a 30-day continuous entry streak", color: "rgba(249,115,22,0.25)" },
-  "first-win":        { emoji: "🏆", label: "First Win",        desc: "Claimed their very first giveaway prize", color: "rgba(234,179,8,0.25)" },
-  "social-butterfly": { emoji: "🦋", label: "Social Butterfly", desc: "Referred 5 or more new members to X247", color: "rgba(34,197,94,0.25)" },
-  "partner-pro":      { emoji: "⭐", label: "Partner Pro",      desc: "Completed 10+ partner promotional tasks", color: "rgba(59,130,246,0.25)" },
-  "community-hero":   { emoji: "🛡️", label: "Community Hero",   desc: "Made significant contributions to the community", color: "rgba(236,72,153,0.25)" },
-  "lucky-charm":      { emoji: "🍀", label: "Lucky Charm",      desc: "Won 3 or more giveaways in a row", color: "rgba(16,185,129,0.25)" },
-  "mega-streak":      { emoji: "💎", label: "Mega Streak",      desc: "90-day unbroken daily entry streak achieved", color: "rgba(99,102,241,0.25)" },
+const BADGE_META: Record<string, { emoji: string; label: string; desc: string; color: string; accent: string }> = {
+  "early-adopter":    { emoji: "🚀", label: "Early Adopter",    desc: "Joined during the first wave of X247 members",   color: "rgba(139,92,246,0.20)", accent: "#8b5cf6" },
+  "streak-master":    { emoji: "🔥", label: "Streak Master",    desc: "Maintained a 30-day continuous entry streak",    color: "rgba(249,115,22,0.20)", accent: "#f97316" },
+  "first-win":        { emoji: "🏆", label: "First Win",        desc: "Claimed their very first giveaway prize",        color: "rgba(234,179,8,0.20)",  accent: "#eab308" },
+  "social-butterfly": { emoji: "🦋", label: "Social Butterfly", desc: "Referred 5 or more new members to X247",         color: "rgba(34,197,94,0.20)",  accent: "#22c55e" },
+  "partner-pro":      { emoji: "⭐", label: "Partner Pro",      desc: "Completed 10+ partner promotional tasks",        color: "rgba(59,130,246,0.20)", accent: "#3b82f6" },
+  "community-hero":   { emoji: "🛡️", label: "Community Hero",   desc: "Made significant contributions to the community", color: "rgba(236,72,153,0.20)", accent: "#ec4899" },
+  "lucky-charm":      { emoji: "🍀", label: "Lucky Charm",      desc: "Won 3 or more giveaways in a row",               color: "rgba(16,185,129,0.20)", accent: "#10b981" },
+  "mega-streak":      { emoji: "💎", label: "Mega Streak",      desc: "90-day unbroken daily entry streak achieved",    color: "rgba(99,102,241,0.20)", accent: "#6366f1" },
 };
 
-const TIER_META: Record<string, { icon: React.FC<{ className?: string }>; label: string; glow: string }> = {
-  free:   { icon: Zap,     label: "Member",        glow: "rgba(255,255,255,0.08)" },
-  silver: { icon: Star,    label: "Silver Member", glow: "rgba(192,192,220,0.18)" },
-  gold:   { icon: Crown,   label: "Gold Member",   glow: "rgba(212,175,55,0.22)" },
-  black:  { icon: Diamond, label: "Black Elite",   glow: "rgba(120,120,160,0.28)" },
+const TIER_META: Record<string, { icon: React.FC<{ className?: string }>; label: string; glow: string; ring: string }> = {
+  free:   { icon: Zap,     label: "Member",        glow: "rgba(255,255,255,0.06)", ring: "rgba(255,255,255,0.10)" },
+  silver: { icon: Star,    label: "Silver Member", glow: "rgba(192,192,220,0.14)", ring: "rgba(192,192,220,0.30)" },
+  gold:   { icon: Crown,   label: "Gold Member",   glow: "rgba(212,175,55,0.18)",  ring: "rgba(212,175,55,0.45)"  },
+  black:  { icon: Diamond, label: "Black Elite",   glow: "rgba(120,120,160,0.22)", ring: "rgba(180,180,200,0.35)" },
 };
 
 function getInitials(name: string) {
@@ -42,7 +42,6 @@ function AnimatedNumber({ value, delay = 0 }: { value: number; delay?: number })
   const [display, setDisplay] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-
   useEffect(() => {
     if (!inView) return;
     const timer = setTimeout(() => {
@@ -58,35 +57,43 @@ function AnimatedNumber({ value, delay = 0 }: { value: number; delay?: number })
     }, delay);
     return () => clearTimeout(timer);
   }, [value, inView, delay]);
-
   return <span ref={ref}>{display.toLocaleString()}</span>;
 }
 
-/* ─── Trading Card (compact stylized profile card) ─── */
+/* ─── Trading Card (premium collectible card — no corner arcs) ─── */
 function TradingCard({
   initials, fullName, tier, tierLabel, followers, badges, onShare, copied,
 }: {
   initials: string; fullName: string; tier: string; tierLabel: string;
   followers: number; badges: number; onShare: () => void; copied: boolean;
 }) {
+  const tierRing = TIER_META[tier]?.ring ?? "rgba(255,255,255,0.10)";
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, rotateY: -10 }}
+      initial={{ opacity: 0, y: 30, rotateY: -8 }}
       whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className="pub2-tcard"
     >
       <div className="pub2-tcard-shine" />
+
+      {/* Avatar art area */}
       <div className="pub2-tcard-inner">
         <div className="pub2-tcard-tier-pill" data-tier={tier}>{tierLabel.split(" ")[0].toUpperCase()}</div>
         <div className="pub2-tcard-grid" />
+
+        {/* Crosshair reticle — no corner arcs */}
+        <div className="pub2-tcard-reticle" aria-hidden>
+          <div className="pub2-tcard-reticle-h" />
+          <div className="pub2-tcard-reticle-v" />
+          <div className="pub2-tcard-reticle-dot pub2-tcard-rd-c" />
+        </div>
+
         <div className="pub2-tcard-avatar-area">
+          {/* Glow ring around initials */}
+          <div className="pub2-tcard-initials-ring" style={{ "--tier-ring": tierRing } as React.CSSProperties} />
           <span className="pub2-tcard-initials">{initials}</span>
-          <div className="pub2-tcard-corner pub2-tcard-corner-tl" />
-          <div className="pub2-tcard-corner pub2-tcard-corner-tr" />
-          <div className="pub2-tcard-corner pub2-tcard-corner-bl" />
-          <div className="pub2-tcard-corner pub2-tcard-corner-br" />
         </div>
       </div>
 
@@ -122,59 +129,38 @@ function TradingCard({
   );
 }
 
-/* ─── Activity Heatmap (GitHub-style contribution grid) ─── */
+/* ─── Activity Heatmap ─── */
 function ActivityHeatmap({ seed = 1, daysActive = 0 }: { seed?: number; daysActive?: number }) {
-  const WEEKS = 14;
-  const DAYS = 7;
-  // Deterministic pseudo-random pattern from seed
-  const rand = (i: number) => {
-    const x = Math.sin((i + 1) * (seed + 13)) * 10000;
-    return x - Math.floor(x);
-  };
+  const WEEKS = 14; const DAYS = 7;
+  const rand = (i: number) => { const x = Math.sin((i + 1) * (seed + 13)) * 10000; return x - Math.floor(x); };
   const cells: number[] = [];
   let activeCount = 0;
   for (let i = 0; i < WEEKS * DAYS; i++) {
     const r = rand(i);
     let level = 0;
-    if (r > 0.92) level = 4;
-    else if (r > 0.82) level = 3;
-    else if (r > 0.68) level = 2;
-    else if (r > 0.50) level = 1;
+    if (r > 0.92) level = 4; else if (r > 0.82) level = 3; else if (r > 0.68) level = 2; else if (r > 0.50) level = 1;
     cells.push(level);
     if (level > 0) activeCount++;
   }
-  // Cap by daysActive when provided (turn off late cells if too many)
   if (daysActive > 0 && activeCount > daysActive) {
     let toRemove = activeCount - daysActive;
-    for (let i = cells.length - 1; i >= 0 && toRemove > 0; i--) {
-      if (cells[i] > 0) { cells[i] = 0; toRemove--; }
-    }
+    for (let i = cells.length - 1; i >= 0 && toRemove > 0; i--) { if (cells[i] > 0) { cells[i] = 0; toRemove--; } }
   }
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const now = new Date();
-  const monthLabel = months[now.getMonth()];
-  const prevLabel  = months[(now.getMonth() + 11) % 12];
-
+  const monthLabel = months[now.getMonth()]; const prevLabel = months[(now.getMonth() + 11) % 12];
   return (
     <div className="pub2-heatmap">
-      <div className="pub2-heatmap-months">
-        <span>{prevLabel}</span>
-        <span>{monthLabel}</span>
-      </div>
+      <div className="pub2-heatmap-months"><span>{prevLabel}</span><span>{monthLabel}</span></div>
       <div className="pub2-heatmap-grid" style={{ gridTemplateColumns: `repeat(${WEEKS}, 1fr)` }}>
         {Array.from({ length: WEEKS }).map((_, w) => (
           <div key={w} className="pub2-heatmap-col">
             {Array.from({ length: DAYS }).map((_, d) => {
-              const idx = w * DAYS + d;
-              const lvl = cells[idx];
+              const idx = w * DAYS + d; const lvl = cells[idx];
               return (
-                <motion.div
-                  key={d}
-                  className={`pub2-heatmap-cell pub2-heatmap-l${lvl}`}
-                  initial={{ opacity: 0, scale: 0.6 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.004, duration: 0.3 }}
+                <motion.div key={d} className={`pub2-heatmap-cell pub2-heatmap-l${lvl}`}
+                  initial={{ opacity: 0, scale: 0.6 }} whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }} transition={{ delay: idx * 0.004, duration: 0.3 }}
                 />
               );
             })}
@@ -183,11 +169,7 @@ function ActivityHeatmap({ seed = 1, daysActive = 0 }: { seed?: number; daysActi
       </div>
       <div className="pub2-heatmap-legend">
         <span>Less</span>
-        <div className="pub2-heatmap-cell pub2-heatmap-l0" />
-        <div className="pub2-heatmap-cell pub2-heatmap-l1" />
-        <div className="pub2-heatmap-cell pub2-heatmap-l2" />
-        <div className="pub2-heatmap-cell pub2-heatmap-l3" />
-        <div className="pub2-heatmap-cell pub2-heatmap-l4" />
+        {[0,1,2,3,4].map(l => <div key={l} className={`pub2-heatmap-cell pub2-heatmap-l${l}`} />)}
         <span>More</span>
       </div>
     </div>
@@ -197,53 +179,39 @@ function ActivityHeatmap({ seed = 1, daysActive = 0 }: { seed?: number; daysActi
 /* ─── 3D tilt card ─── */
 function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
+  const rx = useMotionValue(0); const ry = useMotionValue(0);
   const srx = useSpring(rx, { stiffness: 150, damping: 20 });
   const sry = useSpring(ry, { stiffness: 150, damping: 20 });
   return (
-    <motion.div
-      ref={ref}
-      style={{ rotateX: srx, rotateY: sry, transformStyle: "preserve-3d", perspective: 900 }}
-      onMouseMove={e => {
-        if (!ref.current) return;
-        const r = ref.current.getBoundingClientRect();
-        rx.set(((e.clientY - r.top) / r.height - 0.5) * 14);
-        ry.set(-((e.clientX - r.left) / r.width - 0.5) * 14);
-      }}
-      onMouseLeave={() => { rx.set(0); ry.set(0); }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <motion.div ref={ref} style={{ rotateX: srx, rotateY: sry, transformStyle: "preserve-3d", perspective: 900 }}
+      onMouseMove={e => { if (!ref.current) return; const r = ref.current.getBoundingClientRect(); rx.set(((e.clientY - r.top) / r.height - 0.5) * 14); ry.set(-((e.clientX - r.left) / r.width - 0.5) * 14); }}
+      onMouseLeave={() => { rx.set(0); ry.set(0); }} className={className}
+    >{children}</motion.div>
   );
 }
 
-/* ─── Badge flip card ─── */
+/* ─── Badge flip card — premium version ─── */
 function BadgeFlipCard({ badgeId, earned = true }: { badgeId: string; earned?: boolean }) {
   const [flipped, setFlipped] = useState(false);
   const meta = BADGE_META[badgeId];
   if (!meta) return null;
   return (
-    <div
-      className="pub-flip-wrapper"
-      onMouseEnter={() => setFlipped(true)}
-      onMouseLeave={() => setFlipped(false)}
-    >
+    <div className="pub-flip-wrapper" onMouseEnter={() => setFlipped(true)} onMouseLeave={() => setFlipped(false)}>
       <div className={`pub-flip-inner ${flipped ? "pub-flip-inner--flipped" : ""} ${!earned ? "pub-flip-locked" : ""}`}>
-        {/* Front */}
-        <div className="pub-flip-front" style={{ "--badge-glow": earned ? meta.color : "rgba(255,255,255,0.03)" } as React.CSSProperties}>
+        <div className="pub-flip-front" style={{ "--badge-glow": earned ? meta.color : "rgba(255,255,255,0.03)", "--badge-accent": earned ? meta.accent : "rgba(255,255,255,0.10)" } as React.CSSProperties}>
+          {earned && <div className="pub-flip-front-glow" />}
           <div className="pub-flip-emoji">{meta.emoji}</div>
           <div className="pub-flip-label">{meta.label}</div>
+          {earned && <div className="pub-flip-earned-dot" />}
         </div>
-        {/* Back */}
-        <div className="pub-flip-back">
+        <div className="pub-flip-back" style={{ "--badge-glow": earned ? meta.color : "rgba(255,255,255,0.03)" } as React.CSSProperties}>
           <div className="pub-flip-back-emoji">{meta.emoji}</div>
+          <div className="pub-flip-back-name">{meta.label}</div>
           <div className="pub-flip-back-desc">{meta.desc}</div>
-          {!earned && (
-            <div className="pub-flip-back-locked">
-              <Lock className="w-3 h-3" /> Locked
-            </div>
+          {earned ? (
+            <div className="pub-flip-back-status pub-flip-back-status--earned"><BadgeCheck className="w-3 h-3" /> Earned</div>
+          ) : (
+            <div className="pub-flip-back-status pub-flip-back-status--locked"><Lock className="w-3 h-3" /> Locked</div>
           )}
         </div>
       </div>
@@ -251,43 +219,10 @@ function BadgeFlipCard({ badgeId, earned = true }: { badgeId: string; earned?: b
   );
 }
 
-/* ─── Floating particle dots ─── */
-function HeroParticles() {
-  const particles = Array.from({ length: 22 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 1.5 + 0.5,
-    dur: Math.random() * 6 + 4,
-    delay: Math.random() * 4,
-  }));
-  return (
-    <div className="pub-particles" aria-hidden>
-      {particles.map(p => (
-        <div
-          key={p.id}
-          className="pub-particle"
-          style={{
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            animationDuration: `${p.dur}s`,
-            animationDelay: `${p.delay}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 /* ─── fade-up variant ─── */
 const fadeUp = {
   hidden: { opacity: 0, y: 26 },
-  visible: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-  }),
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } }),
 };
 
 /* ═══════════════════════════════ MAIN ═══════════════════════════════ */
@@ -301,29 +236,6 @@ export default function PublicProfile() {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [followLoading, setFollowLoading] = useState(false);
-
-  /* Mouse parallax for hero orbs */
-  const heroRef = useRef<HTMLDivElement>(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const smx = useSpring(mx, { stiffness: 60, damping: 20 });
-  const smy = useSpring(my, { stiffness: 60, damping: 20 });
-  const orb1x = useTransform(smx, [-1, 1], [-28, 28]);
-  const orb1y = useTransform(smy, [-1, 1], [-18, 18]);
-  const orb2x = useTransform(smx, [-1, 1], [22, -22]);
-  const orb2y = useTransform(smy, [-1, 1], [14, -14]);
-
-  const handleHeroMouse = useCallback((e: React.MouseEvent) => {
-    if (!heroRef.current) return;
-    const r = heroRef.current.getBoundingClientRect();
-    mx.set(((e.clientX - r.left) / r.width) * 2 - 1);
-    my.set(((e.clientY - r.top) / r.height) * 2 - 1);
-  }, [mx, my]);
-
-  /* Hero scroll parallax */
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0.3]);
 
   useEffect(() => {
     (async () => {
@@ -363,11 +275,11 @@ export default function PublicProfile() {
   const tier = profile?.membershipTier ?? "free";
   const TierIcon = TIER_META[tier]?.icon ?? Zap;
   const tierLabel = TIER_META[tier]?.label ?? "Member";
-  const tierGlow = TIER_META[tier]?.glow ?? "rgba(255,255,255,0.08)";
+  const tierGlow = TIER_META[tier]?.glow ?? "rgba(255,255,255,0.06)";
+  const tierRing = TIER_META[tier]?.ring ?? "rgba(255,255,255,0.10)";
   const earnedBadges: string[] = (profile?.badges ?? []).filter((b: string) => BADGE_META[b]);
   const featuredBadge = profile?.selectedBadge && BADGE_META[profile.selectedBadge]
-    ? profile.selectedBadge
-    : earnedBadges[0] ?? null;
+    ? profile.selectedBadge : earnedBadges[0] ?? null;
   const allBadgeSlots = [
     ...earnedBadges,
     ...Object.keys(BADGE_META).filter(k => !earnedBadges.includes(k)).slice(0, Math.max(0, 4 - earnedBadges.length)),
@@ -379,11 +291,8 @@ export default function PublicProfile() {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="noise-overlay" />
         <div className="flex flex-col items-center gap-4">
-          <motion.div
-            className="w-8 h-8 border border-white/15 border-t-white/50 rounded-full"
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, ease: "linear", duration: 1 }}
-          />
+          <motion.div className="w-8 h-8 border border-white/15 border-t-white/50 rounded-full"
+            animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 1 }} />
           <span className="text-[11px] text-white/20 font-light tracking-widest uppercase">Loading profile</span>
         </div>
       </div>
@@ -409,497 +318,400 @@ export default function PublicProfile() {
     );
   }
 
+  const xp = (profile.stats?.entries ?? 0) * 10 + earnedBadges.length * 100 + (profile.stats?.daysActive ?? 0) * 5;
+  const level = Math.max(1, Math.floor(xp / 500) + 1);
+  const xpInLevel = xp % 500;
+  const levelPct = Math.min(100, Math.round((xpInLevel / 500) * 100));
+  const nextNeeded = 500 - xpInLevel;
+
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      {/* HERO REMOVED — trading card in sidebar covers identity */}
-      {false && (
-      <motion.div
-        ref={heroRef}
-        className="pub2-hero"
-      >
-        <div className="pub2-hero-inner">
+      <main className="relative z-10 pt-20 sm:pt-24 pb-16 sm:pb-24">
+        <div className="container mx-auto px-4 max-w-5xl">
+
+          {/* ══ PROFILE IDENTITY HEADER BAND ══ */}
           <motion.div
-            className="pub2-hero-content"
-            initial="hidden"
-            animate="visible"
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+            initial={{ opacity: 0, y: -18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="prof-id-band pub2-card mb-4 sm:mb-5"
           >
-            {/* Avatar */}
-            <motion.div variants={fadeUp} custom={1}>
-              <TiltCard className="pub2-avatar-wrap">
-                <div className="pub2-avatar-glow" style={{ "--tier-glow": tierGlow } as React.CSSProperties} />
-                <div className="pub2-avatar-ring" />
-                <div className="pub2-avatar-ring pub2-avatar-ring-2" />
-                <div className="pub2-avatar">
-                  {profile.avatarUrl ? (
-                    <img src={profile.avatarUrl} alt={profile.fullName} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="pub2-avatar-initials">{getInitials(profile.fullName)}</span>
-                  )}
+            {/* Decorative scan-line */}
+            <div className="prof-id-band-scanline" aria-hidden />
+            <div className="prof-id-band-grid" aria-hidden />
+
+            <div className="prof-id-band-inner">
+              {/* Avatar circle */}
+              <div className="prof-id-avatar-wrap">
+                <div className="prof-id-avatar-glow" style={{ "--tier-glow": tierGlow } as React.CSSProperties} />
+                <div className="prof-id-avatar-ring" style={{ "--tier-ring": tierRing } as React.CSSProperties} />
+                <div className="prof-id-avatar">
+                  <span className="prof-id-avatar-initials">{getInitials(profile.fullName)}</span>
                 </div>
-                {profile.isVerified && (
-                  <div className="pub2-avatar-verified">
-                    <BadgeCheck className="w-3.5 h-3.5 text-white" />
-                  </div>
-                )}
-              </TiltCard>
-            </motion.div>
+                <div className="prof-id-avatar-verified">
+                  <BadgeCheck className="w-3 h-3 text-white" />
+                </div>
+              </div>
 
-            {/* Name */}
-            <motion.div variants={fadeUp} custom={2} className="pub2-identity">
-              <h1 className="pub2-name">{profile.fullName}</h1>
-              {profile.bio && (
-                <p className="pub2-bio-hero">{profile.bio}</p>
-              )}
-
-              {/* Tier pill + meta pills */}
-              <div className="pub2-meta-row">
-                {tier !== "free" && (
-                  <span className="pub2-tier-pill">
+              {/* Identity info */}
+              <div className="prof-id-info">
+                <div className="prof-id-name-row">
+                  <h1 className="prof-id-name">{profile.fullName}</h1>
+                  <span className="prof-id-tier-pill" data-tier={tier}>
                     <TierIcon className="w-3 h-3" />
                     {tierLabel}
                   </span>
-                )}
-                {profile.city && (
-                  <span className="pub2-pill">
-                    <MapPin className="w-3 h-3" />
-                    {profile.city}
+                </div>
+                <div className="prof-id-meta">
+                  {profile.city && (
+                    <span className="prof-id-meta-chip">
+                      <MapPin className="w-3 h-3" /> {profile.city}
+                    </span>
+                  )}
+                  <span className="prof-id-meta-chip">
+                    <Calendar className="w-3 h-3" />
+                    Since {new Date(profile.memberSince).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
                   </span>
-                )}
-                <span className="pub2-pill">
-                  <Calendar className="w-3 h-3" />
-                  Since {new Date(profile.memberSince).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
-                </span>
+                  <span className="prof-id-meta-chip">
+                    <Globe className="w-3 h-3" /> x247.app/profile/{profile.profileSlug}
+                  </span>
+                </div>
               </div>
-            </motion.div>
 
-            {/* Quick stats in hero */}
-            <motion.div variants={fadeUp} custom={3} className="pub2-hero-stats">
+              {/* Actions */}
+              <div className="prof-id-actions">
+                {!profile.isOwnProfile && (
+                  <motion.button
+                    onClick={handleFollow}
+                    disabled={followLoading}
+                    className={isFollowing ? "prof-id-unfollow-btn" : "prof-id-follow-btn"}
+                    whileTap={{ scale: 0.96 }}
+                  >
+                    <AnimatePresence mode="wait">
+                      {followLoading ? (
+                        <motion.span key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                          <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
+                        </motion.span>
+                      ) : isFollowing ? (
+                        <motion.span key="unf" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                          <UserMinus className="w-3.5 h-3.5" /> Following
+                        </motion.span>
+                      ) : (
+                        <motion.span key="fol" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                          <UserPlus className="w-3.5 h-3.5" /> Follow
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+                )}
+                <button onClick={share} className="prof-id-share-btn">
+                  <AnimatePresence mode="wait">
+                    {copied
+                      ? <motion.span key="c" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Copied</motion.span>
+                      : <motion.span key="s" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5"><Share2 className="w-3.5 h-3.5" /> Share</motion.span>
+                    }
+                  </AnimatePresence>
+                </button>
+              </div>
+            </div>
+
+            {/* Stats strip at bottom of band */}
+            <div className="prof-id-stats-strip">
               {[
-                { v: followersCount,                       l: "Followers" },
-                { v: followingCount,                       l: "Following" },
-                { v: profile.stats?.contestsJoined ?? 0,  l: "Contests" },
-                { v: earnedBadges.length,                  l: "Badges" },
-              ].map(s => (
-                <div key={s.l} className="pub2-hero-stat">
-                  <div className="pub2-hero-stat-val"><AnimatedNumber value={s.v} /></div>
-                  <div className="pub2-hero-stat-lbl">{s.l}</div>
+                { val: followersCount,                       lbl: "Followers" },
+                { val: followingCount,                       lbl: "Following" },
+                { val: profile.stats?.contestsJoined ?? 0,  lbl: "Contests"  },
+                { val: earnedBadges.length,                  lbl: "Badges"    },
+                { val: level,                                lbl: "Level"     },
+              ].map((s, i) => (
+                <div key={s.lbl} className="prof-id-stat">
+                  <div className="prof-id-stat-val"><AnimatedNumber value={s.val} delay={i * 60} /></div>
+                  <div className="prof-id-stat-lbl">{s.lbl}</div>
                 </div>
               ))}
-            </motion.div>
-
-            {/* Action buttons */}
-            <motion.div variants={fadeUp} custom={4} className="pub2-action-row">
-              {/* Follow / Unfollow — hidden for own profile */}
-              {!profile.isOwnProfile && (
-                <motion.button
-                  onClick={handleFollow}
-                  disabled={followLoading}
-                  className={isFollowing ? "pub2-unfollow-btn" : "pub2-follow-btn"}
-                  whileTap={{ scale: 0.96 }}
-                >
-                  <AnimatePresence mode="wait">
-                    {followLoading ? (
-                      <motion.span key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
-                        <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
-                      </motion.span>
-                    ) : isFollowing ? (
-                      <motion.span key="unfollow" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
-                        <UserMinus className="w-3.5 h-3.5" /> Following
-                      </motion.span>
-                    ) : (
-                      <motion.span key="follow" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
-                        <UserPlus className="w-3.5 h-3.5" /> Follow
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              )}
-
-              {/* Share */}
-              <button onClick={share} className="pub2-share-btn">
-                <AnimatePresence mode="wait">
-                  {copied
-                    ? <motion.span key="ok" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
-                        <Check className="w-3.5 h-3.5" /> Copied!
-                      </motion.span>
-                    : <motion.span key="sh" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
-                        <Share2 className="w-3.5 h-3.5" /> Share
-                      </motion.span>
-                  }
-                </AnimatePresence>
-              </button>
-            </motion.div>
+            </div>
           </motion.div>
-        </div>
-      </motion.div>
-      )}
 
-      {/* ══════════ BODY ══════════ */}
-      <main className="relative z-10 pt-24 sm:pt-28 pb-16 sm:pb-24">
-       <div className="container mx-auto px-4 max-w-5xl">
+          {/* Section divider */}
+          <div className="section-divider mb-4 sm:mb-5" />
 
-        {/* Top pill badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex justify-center mb-6 sm:mb-8"
-        >
-          <div className="glass-pill-badge">
-            <Sparkles className="w-3 h-3" />
-            <span>Public Profile</span>
-          </div>
-        </motion.div>
+          {/* ══ TWO-COLUMN GRID ══ */}
+          <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] xl:grid-cols-[340px_1fr] gap-4 sm:gap-5">
 
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr] gap-4 sm:gap-6">
+            {/* ── LEFT COLUMN (sticky) ── */}
+            <aside className="lg:sticky lg:top-24 lg:self-start space-y-4">
+              <TradingCard
+                initials={getInitials(profile.fullName)}
+                fullName={profile.fullName}
+                tier={tier}
+                tierLabel={tierLabel}
+                followers={followersCount}
+                badges={earnedBadges.length}
+                onShare={share}
+                copied={copied}
+              />
 
-        {/* ── LEFT COLUMN (sticky on desktop) ── */}
-        <aside className="lg:sticky lg:top-24 lg:self-start space-y-4 sm:space-y-5">
-          <TradingCard
-            initials={getInitials(profile.fullName)}
-            fullName={profile.fullName}
-            tier={tier}
-            tierLabel={tierLabel}
-            followers={followersCount}
-            badges={earnedBadges.length}
-            onShare={share}
-            copied={copied}
-          />
-
-          {/* Quick info chips below trading card */}
-          <div className="pub2-side-info">
-            {profile.city && (
-              <div className="pub2-side-info-row">
-                <MapPin className="w-3.5 h-3.5 text-white/40" />
-                <span>{profile.city}</span>
-              </div>
-            )}
-            <div className="pub2-side-info-row">
-              <Calendar className="w-3.5 h-3.5 text-white/40" />
-              <span>Member since {new Date(profile.memberSince).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}</span>
-            </div>
-            <div className="pub2-side-info-row">
-              <Globe className="w-3.5 h-3.5 text-white/40" />
-              <span className="truncate">x247.app/profile/{profile.profileSlug}</span>
-            </div>
-          </div>
-        </aside>
-
-        {/* ── RIGHT COLUMN (main content) ── */}
-        <div className="space-y-4 sm:space-y-5 min-w-0">
-
-        {/* ── Bio (only if present) ── */}
-        {profile.bio && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="pub2-card"
-          >
-            <div className="pub2-card-head">
-              <Quote className="w-3.5 h-3.5 text-white/30" />
-              <span className="pub2-card-title">About</span>
-            </div>
-            <blockquote className="pub2-bio-block">
-              <span className="pub2-bio-quote">"</span>
-              {profile.bio}
-              <span className="pub2-bio-quote">"</span>
-            </blockquote>
-          </motion.div>
-        )}
-
-        {/* ── Level / XP Progress ── */}
-        {(() => {
-          const entries = profile.stats?.entries ?? 0;
-          const days = profile.stats?.daysActive ?? 0;
-          const xp = entries * 10 + earnedBadges.length * 100 + days * 5;
-          const level = Math.max(1, Math.floor(xp / 500) + 1);
-          const xpInLevel = xp % 500;
-          const pct = Math.min(100, Math.round((xpInLevel / 500) * 100));
-          const nextNeeded = 500 - xpInLevel;
-          return (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="pub2-card pub2-level-card"
-            >
-              <div className="pub2-card-head">
-                <Sparkles className="w-3.5 h-3.5 text-white/30" />
-                <span className="pub2-card-title">Level & Progress</span>
-                <span className="pub2-card-count">LVL {level}</span>
-              </div>
-              <div className="pub2-level-body">
-                <div className="pub2-level-hero">
-                  <div className="pub2-level-num-wrap">
+              {/* Level badge (sidebar) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="pub2-card"
+              >
+                <div className="pub2-card-head">
+                  <Sparkles className="w-3.5 h-3.5 text-white/30" />
+                  <span className="pub2-card-title">Level & XP</span>
+                  <span className="pub2-card-count">LVL {level}</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="pub2-level-num-wrap pub2-level-num-wrap--sm">
                     <div className="pub2-level-ring" />
                     <div className="pub2-level-num">{level}</div>
                     <div className="pub2-level-lbl">LEVEL</div>
                   </div>
-                  <div className="pub2-level-meta">
-                    <div className="pub2-level-xp">
-                      <AnimatedNumber value={xp} /> <span className="pub2-level-xp-unit">XP</span>
-                    </div>
-                    <div className="pub2-level-next">
-                      {nextNeeded} XP to Level {level + 1}
-                    </div>
-                    <div className="pub2-level-bar">
-                      <motion.div
-                        className="pub2-level-bar-fill"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${pct}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-                      />
+                  <div className="flex-1 min-w-0">
+                    <div className="pub2-level-xp"><AnimatedNumber value={xp} /> <span className="pub2-level-xp-unit">XP</span></div>
+                    <div className="pub2-level-next">{nextNeeded} XP to Level {level + 1}</div>
+                    <div className="pub2-level-bar mt-2">
+                      <motion.div className="pub2-level-bar-fill"
+                        initial={{ width: 0 }} whileInView={{ width: `${levelPct}%` }}
+                        viewport={{ once: true }} transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.3 }} />
                       <div className="pub2-level-bar-shine" />
                     </div>
-                    <div className="pub2-level-pct">{pct}% complete</div>
+                    <div className="pub2-level-pct">{levelPct}% complete</div>
                   </div>
                 </div>
-                <div className="pub2-level-breakdown">
-                  <div className="pub2-level-chip">
-                    <Ticket className="w-3 h-3" />
-                    <span>{entries} entries</span>
-                    <span className="pub2-level-chip-xp">+{entries * 10}</span>
-                  </div>
-                  <div className="pub2-level-chip">
-                    <Award className="w-3 h-3" />
-                    <span>{earnedBadges.length} badges</span>
-                    <span className="pub2-level-chip-xp">+{earnedBadges.length * 100}</span>
-                  </div>
-                  <div className="pub2-level-chip">
-                    <Flame className="w-3 h-3" />
-                    <span>{days} days</span>
-                    <span className="pub2-level-chip-xp">+{days * 5}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })()}
-
-        {/* ── Featured Badge (large showcase) ── */}
-        {featuredBadge && BADGE_META[featuredBadge] && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-            className="pub2-card"
-          >
-            <div className="pub2-card-head">
-              <Trophy className="w-3.5 h-3.5 text-white/30" />
-              <span className="pub2-card-title">Featured Achievement</span>
-            </div>
-            <div className="pub2-feat-badge" style={{ "--badge-glow": BADGE_META[featuredBadge].color } as React.CSSProperties}>
-              <div className="pub2-feat-badge-glow" />
-              <div className="pub2-feat-badge-emoji">{BADGE_META[featuredBadge].emoji}</div>
-              <div className="pub2-feat-badge-info">
-                <div className="pub2-feat-badge-name">{BADGE_META[featuredBadge].label}</div>
-                <div className="pub2-feat-badge-desc">{BADGE_META[featuredBadge].desc}</div>
-                <div className="pub2-feat-badge-earned">
-                  <BadgeCheck className="w-3 h-3" /> Earned
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* ── Stats Row ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="pub2-stats-grid"
-        >
-          {[
-            { icon: Ticket, label: "Total Entries",   value: profile.stats?.entries ?? 0,        delay: 0 },
-            { icon: Target, label: "Contests Joined", value: profile.stats?.contestsJoined ?? 0, delay: 80 },
-            { icon: Award,  label: "Badges Earned",   value: earnedBadges.length,                 delay: 160 },
-            { icon: Flame,  label: "Days Active",     value: profile.stats?.daysActive ?? 0,      delay: 240 },
-          ].map(s => (
-            <motion.div
-              key={s.label}
-              className="pub2-stat-card"
-              whileHover={{ y: -3, transition: { duration: 0.2 } }}
-            >
-              <div className="pub2-stat-icon"><s.icon className="w-3.5 h-3.5" /></div>
-              <div className="pub2-stat-val"><AnimatedNumber value={s.value} delay={s.delay} /></div>
-              <div className="pub2-stat-lbl">{s.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* ── Badges Wall ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-          className="pub2-card"
-        >
-          <div className="pub2-card-head">
-            <Award className="w-3.5 h-3.5 text-white/30" />
-            <span className="pub2-card-title">Badges & Achievements</span>
-            {earnedBadges.length > 0 && (
-              <span className="pub2-card-count">{earnedBadges.length}</span>
-            )}
-          </div>
-          <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
-            Hover a badge to learn more. Keep participating to unlock more.
-          </p>
-          <div className="pub2-badges-grid">
-            {allBadgeSlots.map((b, i) => (
-              <motion.div
-                key={b + i}
-                initial={{ opacity: 0, scale: 0.85 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <BadgeFlipCard badgeId={b} earned={earnedBadges.includes(b)} />
               </motion.div>
-            ))}
-          </div>
-        </motion.div>
 
-        {/* ── Activity Heatmap (last 14 weeks) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
-          className="pub2-card"
-        >
-          <div className="pub2-card-head">
-            <Flame className="w-3.5 h-3.5 text-white/30" />
-            <span className="pub2-card-title">Activity Map</span>
-            <span className="pub2-card-count">{profile.stats?.daysActive ?? 0}d</span>
-          </div>
-          <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
-            Last 14 weeks of giveaway activity. Brighter cells = more entries.
-          </p>
-          <ActivityHeatmap
-            seed={(profile.fullName?.length ?? 1) * 7 + (profile.profileSlug?.length ?? 1)}
-            daysActive={profile.stats?.daysActive ?? 0}
-          />
-        </motion.div>
-
-        {/* ── Contest Activity ── */}
-        {profile.recentContests && profile.recentContests.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
-            className="pub2-card"
-          >
-            <div className="pub2-card-head">
-              <Zap className="w-3.5 h-3.5 text-white/30" />
-              <span className="pub2-card-title">Contest Activity</span>
-            </div>
-            <div className="pub2-timeline">
-              {profile.recentContests.map((c: any, i: number) => (
+              {/* Bio (if present) — on sidebar for compact layout */}
+              {profile.bio && (
                 <motion.div
-                  key={`${c.contestId}-${i}`}
-                  className="pub2-timeline-row"
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-30px" }}
+                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+                  className="pub2-card"
                 >
-                  <div className="pub2-timeline-line" />
-                  <div className="pub2-timeline-dot">
-                    <Ticket className="w-2.5 h-2.5" />
+                  <div className="pub2-card-head">
+                    <Quote className="w-3.5 h-3.5 text-white/30" />
+                    <span className="pub2-card-title">About</span>
                   </div>
-                  <div className="pub2-timeline-content">
-                    <div className="pub2-timeline-title">Entered a giveaway</div>
-                    <div className="pub2-timeline-sub">Contest #{c.contestId}</div>
+                  <blockquote className="pub2-bio-block">
+                    <span className="pub2-bio-quote">"</span>
+                    {profile.bio}
+                    <span className="pub2-bio-quote">"</span>
+                  </blockquote>
+                </motion.div>
+              )}
+            </aside>
+
+            {/* ── RIGHT COLUMN ── */}
+            <div className="space-y-4 sm:space-y-5 min-w-0">
+
+              {/* ── Featured Badge ── */}
+              {featuredBadge && BADGE_META[featuredBadge] && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="pub2-card pub2-feat-outer"
+                  style={{ "--badge-glow": BADGE_META[featuredBadge].color, "--badge-accent": BADGE_META[featuredBadge].accent } as React.CSSProperties}
+                >
+                  <div className="pub2-feat-ambient" />
+                  <div className="pub2-card-head">
+                    <Trophy className="w-3.5 h-3.5 text-white/30" />
+                    <span className="pub2-card-title">Featured Achievement</span>
                   </div>
-                  <div className="pub2-timeline-badge">
-                    {c.entries} {c.entries === 1 ? "entry" : "entries"}
+                  <div className="pub2-feat-badge-v2">
+                    <div className="pub2-feat-badge-v2-glow" />
+                    <div className="pub2-feat-badge-v2-icon">
+                      <span className="pub2-feat-badge-v2-emoji">{BADGE_META[featuredBadge].emoji}</span>
+                    </div>
+                    <div className="pub2-feat-badge-v2-info">
+                      <div className="pub2-feat-badge-v2-name">{BADGE_META[featuredBadge].label}</div>
+                      <div className="pub2-feat-badge-v2-desc">{BADGE_META[featuredBadge].desc}</div>
+                      <div className="pub2-feat-badge-v2-earned">
+                        <BadgeCheck className="w-3.5 h-3.5" /> <span>Earned</span>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+              )}
 
-        {/* ── Profile URL Card ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="pub2-card"
-        >
-          <div className="pub2-card-head">
-            <ExternalLink className="w-3.5 h-3.5 text-white/30" />
-            <span className="pub2-card-title">Public Profile URL</span>
-          </div>
-          <div className="pub2-url-row">
-            <code className="pub2-url-code">x247.app/profile/{profile.profileSlug}</code>
-            <button onClick={share} className="pub2-url-btn">
-              <AnimatePresence mode="wait">
-                {copied
-                  ? <motion.span key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Check className="w-3.5 h-3.5" /></motion.span>
-                  : <motion.span key="u" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Copy className="w-3.5 h-3.5" /></motion.span>
-                }
-              </AnimatePresence>
-            </button>
-          </div>
-        </motion.div>
+              {/* ── Stats 4-grid ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
+                className="pub2-stats-grid"
+              >
+                {[
+                  { icon: Ticket, label: "Total Entries",   value: profile.stats?.entries ?? 0,        delay: 0   },
+                  { icon: Target, label: "Contests Joined", value: profile.stats?.contestsJoined ?? 0, delay: 80  },
+                  { icon: Award,  label: "Badges Earned",   value: earnedBadges.length,                 delay: 160 },
+                  { icon: Flame,  label: "Days Active",     value: profile.stats?.daysActive ?? 0,      delay: 240 },
+                ].map(s => (
+                  <motion.div key={s.label} className="pub2-stat-card" whileHover={{ y: -3, transition: { duration: 0.2 } }}>
+                    <div className="pub2-stat-icon"><s.icon className="w-3.5 h-3.5" /></div>
+                    <div className="pub2-stat-val"><AnimatedNumber value={s.value} delay={s.delay} /></div>
+                    <div className="pub2-stat-lbl">{s.label}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
 
-        {/* ── Join X247 CTA ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-          className="pub2-cta"
-        >
-          <div className="pub2-cta-glow" />
-          <div className="pub2-cta-grid" />
-          <div className="relative z-[2] flex flex-col items-center gap-5 text-center">
-            <div className="pub2-cta-chip">
-              <Sparkles className="w-3 h-3" />
-              Free to join · No credit card
-            </div>
-            <div>
-              <h3 className="pub2-cta-title">Win Daily Prizes with {profile.fullName?.split(" ")[0]}</h3>
-              <p className="pub2-cta-sub">Join X247 and enter daily giveaways. Zero cost. Real prizes. Every day.</p>
-            </div>
-            <div className="flex items-center gap-3 flex-wrap justify-center">
-              <Link href="/account" className="pub2-cta-primary">
-                <Sparkles className="w-3.5 h-3.5" />
-                Create Free Account
-              </Link>
-              <Link href="/giveaway" className="pub2-cta-ghost">
-                Browse Giveaways
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-            <div className="pub2-cta-trust">
-              <Users className="w-3 h-3 opacity-25" />
-              <span>10,000+ members</span>
-              <span className="opacity-20">·</span>
-              <span>Daily prizes</span>
-              <span className="opacity-20">·</span>
-              <span>Real winners every day</span>
-            </div>
-          </div>
-        </motion.div>
+              {/* ── Badges Wall ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+                className="pub2-card"
+              >
+                <div className="pub2-card-head">
+                  <Award className="w-3.5 h-3.5 text-white/30" />
+                  <span className="pub2-card-title">Badges & Achievements</span>
+                  {earnedBadges.length > 0 && <span className="pub2-card-count">{earnedBadges.length}</span>}
+                </div>
+                <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
+                  Hover a badge to learn more. Keep participating to unlock more.
+                </p>
+                <div className="pub2-badges-grid">
+                  {allBadgeSlots.map((b, i) => (
+                    <motion.div key={b + i}
+                      initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }} transition={{ delay: i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <BadgeFlipCard badgeId={b} earned={earnedBadges.includes(b)} />
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
 
-        </div>{/* /right column */}
-        </div>{/* /grid */}
-       </div>{/* /container */}
+              {/* ── Activity Heatmap ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
+                className="pub2-card"
+              >
+                <div className="pub2-card-head">
+                  <Flame className="w-3.5 h-3.5 text-white/30" />
+                  <span className="pub2-card-title">Activity Map</span>
+                  <span className="pub2-card-count">{profile.stats?.daysActive ?? 0}d</span>
+                </div>
+                <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
+                  Last 14 weeks of giveaway activity. Brighter cells = more entries.
+                </p>
+                <ActivityHeatmap
+                  seed={(profile.fullName?.length ?? 1) * 7 + (profile.profileSlug?.length ?? 1)}
+                  daysActive={profile.stats?.daysActive ?? 0}
+                />
+              </motion.div>
+
+              {/* ── Contest Activity ── */}
+              {profile.recentContests && profile.recentContests.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+                  className="pub2-card"
+                >
+                  <div className="pub2-card-head">
+                    <Zap className="w-3.5 h-3.5 text-white/30" />
+                    <span className="pub2-card-title">Contest Activity</span>
+                  </div>
+                  <div className="pub2-timeline">
+                    {profile.recentContests.map((c: any, i: number) => (
+                      <motion.div key={`${c.contestId}-${i}`} className="pub2-timeline-row"
+                        initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }} transition={{ delay: i * 0.06, duration: 0.4 }}
+                      >
+                        <div className="pub2-timeline-dot" />
+                        <div className="pub2-timeline-info">
+                          <div className="pub2-timeline-name">{c.contestName ?? "Giveaway"}</div>
+                          <div className="pub2-timeline-meta">
+                            {c.entries} {c.entries === 1 ? "entry" : "entries"} ·{" "}
+                            {new Date(c.enteredAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                          </div>
+                        </div>
+                        {c.won && (
+                          <div className="pub2-timeline-win"><Trophy className="w-3 h-3" /> Won</div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ── Public Profile URL ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="pub2-card"
+              >
+                <div className="pub2-card-head">
+                  <ExternalLink className="w-3.5 h-3.5 text-white/30" />
+                  <span className="pub2-card-title">Public Profile URL</span>
+                </div>
+                <div className="pub2-url-row">
+                  <code className="pub2-url-code">x247.app/profile/{profile.profileSlug}</code>
+                  <button onClick={share} className="pub2-url-btn">
+                    <AnimatePresence mode="wait">
+                      {copied
+                        ? <motion.span key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Check className="w-3.5 h-3.5" /></motion.span>
+                        : <motion.span key="u" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Copy className="w-3.5 h-3.5" /></motion.span>
+                      }
+                    </AnimatePresence>
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* ── Join CTA ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                className="pub2-cta"
+              >
+                <div className="pub2-cta-glow" />
+                <div className="pub2-cta-grid" />
+                <div className="relative z-[2] flex flex-col items-center gap-5 text-center">
+                  <div className="pub2-cta-chip">
+                    <Sparkles className="w-3 h-3" />
+                    Free to join · No credit card
+                  </div>
+                  <div>
+                    <h3 className="pub2-cta-title">Win Daily Prizes with {profile.fullName?.split(" ")[0]}</h3>
+                    <p className="pub2-cta-sub">Join X247 and enter daily giveaways. Zero cost. Real prizes. Every day.</p>
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap justify-center">
+                    <Link href="/account" className="pub2-cta-primary">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Create Free Account
+                    </Link>
+                    <Link href="/giveaway" className="pub2-cta-ghost">
+                      Browse Giveaways
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                  <div className="pub2-cta-trust">
+                    <Users className="w-3 h-3 opacity-25" />
+                    <span>10,000+ members</span>
+                    <span className="opacity-20">·</span>
+                    <span>Daily prizes</span>
+                    <span className="opacity-20">·</span>
+                    <span>Real winners every day</span>
+                  </div>
+                </div>
+              </motion.div>
+
+            </div>{/* /right column */}
+          </div>{/* /grid */}
+        </div>{/* /container */}
       </main>
 
       <SiteFooter links={[
