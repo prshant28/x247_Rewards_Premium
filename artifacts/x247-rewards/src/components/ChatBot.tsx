@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -721,7 +720,7 @@ export default function ChatBot() {
 
   if (!mounted) return null;
 
-  return createPortal(
+  return (
     <>
       {/* ── Voice Mode Overlay ── */}
       <AnimatePresence>
@@ -828,7 +827,7 @@ export default function ChatBot() {
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 20, scale: 0.95, filter: "blur(4px)" }}
             transition={{ type: "spring", stiffness: 360, damping: 30, mass: 0.8 }}
-            className="fixed bottom-24 right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[440px] max-h-[80vh] flex flex-col"
+            className="chatbot-panel w-[calc(100vw-32px)] sm:w-[440px] max-h-[80vh] flex flex-col"
             style={{
               background: "rgba(6, 6, 9, 0.99)",
               backdropFilter: "blur(80px)",
@@ -1272,7 +1271,7 @@ export default function ChatBot() {
         onClick={() => { setIsOpen(o => !o); setHasNewMessage(false); }}
         whileHover={{ scale: 1.07 }}
         whileTap={{ scale: 0.93 }}
-        className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-2xl flex items-center justify-center relative overflow-hidden"
+        className="chatbot-fab relative"
         style={{
           background: isOpen
             ? "rgba(255,255,255,0.12)"
@@ -1310,7 +1309,6 @@ export default function ChatBot() {
           )}
         </AnimatePresence>
       </motion.button>
-    </>,
-    document.body
+    </>
   );
 }

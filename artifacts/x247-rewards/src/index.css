@@ -216,6 +216,29 @@
   inherits: false;
 }
 
+/* ── ChatBot FAB – positioned outside any layer so nothing can override it ── */
+.chatbot-fab {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 9999 !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.chatbot-panel {
+  position: fixed !important;
+  bottom: 96px !important;
+  right: 24px !important;
+  z-index: 9998 !important;
+}
+
 @layer utilities {
 
   .scroll-progress-bar {
