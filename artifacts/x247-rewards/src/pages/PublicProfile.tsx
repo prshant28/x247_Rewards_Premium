@@ -443,18 +443,6 @@ export default function PublicProfile() {
             animate="visible"
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
           >
-            {/* Featured badge chip — above avatar */}
-            {featuredBadge && BADGE_META[featuredBadge] && (
-              <motion.div
-                variants={fadeUp} custom={0}
-                className="pub2-featured-badge-chip"
-              >
-                <span className="pub2-featured-badge-emoji">{BADGE_META[featuredBadge].emoji}</span>
-                <span className="pub2-featured-badge-label">{BADGE_META[featuredBadge].label}</span>
-                <span className="pub2-featured-badge-tag">Featured</span>
-              </motion.div>
-            )}
-
             {/* Avatar */}
             <motion.div variants={fadeUp} custom={1}>
               <TiltCard className="pub2-avatar-wrap">
