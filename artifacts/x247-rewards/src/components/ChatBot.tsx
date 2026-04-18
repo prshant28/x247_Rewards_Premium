@@ -162,115 +162,192 @@ function PartnerCardPreview({ card, onNavigate }: { card: PartnerCard; onNavigat
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.96 }}
+      initial={{ opacity: 0, y: 12, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
       className="mt-3 mb-1 cursor-pointer select-none"
       onClick={handleClick}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
     >
       <motion.div
-        className="relative overflow-hidden rounded-2xl"
+        className="relative overflow-hidden"
         animate={{
           background: hovered
-            ? "linear-gradient(145deg, rgba(32,32,38,0.99) 0%, rgba(20,20,26,0.99) 100%)"
-            : "linear-gradient(145deg, rgba(20,20,26,0.98) 0%, rgba(12,12,16,0.98) 100%)",
-          borderColor: hovered ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.07)",
-        }}
-        transition={{ duration: 0.25 }}
-        style={{
-          border: "1px solid rgba(255,255,255,0.07)",
+            ? "linear-gradient(160deg, rgba(28,28,36,1) 0%, rgba(18,18,24,1) 55%, rgba(14,14,19,1) 100%)"
+            : "linear-gradient(160deg, rgba(18,18,24,1) 0%, rgba(12,12,17,1) 55%, rgba(9,9,13,1) 100%)",
+          borderColor: hovered ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.09)",
           boxShadow: hovered
-            ? "0 12px 48px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.09)"
-            : "0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
+            ? "0 20px 64px rgba(0,0,0,0.85), 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12)"
+            : "0 6px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)",
+        }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          borderRadius: "20px",
+          border: "1px solid rgba(255,255,255,0.09)",
         }}
       >
-        {/* Shimmer highlight at top */}
+        {/* Permanent top shimmer line */}
         <div
-          className="absolute top-0 left-0 right-0 h-px pointer-events-none transition-opacity duration-300"
+          className="absolute top-0 left-0 right-0 h-px pointer-events-none"
           style={{
-            background: "linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.18) 35%, rgba(255,255,255,0.1) 65%, transparent 95%)",
-            opacity: hovered ? 1 : 0.4,
+            background: hovered
+              ? "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 30%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.35) 70%, transparent 100%)"
+              : "linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.14) 30%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.14) 70%, transparent 95%)",
+            transition: "background 0.3s ease",
           }}
         />
-        {/* Subtle corner glow */}
+
+        {/* Corner ambient glow — always subtle, brighter on hover */}
         <div
-          className="absolute top-0 left-0 w-20 h-20 pointer-events-none"
+          className="absolute top-0 left-0 w-28 h-28 pointer-events-none"
           style={{
-            background: "radial-gradient(circle at 0% 0%, rgba(255,255,255,0.04), transparent 70%)",
-            opacity: hovered ? 1 : 0,
+            background: "radial-gradient(circle at 10% 10%, rgba(255,255,255,0.05), transparent 65%)",
+            opacity: hovered ? 1 : 0.5,
             transition: "opacity 0.3s",
           }}
         />
 
-        <div className="p-4 pb-3.5">
+        {/* Hover shimmer sweep */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.04) 50%, transparent 70%)",
+            backgroundSize: "200% 100%",
+          }}
+          animate={{ backgroundPosition: hovered ? "100% 0" : "-100% 0" }}
+          transition={{ duration: hovered ? 0.6 : 0 }}
+        />
+
+        <div className="relative z-10 p-4 pb-4">
           {/* Category + badges row */}
-          <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/[0.05] border border-white/[0.08]">
-              <span className="text-white/35">{getCategoryIcon(card.category)}</span>
-              <span className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-display">{card.category}</span>
+          <div className="flex items-center gap-2 mb-3.5 flex-wrap">
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+              style={{
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+              }}
+            >
+              <span style={{ color: "rgba(255,255,255,0.6)", display: "flex" }}>{getCategoryIcon(card.category)}</span>
+              <span
+                className="uppercase font-display"
+                style={{ fontSize: "9px", letterSpacing: "0.22em", color: "rgba(255,255,255,0.6)" }}
+              >
+                {card.category}
+              </span>
             </div>
             {card.badge && (
-              <span className="px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[9px] text-white/50 font-display tracking-widest">{card.badge}</span>
+              <span
+                className="px-2.5 py-0.5 rounded-full font-display uppercase"
+                style={{
+                  fontSize: "9px",
+                  letterSpacing: "0.18em",
+                  color: "rgba(255,255,255,0.75)",
+                  background: "rgba(255,255,255,0.09)",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07)",
+                }}
+              >
+                {card.badge}
+              </span>
             )}
             {card.badgeSecondary && (
-              <span className="px-2 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.06] text-[9px] text-white/30 font-display tracking-widest">{card.badgeSecondary}</span>
+              <span
+                className="px-2 py-0.5 rounded-full font-display uppercase"
+                style={{
+                  fontSize: "9px",
+                  letterSpacing: "0.15em",
+                  color: "rgba(255,255,255,0.45)",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                {card.badgeSecondary}
+              </span>
             )}
           </div>
 
           {/* Partner name */}
           <h4
-            className="font-display font-light leading-tight mb-1.5 tracking-wide transition-colors duration-200"
-            style={{ fontSize: "15px", color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.85)" }}
+            className="font-display font-light leading-tight tracking-wide"
+            style={{
+              fontSize: "16px",
+              marginBottom: "6px",
+              color: hovered ? "rgba(255,255,255,0.98)" : "rgba(255,255,255,0.88)",
+              transition: "color 0.22s ease",
+            }}
           >
             {card.name}
           </h4>
 
           {/* Tagline */}
           {card.tagline && (
-            <p className="text-[12px] text-white/35 font-light leading-snug mb-4">{card.tagline}</p>
+            <p
+              className="font-light leading-snug"
+              style={{
+                fontSize: "12px",
+                marginBottom: "16px",
+                color: "rgba(255,255,255,0.48)",
+              }}
+            >
+              {card.tagline}
+            </p>
           )}
 
           {/* Divider */}
-          <div className="h-px mb-3.5" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.06), transparent)" }} />
+          <div
+            className="mb-3.5"
+            style={{
+              height: "1px",
+              background: "linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 60%, transparent 100%)",
+            }}
+          />
 
           {/* CTA row */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <motion.div
                 className="w-1.5 h-1.5 rounded-full"
-                animate={{ background: hovered ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.2)" }}
-                transition={{ duration: 0.25 }}
+                animate={{ background: hovered ? "rgba(180,220,180,0.8)" : "rgba(255,255,255,0.3)" }}
+                transition={{ duration: 0.3 }}
               />
-              <span className="text-[10px] text-white/25 font-display uppercase tracking-widest">Partner</span>
+              <span
+                className="font-display uppercase"
+                style={{ fontSize: "9px", letterSpacing: "0.22em", color: "rgba(255,255,255,0.42)" }}
+              >
+                Partner
+              </span>
             </div>
 
-            {/* Button matching premium-btn style */}
+            {/* View Offer button — premium dark pill */}
             <motion.div
-              className="flex items-center gap-1.5 relative overflow-hidden"
+              className="flex items-center gap-2 relative overflow-hidden"
               animate={{
-                background: hovered ? "rgba(4,4,4,0.98)" : "rgba(4,4,4,0.95)",
-                borderColor: hovered ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.1)",
-              }}
-              transition={{ duration: 0.2 }}
-              style={{
-                padding: "6px 12px",
-                borderRadius: "10px",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: hovered
+                  ? "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)"
+                  : "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)",
+                borderColor: hovered ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.13)",
                 boxShadow: hovered
-                  ? "0 4px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12)"
-                  : "0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+                  ? "0 6px 20px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18)"
+                  : "0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)",
+              }}
+              transition={{ duration: 0.22 }}
+              style={{
+                padding: "7px 14px",
+                borderRadius: "12px",
+                border: "1px solid rgba(255,255,255,0.13)",
               }}
             >
               <span
-                className="text-[11px] font-medium tracking-wide transition-colors duration-200"
-                style={{ fontFamily: "'Poppins', sans-serif", color: "white" }}
+                className="font-medium tracking-wide"
+                style={{ fontFamily: "'Poppins', sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.9)" }}
               >
                 View Offer
               </span>
-              <motion.div animate={{ x: hovered ? 2 : 0 }} transition={{ duration: 0.18 }}>
-                <ArrowRight className="w-3 h-3 text-white/70" />
+              <motion.div animate={{ x: hovered ? 3 : 0 }} transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}>
+                <ArrowRight className="w-3 h-3" style={{ color: "rgba(255,255,255,0.7)" }} />
               </motion.div>
             </motion.div>
           </div>
