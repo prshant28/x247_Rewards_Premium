@@ -32,6 +32,7 @@ interface PartnerCard {
   badge?: string;
   badgeSecondary?: string;
   accent: string;
+  trackingUrl?: string;
 }
 
 type VoiceStatus = "idle" | "listening" | "transcribing" | "thinking" | "speaking";
@@ -151,85 +152,130 @@ function getCategoryIcon(cat: string) {
 function PartnerCardPreview({ card, onNavigate }: { card: PartnerCard; onNavigate: (slug: string) => void }) {
   const [hovered, setHovered] = useState(false);
 
+  function handleClick() {
+    if (card.trackingUrl) {
+      window.open(card.trackingUrl, "_blank", "noopener,noreferrer");
+    } else {
+      onNavigate(card.slug);
+    }
+  }
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+      initial={{ opacity: 0, y: 10, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
       className="mt-3 mb-1 cursor-pointer select-none"
-      onClick={() => onNavigate(card.slug)}
+      onClick={handleClick}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
     >
-      <div
-        className="relative overflow-hidden rounded-2xl transition-all duration-300"
-        style={{
+      <motion.div
+        className="relative overflow-hidden rounded-2xl"
+        animate={{
           background: hovered
-            ? "linear-gradient(135deg, rgba(30,30,36,0.98) 0%, rgba(20,20,25,0.98) 100%)"
-            : "linear-gradient(135deg, rgba(22,22,28,0.97) 0%, rgba(14,14,18,0.97) 100%)",
-          border: hovered ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(255,255,255,0.07)",
+            ? "linear-gradient(145deg, rgba(32,32,38,0.99) 0%, rgba(20,20,26,0.99) 100%)"
+            : "linear-gradient(145deg, rgba(20,20,26,0.98) 0%, rgba(12,12,16,0.98) 100%)",
+          borderColor: hovered ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.07)",
+        }}
+        transition={{ duration: 0.25 }}
+        style={{
+          border: "1px solid rgba(255,255,255,0.07)",
           boxShadow: hovered
-            ? "0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)"
-            : "0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+            ? "0 12px 48px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.09)"
+            : "0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
         }}
       >
-        {/* Shimmer line at top */}
+        {/* Shimmer highlight at top */}
         <div
-          className="absolute top-0 left-0 right-0 h-[1px] transition-opacity duration-300"
+          className="absolute top-0 left-0 right-0 h-px pointer-events-none transition-opacity duration-300"
           style={{
-            background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.08) 60%, transparent 100%)",
-            opacity: hovered ? 1 : 0.5,
+            background: "linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.18) 35%, rgba(255,255,255,0.1) 65%, transparent 95%)",
+            opacity: hovered ? 1 : 0.4,
+          }}
+        />
+        {/* Subtle corner glow */}
+        <div
+          className="absolute top-0 left-0 w-20 h-20 pointer-events-none"
+          style={{
+            background: "radial-gradient(circle at 0% 0%, rgba(255,255,255,0.04), transparent 70%)",
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.3s",
           }}
         />
 
-        <div className="p-4">
-          {/* Category + badges */}
-          <div className="flex items-center gap-2 mb-2.5">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.07]">
-              <span className="text-white/30">{getCategoryIcon(card.category)}</span>
-              <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 font-display">{card.category}</span>
+        <div className="p-4 pb-3.5">
+          {/* Category + badges row */}
+          <div className="flex items-center gap-1.5 mb-3 flex-wrap">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/[0.05] border border-white/[0.08]">
+              <span className="text-white/35">{getCategoryIcon(card.category)}</span>
+              <span className="text-[9px] uppercase tracking-[0.2em] text-white/35 font-display">{card.category}</span>
             </div>
             {card.badge && (
-              <span className="px-2 py-0.5 rounded-full bg-white/[0.07] border border-white/[0.1] text-[9px] text-white/50 font-display tracking-wide">{card.badge}</span>
+              <span className="px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.09] text-[9px] text-white/50 font-display tracking-widest">{card.badge}</span>
             )}
             {card.badgeSecondary && (
-              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-[9px] text-white/35 font-display tracking-wide">{card.badgeSecondary}</span>
+              <span className="px-2 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.06] text-[9px] text-white/30 font-display tracking-widest">{card.badgeSecondary}</span>
             )}
           </div>
 
-          {/* Name */}
-          <h4 className="text-[15px] font-display font-light text-white/90 tracking-wide mb-1 leading-tight">{card.name}</h4>
+          {/* Partner name */}
+          <h4
+            className="font-display font-light leading-tight mb-1.5 tracking-wide transition-colors duration-200"
+            style={{ fontSize: "15px", color: hovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.85)" }}
+          >
+            {card.name}
+          </h4>
 
           {/* Tagline */}
           {card.tagline && (
-            <p className="text-[12px] text-white/38 font-light leading-snug mb-3">{card.tagline}</p>
+            <p className="text-[12px] text-white/35 font-light leading-snug mb-4">{card.tagline}</p>
           )}
 
+          {/* Divider */}
+          <div className="h-px mb-3.5" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.06), transparent)" }} />
+
           {/* CTA row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
-              <div
-                className="w-1.5 h-1.5 rounded-full transition-colors duration-300"
-                style={{ background: hovered ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.25)" }}
+              <motion.div
+                className="w-1.5 h-1.5 rounded-full"
+                animate={{ background: hovered ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.2)" }}
+                transition={{ duration: 0.25 }}
               />
-              <span className="text-[10px] text-white/30 font-display tracking-wide">Partner Offer</span>
+              <span className="text-[10px] text-white/25 font-display uppercase tracking-widest">Partner</span>
             </div>
+
+            {/* Button matching premium-btn style */}
             <motion.div
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all duration-300"
-              style={{
-                background: hovered ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.04)",
-                border: hovered ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.07)",
+              className="flex items-center gap-1.5 relative overflow-hidden"
+              animate={{
+                background: hovered ? "rgba(4,4,4,0.98)" : "rgba(4,4,4,0.95)",
+                borderColor: hovered ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.1)",
               }}
-              animate={hovered ? { x: 0 } : { x: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                padding: "6px 12px",
+                borderRadius: "10px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: hovered
+                  ? "0 4px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12)"
+                  : "0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)",
+              }}
             >
-              <span className="text-[10px] font-display text-white/60 tracking-wide">View Offer</span>
-              <motion.div animate={{ x: hovered ? 2 : 0 }} transition={{ duration: 0.2 }}>
-                <ArrowRight className="w-3 h-3 text-white/50" />
+              <span
+                className="text-[11px] font-medium tracking-wide transition-colors duration-200"
+                style={{ fontFamily: "'Poppins', sans-serif", color: "white" }}
+              >
+                View Offer
+              </span>
+              <motion.div animate={{ x: hovered ? 2 : 0 }} transition={{ duration: 0.18 }}>
+                <ArrowRight className="w-3 h-3 text-white/70" />
               </motion.div>
             </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }

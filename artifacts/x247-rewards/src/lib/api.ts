@@ -64,6 +64,7 @@ export interface PartnerData {
   description: string;
   category: string;
   registrationUrl: string;
+  trackingUrl?: string | null;
   accent: string;
   badge: string | null;
   badgeSecondary: string | null;

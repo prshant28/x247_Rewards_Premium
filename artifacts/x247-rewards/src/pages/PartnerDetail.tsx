@@ -119,7 +119,7 @@ function useShare(partner: PartnerData) {
     }
   };
   const copyRegUrl = async () => {
-    await navigator.clipboard.writeText(partner.registrationUrl);
+    await navigator.clipboard.writeText(partner.trackingUrl || partner.registrationUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -609,7 +609,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       </button>
                       {partner.registrationUrl && (
                         <a
-                          href={partner.registrationUrl}
+                          href={partner.trackingUrl || partner.registrationUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={handleRegisterClick}
@@ -801,7 +801,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
-                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <BorderGlow as="a" href={partner.trackingUrl || partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
                             <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
                             <span className="relative z-[2]">Register &amp; Claim</span>
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
@@ -915,8 +915,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       <div className="card-shine" />
                       <div className="relative z-[2] flex items-center gap-3">
                         <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-display uppercase tracking-widest text-white/25 mb-1">Registration URL</p>
-                          <p className="text-xs text-white/50 font-light truncate">{partner.registrationUrl}</p>
+                          <p className="text-[10px] font-display uppercase tracking-widest text-white/25 mb-1">{partner.trackingUrl ? "Partner Link" : "Registration URL"}</p>
+                          <p className="text-xs text-white/50 font-light truncate">{partner.trackingUrl || partner.registrationUrl}</p>
                         </div>
                         <button
                           onClick={copyRegUrl}
@@ -926,7 +926,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                           {copied ? "Copied!" : "Copy"}
                         </button>
                         <a
-                          href={partner.registrationUrl}
+                          href={partner.trackingUrl || partner.registrationUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={handleRegisterClick}
@@ -943,7 +943,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
-                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <BorderGlow as="a" href={partner.trackingUrl || partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
                             <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
                             <span className="relative z-[2]">Register Now</span>
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
@@ -1036,7 +1036,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
-                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <BorderGlow as="a" href={partner.trackingUrl || partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
                             <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
                             <span className="relative z-[2]">Register Now</span>
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />

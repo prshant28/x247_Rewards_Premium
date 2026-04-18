@@ -4172,21 +4172,24 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
-  border-radius: 999px;
-  font-family: 'Syne', sans-serif;
+  padding: 7px 16px;
+  border-radius: 16px;
+  font-family: 'Poppins', sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.03em;
+  color: white;
+  background: rgba(4, 4, 4, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 16px -4px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(255,255,255,0.02);
 }
 .acct-upgrade-pill:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(14, 14, 14, 0.98);
+  border-color: rgba(255, 255, 255, 0.18);
   color: white;
+  box-shadow: 0 6px 24px -4px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.14);
 }
 .acct-upgrade-pill:disabled { opacity: 0.45; cursor: not-allowed; }
 
@@ -4214,20 +4217,24 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-family: 'Syne', sans-serif;
+  padding: 7px 14px;
+  border-radius: 14px;
+  font-family: 'Poppins', sans-serif;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: white;
+  background: rgba(4, 4, 4, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 14px -4px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.09);
 }
 .acct-copy-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(14, 14, 14, 0.98);
+  border-color: rgba(255, 255, 255, 0.16);
   color: white;
+  box-shadow: 0 6px 20px -4px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 .page-hero-banner,
@@ -5903,23 +5910,25 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 16px;
-  border-radius: 12px;
-  font-family: 'Syne', sans-serif;
+  padding: 9px 18px;
+  border-radius: 16px;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 500;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
+  letter-spacing: 0.03em;
   color: white;
+  background: rgba(4, 4, 4, 0.98);
+  border: 1px solid rgba(255,255,255,0.12);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   white-space: nowrap;
   flex-shrink: 0;
+  box-shadow: 0 4px 20px -4px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 .acct-pricing-cta-btn:hover {
-  background: rgba(255,255,255,0.14);
+  background: rgba(14, 14, 14, 0.98);
   border-color: rgba(255,255,255,0.2);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 28px -4px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.14);
 }
 [data-light] .acct-pricing-cta-banner { background: linear-gradient(135deg, hsl(var(--foreground)/0.04), hsl(var(--foreground)/0.015)); border-color: hsl(var(--foreground)/0.08); }
 [data-light] .acct-pricing-cta-icon { background: hsl(var(--foreground)/0.05); border-color: hsl(var(--foreground)/0.08); color: hsl(var(--foreground)/0.55); }
