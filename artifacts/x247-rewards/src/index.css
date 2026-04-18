@@ -6141,27 +6141,17 @@
   z-index: 1;
 }
 
-/* Black shimmer */
+/* Black tier — subtle static top highlight (animated shimmer removed for premium feel) */
 .pricing-black-shimmer {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(
-    118deg,
-    transparent 30%,
-    rgba(255,255,255,0.04) 45%,
-    rgba(255,255,255,0.08) 50%,
-    rgba(255,255,255,0.04) 55%,
-    transparent 70%
-  );
-  background-size: 300% 300%;
-  animation: pricingBlackShimmer 6s linear infinite;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 30% at 50% 100%, rgba(255,255,255,0.02) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
-}
-@keyframes pricingBlackShimmer {
-  0% { background-position: 200% 50%; }
-  100% { background-position: -200% 50%; }
+  animation: none;
 }
 
 /* Card glow (mouse-follow) */
