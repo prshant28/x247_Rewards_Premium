@@ -11603,3 +11603,192 @@
 [data-light] .chatbot-panel h4 {
   color: rgba(255,255,255,0.95) !important;
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+   LIGHT THEME — PREMIUM BUTTONS, ICONS & LABELS
+   Solid dark inverse-buttons (Apple/Linear/Stripe pattern) with bright
+   white text. Replaces the previous low-contrast washes.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Primary button (.premium-btn): solid near-black, white text, soft shadow */
+[data-light] .premium-btn {
+  background: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--foreground)) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 6px 18px hsl(var(--foreground) / 0.18),
+    0 1px 3px hsl(var(--foreground) / 0.12) !important;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.25s ease !important;
+}
+[data-light] .premium-btn:hover {
+  background: hsl(var(--foreground) / 0.92) !important;
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.16) inset,
+    0 10px 28px hsl(var(--foreground) / 0.24),
+    0 2px 6px hsl(var(--foreground) / 0.16) !important;
+}
+[data-light] .premium-btn:active { transform: translateY(0); }
+[data-light] .premium-btn,
+[data-light] .premium-btn * { color: #ffffff !important; }
+[data-light] .premium-btn svg { color: #ffffff !important; opacity: 0.95; }
+
+/* Pricing tier CTAs */
+[data-light] .pricing-cta-btn,
+[data-theme="pristine-light"] .pricing-cta-btn,
+[data-theme="ivory-soft"] .pricing-cta-btn,
+[data-theme="silver-mist"] .pricing-cta-btn {
+  background: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--foreground)) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 6px 18px hsl(var(--foreground) / 0.18) !important;
+}
+[data-light] .pricing-cta-btn:hover:not(:disabled) {
+  background: hsl(var(--foreground) / 0.92) !important;
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.16) inset,
+    0 10px 28px hsl(var(--foreground) / 0.24) !important;
+}
+[data-light] .pricing-cta-btn,
+[data-light] .pricing-cta-btn * { color: #ffffff !important; }
+
+/* Black tier kept inverse — light card, dark page → use background as button */
+[data-light] .pricing-cta-btn-black,
+[data-theme="pristine-light"] .pricing-cta-btn-black,
+[data-theme="ivory-soft"] .pricing-cta-btn-black,
+[data-theme="silver-mist"] .pricing-cta-btn-black {
+  background: #ffffff !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 6px 20px hsl(var(--foreground) / 0.12) !important;
+}
+[data-light] .pricing-cta-btn-black * { color: hsl(var(--foreground)) !important; }
+
+/* Pricing BSC CTA (Black tier card btn) */
+[data-light] .pricing-bsc-cta {
+  background: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--foreground)) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 6px 18px hsl(var(--foreground) / 0.2) !important;
+}
+[data-light] .pricing-bsc-cta:hover:not(:disabled) {
+  background: hsl(var(--foreground) / 0.92) !important;
+  transform: translateY(-1px);
+}
+[data-light] .pricing-bsc-cta * { color: #ffffff !important; }
+
+/* HIW tier comparison pill */
+[data-light] .hiw-tier-cta-link {
+  background: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--foreground)) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 6px 18px hsl(var(--foreground) / 0.18) !important;
+}
+[data-light] .hiw-tier-cta-link:hover {
+  background: hsl(var(--foreground) / 0.92) !important;
+  transform: translateY(-1px);
+}
+[data-light] .hiw-tier-cta-link,
+[data-light] .hiw-tier-cta-link * { color: #ffffff !important; }
+
+/* Account pricing CTA */
+[data-light] .acct-pricing-cta-btn {
+  background: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--foreground)) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 6px 18px hsl(var(--foreground) / 0.18) !important;
+}
+[data-light] .acct-pricing-cta-btn:hover {
+  background: hsl(var(--foreground) / 0.92) !important;
+  transform: translateY(-1px);
+}
+[data-light] .acct-pricing-cta-btn,
+[data-light] .acct-pricing-cta-btn * { color: #ffffff !important; }
+
+/* Generic "dark-bg-on-button" Tailwind pattern used for primary CTAs in pages
+   (e.g. Submit Entry button uses bg-white in dark mode → invert to dark in light mode) */
+[data-light] button.bg-white,
+[data-light] a.bg-white {
+  background-color: hsl(var(--foreground)) !important;
+  color: #ffffff !important;
+  border-color: hsl(var(--foreground)) !important;
+}
+[data-light] button.bg-white *,
+[data-light] a.bg-white * { color: #ffffff !important; }
+[data-light] button.bg-white svg,
+[data-light] a.bg-white svg { color: #ffffff !important; }
+[data-light] button.bg-white:hover,
+[data-light] a.bg-white:hover { background-color: hsl(var(--foreground) / 0.9) !important; }
+
+/* Glass pill badges — premium contrast */
+[data-light] .glass-pill-badge {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--foreground) / 0.1) !important;
+  color: hsl(var(--foreground) / 0.78) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.7) inset,
+    0 2px 8px hsl(var(--foreground) / 0.06) !important;
+}
+[data-light] .glass-pill-badge svg {
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+
+/* Lucide / inline SVG icon defaults — make sure outline icons are visible */
+[data-light] svg { color: inherit; }
+[data-light] [class*="text-white"] svg { color: inherit !important; }
+
+/* Icon circles (used across HIW, partners, mechanic cards, etc.) */
+[data-light] .icon-circle {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border: 1px solid hsl(var(--foreground) / 0.1) !important;
+  color: hsl(var(--foreground) / 0.7) !important;
+}
+[data-light] .icon-circle svg { color: hsl(var(--foreground) / 0.7) !important; }
+
+/* Step / number / iconic small chips */
+[data-light] .stat-card svg,
+[data-light] .bento-card svg,
+[data-light] .glass-card svg {
+  color: hsl(var(--foreground) / 0.6) !important;
+}
+
+/* Tier comparison link as button (HIW) */
+[data-light] .hiw-tier-cta-link svg { color: #ffffff !important; }
+
+/* Premium label tightening — uppercase tracking labels keep elegant gray */
+[data-light] .text-\[10px\].uppercase,
+[data-light] .text-\[11px\].uppercase,
+[data-light] .text-\[9px\].uppercase {
+  color: hsl(var(--foreground) / 0.45) !important;
+  letter-spacing: 0.18em;
+}
+
+/* Form submit / generic primary actions inside <form> */
+[data-light] button[type="submit"]:not(.premium-btn):not(.pricing-cta-btn):not(.pricing-bsc-cta):not(.acct-pricing-cta-btn):not([disabled]) {
+  background: hsl(var(--foreground)) !important;
+  color: #ffffff !important;
+  border: 1px solid hsl(var(--foreground)) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.12) inset,
+    0 6px 18px hsl(var(--foreground) / 0.18) !important;
+}
+[data-light] button[type="submit"]:not(.premium-btn):not(.pricing-cta-btn):not(.pricing-bsc-cta):not(.acct-pricing-cta-btn):hover:not([disabled]) {
+  background: hsl(var(--foreground) / 0.9) !important;
+  transform: translateY(-1px);
+}
+[data-light] button[type="submit"] *,
+[data-light] button[type="submit"] svg { color: #ffffff !important; }
