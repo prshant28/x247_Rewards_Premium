@@ -14312,3 +14312,67 @@ svg.lucide,
   color: hsl(var(--foreground) / 0.62) !important;
 }
 
+
+/* ============================================================
+   PATCH — Chat panel: all descendant text must stay white
+   The panel bg is intentionally #0a0a0d in both themes.
+   [data-light]'s root color (dark foreground) was cascading
+   into the panel, making chat messages and UI text invisible.
+   ============================================================ */
+[data-light] .chatbot-panel,
+[data-light] .chatbot-panel p,
+[data-light] .chatbot-panel span,
+[data-light] .chatbot-panel div,
+[data-light] .chatbot-panel li,
+[data-light] .chatbot-panel a,
+[data-light] .chatbot-panel label,
+[data-light] .chatbot-panel small {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+/* Headings already covered by earlier rule, keep them brighter */
+[data-light] .chatbot-panel h1,
+[data-light] .chatbot-panel h2,
+[data-light] .chatbot-panel h3,
+[data-light] .chatbot-panel h4 {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+/* SVG icons inside panel */
+[data-light] .chatbot-panel svg {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+/* Input inside chat stays readable */
+[data-light] .chatbot-panel input,
+[data-light] .chatbot-panel textarea {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+[data-light] .chatbot-panel input::placeholder,
+[data-light] .chatbot-panel textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ============================================================
+   PATCH — Auth tab toggle: force visible dark text in light theme
+   The later-declared .auth-card-premium rules + rgba(255,255,255)
+   defaults were beating the [data-light] override. !important
+   ensures these win regardless of source order or nesting.
+   ============================================================ */
+[data-light] .guest-auth-tab {
+  color: hsl(var(--foreground) / 0.52) !important;
+}
+[data-light] .guest-auth-tab:hover {
+  color: hsl(var(--foreground) / 0.75) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .guest-auth-tab-active {
+  color: hsl(var(--foreground) / 0.92) !important;
+  background: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.13) !important;
+  box-shadow:
+    inset 0 1px 0 hsl(var(--foreground) / 0.06),
+    0 2px 8px hsl(var(--foreground) / 0.06) !important;
+}
+[data-light] .guest-auth-tabs {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+}
+
