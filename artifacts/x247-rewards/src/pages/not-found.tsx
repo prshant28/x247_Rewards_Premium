@@ -67,14 +67,9 @@ export default function NotFound() {
   return (
     <MotionConfig reducedMotion="user">
     <div className="x404">
-      {/* Ambient layers */}
+      {/* Ambient layers — subtle, single layer */}
       <div className="x404-grid" />
-      <div className="x404-glow" />
-      <div className="x404-orb x404-orb-1" />
-      <div className="x404-orb x404-orb-2" />
-      <div className="x404-orb x404-orb-3" />
       <div className="x404-scanline" />
-      <div className="x404-noise" />
 
       <motion.div
         className="x404-content"
