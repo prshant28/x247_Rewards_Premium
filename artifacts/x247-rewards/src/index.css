@@ -1419,12 +1419,12 @@
 
   .testimonial-fade-left {
     left: 0;
-    background: linear-gradient(to right, rgb(0, 0, 0) 0%, transparent 100%);
+    background: linear-gradient(to right, hsl(var(--background)) 0%, hsl(var(--background) / 0.6) 50%, transparent 100%);
   }
 
   .testimonial-fade-right {
     right: 0;
-    background: linear-gradient(to left, rgb(0, 0, 0) 0%, transparent 100%);
+    background: linear-gradient(to left, hsl(var(--background)) 0%, hsl(var(--background) / 0.6) 50%, transparent 100%);
   }
 
   @media (min-width: 640px) {
@@ -13213,5 +13213,114 @@ button[data-variant="ghost"]:hover,
 [data-light] .x404-suggest-card:hover {
   background: hsl(var(--card)) !important;
   border-color: hsl(var(--foreground) / 0.16) !important;
+}
+
+
+/* ============================================================
+   GLOBAL ICON NORMALIZATION — Site-wide consistency in all themes
+   Lucide icons render as SVG with currentColor stroke, so they
+   inherit the parent's color. We normalize containers and stroke.
+   ============================================================ */
+
+/* All lucide SVGs default to currentColor — never let stray fills break themes */
+svg.lucide,
+[class*="lucide-"] {
+  color: inherit;
+  stroke: currentColor;
+}
+
+/* Light theme: normalize icon-tile backgrounds to consistent monochrome look */
+[data-light] .icon-circle,
+[data-light] .icon-circle-sm,
+[data-light] [class*="icon-tile"],
+[data-light] [class*="icon-badge"] {
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
+  color: hsl(var(--foreground) / 0.85) !important;
+}
+[data-light] .icon-circle svg,
+[data-light] .icon-circle-sm svg,
+[data-light] [class*="icon-tile"] svg,
+[data-light] [class*="icon-badge"] svg {
+  color: hsl(var(--foreground) / 0.85) !important;
+  stroke: currentColor !important;
+}
+
+/* Light theme: testimonial avatar circle visibility (was bg-white/[0.06]) */
+[data-light] .testimonial-card .rounded-xl,
+[data-light] .testimonial-card .w-9.h-9 {
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+}
+[data-light] .testimonial-card .rounded-xl span,
+[data-light] .testimonial-card .w-9.h-9 span {
+  color: hsl(var(--foreground) / 0.78) !important;
+}
+[data-light] .testimonial-card svg {
+  color: hsl(var(--foreground) / 0.6) !important;
+  stroke: currentColor !important;
+}
+
+/* Light theme: any icon inside generic small avatar/pill containers */
+[data-light] .rounded-full svg,
+[data-light] .rounded-xl svg,
+[data-light] .rounded-lg svg {
+  stroke: currentColor !important;
+}
+
+/* Light theme: gradient icon tiles (Account feature cards & similar) */
+[data-light] [class*="gradient-icon"],
+[data-light] [class*="-icon-tile"],
+[data-light] [class*="-icon-wrap"] {
+  background: linear-gradient(135deg, hsl(var(--foreground) / 0.08), hsl(var(--foreground) / 0.04)) !important;
+  border: 1px solid hsl(var(--foreground) / 0.1) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] [class*="gradient-icon"] svg,
+[data-light] [class*="-icon-tile"] svg,
+[data-light] [class*="-icon-wrap"] svg {
+  color: hsl(var(--foreground)) !important;
+  stroke: currentColor !important;
+}
+
+/* Light theme: stat-card icon circles (any page using stat-card pattern) */
+[data-light] .stat-card svg,
+[data-light] .bento-card svg,
+[data-light] .glass-card svg {
+  stroke: currentColor !important;
+}
+
+/* Light theme: nav/dropdown icons stay readable */
+[data-light] nav svg,
+[data-light] [role="menu"] svg,
+[data-light] [role="menuitem"] svg,
+[data-light] [data-radix-popper-content-wrapper] svg {
+  color: hsl(var(--foreground) / 0.75) !important;
+  stroke: currentColor !important;
+}
+
+/* Light theme: SiteFooter & SiteNav icons */
+[data-light] .site-footer svg,
+[data-light] .site-nav svg,
+[data-light] .nav-pill svg {
+  color: hsl(var(--foreground) / 0.75) !important;
+  stroke: currentColor !important;
+}
+
+/* Light theme: ANY span/div acting as an avatar with text-only initials */
+[data-light] .bg-white\/\[0\.06\].rounded-xl,
+[data-light] .bg-white\/\[0\.05\].rounded-xl,
+[data-light] .bg-white\/\[0\.06\].rounded-lg,
+[data-light] .bg-white\/\[0\.06\].rounded-full {
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
+}
+
+/* Trophy/Won prize line in testimonials & similar prize indicators */
+[data-light] .testimonial-card .text-white\/45 svg,
+[data-light] [class*="prize"] svg,
+[data-light] [class*="trophy"] svg {
+  color: hsl(var(--foreground) / 0.55) !important;
+  stroke: currentColor !important;
 }
 
