@@ -10202,10 +10202,11 @@
 
 .x247-bcv-black-text {
   font-family: 'Syne', sans-serif;
-  font-size: 3rem;
+  font-size: 2.2rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   line-height: 0.88;
+  display: block;
   background: linear-gradient(
     135deg,
     #ffffff 0%,
@@ -10225,7 +10226,7 @@
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
-.x247-bcv--compact .x247-bcv-black-text { font-size: 2.2rem; }
+.x247-bcv--compact .x247-bcv-black-text { font-size: 1.5rem; letter-spacing: -0.01em; }
 
 .x247-bcv-membership-text {
   font-family: 'Poppins', sans-serif;
