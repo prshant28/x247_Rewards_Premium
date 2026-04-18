@@ -982,7 +982,7 @@ export default function ChatBot() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-3 py-2.5 text-[11px] font-display font-light rounded-t-lg transition-all relative ${activeTab === tab ? "text-white/75" : "text-white/25 hover:text-white/45"}`}
+                    className={`px-3 py-2.5 text-[11px] font-display font-light rounded-t-lg transition-all relative ${activeTab === tab ? "text-white/90" : "text-white/55 hover:text-white/80"}`}
                   >
                     <span className="flex items-center gap-1.5">
                       {tab === "chat" ? <MessageCircle className="w-3 h-3" /> : <History className="w-3 h-3" />}
@@ -1351,25 +1351,29 @@ export default function ChatBot() {
         className="chatbot-fab relative"
         style={{
           background: isOpen
-            ? "rgba(255,255,255,0.12)"
-            : "rgba(255,255,255,0.95)",
-          border: isOpen ? "1px solid rgba(255,255,255,0.2)" : "1px solid rgba(255,255,255,0.9)",
+            ? "linear-gradient(145deg, rgba(30,30,38,1) 0%, rgba(18,18,24,1) 100%)"
+            : "linear-gradient(145deg, rgba(14,14,18,1) 0%, rgba(6,6,9,1) 100%)",
+          border: isOpen
+            ? "1px solid rgba(255,255,255,0.16)"
+            : "1px solid rgba(255,255,255,0.12)",
           boxShadow: isOpen
-            ? "0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15)"
-            : "0 8px 40px rgba(255,255,255,0.15), 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.5)",
+            ? "0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1)"
+            : "0 8px 40px rgba(0,0,0,0.7), 0 2px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)",
         }}
       >
-        <div className="absolute inset-0 pointer-events-none">
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "55%", background: "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%)" }} />
-        </div>
+        {/* Subtle top shimmer */}
+        <div className="absolute top-0 left-0 right-0 h-px pointer-events-none rounded-t-2xl" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)" }} />
+        {/* Corner glow */}
+        <div className="absolute top-0 left-0 w-8 h-8 pointer-events-none" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.06), transparent 70%)" }} />
+
         <AnimatePresence mode="wait">
           {isOpen ? (
-            <motion.div key="x" initial={{ scale: 0.5, rotate: -90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: 90, opacity: 0 }} transition={{ duration: 0.18 }}>
-              <X className="w-5 h-5 text-white/80 relative z-10" />
+            <motion.div key="x" className="relative z-10" initial={{ scale: 0.5, rotate: -90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: 90, opacity: 0 }} transition={{ duration: 0.18 }}>
+              <X className="w-5 h-5" style={{ color: "rgba(255,255,255,0.85)" }} />
             </motion.div>
           ) : (
-            <motion.div key="chat" initial={{ scale: 0.5, rotate: 90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }}>
-              <MessageCircle className="w-5 h-5 text-black relative z-10" />
+            <motion.div key="chat" className="relative z-10" initial={{ scale: 0.5, rotate: 90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: -90, opacity: 0 }} transition={{ duration: 0.18 }}>
+              <MessageCircle className="w-5 h-5" style={{ color: "rgba(255,255,255,0.88)" }} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -1381,7 +1385,8 @@ export default function ChatBot() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-black border-[1.5px] border-white/90"
+              className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-[1.5px]"
+              style={{ background: "rgba(120,220,120,0.9)", borderColor: "rgba(14,14,18,1)" }}
             />
           )}
         </AnimatePresence>
