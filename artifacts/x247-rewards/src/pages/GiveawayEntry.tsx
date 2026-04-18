@@ -120,6 +120,7 @@ export default function GiveawayEntry() {
     setScreenshotConfirmed(true);
     setError("");
     if (fileInputRef.current) fileInputRef.current.value = "";
+    activeFileInputRef.current = null;
   }
 
   function removeScreenshot(partnerId: number) {
