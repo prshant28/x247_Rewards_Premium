@@ -14376,3 +14376,124 @@ svg.lucide,
   border-color: hsl(var(--foreground) / 0.09) !important;
 }
 
+
+/* ============================================================
+   PATCH — Chat tab buttons visible in light theme
+   Previous patch targeted div/span/p but missed <button>.
+   Also bump dark-theme tab opacity so they're never sub-30%.
+   ============================================================ */
+[data-light] .chatbot-panel button {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+[data-light] .chatbot-panel button:hover {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+/* Tab label text inside buttons */
+[data-light] .chatbot-panel button span {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+/* SVG icons inside tab buttons */
+[data-light] .chatbot-panel button svg {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Also fix dark-theme tab opacity — 25% is too dim regardless of theme */
+.chatbot-panel [class*="text-white\/25"] {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+.chatbot-panel [class*="text-white\/35"] {
+  color: rgba(255, 255, 255, 0.52) !important;
+}
+
+/* ============================================================
+   PATCH — Rewards carousel: force cards dark in light theme
+   glass-card has dark bg but reward-img-fade uses hsl(--card)
+   which resolves to white in light themes → bleaches images.
+   Adjacent/distant opacity also makes dark cards translucent
+   on white background → grey wash effect.
+   Solution: force dark card bg + dark image fade in light theme
+   and raise opacity so dark cards read as premium black.
+   ============================================================ */
+
+/* Card body: always stay dark black */
+[data-light] [aria-label="Prizes and rewards"] .glass-card {
+  background: linear-gradient(
+    168deg,
+    rgba(10, 10, 12, 1) 0%,
+    rgba(6, 6, 7, 1) 40%,
+    rgba(2, 2, 3, 1) 100%
+  ) !important;
+  border-color: rgba(255, 255, 255, 0.09) !important;
+}
+
+/* Image fade: use dark instead of hsl(--card) white */
+[data-light] [aria-label="Prizes and rewards"] .reward-img-fade {
+  background: linear-gradient(
+    to top,
+    rgba(6, 6, 8, 1) 0%,
+    rgba(6, 6, 8, 0.65) 30%,
+    rgba(6, 6, 8, 0.15) 55%,
+    transparent 75%
+  ) !important;
+}
+
+/* Raise adjacent/distant opacity so dark cards don't look grey */
+[data-light] [aria-label="Prizes and rewards"] .carousel-card-adjacent {
+  opacity: 0.82 !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card-distant {
+  opacity: 0.58 !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card-active {
+  opacity: 1 !important;
+  box-shadow:
+    0 0 60px -12px rgba(0, 0, 0, 0.5),
+    0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Card text: restore white on now-dark cards */
+[data-light] [aria-label="Prizes and rewards"] .carousel-card h3,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card h4,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card p,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card a,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card span {
+  color: inherit !important;
+}
+
+
+/* ============================================================
+   PATCH — Carousel cards now forced dark in light theme.
+   Revert earlier "dark text for white cards" overrides back
+   to white so text remains legible on the now-dark card bg.
+   Higher specificity via [aria-label] ancestor to win cascade.
+   ============================================================ */
+[data-light] [aria-label="Prizes and rewards"] .carousel-card h3,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card h3[class*="text-white"] {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card h4,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card h4[class*="text-white"] {
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card p,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card p[class*="text-white"] {
+  color: rgba(255, 255, 255, 0.52) !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card a,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card a[class*="text-white"] {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card a:hover,
+[data-light] [aria-label="Prizes and rewards"] .carousel-card .group:hover a {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+/* Image stays fully crisp on dark background */
+[data-light] [aria-label="Prizes and rewards"] .reward-card-image {
+  opacity: 0.92 !important;
+  filter: saturate(1.06) contrast(1.06) brightness(0.97) !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card-active .reward-card-image {
+  opacity: 1 !important;
+  filter: saturate(1.12) contrast(1.08) brightness(0.96) !important;
+}
+
