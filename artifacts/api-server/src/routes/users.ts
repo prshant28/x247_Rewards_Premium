@@ -88,6 +88,17 @@ function getActiveTier(user: any): string {
   return user.membershipTier;
 }
 
+function generateProfileSlug(fullName: string): string {
+  const base = fullName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .slice(0, 20);
+  const suffix = crypto.randomBytes(3).toString("hex").slice(0, 5);
+  return `${base}-${suffix}`;
+}
+
 router.post("/users/register", async (req, res) => {
   try {
     const { fullName, email, phone, password, city } = req.body;
@@ -102,12 +113,15 @@ router.post("/users/register", async (req, res) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
+    const autoSlug = generateProfileSlug(fullName);
     const [user] = await db.insert(usersTable).values({
       fullName,
       email,
       phone: phone || null,
       passwordHash,
       city: city || null,
+      profileSlug: autoSlug,
+      isPublic: true,
     }).returning();
 
     const token = generateToken();
@@ -179,9 +193,18 @@ router.get("/users/me", async (req, res) => {
       return res.status(401).json({ error: "Session expired" });
     }
 
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+    let [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.profileSlug) {
+      const autoSlug = generateProfileSlug(user.fullName);
+      const [updated] = await db.update(usersTable)
+        .set({ profileSlug: autoSlug, isPublic: true })
+        .where(eq(usersTable.id, user.id))
+        .returning();
+      if (updated) user = updated;
     }
 
     const activeTier = getActiveTier(user);
@@ -354,9 +377,18 @@ router.get("/users/profile/:slug", async (req, res) => {
     }
 
     const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id));
-
     const entries = await db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.userId, user.id));
     const totalEntries = entries.reduce((sum, e) => sum + (e.entryCount || 0), 0);
+
+    const contestsWithDetails = await db
+      .select({ contestId: giveawayEntriesTable.contestId, entryCount: giveawayEntriesTable.entryCount })
+      .from(giveawayEntriesTable)
+      .where(eq(giveawayEntriesTable.userId, user.id))
+      .limit(20);
+
+    const tier = getActiveTier(user);
+    const memberSinceDate = new Date(user.createdAt ?? Date.now());
+    const daysSinceMember = Math.floor((Date.now() - memberSinceDate.getTime()) / (1000 * 60 * 60 * 24));
 
     return res.json({
       fullName: user.fullName,
@@ -365,12 +397,20 @@ router.get("/users/profile/:slug", async (req, res) => {
       isVerified: user.isVerified,
       selectedBadge: user.selectedBadge,
       badges: badges.map(b => b.badgeId),
-      membershipTier: getActiveTier(user),
+      membershipTier: tier,
+      city: user.city ?? null,
       stats: {
         entries: totalEntries,
         contestsJoined: entries.length,
+        badgesEarned: badges.length,
+        daysActive: daysSinceMember,
       },
+      recentContests: contestsWithDetails.slice(0, 6).map(e => ({
+        contestId: e.contestId,
+        entries: e.entryCount,
+      })),
       memberSince: user.createdAt,
+      profileSlug: user.profileSlug,
     });
   } catch (err) {
     console.error("Public profile error:", err);
