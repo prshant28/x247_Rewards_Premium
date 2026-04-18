@@ -13646,3 +13646,167 @@ svg.lucide,
   .acct-side-pulse { animation: none; }
 }
 
+
+/* ============================================================
+   SITE-WIDE BADGE/PILL UNIFICATION
+   Make all section-header badges visually identical to the
+   canonical `.glass-pill-badge` for a consistent premium look.
+   Targets HowItWorks, Pricing, 404, Home hero variants.
+   ============================================================ */
+
+/* === Tier 1: Section header pills (large) === */
+.hiw-hero-badge,
+.hiw-badge,
+.hiw-cta-badge,
+.pricing-hero-badge,
+.pricing-bsc-badge,
+.x404-badge,
+.hero-banner-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border-radius: 9999px !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  padding: 6px 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.05) 100%) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  font-family: 'Syne', sans-serif !important;
+  backdrop-filter: blur(30px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(1.4) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 6px 20px -3px rgba(0, 0, 0, 0.5),
+    0 0 0 0.5px rgba(255, 255, 255, 0.04) !important;
+  text-shadow: none !important;
+  /* Strip 3D / glow / animated gradient effects from the original variants */
+  animation: none !important;
+  text-decoration: none !important;
+}
+@media (min-width: 640px) {
+  .hiw-hero-badge,
+  .hiw-badge,
+  .hiw-cta-badge,
+  .pricing-hero-badge,
+  .pricing-bsc-badge,
+  .x404-badge,
+  .hero-banner-pill {
+    font-size: 12px !important;
+    padding: 8px 20px !important;
+  }
+}
+
+/* Strip pseudo-elements / inner glows from the variants */
+.hiw-hero-badge::before, .hiw-hero-badge::after,
+.hiw-badge::before, .hiw-badge::after,
+.hiw-cta-badge::before, .hiw-cta-badge::after,
+.pricing-hero-badge::before, .pricing-hero-badge::after,
+.pricing-bsc-badge::before, .pricing-bsc-badge::after,
+.x404-badge::before, .x404-badge::after,
+.hero-banner-pill::before, .hero-banner-pill::after {
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+/* Inline icon sizing inside unified badges */
+.hiw-hero-badge svg,
+.hiw-badge svg,
+.hiw-cta-badge svg,
+.pricing-hero-badge svg,
+.pricing-bsc-badge svg,
+.x404-badge svg,
+.hero-banner-pill svg {
+  width: 12px !important;
+  height: 12px !important;
+  stroke-width: 1.8 !important;
+  color: currentColor !important;
+  opacity: 0.7 !important;
+}
+
+/* Inline dot inside unified badges (e.g. 404 pulse, hero pill dot) */
+.hiw-hero-badge > span[class*="dot"],
+.x404-badge-dot,
+.hero-banner-pill > span:first-child:not(:has(svg)) {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: rgba(34, 197, 94, 0.85) !important;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6) !important;
+  flex-shrink: 0 !important;
+}
+
+/* === Tier 2: Mini sub-pills (compact horizontal feature pills) === */
+.hiw-hero-pill,
+.pricing-hero-pill,
+.pricing-entry-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border-radius: 9999px !important;
+  font-size: 10.5px !important;
+  font-weight: 500 !important;
+  padding: 5px 11px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  letter-spacing: 0.04em !important;
+  font-family: 'Syne', sans-serif !important;
+  text-transform: none !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 1px 4px rgba(0, 0, 0, 0.2) !important;
+  animation: none !important;
+  text-shadow: none !important;
+}
+.hiw-hero-pill::before, .hiw-hero-pill::after,
+.pricing-hero-pill::before, .pricing-hero-pill::after,
+.pricing-entry-badge::before, .pricing-entry-badge::after {
+  display: none !important;
+  background: none !important;
+  animation: none !important;
+}
+.hiw-hero-pill svg,
+.pricing-hero-pill svg,
+.pricing-entry-badge svg {
+  width: 11px !important;
+  height: 11px !important;
+  stroke-width: 1.8 !important;
+  color: currentColor !important;
+  opacity: 0.65 !important;
+}
+
+/* === Light theme parity === */
+[data-light] .hiw-hero-badge,
+[data-light] .hiw-badge,
+[data-light] .hiw-cta-badge,
+[data-light] .pricing-hero-badge,
+[data-light] .pricing-bsc-badge,
+[data-light] .x404-badge,
+[data-light] .hero-banner-pill {
+  background: linear-gradient(135deg, hsl(var(--foreground) / 0.06) 0%, hsl(var(--foreground) / 0.015) 50%, hsl(var(--foreground) / 0.04) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+  color: hsl(var(--foreground) / 0.78) !important;
+  box-shadow:
+    0 1px 0 hsl(var(--foreground) / 0.04) inset,
+    0 4px 14px -3px hsl(var(--foreground) / 0.08),
+    0 0 0 0.5px hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .hiw-hero-pill,
+[data-light] .pricing-hero-pill,
+[data-light] .pricing-entry-badge {
+  background: hsl(var(--foreground) / 0.035) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.7) !important;
+  box-shadow:
+    inset 0 1px 0 hsl(var(--foreground) / 0.04),
+    0 1px 3px hsl(var(--foreground) / 0.04) !important;
+}
+
