@@ -14257,3 +14257,58 @@ svg.lucide,
   );
 }
 
+
+/* ============================================================
+   GLOBAL TEXT SELECTION
+   Without this, gradient-clipped text (background-clip: text +
+   -webkit-text-fill-color: transparent) becomes invisible on
+   selection in light theme. Force a visible selection bg/color.
+   ============================================================ */
+::selection {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  text-shadow: none;
+  -webkit-text-fill-color: #ffffff;
+}
+::-moz-selection {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  text-shadow: none;
+}
+
+/* Light theme: use dark selection so text stays readable */
+[data-light] ::selection {
+  background: hsl(var(--foreground) / 0.18);
+  color: hsl(var(--foreground));
+  -webkit-text-fill-color: hsl(var(--foreground));
+}
+[data-light] ::-moz-selection {
+  background: hsl(var(--foreground) / 0.18);
+  color: hsl(var(--foreground));
+}
+
+/* ============================================================
+   LIGHT THEME — Rewards carousel distant card readability boost
+   The earlier fix muted distant cards too aggressively for light bg.
+   ============================================================ */
+
+/* Distant card image — keep slight depth but stay vibrant */
+[data-light] .carousel-card-distant .reward-card-image {
+  opacity: 0.94 !important;
+  filter: saturate(1.04) contrast(1.04) brightness(0.97) !important;
+}
+
+/* Distant card text — bump contrast so it's clearly readable */
+[data-light] .carousel-card-distant h3[class*="text-white"] {
+  color: hsl(var(--foreground) / 0.92) !important;
+}
+[data-light] .carousel-card-distant p[class*="text-white/40"] {
+  color: hsl(var(--foreground) / 0.72) !important;
+}
+[data-light] .carousel-card-distant h4[class*="text-white/50"] {
+  color: hsl(var(--foreground) / 0.65) !important;
+}
+[data-light] .carousel-card-distant a[class*="text-white/30"] {
+  color: hsl(var(--foreground) / 0.62) !important;
+}
+
