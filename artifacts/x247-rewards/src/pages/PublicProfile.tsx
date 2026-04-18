@@ -17,14 +17,14 @@ import {
 
 /* ─── Badge metadata ─── */
 const BADGE_META: Record<string, { emoji: string; label: string; desc: string; color: string; accent: string }> = {
-  "early-adopter":    { emoji: "🚀", label: "Early Adopter",    desc: "Joined during the first wave of X247 members",   color: "rgba(139,92,246,0.20)", accent: "#8b5cf6" },
-  "streak-master":    { emoji: "🔥", label: "Streak Master",    desc: "Maintained a 30-day continuous entry streak",    color: "rgba(249,115,22,0.20)", accent: "#f97316" },
-  "first-win":        { emoji: "🏆", label: "First Win",        desc: "Claimed their very first giveaway prize",        color: "rgba(234,179,8,0.20)",  accent: "#eab308" },
-  "social-butterfly": { emoji: "🦋", label: "Social Butterfly", desc: "Referred 5 or more new members to X247",         color: "rgba(34,197,94,0.20)",  accent: "#22c55e" },
-  "partner-pro":      { emoji: "⭐", label: "Partner Pro",      desc: "Completed 10+ partner promotional tasks",        color: "rgba(59,130,246,0.20)", accent: "#3b82f6" },
-  "community-hero":   { emoji: "🛡️", label: "Community Hero",   desc: "Made significant contributions to the community", color: "rgba(236,72,153,0.20)", accent: "#ec4899" },
-  "lucky-charm":      { emoji: "🍀", label: "Lucky Charm",      desc: "Won 3 or more giveaways in a row",               color: "rgba(16,185,129,0.20)", accent: "#10b981" },
-  "mega-streak":      { emoji: "💎", label: "Mega Streak",      desc: "90-day unbroken daily entry streak achieved",    color: "rgba(99,102,241,0.20)", accent: "#6366f1" },
+  "early-adopter":    { emoji: "🚀", label: "Early Adopter",    desc: "Joined during the first wave of X247 members",   color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
+  "streak-master":    { emoji: "🔥", label: "Streak Master",    desc: "Maintained a 30-day continuous entry streak",    color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
+  "first-win":        { emoji: "🏆", label: "First Win",        desc: "Claimed their very first giveaway prize",        color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
+  "social-butterfly": { emoji: "🦋", label: "Social Butterfly", desc: "Referred 5 or more new members to X247",         color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
+  "partner-pro":      { emoji: "⭐", label: "Partner Pro",      desc: "Completed 10+ partner promotional tasks",        color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
+  "community-hero":   { emoji: "🛡️", label: "Community Hero",   desc: "Made significant contributions to the community", color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
+  "lucky-charm":      { emoji: "🍀", label: "Lucky Charm",      desc: "Won 3 or more giveaways in a row",               color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
+  "mega-streak":      { emoji: "💎", label: "Mega Streak",      desc: "90-day unbroken daily entry streak achieved",    color: "rgba(255,255,255,0.07)", accent: "rgba(255,255,255,0.45)" },
 };
 
 const TIER_META: Record<string, { icon: React.FC<{ className?: string }>; label: string; glow: string; ring: string }> = {
