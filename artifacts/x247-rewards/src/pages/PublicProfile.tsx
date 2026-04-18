@@ -62,6 +62,138 @@ function AnimatedNumber({ value, delay = 0 }: { value: number; delay?: number })
   return <span ref={ref}>{display.toLocaleString()}</span>;
 }
 
+/* ─── Trading Card (compact stylized profile card) ─── */
+function TradingCard({
+  initials, fullName, tier, tierLabel, followers, badges, onShare, copied,
+}: {
+  initials: string; fullName: string; tier: string; tierLabel: string;
+  followers: number; badges: number; onShare: () => void; copied: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, rotateY: -10 }}
+      whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="pub2-tcard"
+    >
+      <div className="pub2-tcard-shine" />
+      <div className="pub2-tcard-inner">
+        <div className="pub2-tcard-tier-pill" data-tier={tier}>{tierLabel.split(" ")[0].toUpperCase()}</div>
+        <div className="pub2-tcard-grid" />
+        <div className="pub2-tcard-avatar-area">
+          <span className="pub2-tcard-initials">{initials}</span>
+          <div className="pub2-tcard-corner pub2-tcard-corner-tl" />
+          <div className="pub2-tcard-corner pub2-tcard-corner-tr" />
+          <div className="pub2-tcard-corner pub2-tcard-corner-bl" />
+          <div className="pub2-tcard-corner pub2-tcard-corner-br" />
+        </div>
+      </div>
+
+      <div className="pub2-tcard-name-row">
+        <span className="pub2-tcard-name">{fullName}</span>
+        <BadgeCheck className="pub2-tcard-check" />
+      </div>
+
+      <div className="pub2-tcard-foot">
+        <div className="pub2-tcard-stat" title="Followers">
+          <Users className="w-3.5 h-3.5" />
+          <span>{followers}</span>
+        </div>
+        <div className="pub2-tcard-stat" title="Badges">
+          <Trophy className="w-3.5 h-3.5" />
+          <span>{badges}</span>
+        </div>
+        <button onClick={onShare} className="pub2-tcard-share">
+          <AnimatePresence mode="wait" initial={false}>
+            {copied ? (
+              <motion.span key="ok" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5" /> Copied
+              </motion.span>
+            ) : (
+              <motion.span key="sh" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                <Share2 className="w-3.5 h-3.5" /> Share
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Activity Heatmap (GitHub-style contribution grid) ─── */
+function ActivityHeatmap({ seed = 1, daysActive = 0 }: { seed?: number; daysActive?: number }) {
+  const WEEKS = 14;
+  const DAYS = 7;
+  // Deterministic pseudo-random pattern from seed
+  const rand = (i: number) => {
+    const x = Math.sin((i + 1) * (seed + 13)) * 10000;
+    return x - Math.floor(x);
+  };
+  const cells: number[] = [];
+  let activeCount = 0;
+  for (let i = 0; i < WEEKS * DAYS; i++) {
+    const r = rand(i);
+    let level = 0;
+    if (r > 0.92) level = 4;
+    else if (r > 0.82) level = 3;
+    else if (r > 0.68) level = 2;
+    else if (r > 0.50) level = 1;
+    cells.push(level);
+    if (level > 0) activeCount++;
+  }
+  // Cap by daysActive when provided (turn off late cells if too many)
+  if (daysActive > 0 && activeCount > daysActive) {
+    let toRemove = activeCount - daysActive;
+    for (let i = cells.length - 1; i >= 0 && toRemove > 0; i--) {
+      if (cells[i] > 0) { cells[i] = 0; toRemove--; }
+    }
+  }
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const now = new Date();
+  const monthLabel = months[now.getMonth()];
+  const prevLabel  = months[(now.getMonth() + 11) % 12];
+
+  return (
+    <div className="pub2-heatmap">
+      <div className="pub2-heatmap-months">
+        <span>{prevLabel}</span>
+        <span>{monthLabel}</span>
+      </div>
+      <div className="pub2-heatmap-grid" style={{ gridTemplateColumns: `repeat(${WEEKS}, 1fr)` }}>
+        {Array.from({ length: WEEKS }).map((_, w) => (
+          <div key={w} className="pub2-heatmap-col">
+            {Array.from({ length: DAYS }).map((_, d) => {
+              const idx = w * DAYS + d;
+              const lvl = cells[idx];
+              return (
+                <motion.div
+                  key={d}
+                  className={`pub2-heatmap-cell pub2-heatmap-l${lvl}`}
+                  initial={{ opacity: 0, scale: 0.6 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.004, duration: 0.3 }}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      <div className="pub2-heatmap-legend">
+        <span>Less</span>
+        <div className="pub2-heatmap-cell pub2-heatmap-l0" />
+        <div className="pub2-heatmap-cell pub2-heatmap-l1" />
+        <div className="pub2-heatmap-cell pub2-heatmap-l2" />
+        <div className="pub2-heatmap-cell pub2-heatmap-l3" />
+        <div className="pub2-heatmap-cell pub2-heatmap-l4" />
+        <span>More</span>
+      </div>
+    </div>
+  );
+}
+
 /* ─── 3D tilt card ─── */
 function TiltCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -435,6 +567,42 @@ export default function PublicProfile() {
 
       {/* ══════════ BODY ══════════ */}
       <div className="pub2-body">
+       <div className="pub2-body-grid">
+
+        {/* ── LEFT COLUMN (sticky on desktop) ── */}
+        <aside className="pub2-side">
+          <TradingCard
+            initials={getInitials(profile.fullName)}
+            fullName={profile.fullName}
+            tier={tier}
+            tierLabel={tierLabel}
+            followers={followersCount}
+            badges={earnedBadges.length}
+            onShare={share}
+            copied={copied}
+          />
+
+          {/* Quick info chips below trading card */}
+          <div className="pub2-side-info">
+            {profile.city && (
+              <div className="pub2-side-info-row">
+                <MapPin className="w-3.5 h-3.5 text-white/40" />
+                <span>{profile.city}</span>
+              </div>
+            )}
+            <div className="pub2-side-info-row">
+              <Calendar className="w-3.5 h-3.5 text-white/40" />
+              <span>Member since {new Date(profile.memberSince).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}</span>
+            </div>
+            <div className="pub2-side-info-row">
+              <Globe className="w-3.5 h-3.5 text-white/40" />
+              <span className="truncate">x247.app/profile/{profile.profileSlug}</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* ── RIGHT COLUMN (main content) ── */}
+        <div className="pub2-main">
 
         {/* ── Profile Info Card ── */}
         {(profile.bio || profile.city || profile.email) && (
@@ -568,6 +736,28 @@ export default function PublicProfile() {
           </div>
         </motion.div>
 
+        {/* ── Activity Heatmap (last 14 weeks) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
+          className="pub2-card"
+        >
+          <div className="pub2-card-head">
+            <Flame className="w-3.5 h-3.5 text-white/30" />
+            <span className="pub2-card-title">Activity Map</span>
+            <span className="pub2-card-count">{profile.stats?.daysActive ?? 0}d</span>
+          </div>
+          <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
+            Last 14 weeks of giveaway activity. Brighter cells = more entries.
+          </p>
+          <ActivityHeatmap
+            seed={(profile.fullName?.length ?? 1) * 7 + (profile.profileSlug?.length ?? 1)}
+            daysActive={profile.stats?.daysActive ?? 0}
+          />
+        </motion.div>
+
         {/* ── Contest Activity ── */}
         {profile.recentContests && profile.recentContests.length > 0 && (
           <motion.div
@@ -673,6 +863,8 @@ export default function PublicProfile() {
           </div>
         </motion.div>
 
+        </div>{/* /pub2-main */}
+       </div>{/* /pub2-body-grid */}
       </div>
 
       <SiteFooter links={[
