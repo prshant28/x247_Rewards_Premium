@@ -982,17 +982,33 @@ export default function ChatBot() {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-3 py-2.5 text-[11px] font-display font-light rounded-t-lg transition-all relative ${activeTab === tab ? "text-white/90" : "text-white/55 hover:text-white/80"}`}
+                    className="px-3 py-2.5 text-[11px] font-display font-light rounded-t-lg transition-all relative"
+                    style={{
+                      color: activeTab === tab ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.58)",
+                    }}
                   >
                     <span className="flex items-center gap-1.5">
-                      {tab === "chat" ? <MessageCircle className="w-3 h-3" /> : <History className="w-3 h-3" />}
-                      <span className="uppercase tracking-widest text-[10px]">{tab === "chat" ? "Chat" : "Recent"}</span>
+                      {tab === "chat"
+                        ? <MessageCircle className="w-3 h-3" style={{ color: "inherit" }} />
+                        : <History className="w-3 h-3" style={{ color: "inherit" }} />}
+                      <span className="uppercase tracking-widest text-[10px]" style={{ color: "inherit" }}>
+                        {tab === "chat" ? "Chat" : "Recent"}
+                      </span>
                       {tab === "history" && conversations.length > 0 && (
-                        <span className="px-1.5 py-0 rounded-full bg-white/[0.07] text-[9px] text-white/35 border border-white/[0.08]">{conversations.length}</span>
+                        <span
+                          className="px-1.5 py-0 rounded-full text-[9px]"
+                          style={{
+                            background: "rgba(255,255,255,0.08)",
+                            border: "1px solid rgba(255,255,255,0.12)",
+                            color: "rgba(255,255,255,0.65)",
+                          }}
+                        >
+                          {conversations.length}
+                        </span>
                       )}
                     </span>
                     {activeTab === tab && (
-                      <motion.div layoutId="chatTabIndicator" className="absolute bottom-0 left-2 right-2 h-px rounded-full" style={{ background: "rgba(255,255,255,0.2)" }} />
+                      <motion.div layoutId="chatTabIndicator" className="absolute bottom-0 left-2 right-2 h-px rounded-full" style={{ background: "rgba(255,255,255,0.25)" }} />
                     )}
                   </button>
                 ))}
