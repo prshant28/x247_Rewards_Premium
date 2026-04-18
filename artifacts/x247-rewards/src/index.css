@@ -157,13 +157,18 @@
     @apply border-border;
   }
 
-  html, body {
+  html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
-    max-width: 100vw;
+    overflow-x: clip;
+    scrollbar-gutter: stable;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    overflow-x: clip;
+    max-width: 100vw;
   }
 
   body {
@@ -1704,6 +1709,12 @@
   .border-glow-card.premium-btn::before,
   .border-glow-card.nav-cta-btn::before {
     display: none;
+  }
+
+  /* Suppress the soft-light fill overlay on buttons — it creates an unwanted white wash */
+  .border-glow-card.premium-btn::after,
+  .border-glow-card.nav-cta-btn::after {
+    display: none !important;
   }
 
   .border-glow-card.premium-btn,
