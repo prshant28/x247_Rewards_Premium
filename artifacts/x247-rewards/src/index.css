@@ -11542,3 +11542,64 @@
   border-color: rgba(255,255,255,0.14);
   color: rgba(255,255,255,0.80);
 }
+
+/* ── Light theme: Winners section + ChatBot panel visibility fixes ── */
+[data-light] .winners-heading,
+[data-light] .winners-heading * {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .winners-subtitle {
+  color: hsl(var(--foreground) / 0.65) !important;
+}
+
+[data-light] .testimonial-card h4 {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .testimonial-card p {
+  color: hsl(var(--foreground) / 0.72) !important;
+}
+[data-light] .testimonial-card span {
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .testimonial-card .text-white\/35,
+[data-light] .testimonial-card .text-white\/45 {
+  color: hsl(var(--foreground) / 0.5) !important;
+}
+[data-light] .testimonial-card .text-white\/60,
+[data-light] .testimonial-card .text-white\/65 {
+  color: hsl(var(--foreground) / 0.72) !important;
+}
+[data-light] .testimonial-card .text-white\/85,
+[data-light] .testimonial-card .text-white {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .testimonial-card .bg-white\/\[0\.06\] {
+  background: hsl(var(--foreground) / 0.06) !important;
+}
+[data-light] .testimonial-card .border-white\/\[0\.08\] {
+  border-color: hsl(var(--foreground) / 0.12) !important;
+}
+[data-light] .testimonial-card svg {
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+
+/* ── ChatBot panel: force solid dark surface + bright white text in any theme ── */
+.chatbot-panel {
+  color: #ffffff;
+}
+[data-light] .chatbot-panel {
+  background: #0a0a0d !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  box-shadow:
+    0 24px 80px rgba(0,0,0,0.35),
+    0 0 0 0.5px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  color: #ffffff !important;
+}
+[data-light] .chatbot-panel * {
+  border-color: rgba(255,255,255,0.08);
+}
+[data-light] .chatbot-panel h3,
+[data-light] .chatbot-panel h4 {
+  color: rgba(255,255,255,0.95) !important;
+}

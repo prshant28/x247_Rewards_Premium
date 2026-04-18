@@ -1481,8 +1481,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Testimonials
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What Our Winners Say" /></h2>
-              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <h2 className="winners-heading text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What Our Winners Say" /></h2>
+              <p className="winners-subtitle text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real feedback from real winners. Hear what our community has to say about the X247 experience.
               </p>
             </motion.div>
