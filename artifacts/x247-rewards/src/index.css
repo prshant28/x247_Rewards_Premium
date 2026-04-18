@@ -8491,6 +8491,13 @@
 @media (min-width: 1024px) { .pub2-body { padding: 56px 32px 80px; max-width: 1200px; } }
 @media (min-width: 1280px) { .pub2-body { padding: 64px 40px 96px; max-width: 1320px; } }
 
+/* ─ Hero spacer (replaces removed hero) — keeps top breathing room below sticky nav ─ */
+.pub2-hero-spacer {
+  height: 96px;
+}
+@media (min-width: 640px)  { .pub2-hero-spacer { height: 110px; } }
+@media (min-width: 1024px) { .pub2-hero-spacer { height: 120px; } }
+
 /* ─ Body 2-column responsive grid ─ */
 .pub2-body-grid {
   display: grid;

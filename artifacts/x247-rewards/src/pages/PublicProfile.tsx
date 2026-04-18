@@ -413,29 +413,13 @@ export default function PublicProfile() {
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <div className="noise-overlay" />
 
-      {/* ══════════ HERO BANNER ══════════ */}
+      {/* HERO REMOVED — trading card in sidebar covers identity */}
+      <div className="pub2-hero-spacer" />
+      {false && (
       <motion.div
         ref={heroRef}
         className="pub2-hero"
-        style={{ y: heroY, opacity: heroOpacity }}
-        onMouseMove={handleHeroMouse}
-        onMouseLeave={() => { mx.set(0); my.set(0); }}
       >
-        {/* Background layers */}
-        <div className="pub2-hero-base" style={{ "--tier-glow": tierGlow } as React.CSSProperties} />
-        <div className="pub2-hero-grid" />
-        <div className="pub2-hero-scanlines" />
-        <div className="pub2-hero-sweep" />
-
-        {/* Subtle glow points with mouse parallax */}
-        <motion.div className="pub2-orb pub2-orb-1" style={{ x: orb1x, y: orb1y }} />
-        <motion.div className="pub2-orb pub2-orb-2" style={{ x: orb2x, y: orb2y }} />
-        <motion.div className="pub2-orb pub2-orb-3" style={{ x: orb1x, y: orb2y }} />
-
-        {/* Bottom fade */}
-        <div className="pub2-hero-fade" />
-
-        {/* Hero content */}
         <div className="pub2-hero-inner">
           <motion.div
             className="pub2-hero-content"
@@ -552,6 +536,7 @@ export default function PublicProfile() {
           </motion.div>
         </div>
       </motion.div>
+      )}
 
       {/* ══════════ BODY ══════════ */}
       <div className="pub2-body">
