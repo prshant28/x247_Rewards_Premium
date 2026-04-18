@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
 import UserProfileCard from "@/components/UserProfileCard";
@@ -211,6 +211,7 @@ const WINNERS_FEED = [
 ];
 
 function AuthForm({ onSuccess }: { onSuccess: () => void }) {
+  const reduceMotion = useReducedMotion();
   const [mode, setMode] = useState<AuthMode>("login");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -272,49 +273,63 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
-      <div className="guest-auth-card">
+      <div className="guest-auth-card auth-card-premium">
         <div className="guest-auth-card-glow" />
         <div className="guest-auth-card-shine" />
 
-        {/* Premium Hero Visual */}
-        <div className="auth-hero-visual">
-          <div className="auth-hero-orb auth-hero-orb-1" />
-          <div className="auth-hero-orb auth-hero-orb-2" />
-          <div className="auth-hero-orb auth-hero-orb-3" />
-          <div className="auth-hero-grid" />
-          <div className="auth-hero-shine" />
-          <div className="auth-hero-monogram-ring" />
-          <div className="auth-hero-monogram">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.7, rotate: -8 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="auth-hero-monogram-inner"
-            >
-              <span className="auth-hero-monogram-x">X</span>
-              <span className="auth-hero-monogram-247">247</span>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="auth-hero-tagline"
-            >
-              <Sparkles className="w-3 h-3 opacity-60" />
-              <span>PREMIUM REWARDS PLATFORM</span>
-              <Sparkles className="w-3 h-3 opacity-60" />
-            </motion.div>
-          </div>
+        {/* Animated ambient layers */}
+        <div className="auth-ambient">
+          <div className="auth-ambient-orb auth-ambient-orb-a" />
+          <div className="auth-ambient-orb auth-ambient-orb-b" />
+          <div className="auth-ambient-orb auth-ambient-orb-c" />
+          <div className="auth-ambient-grid" />
+          <div className="auth-ambient-noise" />
         </div>
 
         <div className="relative z-[2]">
-
-          <h2 className="text-center text-xl sm:text-2xl font-display font-light text-white/90 mb-1.5 tracking-tight">
-            {mode === "login" ? "Welcome back" : "Join X247 Rewards"}
-          </h2>
-          <p className="text-center text-xs sm:text-[13px] text-white/35 font-light mb-5 sm:mb-6">
-            {mode === "login" ? "Sign in to continue your rewards journey" : "Create your free account in seconds"}
-          </p>
+          {/* Animated welcome heading */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`heading-${mode}`}
+              initial={reduceMotion ? false : { opacity: 0, y: 8, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6, filter: "blur(4px)" }}
+              transition={{ duration: reduceMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="text-center mb-5 sm:mb-6"
+            >
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: reduceMotion ? 0 : 0.05, duration: reduceMotion ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="auth-eyebrow-pill mb-3 mx-auto"
+                aria-hidden="true"
+              >
+                <span className="auth-eyebrow-dot" />
+                <span>{mode === "login" ? "WELCOME BACK" : "JOIN X247"}</span>
+              </motion.div>
+              <h2 className="auth-heading text-2xl sm:text-[28px] font-display font-light text-white tracking-tight leading-[1.15]">
+                {(mode === "login" ? "Sign in to your rewards" : "Create your free account").split(" ").map((word, i) => (
+                  <motion.span
+                    key={`${mode}-${i}-${word}`}
+                    initial={reduceMotion ? false : { opacity: 0, y: 12, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ delay: reduceMotion ? 0 : 0.12 + i * 0.06, duration: reduceMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    className="inline-block mr-[0.28em]"
+                  >
+                    {word}
+                  </motion.span>
+                ))}
+              </h2>
+              <motion.p
+                initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: reduceMotion ? 0 : 0.45, duration: reduceMotion ? 0 : 0.5 }}
+                className="text-xs sm:text-[13px] text-white/40 font-light mt-2"
+              >
+                {mode === "login" ? "Continue your winning streak" : "Daily prizes await — start in seconds"}
+              </motion.p>
+            </motion.div>
+          </AnimatePresence>
 
           {/* Google Sign-In Button */}
           <button
