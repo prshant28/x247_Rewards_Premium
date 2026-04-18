@@ -65,9 +65,11 @@ function AnimatedNumber({ value, delay = 0 }: { value: number; delay?: number })
 /* ─── Trading Card (premium collectible card — no corner arcs) ─── */
 function TradingCard({
   initials, fullName, tier, tierLabel, followers, badges, onShare, copied,
+  isFollowing, followLoading, onFollow, isOwnProfile,
 }: {
   initials: string; fullName: string; tier: string; tierLabel: string;
   followers: number; badges: number; onShare: () => void; copied: boolean;
+  isFollowing: boolean; followLoading: boolean; onFollow: () => void; isOwnProfile: boolean;
 }) {
   const tierRing = TIER_META[tier]?.ring ?? "rgba(255,255,255,0.10)";
   return (
@@ -127,6 +129,31 @@ function TradingCard({
           </AnimatePresence>
         </button>
       </div>
+
+      {!isOwnProfile && (
+        <motion.button
+          onClick={onFollow}
+          disabled={followLoading}
+          className={isFollowing ? "pub2-tcard-unfollow-btn" : "pub2-tcard-follow-btn"}
+          whileTap={{ scale: 0.96 }}
+        >
+          <AnimatePresence mode="wait">
+            {followLoading ? (
+              <motion.span key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
+                <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
+              </motion.span>
+            ) : isFollowing ? (
+              <motion.span key="unf" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
+                <UserMinus className="w-3.5 h-3.5" /> Following
+              </motion.span>
+            ) : (
+              <motion.span key="fol" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
+                <UserPlus className="w-3.5 h-3.5" /> Follow
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
+      )}
     </motion.div>
   );
 }
@@ -195,6 +222,8 @@ export default function PublicProfile() {
   const [followsYou, setFollowsYou] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<"followers" | "following" | "suggestions">("followers");
+  const bandRef = useRef<HTMLDivElement>(null);
+  const bandInView = useInView(bandRef, { margin: "0px" });
 
   useEffect(() => {
     (async () => {
@@ -294,6 +323,7 @@ export default function PublicProfile() {
 
           {/* ══ PROFILE IDENTITY HEADER BAND ══ */}
           <motion.div
+            ref={bandRef}
             initial={{ opacity: 0, y: -18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -430,6 +460,10 @@ export default function PublicProfile() {
                 badges={earnedBadges.length}
                 onShare={share}
                 copied={copied}
+                isFollowing={isFollowing}
+                followLoading={followLoading}
+                onFollow={handleFollow}
+                isOwnProfile={!!profile.isOwnProfile}
               />
 
               {/* Level badge (sidebar) */}
@@ -485,6 +519,41 @@ export default function PublicProfile() {
                   </blockquote>
                 </motion.div>
               )}
+
+              {/* ── Discover People card (sidebar) ── */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+                className="pub2-card pub2-discover-card"
+              >
+                <div className="pub2-card-head">
+                  <Users className="w-3.5 h-3.5 text-white/30" />
+                  <span className="pub2-card-title">Community</span>
+                </div>
+                <p className="pub2-discover-desc">
+                  Explore the X247 community — follow members, see their streaks, and grow your network.
+                </p>
+                <button
+                  className="pub2-discover-btn"
+                  onClick={() => { setModalTab("suggestions"); setModalOpen(true); }}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Find People to Follow
+                  <ArrowRight className="w-3.5 h-3.5 ml-auto" />
+                </button>
+                {!profile.isOwnProfile && (
+                  <button
+                    className="pub2-discover-btn pub2-discover-btn--followers"
+                    onClick={() => { setModalTab("followers"); setModalOpen(true); }}
+                  >
+                    <Users className="w-3.5 h-3.5" />
+                    {followersCount} Followers
+                    <ArrowRight className="w-3.5 h-3.5 ml-auto" />
+                  </button>
+                )}
+              </motion.div>
             </aside>
 
             {/* ── RIGHT COLUMN ── */}
@@ -700,6 +769,48 @@ export default function PublicProfile() {
           </div>{/* /grid */}
         </div>{/* /container */}
       </main>
+
+      {/* ── Sticky Follow Bar (mobile, appears when ID band scrolls out) ── */}
+      <AnimatePresence>
+        {!bandInView && !profile.isOwnProfile && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            className="sticky-follow-bar"
+          >
+            <div className="sticky-follow-bar-inner">
+              <div className="sticky-follow-bar-info">
+                <div className="sticky-follow-bar-name">{profile.fullName}</div>
+                <div className="sticky-follow-bar-meta">{followersCount} followers · {earnedBadges.length} badges</div>
+              </div>
+              <div className="sticky-follow-bar-actions">
+                <motion.button
+                  onClick={handleFollow}
+                  disabled={followLoading}
+                  className={isFollowing ? "sticky-unfollow-btn" : "sticky-follow-btn"}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {followLoading ? (
+                    <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
+                  ) : isFollowing ? (
+                    <><UserMinus className="w-3.5 h-3.5" /> Following</>
+                  ) : (
+                    <><UserPlus className="w-3.5 h-3.5" /> Follow</>
+                  )}
+                </motion.button>
+                <button
+                  className="sticky-share-btn"
+                  onClick={share}
+                >
+                  {copied ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <SiteFooter links={[
         { label: "Home", href: "/" },

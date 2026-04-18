@@ -14915,3 +14915,638 @@ svg.lucide,
     align-self: flex-end;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   PUBLIC PROFILE — ADVANCED FOLLOW + LIGHT THEME + MOBILE RESPONSIVE
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Trading card follow / unfollow button ── */
+.pub2-tcard-follow-btn,
+.pub2-tcard-unfollow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: calc(100% - 36px);
+  margin: 0 18px 18px;
+  padding: 11px 16px;
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  border: none;
+  position: relative;
+  z-index: 2;
+}
+.pub2-tcard-follow-btn {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 4px 20px rgba(255,255,255,0.18);
+}
+.pub2-tcard-follow-btn:hover {
+  background: rgba(255,255,255,0.90);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(255,255,255,0.22);
+}
+.pub2-tcard-unfollow-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.65);
+}
+.pub2-tcard-unfollow-btn:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.88);
+}
+.pub2-tcard-follow-btn:disabled,
+.pub2-tcard-unfollow-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Discover People sidebar card ── */
+.pub2-discover-card { gap: 0; }
+.pub2-discover-desc {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.pub2-discover-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.60);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.pub2-discover-btn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.16);
+  color: rgba(255,255,255,0.90);
+  transform: translateX(2px);
+}
+.pub2-discover-btn:last-child { margin-bottom: 0; }
+.pub2-discover-btn--followers {
+  background: rgba(255,255,255,0.025);
+  color: rgba(255,255,255,0.45);
+}
+
+/* ── Sticky follow bar (appears on mobile when header scrolls away) ── */
+.sticky-follow-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 8000;
+  padding: 0 0 env(safe-area-inset-bottom, 0);
+}
+.sticky-follow-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(8,8,10,0.95);
+  border-top: 1px solid rgba(255,255,255,0.09);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.6);
+}
+.sticky-follow-bar-info {
+  flex: 1;
+  min-width: 0;
+}
+.sticky-follow-bar-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sticky-follow-bar-meta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10.5px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.35);
+  margin-top: 1px;
+}
+.sticky-follow-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.sticky-follow-btn,
+.sticky-unfollow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  white-space: nowrap;
+}
+.sticky-follow-btn {
+  background: #fff;
+  color: #000;
+}
+.sticky-follow-btn:hover { background: rgba(255,255,255,0.88); }
+.sticky-unfollow-btn {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.65);
+}
+.sticky-unfollow-btn:hover {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.90);
+}
+.sticky-share-btn {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.45);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sticky-share-btn:hover {
+  background: rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.75);
+}
+
+/* On desktop, hide the sticky bar */
+@media (min-width: 1024px) {
+  .sticky-follow-bar { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LIGHT THEME — COMPREHENSIVE OVERRIDES FOR PUBLIC PROFILE
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── pub2-card (base card) ── */
+[data-light] .pub2-card {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  box-shadow:
+    0 1px 0 0 rgba(0,0,0,0.04) inset,
+    0 8px 32px -4px rgba(0,0,0,0.08),
+    0 2px 8px -2px rgba(0,0,0,0.05);
+}
+[data-light] .pub2-card::before {
+  background: linear-gradient(
+    135deg,
+    rgba(0,0,0,0.06),
+    rgba(0,0,0,0.02),
+    rgba(0,0,0,0.05),
+    rgba(0,0,0,0.01),
+    rgba(0,0,0,0.06)
+  );
+}
+[data-light] .pub2-card::after {
+  background:
+    radial-gradient(ellipse at 30% -10%, rgba(0,0,0,0.04) 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 105%, rgba(0,0,0,0.01) 0%, transparent 50%);
+}
+[data-light] .pub2-card:hover {
+  border-color: hsl(var(--border));
+  box-shadow:
+    0 12px 48px -4px rgba(0,0,0,0.12),
+    0 4px 16px -2px rgba(0,0,0,0.07);
+}
+[data-light] .pub2-card-title { color: hsl(var(--foreground)/0.50); }
+[data-light] .pub2-card-count {
+  color: hsl(var(--foreground)/0.40);
+  background: hsl(var(--foreground)/0.06);
+  border-color: hsl(var(--foreground)/0.10);
+}
+[data-light] .pub2-card-head svg { color: hsl(var(--foreground)/0.25) !important; }
+
+/* ── prof-id-band ── */
+[data-light] .prof-id-band {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+}
+[data-light] .prof-id-band-scanline {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent, transparent 2px,
+    rgba(0,0,0,0.008) 2px, rgba(0,0,0,0.008) 4px
+  );
+}
+[data-light] .prof-id-band-grid {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.018) 1px, transparent 1px);
+}
+[data-light] .prof-id-avatar {
+  background: linear-gradient(160deg, hsl(var(--muted)) 0%, hsl(var(--muted)/0.7) 100%);
+  border-color: hsl(var(--border));
+}
+[data-light] .prof-id-avatar-initials { color: hsl(var(--foreground)/0.70); }
+[data-light] .prof-id-avatar-ring { border-color: var(--tier-ring, hsl(var(--border))); }
+[data-light] .prof-id-avatar-verified {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+}
+[data-light] .prof-id-avatar-verified svg { color: hsl(var(--foreground)/0.60) !important; }
+[data-light] .prof-id-name { color: hsl(var(--foreground)); }
+[data-light] .prof-id-meta-chip {
+  background: hsl(var(--foreground)/0.05);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.50);
+}
+[data-light] .prof-id-meta-chip svg { color: hsl(var(--foreground)/0.30) !important; }
+[data-light] .prof-id-tier-pill {
+  background: hsl(var(--foreground)/0.05);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.60);
+}
+[data-light] .prof-id-unfollow-btn {
+  background: hsl(var(--foreground)/0.06);
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground)/0.60);
+}
+[data-light] .prof-id-unfollow-btn:hover {
+  background: hsl(var(--foreground)/0.10);
+  color: hsl(var(--foreground)/0.85);
+}
+[data-light] .prof-id-share-btn {
+  background: hsl(var(--foreground)/0.04);
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground)/0.45);
+}
+[data-light] .prof-id-share-btn:hover {
+  background: hsl(var(--foreground)/0.08);
+  color: hsl(var(--foreground)/0.70);
+}
+[data-light] .prof-id-stats-strip {
+  border-top-color: hsl(var(--border));
+}
+[data-light] .prof-id-stat { border-right-color: hsl(var(--border)); }
+[data-light] .prof-id-stat-val { color: hsl(var(--foreground)); }
+[data-light] .prof-id-stat-lbl { color: hsl(var(--foreground)/0.40); }
+
+/* ── pub2-stat-card (4-grid stats) ── */
+[data-light] .pub2-stat-card {
+  background: hsl(var(--foreground)/0.03);
+  border-color: hsl(var(--border));
+}
+[data-light] .pub2-stat-card:hover {
+  background: hsl(var(--foreground)/0.05);
+  border-color: hsl(var(--border));
+}
+[data-light] .pub2-stat-icon {
+  background: hsl(var(--foreground)/0.05);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.35);
+}
+[data-light] .pub2-stat-val { color: hsl(var(--foreground)/0.88); }
+[data-light] .pub2-stat-lbl { color: hsl(var(--foreground)/0.35); }
+
+/* ── pub2-tcard (trading card) ── */
+[data-light] .pub2-tcard {
+  background: linear-gradient(155deg, hsl(var(--card)) 0%, hsl(var(--muted)/0.6) 100%);
+  border-color: hsl(var(--border));
+  box-shadow:
+    0 12px 36px rgba(0,0,0,0.08),
+    0 4px 12px rgba(0,0,0,0.05),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+[data-light] .pub2-tcard-inner {
+  background: linear-gradient(160deg, hsl(var(--muted)) 0%, hsl(var(--muted)/0.5) 100%);
+  border-color: hsl(var(--border));
+}
+[data-light] .pub2-tcard-grid {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
+}
+[data-light] .pub2-tcard-initials { color: hsl(var(--foreground)/0.55); }
+[data-light] .pub2-tcard-reticle-h,
+[data-light] .pub2-tcard-reticle-v { background: rgba(0,0,0,0.12); }
+[data-light] .pub2-tcard-reticle-dot { background: rgba(0,0,0,0.15); }
+[data-light] .pub2-tcard-tier-pill {
+  background: rgba(255,255,255,0.75);
+  border-color: rgba(0,0,0,0.12);
+  color: rgba(0,0,0,0.70);
+}
+[data-light] .pub2-tcard-name { color: hsl(var(--foreground)/0.80); }
+[data-light] .pub2-tcard-check { color: hsl(var(--foreground)/0.30); }
+[data-light] .pub2-tcard-foot {
+  border-top-color: hsl(var(--border));
+  background: hsl(var(--muted)/0.4);
+}
+[data-light] .pub2-tcard-stat { color: hsl(var(--foreground)/0.55); }
+[data-light] .pub2-tcard-stat svg { color: hsl(var(--foreground)/0.30) !important; }
+[data-light] .pub2-tcard-share {
+  background: hsl(var(--foreground)/0.05);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.50);
+}
+[data-light] .pub2-tcard-share:hover {
+  background: hsl(var(--foreground)/0.10);
+  color: hsl(var(--foreground)/0.80);
+}
+[data-light] .pub2-tcard-follow-btn {
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+[data-light] .pub2-tcard-follow-btn:hover {
+  background: hsl(var(--foreground)/0.88);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+}
+[data-light] .pub2-tcard-unfollow-btn {
+  background: hsl(var(--foreground)/0.05);
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground)/0.60);
+}
+[data-light] .pub2-tcard-unfollow-btn:hover {
+  background: hsl(var(--foreground)/0.10);
+  color: hsl(var(--foreground)/0.85);
+}
+
+/* ── badge flip cards ── */
+[data-light] .pub-flip-front,
+[data-light] .pub-flip-back {
+  background: hsl(var(--foreground)/0.04);
+  border-color: hsl(var(--border));
+}
+[data-light] .pub-flip-front:hover { background: hsl(var(--foreground)/0.07); }
+[data-light] .pub-flip-back { background: hsl(var(--foreground)/0.06); }
+[data-light] .pub-flip-label { color: hsl(var(--foreground)/0.50); }
+[data-light] .pub-flip-back-desc { color: hsl(var(--foreground)/0.55); }
+[data-light] .pub-flip-back-locked { color: hsl(var(--foreground)/0.30); }
+
+/* ── level / XP section ── */
+[data-light] .pub2-level-num-wrap { border-color: hsl(var(--border)); }
+[data-light] .pub2-level-ring { border-color: hsl(var(--border)); }
+[data-light] .pub2-level-num { color: hsl(var(--foreground)/0.80); }
+[data-light] .pub2-level-lbl { color: hsl(var(--foreground)/0.35); }
+[data-light] .pub2-level-xp { color: hsl(var(--foreground)/0.80); }
+[data-light] .pub2-level-xp-unit { color: hsl(var(--foreground)/0.40); }
+[data-light] .pub2-level-next { color: hsl(var(--foreground)/0.40); }
+[data-light] .pub2-level-bar { background: hsl(var(--foreground)/0.08); }
+[data-light] .pub2-level-bar-fill { background: hsl(var(--foreground)/0.75); }
+[data-light] .pub2-level-pct { color: hsl(var(--foreground)/0.40); }
+
+/* ── bio block ── */
+[data-light] .pub2-bio-block { color: hsl(var(--foreground)/0.60); }
+[data-light] .pub2-bio-quote { color: hsl(var(--foreground)/0.20); }
+
+/* ── timeline ── */
+[data-light] .pub2-timeline-row { border-bottom-color: hsl(var(--border)); }
+[data-light] .pub2-timeline-dot {
+  background: hsl(var(--foreground)/0.06);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.35);
+}
+[data-light] .pub2-timeline-name { color: hsl(var(--foreground)/0.65); }
+[data-light] .pub2-timeline-meta { color: hsl(var(--foreground)/0.35); }
+[data-light] .pub2-timeline-win {
+  background: hsl(var(--foreground)/0.06);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.55);
+}
+[data-light] .pub2-timeline-info .pub2-timeline-name,
+[data-light] .pub2-timeline-info .pub2-timeline-meta {
+  color: hsl(var(--foreground)/0.55);
+}
+
+/* ── URL card ── */
+[data-light] .pub2-url-row {
+  background: hsl(var(--foreground)/0.03);
+  border-color: hsl(var(--border));
+}
+[data-light] .pub2-url-code { color: hsl(var(--foreground)/0.55); }
+[data-light] .pub2-url-btn {
+  background: hsl(var(--foreground)/0.05);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.45);
+}
+[data-light] .pub2-url-btn:hover {
+  background: hsl(var(--foreground)/0.09);
+  color: hsl(var(--foreground)/0.70);
+}
+
+/* ── CTA card ── */
+[data-light] .pub2-cta {
+  background: hsl(var(--muted)/0.5);
+  border-color: hsl(var(--border));
+}
+[data-light] .pub2-cta-glow {
+  background: radial-gradient(ellipse 80% 70% at 50% 0%, rgba(0,0,0,0.04) 0%, transparent 70%);
+}
+[data-light] .pub2-cta-grid {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
+}
+[data-light] .pub2-cta-chip {
+  background: hsl(var(--foreground)/0.07);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.50);
+}
+[data-light] .pub2-cta-title { color: hsl(var(--foreground)/0.88); }
+[data-light] .pub2-cta-sub { color: hsl(var(--foreground)/0.45); }
+[data-light] .pub2-cta-primary {
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+[data-light] .pub2-cta-primary:hover {
+  background: hsl(var(--foreground)/0.88);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+}
+[data-light] .pub2-cta-ghost {
+  color: hsl(var(--foreground)/0.55);
+  border-color: hsl(var(--border));
+}
+[data-light] .pub2-cta-ghost:hover {
+  color: hsl(var(--foreground)/0.80);
+  border-color: hsl(var(--foreground)/0.25);
+}
+[data-light] .pub2-cta-trust { color: hsl(var(--foreground)/0.40); }
+
+/* ── featured achievement badge ── */
+[data-light] .pub2-feat-outer { background: hsl(var(--card)); }
+[data-light] .pub2-feat-badge-v2-name { color: hsl(var(--foreground)/0.80); }
+[data-light] .pub2-feat-badge-v2-desc { color: hsl(var(--foreground)/0.45); }
+[data-light] .pub2-feat-badge-v2-earned { color: hsl(var(--foreground)/0.45); }
+[data-light] .pub2-feat-badge-v2-glow { opacity: 0.4; }
+
+/* ── discover card (sidebar) ── */
+[data-light] .pub2-discover-desc { color: hsl(var(--foreground)/0.45); }
+[data-light] .pub2-discover-btn {
+  background: hsl(var(--foreground)/0.04);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.60);
+}
+[data-light] .pub2-discover-btn:hover {
+  background: hsl(var(--foreground)/0.08);
+  border-color: hsl(var(--foreground)/0.16);
+  color: hsl(var(--foreground)/0.88);
+}
+
+/* ── sticky follow bar ── */
+[data-light] .sticky-follow-bar-inner {
+  background: rgba(255,255,255,0.97);
+  border-top-color: hsl(var(--border));
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+}
+[data-light] .sticky-follow-bar-name { color: hsl(var(--foreground)/0.88); }
+[data-light] .sticky-follow-bar-meta { color: hsl(var(--foreground)/0.40); }
+[data-light] .sticky-follow-btn {
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+[data-light] .sticky-follow-btn:hover { background: hsl(var(--foreground)/0.88); }
+[data-light] .sticky-unfollow-btn {
+  background: hsl(var(--foreground)/0.06);
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground)/0.65);
+}
+[data-light] .sticky-unfollow-btn:hover {
+  background: hsl(var(--foreground)/0.10);
+  color: hsl(var(--foreground)/0.88);
+}
+[data-light] .sticky-share-btn {
+  background: hsl(var(--foreground)/0.05);
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground)/0.45);
+}
+[data-light] .sticky-share-btn:hover {
+  background: hsl(var(--foreground)/0.09);
+  color: hsl(var(--foreground)/0.70);
+}
+
+/* ── activity heatmap legend ── */
+[data-light] .pub2-card .text-\[9px\] { color: hsl(var(--foreground)/0.30) !important; }
+[data-light] .pub2-card .text-white\/25 { color: hsl(var(--foreground)/0.30) !important; }
+[data-light] .pub2-card p.text-\[11px\] { color: hsl(var(--foreground)/0.35) !important; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVENESS — PUBLIC PROFILE
+   ══════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  /* ID band — tighter layout */
+  .prof-id-band-inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 16px 14px;
+  }
+  .prof-id-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .prof-id-name {
+    font-size: 16px;
+    line-height: 1.2;
+  }
+  .prof-id-name-row {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .prof-id-tier-pill {
+    font-size: 8px;
+    padding: 3px 7px;
+  }
+  .prof-id-meta {
+    gap: 4px 8px;
+    flex-wrap: wrap;
+  }
+  .prof-id-meta-chip {
+    font-size: 9.5px;
+    max-width: calc(50vw - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .prof-id-actions {
+    width: 100%;
+    order: 3;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .prof-id-follow-btn,
+  .prof-id-unfollow-btn,
+  .prof-id-share-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+  /* Stats strip — scroll horizontally if too narrow */
+  .prof-id-stats-strip {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 12px;
+    scrollbar-width: none;
+  }
+  .prof-id-stats-strip::-webkit-scrollbar { display: none; }
+  .prof-id-stat {
+    min-width: 60px;
+    padding: 12px 6px;
+  }
+  .prof-id-stat-val { font-size: 18px; }
+  .prof-id-stat-lbl { font-size: 8px; }
+}
+
+@media (max-width: 640px) {
+  /* Trading card — don't restrict width on mobile */
+  .pub2-tcard {
+    max-width: 100%;
+    margin: 0;
+  }
+  .pub2-tcard-follow-btn,
+  .pub2-tcard-unfollow-btn {
+    width: calc(100% - 28px);
+    margin: 0 14px 14px;
+  }
+  /* Stats grid always 2×2 on mobile */
+  .pub2-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Badges grid 2×n on very narrow */
+  .pub2-badges-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* CTA */
+  .pub2-cta { padding: 32px 16px; }
+  .pub2-cta-title { font-size: 18px; }
+  .pub2-cta-sub { font-size: 12px; }
+  /* Heatmap container scrollable */
+  .pub2-card .overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 639px) {
+  .pub2-badges-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
