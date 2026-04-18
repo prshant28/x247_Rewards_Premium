@@ -3237,12 +3237,16 @@
   margin: 0 0 12px;
 }
 .x404-title-italic {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
   font-style: italic;
-  font-weight: 600;
-  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.55) 100%);
+  font-weight: 700;
+  display: inline-block;
+  padding: 0 6px 2px 2px;
+  background: linear-gradient(160deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.6) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  line-height: 1.15;
 }
 .x404-subtitle {
   font-family: 'Poppins', sans-serif;
@@ -14693,4 +14697,221 @@ svg.lucide,
 /* SVG icons inside the slide */
 [data-light] .hero-banner-slide svg {
   color: inherit !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   404 PAGE — FULL RESPONSIVE OVERHAUL
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Base: always fully centered, no horizontal overflow */
+.x404 {
+  padding: 48px 16px 64px;
+  box-sizing: border-box;
+}
+
+.x404-content {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* 404 number */
+.x404-number {
+  font-size: clamp(88px, 22vw, 220px);
+  letter-spacing: -0.06em;
+  margin-bottom: 12px;
+}
+
+/* Title — prevent the italic "disappeared" from being clipped on narrow */
+.x404-title {
+  font-size: clamp(18px, 4.5vw, 30px);
+  padding: 0 12px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Terminal — never overflow horizontally */
+.x404-terminal {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.x404-terminal-body {
+  overflow-x: auto;
+}
+
+.x404-term-path {
+  word-break: break-all;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Search wrap — full width on mobile */
+.x404-search-wrap {
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Action buttons — stack on very small screens */
+.x404-actions {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Suggestion grid — always 2 columns on mobile, 4 on desktop */
+.x404-suggest-grid {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 100%;
+}
+
+/* Popular chips — wrapping on narrow */
+.x404-popular {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 8px;
+}
+
+/* ── Mobile (< 480px) ── */
+@media (max-width: 480px) {
+  .x404 {
+    padding: 32px 12px 48px;
+    align-items: flex-start;
+    padding-top: 48px;
+  }
+
+  .x404-badge {
+    font-size: 9px;
+    padding: 5px 10px 5px 9px;
+    margin-bottom: 20px;
+  }
+
+  .x404-number {
+    font-size: clamp(80px, 28vw, 120px);
+    margin-bottom: 8px;
+  }
+
+  .x404-title {
+    font-size: clamp(16px, 5vw, 22px);
+    padding: 0 8px;
+  }
+
+  .x404-subtitle {
+    font-size: 12.5px;
+    margin-bottom: 20px;
+    padding: 0 8px;
+  }
+
+  .x404-terminal {
+    margin-bottom: 16px;
+    border-radius: 10px;
+  }
+
+  .x404-term-path {
+    max-width: 140px;
+  }
+
+  .x404-search-wrap {
+    border-radius: 12px;
+  }
+
+  .x404-actions {
+    gap: 8px;
+  }
+
+  .x404-btn {
+    padding: 9px 18px;
+    font-size: 12px;
+  }
+
+  .x404-suggest {
+    margin-top: 20px;
+  }
+
+  .x404-suggest-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .x404-suggest-card {
+    padding: 10px 8px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+
+  .x404-suggest-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .x404-suggest-title {
+    font-size: 11.5px;
+  }
+
+  .x404-suggest-desc {
+    font-size: 9.5px;
+  }
+
+  .x404-suggest-arrow {
+    display: none;
+  }
+
+  .x404-popular {
+    margin-top: 16px;
+  }
+
+  .x404-popular-chip {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+}
+
+/* ── Tablet (481–719px) ── */
+@media (min-width: 481px) and (max-width: 719px) {
+  .x404-number {
+    font-size: clamp(88px, 24vw, 160px);
+  }
+
+  .x404-title {
+    font-size: clamp(20px, 4vw, 26px);
+  }
+
+  .x404-suggest-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 480px;
+  }
+}
+
+/* ── Desktop (720px+) ── */
+@media (min-width: 720px) {
+  .x404-suggest-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 640px;
+  }
+
+  .x404-suggest-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 14px;
+  }
+
+  .x404-suggest-text {
+    width: 100%;
+  }
+
+  .x404-suggest-desc {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .x404-suggest-arrow {
+    margin-top: auto;
+    align-self: flex-end;
+  }
 }
