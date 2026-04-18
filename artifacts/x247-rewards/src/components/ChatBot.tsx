@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  MessageCircle, X, Send, Sparkles, ExternalLink, ArrowRight,
+  MessageCircle, X, Send, Sparkles, ArrowRight,
   Bot, User, Loader2, ChevronRight, Clock, Trash2, Plus,
-  History, Zap, RotateCcw, ChevronDown, Copy, Check,
-  Mic, MicOff, Volume2, VolumeX, Phone, PhoneOff, Waves,
-  AlertCircle,
+  History, Zap, RotateCcw, Copy, Check,
+  Mic, MicOff, Volume2, VolumeX, Waves,
+  AlertCircle, Tag, Star, TrendingUp, Gift,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -47,13 +47,16 @@ function parsePartnerCards(content: string): { text: string; cards: PartnerCard[
       return "";
     }
   });
-  return { text: text.trim(), cards };
+  // Strip raw URLs (http/https) from text
+  const cleanedText = text.replace(/https?:\/\/[^\s)>\]"]+/g, "").replace(/\s{2,}/g, " ").trim();
+  return { text: cleanedText, cards };
 }
 
 function cleanTextForTTS(content: string): string {
   let text = content;
   text = text.replace(/```partner-card[\s\S]*?```/g, "");
   text = text.replace(/```[\s\S]*?```/g, "");
+  text = text.replace(/https?:\/\/[^\s)>\]"]+/g, "");
   text = text.replace(/\*\*(.*?)\*\*/g, "$1");
   text = text.replace(/\*(.*?)\*/g, "$1");
   text = text.replace(/^#{1,6}\s+/gm, "");
@@ -71,15 +74,15 @@ function formatMarkdown(text: string): React.ReactNode[] {
     let processed: React.ReactNode = line;
 
     if (line.startsWith("### ")) {
-      processed = <h4 key={i} className="text-xs font-display font-medium text-white/80 mt-2 mb-1">{line.slice(4)}</h4>;
+      processed = <h4 key={i} className="text-xs font-display font-medium text-white/75 mt-3 mb-1.5 tracking-wide">{line.slice(4)}</h4>;
     } else if (line.startsWith("## ")) {
-      processed = <h3 key={i} className="text-sm font-display font-medium text-white/80 mt-2 mb-1">{line.slice(3)}</h3>;
+      processed = <h3 key={i} className="text-sm font-display font-medium text-white/80 mt-3 mb-1.5 tracking-wide">{line.slice(3)}</h3>;
     } else if (line.startsWith("# ")) {
-      processed = <h2 key={i} className="text-sm font-display font-medium text-white/90 mt-2 mb-1">{line.slice(2)}</h2>;
+      processed = <h2 key={i} className="text-sm font-display font-semibold text-white/90 mt-3 mb-1.5">{line.slice(2)}</h2>;
     } else if (line.startsWith("- ") || line.startsWith("* ")) {
       processed = (
-        <div key={i} className="flex gap-1.5 pl-1 mb-0.5">
-          <span className="text-white/30 mt-px">•</span>
+        <div key={i} className="flex gap-2 pl-1 mb-1">
+          <span className="text-white/25 mt-[5px] shrink-0 text-[10px]">◆</span>
           <span>{renderInlineMarkdown(line.slice(2))}</span>
         </div>
       );
@@ -87,8 +90,8 @@ function formatMarkdown(text: string): React.ReactNode[] {
       const match = line.match(/^(\d+)\.\s(.*)$/);
       if (match) {
         processed = (
-          <div key={i} className="flex gap-1.5 pl-1 mb-0.5">
-            <span className="text-white/40 font-medium text-[11px] mt-px min-w-[14px]">{match[1]}.</span>
+          <div key={i} className="flex gap-2 pl-1 mb-1">
+            <span className="text-white/30 font-medium text-[11px] mt-px min-w-[16px] shrink-0">{match[1]}.</span>
             <span>{renderInlineMarkdown(match[2])}</span>
           </div>
         );
@@ -118,7 +121,7 @@ function renderInlineMarkdown(text: string): React.ReactNode {
       if (boldMatch.index > 0) {
         parts.push(<React.Fragment key={key++}>{remaining.slice(0, boldMatch.index)}</React.Fragment>);
       }
-      parts.push(<strong key={key++} className="font-medium text-white/90">{boldMatch[1]}</strong>);
+      parts.push(<strong key={key++} className="font-semibold text-white/90">{boldMatch[1]}</strong>);
       remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
     } else {
       parts.push(<React.Fragment key={key++}>{remaining}</React.Fragment>);
@@ -129,40 +132,113 @@ function renderInlineMarkdown(text: string): React.ReactNode {
   return parts.length === 1 ? parts[0] : <>{parts}</>;
 }
 
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  finance: <TrendingUp className="w-3 h-3" />,
+  shopping: <Tag className="w-3 h-3" />,
+  rewards: <Gift className="w-3 h-3" />,
+  premium: <Star className="w-3 h-3" />,
+  default: <Sparkles className="w-3 h-3" />,
+};
+
+function getCategoryIcon(cat: string) {
+  const lower = cat.toLowerCase();
+  for (const [key, icon] of Object.entries(CATEGORY_ICONS)) {
+    if (lower.includes(key)) return icon;
+  }
+  return CATEGORY_ICONS.default;
+}
+
 function PartnerCardPreview({ card, onNavigate }: { card: PartnerCard; onNavigate: (slug: string) => void }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <div
-      className="mt-2 mb-1 rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 cursor-pointer hover:border-white/[0.15] hover:bg-white/[0.04] transition-all group"
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="mt-3 mb-1 cursor-pointer select-none"
       onClick={() => onNavigate(card.slug)}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-            <span className="text-[9px] uppercase tracking-widest text-white/30 font-display">{card.category}</span>
+      <div
+        className="relative overflow-hidden rounded-2xl transition-all duration-300"
+        style={{
+          background: hovered
+            ? "linear-gradient(135deg, rgba(30,30,36,0.98) 0%, rgba(20,20,25,0.98) 100%)"
+            : "linear-gradient(135deg, rgba(22,22,28,0.97) 0%, rgba(14,14,18,0.97) 100%)",
+          border: hovered ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(255,255,255,0.07)",
+          boxShadow: hovered
+            ? "0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)"
+            : "0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+        }}
+      >
+        {/* Shimmer line at top */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[1px] transition-opacity duration-300"
+          style={{
+            background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 40%, rgba(255,255,255,0.08) 60%, transparent 100%)",
+            opacity: hovered ? 1 : 0.5,
+          }}
+        />
+
+        <div className="p-4">
+          {/* Category + badges */}
+          <div className="flex items-center gap-2 mb-2.5">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.07]">
+              <span className="text-white/30">{getCategoryIcon(card.category)}</span>
+              <span className="text-[9px] uppercase tracking-[0.18em] text-white/30 font-display">{card.category}</span>
+            </div>
             {card.badge && (
-              <span className="px-1.5 py-0.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-[8px] text-white/50 font-display">{card.badge}</span>
+              <span className="px-2 py-0.5 rounded-full bg-white/[0.07] border border-white/[0.1] text-[9px] text-white/50 font-display tracking-wide">{card.badge}</span>
             )}
             {card.badgeSecondary && (
-              <span className="px-1.5 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.08] text-[8px] text-white/40 font-display">{card.badgeSecondary}</span>
+              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.07] text-[9px] text-white/35 font-display tracking-wide">{card.badgeSecondary}</span>
             )}
           </div>
-          <h4 className="text-sm font-display font-light text-white truncate">{card.name}</h4>
-          {card.tagline && <p className="text-[11px] text-white/35 font-light mt-0.5 truncate leading-tight">{card.tagline}</p>}
-        </div>
-        <div className="flex items-center gap-1 text-white/20 group-hover:text-white/50 transition-colors shrink-0 mt-1">
-          <span className="text-[9px] font-display">View</span>
-          <ChevronRight className="w-3 h-3" />
+
+          {/* Name */}
+          <h4 className="text-[15px] font-display font-light text-white/90 tracking-wide mb-1 leading-tight">{card.name}</h4>
+
+          {/* Tagline */}
+          {card.tagline && (
+            <p className="text-[12px] text-white/38 font-light leading-snug mb-3">{card.tagline}</p>
+          )}
+
+          {/* CTA row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div
+                className="w-1.5 h-1.5 rounded-full transition-colors duration-300"
+                style={{ background: hovered ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.25)" }}
+              />
+              <span className="text-[10px] text-white/30 font-display tracking-wide">Partner Offer</span>
+            </div>
+            <motion.div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all duration-300"
+              style={{
+                background: hovered ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.04)",
+                border: hovered ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.07)",
+              }}
+              animate={hovered ? { x: 0 } : { x: 0 }}
+            >
+              <span className="text-[10px] font-display text-white/60 tracking-wide">View Offer</span>
+              <motion.div animate={{ x: hovered ? 2 : 0 }} transition={{ duration: 0.2 }}>
+                <ArrowRight className="w-3 h-3 text-white/50" />
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 const SUGGESTIONS = [
-  { text: "How do I earn entries?", icon: <Zap className="w-3 h-3" /> },
-  { text: "Tell me about available partners", icon: <ExternalLink className="w-3 h-3" /> },
-  { text: "What are the rules?", icon: <Sparkles className="w-3 h-3" /> },
-  { text: "How does the prize draw work?", icon: <Clock className="w-3 h-3" /> },
+  { text: "How do I earn entries?", icon: <Zap className="w-3.5 h-3.5" />, desc: "Learn the entry system" },
+  { text: "Tell me about available partners", icon: <Tag className="w-3.5 h-3.5" />, desc: "Explore partner offers" },
+  { text: "What are the rules?", icon: <Sparkles className="w-3.5 h-3.5" />, desc: "Platform guidelines" },
+  { text: "How does the prize draw work?", icon: <Gift className="w-3.5 h-3.5" />, desc: "Daily draw mechanics" },
 ];
 
 const STORAGE_KEY = "x247-chat-history";
@@ -188,7 +264,7 @@ function generateTitle(messages: ChatMessage[]): string {
   const firstUserMsg = messages.find(m => m.role === "user");
   if (!firstUserMsg) return "New Chat";
   const text = firstUserMsg.content;
-  return text.length > 40 ? text.slice(0, 40) + "..." : text;
+  return text.length > 40 ? text.slice(0, 40) + "…" : text;
 }
 
 function timeAgo(dateStr: string): string {
@@ -207,47 +283,44 @@ function timeAgo(dateStr: string): string {
 
 function VoiceOrb({ status }: { status: VoiceStatus }) {
   const isActive = status !== "idle";
-  const colors: Record<VoiceStatus, string> = {
-    idle: "rgba(255,255,255,0.06)",
-    listening: "rgba(255,255,255,0.12)",
-    transcribing: "rgba(255,255,255,0.08)",
-    thinking: "rgba(255,255,255,0.08)",
-    speaking: "rgba(255,255,255,0.1)",
-  };
-
   return (
     <div className="relative flex items-center justify-center w-44 h-44">
       {isActive && (
         <>
           <motion.div
             className="absolute rounded-full border border-white/[0.06]"
-            animate={{ width: [140, 176, 140], height: [140, 176, 140], opacity: [0.6, 0, 0.6] }}
+            animate={{ width: [140, 180, 140], height: [140, 180, 140], opacity: [0.5, 0, 0.5] }}
             transition={{ duration: status === "speaking" ? 1.2 : 2.4, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
             className="absolute rounded-full border border-white/[0.04]"
-            animate={{ width: [140, 196, 140], height: [140, 196, 140], opacity: [0.4, 0, 0.4] }}
+            animate={{ width: [140, 200, 140], height: [140, 200, 140], opacity: [0.3, 0, 0.3] }}
             transition={{ duration: status === "speaking" ? 1.2 : 2.4, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
           />
         </>
       )}
       <motion.div
-        className="w-36 h-36 rounded-full flex items-center justify-center relative"
-        style={{ background: `radial-gradient(circle at 40% 35%, var(--x-chat-fab-glow), ${colors[status]})`, border: `1px solid var(--x-chat-fab-border)`, boxShadow: isActive ? `0 0 40px var(--x-chat-fab-shadow), inset 0 1px 0 var(--x-subtle-fill)` : "none" }}
+        className="w-36 h-36 rounded-full flex items-center justify-center relative overflow-hidden"
+        style={{
+          background: "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.07), rgba(255,255,255,0.02))",
+          border: "1px solid rgba(255,255,255,0.1)",
+          boxShadow: isActive ? "0 0 50px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.08)" : "none",
+        }}
         animate={isActive ? { scale: [1, 1.03, 1] } : { scale: 1 }}
         transition={{ duration: 2, repeat: isActive ? Infinity : 0, ease: "easeInOut" }}
       >
-        {status === "listening" && <Mic className="w-10 h-10 text-white/70" />}
-        {status === "transcribing" && <Loader2 className="w-10 h-10 text-white/50 animate-spin" />}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 40% 20%, rgba(255,255,255,0.04), transparent 60%)" }} />
+        {status === "listening" && <Mic className="w-10 h-10 text-white/60 relative z-10" />}
+        {status === "transcribing" && <Loader2 className="w-10 h-10 text-white/40 animate-spin relative z-10" />}
         {status === "thinking" && (
-          <div className="flex gap-1.5">
-            <motion.div className="w-2 h-2 rounded-full bg-white/40" animate={{ y: [0, -6, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0 }} />
-            <motion.div className="w-2 h-2 rounded-full bg-white/40" animate={{ y: [0, -6, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.15 }} />
-            <motion.div className="w-2 h-2 rounded-full bg-white/40" animate={{ y: [0, -6, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.3 }} />
+          <div className="flex gap-1.5 relative z-10">
+            {[0, 0.15, 0.3].map((delay, i) => (
+              <motion.div key={i} className="w-2 h-2 rounded-full bg-white/35" animate={{ y: [0, -7, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay }} />
+            ))}
           </div>
         )}
-        {status === "speaking" && <Waves className="w-10 h-10 text-white/60" />}
-        {status === "idle" && <Mic className="w-10 h-10 text-white/30" />}
+        {status === "speaking" && <Waves className="w-10 h-10 text-white/50 relative z-10" />}
+        {status === "idle" && <Mic className="w-10 h-10 text-white/25 relative z-10" />}
       </motion.div>
     </div>
   );
@@ -282,9 +355,7 @@ export default function ChatBot() {
   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
   const streamAbortRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    setConversations(loadConversations());
-  }, []);
+  useEffect(() => { setConversations(loadConversations()); }, []);
 
   useEffect(() => {
     if (messages.length === 0 && isOpen && activeTab === "chat") {
@@ -329,17 +400,12 @@ export default function ChatBot() {
   useEffect(() => {
     return () => {
       stopSpeaking();
-      if (mediaRecorderRef.current?.state === "recording") {
-        mediaRecorderRef.current.stop();
-      }
+      if (mediaRecorderRef.current?.state === "recording") mediaRecorderRef.current.stop();
     };
   }, []);
 
   const getPageContext = useCallback(() => {
-    if (location.includes("/partners/")) {
-      const slug = location.split("/partners/")[1];
-      return `Partner Detail page for: ${slug}`;
-    }
+    if (location.includes("/partners/")) return `Partner Detail page for: ${location.split("/partners/")[1]}`;
     if (location === "/partners") return "Partners listing page";
     if (location === "/offers") return "Offers page";
     if (location === "/giveaway") return "Giveaway entry page";
@@ -411,35 +477,19 @@ export default function ChatBot() {
       stopSpeaking();
       const cleanText = cleanTextForTTS(text);
       if (!cleanText.trim()) return;
-
       setVoiceStatus("speaking");
       const res = await fetch("/api/voice/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: cleanText }),
       });
-
-      if (!res.ok) {
-        setVoiceStatus(isVoiceMode ? "idle" : "idle");
-        return;
-      }
-
+      if (!res.ok) { setVoiceStatus("idle"); return; }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       currentAudioRef.current = audio;
-
-      audio.onended = () => {
-        URL.revokeObjectURL(url);
-        currentAudioRef.current = null;
-        setVoiceStatus("idle");
-      };
-      audio.onerror = () => {
-        URL.revokeObjectURL(url);
-        currentAudioRef.current = null;
-        setVoiceStatus("idle");
-      };
-
+      audio.onended = () => { URL.revokeObjectURL(url); currentAudioRef.current = null; setVoiceStatus("idle"); };
+      audio.onerror = () => { URL.revokeObjectURL(url); currentAudioRef.current = null; setVoiceStatus("idle"); };
       await audio.play();
     } catch {
       setVoiceStatus("idle");
@@ -457,18 +507,14 @@ export default function ChatBot() {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInput("");
     setIsStreaming(true);
     setCurrentStreamContent("");
     setMsgCount(c => c + 1);
     if (fromVoice) setVoiceStatus("thinking");
 
-    const chatHistory = [...messages.filter(m => m.id !== "welcome"), userMessage].map(m => ({
-      role: m.role,
-      content: m.content,
-    }));
-
+    const chatHistory = [...messages.filter(m => m.id !== "welcome"), userMessage].map(m => ({ role: m.role, content: m.content }));
     const abort = new AbortController();
     streamAbortRef.current = abort;
 
@@ -481,7 +527,6 @@ export default function ChatBot() {
       });
 
       if (!response.ok) throw new Error("Chat request failed");
-
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No response stream");
 
@@ -491,19 +536,13 @@ export default function ChatBot() {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n");
-
-        for (const line of lines) {
+        for (const line of chunk.split("\n")) {
           if (line.startsWith("data: ")) {
             try {
               const data = JSON.parse(line.slice(6));
               if (data.done) break;
-              if (data.content) {
-                fullContent += data.content;
-                setCurrentStreamContent(fullContent);
-              }
+              if (data.content) { fullContent += data.content; setCurrentStreamContent(fullContent); }
             } catch {}
           }
         }
@@ -515,24 +554,21 @@ export default function ChatBot() {
         content: fullContent,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages(prev => [...prev, assistantMessage]);
       setCurrentStreamContent("");
-
       if (!isOpen) setHasNewMessage(true);
-
       if (isVoiceMode || ttsEnabled) {
         setVoiceLastResponse(cleanTextForTTS(fullContent));
         await speakText(fullContent);
       }
     } catch (err: any) {
       if (err?.name === "AbortError") return;
-      const errorMessage: ChatMessage = {
+      setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      }]);
       setCurrentStreamContent("");
       if (fromVoice) setVoiceStatus("idle");
     }
@@ -548,19 +584,12 @@ export default function ChatBot() {
       const recorder = new MediaRecorder(stream, { mimeType: getSupportedMimeType() });
       audioChunksRef.current = [];
 
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
       recorder.onstop = async () => {
         stream.getTracks().forEach(t => t.stop());
         const mimeType = recorder.mimeType || "audio/webm";
         const blob = new Blob(audioChunksRef.current, { type: mimeType });
-        if (blob.size < 500) {
-          setVoiceStatus("idle");
-          setIsRecording(false);
-          return;
-        }
+        if (blob.size < 500) { setVoiceStatus("idle"); setIsRecording(false); return; }
         await transcribeAudio(blob, mimeType);
       };
 
@@ -576,9 +605,7 @@ export default function ChatBot() {
   }
 
   function stopRecording() {
-    if (mediaRecorderRef.current?.state === "recording") {
-      mediaRecorderRef.current.stop();
-    }
+    if (mediaRecorderRef.current?.state === "recording") mediaRecorderRef.current.stop();
     setIsRecording(false);
   }
 
@@ -587,31 +614,14 @@ export default function ChatBot() {
     try {
       const formData = new FormData();
       formData.append("audio", blob, "recording.webm");
-
-      const res = await fetch("/api/voice/stt", {
-        method: "POST",
-        body: formData,
-      });
-
+      const res = await fetch("/api/voice/stt", { method: "POST", body: formData });
       if (!res.ok) throw new Error("STT failed");
-
       const data = await res.json() as { transcript: string };
       const transcript = data.transcript?.trim();
-
-      if (!transcript) {
-        setVoiceStatus("idle");
-        setVoiceError("Couldn't understand that. Please try again.");
-        return;
-      }
-
+      if (!transcript) { setVoiceStatus("idle"); setVoiceError("Couldn't understand that. Please try again."); return; }
       setVoiceTranscript(transcript);
-      if (isVoiceMode) {
-        setInput(transcript);
-        await handleSend(transcript, true);
-      } else {
-        setInput(transcript);
-        await handleSend(transcript, false);
-      }
+      setInput(transcript);
+      await handleSend(transcript, isVoiceMode);
     } catch {
       setVoiceError("Transcription failed. Please try again.");
       setVoiceStatus("idle");
@@ -620,36 +630,31 @@ export default function ChatBot() {
 
   function getSupportedMimeType(): string {
     const types = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
-    for (const type of types) {
-      if (MediaRecorder.isTypeSupported(type)) return type;
-    }
+    for (const type of types) { if (MediaRecorder.isTypeSupported(type)) return type; }
     return "";
   }
 
   function toggleRecording() {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      stopSpeaking();
-      startRecording();
-    }
+    if (isRecording) stopRecording();
+    else { stopSpeaking(); startRecording(); }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
   }
 
   function renderMessageContent(content: string) {
     const { text, cards } = parsePartnerCards(content);
     return (
       <>
-        <div className="whitespace-pre-wrap text-[13px] leading-relaxed">{formatMarkdown(text)}</div>
-        {cards.map((card, i) => (
-          <PartnerCardPreview key={`${card.slug}-${i}`} card={card} onNavigate={handleNavigate} />
-        ))}
+        {text && <div className="whitespace-pre-wrap text-[13px] leading-relaxed">{formatMarkdown(text)}</div>}
+        {cards.length > 0 && (
+          <div className="space-y-0.5">
+            {cards.map((card, i) => (
+              <PartnerCardPreview key={`${card.slug}-${i}`} card={card} onNavigate={handleNavigate} />
+            ))}
+          </div>
+        )}
       </>
     );
   }
@@ -658,15 +663,15 @@ export default function ChatBot() {
 
   const voiceStatusLabel: Record<VoiceStatus, string> = {
     idle: "Tap mic to speak",
-    listening: "Listening...",
-    transcribing: "Processing...",
-    thinking: "Thinking...",
-    speaking: "Speaking...",
+    listening: "Listening…",
+    transcribing: "Processing…",
+    thinking: "Thinking…",
+    speaking: "Speaking…",
   };
 
   return (
     <>
-      {/* ── Voice Mode Full-Screen Overlay ── */}
+      {/* ── Voice Mode Overlay ── */}
       <AnimatePresence>
         {isVoiceMode && (
           <motion.div
@@ -675,15 +680,10 @@ export default function ChatBot() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-[80] flex flex-col"
-            style={{
-              background: "rgba(4, 4, 6, 0.98)",
-              backdropFilter: "blur(40px)",
-            }}
+            style={{ background: "rgba(4, 4, 6, 0.98)", backdropFilter: "blur(40px)" }}
           >
             <div className="noise-overlay opacity-50" />
-
-            {/* Header */}
-            <div className="relative z-10 flex items-center justify-between px-6 pt-safe pt-6 pb-4">
+            <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                   <Waves className="w-4 h-4 text-white/50" />
@@ -697,40 +697,31 @@ export default function ChatBot() {
                 <button
                   onClick={() => setTtsEnabled(e => !e)}
                   className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${ttsEnabled ? "bg-white/[0.08] border-white/[0.12] text-white/60" : "bg-white/[0.03] border-white/[0.06] text-white/25"}`}
-                  title={ttsEnabled ? "Mute AI voice" : "Unmute AI voice"}
                 >
                   {ttsEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
                 </button>
                 <button
                   onClick={() => { setIsVoiceMode(false); stopSpeaking(); if (isRecording) stopRecording(); }}
-                  className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.08] transition-all"
+                  className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/30 hover:text-white/60 transition-all"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* Orb */}
             <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6 px-6">
               <VoiceOrb status={voiceStatus} />
-
               <div className="text-center space-y-2">
-                <p className="text-[11px] font-display uppercase tracking-[0.2em] text-white/30">
-                  {voiceStatusLabel[voiceStatus]}
-                </p>
+                <p className="text-[11px] font-display uppercase tracking-[0.2em] text-white/30">{voiceStatusLabel[voiceStatus]}</p>
                 {voiceTranscript && voiceStatus !== "idle" && (
-                  <p className="text-sm text-white/50 font-light max-w-xs text-center leading-relaxed">
-                    "{voiceTranscript}"
-                  </p>
+                  <p className="text-sm text-white/50 font-light max-w-xs text-center leading-relaxed">"{voiceTranscript}"</p>
                 )}
                 {voiceError && (
                   <p className="text-[11px] text-white/40 font-light flex items-center gap-1 justify-center">
-                    <AlertCircle className="w-3 h-3" />
-                    {voiceError}
+                    <AlertCircle className="w-3 h-3" />{voiceError}
                   </p>
                 )}
               </div>
-
               {voiceLastResponse && voiceStatus === "idle" && (
                 <div className="max-w-sm w-full px-4 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
                   <p className="text-[11px] text-white/25 uppercase tracking-widest font-display mb-1.5">Last response</p>
@@ -739,24 +730,21 @@ export default function ChatBot() {
               )}
             </div>
 
-            {/* Mic Button */}
-            <div className="relative z-10 flex flex-col items-center gap-4 px-6 pb-safe pb-12">
+            <div className="relative z-10 flex flex-col items-center gap-4 px-6 pb-12">
               {voiceStatus === "speaking" && (
                 <button
                   onClick={stopSpeaking}
                   className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] text-white/50 text-[11px] font-display hover:bg-white/[0.1] transition-all"
                 >
-                  <VolumeX className="w-3 h-3" />
-                  Stop Speaking
+                  <VolumeX className="w-3 h-3" />Stop Speaking
                 </button>
               )}
-
               <motion.button
                 onClick={toggleRecording}
                 disabled={voiceStatus === "transcribing" || voiceStatus === "thinking"}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
-                className="relative w-20 h-20 rounded-full flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                className="relative w-20 h-20 rounded-full flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
                   background: isRecording
                     ? "radial-gradient(circle at 40% 35%, rgba(255,255,255,0.14), rgba(255,255,255,0.06))"
@@ -772,14 +760,9 @@ export default function ChatBot() {
                     transition={{ duration: 1.5, repeat: Infinity }}
                   />
                 )}
-                {isRecording
-                  ? <MicOff className="w-7 h-7 text-white/80" />
-                  : <Mic className="w-7 h-7 text-white/50" />
-                }
+                {isRecording ? <MicOff className="w-7 h-7 text-white/80" /> : <Mic className="w-7 h-7 text-white/50" />}
               </motion.button>
-              <p className="text-[10px] text-white/20 font-light">
-                {isRecording ? "Tap to stop" : "Tap to speak"}
-              </p>
+              <p className="text-[10px] text-white/20 font-light">{isRecording ? "Tap to stop" : "Tap to speak"}</p>
             </div>
           </motion.div>
         )}
@@ -789,148 +772,170 @@ export default function ChatBot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 28, scale: 0.92, filter: "blur(6px)" }}
+            initial={{ opacity: 0, y: 32, scale: 0.9, filter: "blur(8px)" }}
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 24, scale: 0.94, filter: "blur(4px)" }}
-            transition={{ type: "spring", stiffness: 340, damping: 30, mass: 0.9 }}
-            className="fixed bottom-[88px] right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[430px] max-h-[80vh] flex flex-col"
+            transition={{ type: "spring", stiffness: 320, damping: 28, mass: 0.85 }}
+            className="fixed bottom-[92px] right-4 sm:right-6 z-[60] w-[calc(100vw-32px)] sm:w-[440px] max-h-[82vh] flex flex-col"
             style={{
-              background: "rgba(5, 5, 8, 0.98)",
-              backdropFilter: "blur(60px)",
-              WebkitBackdropFilter: "blur(60px)",
-              borderRadius: "26px",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              boxShadow: "0 32px 110px rgba(0,0,0,0.92), 0 0 0 0.5px rgba(255,255,255,0.04), 0 0 80px rgba(255,255,255,0.012), inset 0 1px 0 rgba(255,255,255,0.05)",
+              background: "rgba(6, 6, 9, 0.99)",
+              backdropFilter: "blur(80px)",
+              WebkitBackdropFilter: "blur(80px)",
+              borderRadius: "28px",
+              border: "1px solid rgba(255,255,255,0.07)",
+              boxShadow: "0 40px 120px rgba(0,0,0,0.95), 0 0 0 0.5px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.06)",
             }}
           >
-            {/* Top gradient mesh decoration */}
-            <div className="absolute top-0 left-0 right-0 h-32 rounded-t-[26px] pointer-events-none overflow-hidden">
-              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 20% 0%, rgba(255,255,255,0.025) 0%, transparent 70%)" }} />
-              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 50% 40% at 80% 10%, rgba(255,255,255,0.015) 0%, transparent 60%)" }} />
+            {/* Ambient glow decoration */}
+            <div className="absolute top-0 left-0 right-0 h-40 rounded-t-[28px] pointer-events-none overflow-hidden">
+              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 50% at 25% 0%, rgba(255,255,255,0.022) 0%, transparent 70%)" }} />
+              <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 40% 35% at 80% 10%, rgba(255,255,255,0.012) 0%, transparent 60%)" }} />
             </div>
-            {/* Header */}
-            <div
-              className="shrink-0"
-              style={{
-                borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-                borderRadius: "24px 24px 0 0",
-                background: "linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, transparent 100%)",
-              }}
-            >
-              <div className="flex items-center justify-between px-5 py-3.5">
+
+            {/* ── Header ── */}
+            <div className="shrink-0 relative z-10" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", background: "linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%)", borderRadius: "26px 26px 0 0" }}>
+              <div className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center relative">
-                    <Sparkles className="w-4 h-4 text-white/70" />
-                    <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-white/60 border-2 border-[#050508]" />
+                  <div className="relative">
+                    <div
+                      className="w-10 h-10 rounded-2xl flex items-center justify-center relative overflow-hidden"
+                      style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03))", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)" }}
+                    >
+                      <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 40% 30%, rgba(255,255,255,0.06), transparent 60%)" }} />
+                      <Sparkles className="w-4.5 h-4.5 text-white/65 relative z-10" />
+                    </div>
+                    <div
+                      className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#060609]"
+                      style={{ background: isStreaming ? "rgba(255,255,255,0.5)" : "rgba(100,200,120,0.85)" }}
+                    />
                   </div>
                   <div>
-                    <h3 className="text-[13px] font-display font-light text-white tracking-wide">X247 Assistant</h3>
+                    <h3 className="text-[13px] font-display font-light text-white/90 tracking-widest">X247 ASSISTANT</h3>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-[9px] text-white/40 font-light">
-                        {isStreaming ? "Thinking..." : "Online · GPT-4o"}
-                      </span>
+                      <motion.span
+                        className="text-[10px] text-white/35 font-light"
+                        animate={isStreaming ? { opacity: [1, 0.5, 1] } : { opacity: 1 }}
+                        transition={{ duration: 1.2, repeat: isStreaming ? Infinity : 0 }}
+                      >
+                        {isStreaming ? "Thinking…" : "Online · GPT-4o"}
+                      </motion.span>
                       {msgCount > 0 && (
                         <>
-                          <span className="text-[8px] text-white/10">•</span>
-                          <span className="text-[9px] text-white/20 font-light">{msgCount} {msgCount === 1 ? "msg" : "msgs"}</span>
+                          <span className="text-[8px] text-white/10">·</span>
+                          <span className="text-[10px] text-white/20 font-light">{msgCount} msg{msgCount !== 1 ? "s" : ""}</span>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => setTtsEnabled(e => !e)}
-                    className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${ttsEnabled ? "bg-white/[0.06] border-white/[0.1] text-white/50" : "bg-white/[0.02] border-white/[0.05] text-white/20"}`}
-                    title={ttsEnabled ? "Mute AI voice" : "Unmute AI voice"}
-                  >
-                    {ttsEnabled ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />}
-                  </button>
-                  <button
-                    onClick={() => { setIsVoiceMode(true); setIsOpen(false); }}
-                    className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.06] transition-all"
-                    title="Voice mode"
-                  >
-                    <Mic className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={startNewChat}
-                    className="w-8 h-8 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.06] transition-all"
-                    title="New chat"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="w-8 h-8 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.06] transition-all"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+                  {[
+                    { icon: ttsEnabled ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />, action: () => setTtsEnabled(e => !e), active: ttsEnabled, title: "Toggle voice" },
+                    { icon: <Mic className="w-3 h-3" />, action: () => { setIsVoiceMode(true); setIsOpen(false); }, active: false, title: "Voice mode" },
+                    { icon: <Plus className="w-3 h-3" />, action: startNewChat, active: false, title: "New chat" },
+                    { icon: <X className="w-3.5 h-3.5" />, action: () => setIsOpen(false), active: false, title: "Close" },
+                  ].map((btn, i) => (
+                    <button
+                      key={i}
+                      onClick={btn.action}
+                      title={btn.title}
+                      className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${btn.active ? "bg-white/[0.08] border-white/[0.12] text-white/60" : "bg-white/[0.03] border-white/[0.06] text-white/30 hover:text-white/60 hover:bg-white/[0.07] hover:border-white/[0.1]"}`}
+                    >
+                      {btn.icon}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              <div className="flex px-5 pb-0 gap-1">
+              {/* Tabs */}
+              <div className="flex px-5 pb-0 gap-0.5">
                 {(["chat", "history"] as const).map(tab => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-3 py-2 text-[11px] font-display font-light rounded-t-lg transition-all relative ${activeTab === tab ? "text-white/80 bg-white/[0.04]" : "text-white/30 hover:text-white/50"}`}
+                    className={`px-3 py-2.5 text-[11px] font-display font-light rounded-t-lg transition-all relative ${activeTab === tab ? "text-white/75" : "text-white/25 hover:text-white/45"}`}
                   >
                     <span className="flex items-center gap-1.5">
                       {tab === "chat" ? <MessageCircle className="w-3 h-3" /> : <History className="w-3 h-3" />}
-                      {tab === "chat" ? "Chat" : "Recent"}
+                      <span className="uppercase tracking-widest text-[10px]">{tab === "chat" ? "Chat" : "Recent"}</span>
                       {tab === "history" && conversations.length > 0 && (
-                        <span className="ml-0.5 px-1.5 py-0 rounded-full bg-white/[0.08] text-[9px] text-white/40">{conversations.length}</span>
+                        <span className="px-1.5 py-0 rounded-full bg-white/[0.07] text-[9px] text-white/35 border border-white/[0.08]">{conversations.length}</span>
                       )}
                     </span>
                     {activeTab === tab && (
-                      <motion.div layoutId="chatTab" className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-white/20 rounded-full" />
+                      <motion.div layoutId="chatTabIndicator" className="absolute bottom-0 left-2 right-2 h-px rounded-full" style={{ background: "rgba(255,255,255,0.2)" }} />
                     )}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Body */}
+            {/* ── Body ── */}
             <AnimatePresence mode="wait">
               {activeTab === "chat" ? (
                 <motion.div
                   key="chat"
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, x: -6 }}
+                  transition={{ duration: 0.18 }}
                   className="flex-1 flex flex-col min-h-0"
                 >
-                  <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0" style={{ scrollbarWidth: "thin", scrollbarColor: "var(--x-chat-scroll) transparent" }}>
+                  {/* Messages */}
+                  <div
+                    className="flex-1 overflow-y-auto px-4 py-5 space-y-5 min-h-0"
+                    style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.06) transparent" }}
+                  >
                     {messages.map((msg, idx) => (
                       <motion.div
                         key={msg.id}
-                        initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                        initial={{ opacity: 0, y: 12, scale: 0.96 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: idx === 0 ? 0 : 0 }}
-                        className={`flex gap-2.5 group ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+                        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                        className={`flex gap-3 group ${msg.role === "user" ? "flex-row-reverse" : ""}`}
                       >
-                        <div className={`w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" ? "bg-white/[0.06] border border-white/[0.1]" : "bg-white/[0.04] border border-white/[0.06]"}`}>
-                          {msg.role === "user" ? <User className="w-3 h-3 text-white/40" /> : <Bot className="w-3 h-3 text-white/40" />}
+                        {/* Avatar */}
+                        <div
+                          className={`w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 ${msg.role === "user" ? "bg-white/[0.08] border border-white/[0.12]" : "bg-white/[0.04] border border-white/[0.07]"}`}
+                          style={msg.role === "assistant" ? { boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" } : {}}
+                        >
+                          {msg.role === "user" ? <User className="w-3 h-3 text-white/50" /> : <Bot className="w-3 h-3 text-white/40" />}
                         </div>
-                        <div className="relative max-w-[82%]">
-                          <div className={`rounded-2xl px-3.5 py-2.5 ${msg.role === "user" ? "bg-white/[0.07] border border-white/[0.1] text-white/90" : "bg-transparent text-white/70"}`}>
-                            {renderMessageContent(msg.content)}
-                          </div>
+
+                        {/* Bubble */}
+                        <div className="relative max-w-[84%]">
+                          {msg.role === "user" ? (
+                            <div
+                              className="rounded-2xl rounded-tr-sm px-4 py-3"
+                              style={{
+                                background: "linear-gradient(145deg, rgba(255,255,255,0.09), rgba(255,255,255,0.05))",
+                                border: "1px solid rgba(255,255,255,0.1)",
+                                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
+                              }}
+                            >
+                              <p className="text-[13px] text-white/85 font-light leading-relaxed">{msg.content}</p>
+                            </div>
+                          ) : (
+                            <div className="text-white/65">
+                              {renderMessageContent(msg.content)}
+                            </div>
+                          )}
+
+                          {/* Actions on hover */}
                           {msg.id !== "welcome" && msg.role === "assistant" && (
-                            <div className="absolute -bottom-5 right-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="absolute -bottom-6 left-0 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                               <button
                                 onClick={() => speakText(msg.content)}
-                                className="p-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-white/20 hover:text-white/50"
+                                className="p-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/20 hover:text-white/50 hover:bg-white/[0.07] transition-all"
                                 title="Read aloud"
                               >
                                 <Volume2 className="w-2.5 h-2.5" />
                               </button>
                               <button
                                 onClick={() => copyMessage(msg.content, msg.id)}
-                                className="p-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-white/20 hover:text-white/50"
-                                title="Copy"
+                                className="p-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/20 hover:text-white/50 hover:bg-white/[0.07] transition-all"
+                                title="Copy message"
                               >
                                 {copiedId === msg.id ? <Check className="w-2.5 h-2.5 text-white/60" /> : <Copy className="w-2.5 h-2.5" />}
                               </button>
@@ -940,232 +945,261 @@ export default function ChatBot() {
                       </motion.div>
                     ))}
 
+                    {/* Streaming bubble */}
                     {isStreaming && currentStreamContent && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="flex gap-2.5"
-                      >
-                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.06]">
+                      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
+                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.07]">
                           <Bot className="w-3 h-3 text-white/40" />
                         </div>
-                        <div className="max-w-[82%] text-white/70">
+                        <div className="max-w-[84%] text-white/65">
                           {renderMessageContent(currentStreamContent)}
                           <motion.span
-                            className="inline-block w-[3px] h-4 bg-white/40 ml-0.5 rounded-sm"
+                            className="inline-block w-[2px] h-[14px] bg-white/35 ml-0.5 rounded-sm align-text-bottom"
                             animate={{ opacity: [1, 0, 1] }}
-                            transition={{ duration: 0.7, repeat: Infinity, ease: "easeInOut" }}
+                            transition={{ duration: 0.65, repeat: Infinity, ease: "easeInOut" }}
                           />
                         </div>
                       </motion.div>
                     )}
 
+                    {/* Thinking indicator */}
                     {isStreaming && !currentStreamContent && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="flex gap-2.5"
-                      >
-                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.06] relative overflow-hidden">
+                      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
+                        <div className="w-7 h-7 rounded-xl shrink-0 flex items-center justify-center mt-0.5 bg-white/[0.04] border border-white/[0.07] relative overflow-hidden">
                           <motion.div
                             className="absolute inset-0 rounded-xl"
-                            animate={{ opacity: [0, 0.3, 0] }}
-                            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                            style={{ background: "radial-gradient(circle, rgba(255,255,255,0.15), transparent)" }}
+                            animate={{ opacity: [0, 0.4, 0] }}
+                            transition={{ duration: 1.8, repeat: Infinity }}
+                            style={{ background: "radial-gradient(circle, rgba(255,255,255,0.12), transparent)" }}
                           />
-                          <Sparkles className="w-3 h-3 text-white/50 relative z-10" />
+                          <Sparkles className="w-3 h-3 text-white/40 relative z-10" />
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
-                          <div className="flex gap-1.5 items-end">
-                            {[0, 120, 240].map((delay, i) => (
-                              <motion.span
+                        <div
+                          className="flex items-center gap-3 px-4 py-3 rounded-2xl rounded-tl-sm"
+                          style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)" }}
+                        >
+                          <div className="flex gap-1 items-center">
+                            {[0, 0.12, 0.24].map((delay, i) => (
+                              <motion.div
                                 key={i}
                                 className="rounded-full bg-white/30"
-                                animate={{ height: ["6px", "14px", "6px"], opacity: [0.3, 0.8, 0.3] }}
-                                transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut", delay: delay / 1000 }}
-                                style={{ width: "3px", display: "inline-block" }}
+                                animate={{ scaleY: [0.5, 1.4, 0.5], opacity: [0.3, 0.7, 0.3] }}
+                                transition={{ duration: 0.85, repeat: Infinity, ease: "easeInOut", delay }}
+                                style={{ width: "3px", height: "12px" }}
                               />
                             ))}
                           </div>
-                          <span className="text-[11px] text-white/20 font-light tracking-wide">Thinking</span>
+                          <span className="text-[11px] text-white/20 font-light tracking-widest uppercase">Thinking</span>
                         </div>
                       </motion.div>
                     )}
 
+                    {/* Quick suggestions */}
                     {messages.length <= 1 && !isStreaming && (
-                      <div className="space-y-2 pt-2">
-                        <p className="text-[10px] uppercase tracking-[0.15em] text-white/15 font-display px-1 mb-3">Quick Questions</p>
-                        <div className="grid grid-cols-2 gap-2">
-                          {SUGGESTIONS.map((s) => (
-                            <button
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.4 }}
+                        className="pt-1 space-y-2"
+                      >
+                        <p className="text-[9px] uppercase tracking-[0.2em] text-white/15 font-display px-1 mb-3">Quick Questions</p>
+                        <div className="grid grid-cols-1 gap-2">
+                          {SUGGESTIONS.map((s, i) => (
+                            <motion.button
                               key={s.text}
+                              initial={{ opacity: 0, x: -6 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.25 + i * 0.06, duration: 0.3 }}
                               onClick={() => handleSend(s.text)}
-                              className="text-left px-3 py-2.5 rounded-xl bg-white/[0.025] border border-white/[0.05] text-white/40 text-[11px] font-light hover:bg-white/[0.05] hover:text-white/60 hover:border-white/[0.08] transition-all group"
+                              className="group text-left px-4 py-3 rounded-2xl transition-all duration-200 relative overflow-hidden"
+                              style={{
+                                background: "linear-gradient(135deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01))",
+                                border: "1px solid rgba(255,255,255,0.05)",
+                              }}
+                              whileHover={{ scale: 1.01 }}
+                              whileTap={{ scale: 0.99 }}
                             >
-                              <span className="flex items-center gap-1.5 text-white/20 group-hover:text-white/40 transition-colors mb-1">{s.icon}</span>
-                              <span className="leading-tight">{s.text}</span>
-                            </button>
+                              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))" }} />
+                              <div className="relative flex items-center gap-3">
+                                <div className="w-7 h-7 rounded-xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-white/25 group-hover:text-white/50 group-hover:border-white/[0.12] transition-all shrink-0">
+                                  {s.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[12px] text-white/55 font-light group-hover:text-white/75 transition-colors">{s.text}</p>
+                                  <p className="text-[10px] text-white/20 font-light mt-0.5">{s.desc}</p>
+                                </div>
+                                <ChevronRight className="w-3.5 h-3.5 text-white/15 group-hover:text-white/40 transition-all group-hover:translate-x-0.5 shrink-0" />
+                              </div>
+                            </motion.button>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     )}
 
-                    <div ref={messagesEndRef} />
+                    <div ref={messagesEndRef} className="h-1" />
                   </div>
 
-                  {/* Input */}
+                  {/* ── Input Area ── */}
                   <div className="shrink-0 px-4 pb-4 pt-2">
                     {voiceError && (
-                      <div className="flex items-center gap-1.5 px-3 py-2 mb-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[11px] text-white/35">
-                        <AlertCircle className="w-3 h-3 shrink-0" />
-                        {voiceError}
+                      <div className="flex items-center gap-2 px-3 py-2 mb-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[11px] text-white/35">
+                        <AlertCircle className="w-3 h-3 shrink-0 text-white/30" />{voiceError}
                       </div>
                     )}
+
                     <div
-                      className="flex items-center gap-2 rounded-2xl px-3 py-2.5 transition-all focus-within:border-white/[0.12]"
-                      style={{ background: "var(--x-chat-bubble)", border: "1px solid var(--x-chat-bubble-border)" }}
+                      className="flex items-center gap-2 rounded-2xl px-3.5 py-3 transition-all duration-200 focus-within:border-white/[0.13]"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.07)",
+                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+                      }}
                     >
                       <input
                         ref={inputRef}
                         type="text"
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={e => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder={isRecording ? "Listening..." : "Ask anything about X247..."}
+                        placeholder={isRecording ? "Listening…" : "Ask anything about X247…"}
                         disabled={isStreaming || isRecording}
-                        className="flex-1 bg-transparent text-white/90 text-[13px] font-light placeholder-white/20 outline-none disabled:opacity-50 min-w-0"
+                        className="flex-1 bg-transparent text-white/85 text-[13px] font-light placeholder-white/18 outline-none disabled:opacity-40 min-w-0"
                       />
 
+                      {/* Mic button */}
                       <motion.button
                         onClick={toggleRecording}
                         disabled={isStreaming || voiceStatus === "transcribing"}
-                        whileTap={{ scale: 0.9 }}
-                        className={`relative w-8 h-8 rounded-xl border flex items-center justify-center transition-all shrink-0 disabled:opacity-30 ${isRecording ? "bg-white/[0.1] border-white/[0.2] text-white/80" : "bg-white/[0.03] border-white/[0.06] text-white/30 hover:text-white/60 hover:bg-white/[0.06]"}`}
-                        title={isRecording ? "Stop recording" : "Voice input"}
+                        whileTap={{ scale: 0.88 }}
+                        className={`relative w-8 h-8 rounded-xl border flex items-center justify-center transition-all shrink-0 disabled:opacity-30 ${isRecording ? "bg-white/[0.1] border-white/[0.2] text-white/75" : "bg-transparent border-white/[0.06] text-white/25 hover:text-white/55 hover:border-white/[0.1]"}`}
                       >
                         <AnimatePresence mode="wait">
                           {isRecording ? (
-                            <motion.div key="stop" initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }}>
-                              {voiceStatus === "transcribing"
-                                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                : <MicOff className="w-3.5 h-3.5" />
-                              }
+                            <motion.div key="stop" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }}>
+                              {voiceStatus === "transcribing" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MicOff className="w-3.5 h-3.5" />}
                             </motion.div>
                           ) : (
-                            <motion.div key="mic" initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }}>
+                            <motion.div key="mic" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }}>
                               <Mic className="w-3.5 h-3.5" />
                             </motion.div>
                           )}
                         </AnimatePresence>
                         {isRecording && (
                           <motion.div
-                            className="absolute inset-0 rounded-xl border border-white/30"
-                            animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0, 0.6] }}
+                            className="absolute inset-0 rounded-xl border border-white/25"
+                            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
                             transition={{ duration: 1.2, repeat: Infinity }}
                           />
                         )}
                       </motion.button>
 
-                      <button
+                      {/* Send button */}
+                      <motion.button
                         onClick={() => handleSend()}
                         disabled={!input.trim() || isStreaming}
-                        className="w-8 h-8 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white/40 hover:text-white/80 disabled:opacity-20 disabled:cursor-not-allowed transition-all hover:border-white/[0.2] shrink-0"
+                        whileTap={{ scale: 0.88 }}
+                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-all shrink-0 disabled:opacity-20 disabled:cursor-not-allowed"
+                        style={{
+                          background: input.trim() && !isStreaming ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)",
+                          border: input.trim() && !isStreaming ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.07)",
+                        }}
                       >
-                        <Send className="w-3.5 h-3.5" />
-                      </button>
+                        <Send className="w-3.5 h-3.5 text-white/60" />
+                      </motion.button>
                     </div>
 
-                    <div className="flex items-center justify-between mt-2 px-1">
-                      <p className="text-[9px] text-white/12 font-light">Powered by GPT-4o · ElevenLabs Voice</p>
-                      {realMsgCount > 0 && (
+                    <div className="flex items-center justify-between mt-2.5 px-0.5">
+                      <p className="text-[9px] text-white/12 font-light tracking-wide uppercase">Powered by X247 AI</p>
+                      <div className="flex items-center gap-2">
+                        {realMsgCount > 0 && (
+                          <button onClick={startNewChat} className="flex items-center gap-1 text-[9px] text-white/15 hover:text-white/35 transition-colors">
+                            <RotateCcw className="w-2.5 h-2.5" />New
+                          </button>
+                        )}
                         <button
-                          onClick={startNewChat}
-                          className="text-[9px] text-white/15 font-light hover:text-white/30 transition-colors flex items-center gap-1"
+                          onClick={() => setActiveTab("history")}
+                          className="flex items-center gap-1 text-[9px] text-white/15 hover:text-white/35 transition-colors"
                         >
-                          <RotateCcw className="w-2.5 h-2.5" />
-                          New chat
+                          <History className="w-2.5 h-2.5" />History
                         </button>
-                      )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
               ) : (
+                /* ── History Tab ── */
                 <motion.div
                   key="history"
-                  initial={{ opacity: 0, x: 10 }}
+                  initial={{ opacity: 0, x: 6 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex-1 overflow-y-auto min-h-0"
-                  style={{ scrollbarWidth: "thin", scrollbarColor: "var(--x-chat-scroll) transparent" }}
+                  exit={{ opacity: 0, x: 6 }}
+                  transition={{ duration: 0.18 }}
+                  className="flex-1 flex flex-col min-h-0"
                 >
-                  {conversations.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full py-12 px-6">
-                      <div className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-4">
-                        <History className="w-5 h-5 text-white/15" />
-                      </div>
-                      <p className="text-sm text-white/25 font-display font-light mb-1">No recent chats</p>
-                      <p className="text-[11px] text-white/15 font-light text-center">Your conversations will appear here once you start chatting.</p>
-                      <button
-                        onClick={() => setActiveTab("chat")}
-                        className="mt-4 px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[11px] text-white/40 font-display font-light hover:bg-white/[0.06] transition-all flex items-center gap-1.5"
-                      >
-                        <Plus className="w-3 h-3" />
-                        Start a chat
+                  <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.04]">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-white/25 font-display">{conversations.length} Conversation{conversations.length !== 1 ? "s" : ""}</p>
+                    {conversations.length > 0 && (
+                      <button onClick={clearAllHistory} className="flex items-center gap-1 text-[10px] text-white/20 hover:text-white/45 transition-colors">
+                        <Trash2 className="w-3 h-3" />Clear all
                       </button>
-                    </div>
-                  ) : (
-                    <div className="p-3">
-                      <div className="flex items-center justify-between px-2 mb-3">
-                        <p className="text-[10px] uppercase tracking-[0.15em] text-white/20 font-display">
-                          {conversations.length} {conversations.length === 1 ? "conversation" : "conversations"}
-                        </p>
-                        <button
-                          onClick={clearAllHistory}
-                          className="text-[10px] text-white/20 hover:text-white/40 transition-colors font-light flex items-center gap-1"
+                    )}
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 min-h-0" style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,0.06) transparent" }}>
+                    {conversations.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center h-full gap-3 py-12">
+                        <div className="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                          <History className="w-5 h-5 text-white/15" />
+                        </div>
+                        <p className="text-[12px] text-white/20 font-light text-center">No conversations yet.<br />Start chatting to save history.</p>
+                      </div>
+                    ) : (
+                      conversations.map(convo => (
+                        <motion.div
+                          key={convo.id}
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="group flex items-start gap-3 px-3.5 py-3 rounded-2xl cursor-pointer transition-all duration-150 relative"
+                          style={{
+                            background: currentConvoId === convo.id ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.02)",
+                            border: currentConvoId === convo.id ? "1px solid rgba(255,255,255,0.09)" : "1px solid rgba(255,255,255,0.04)",
+                          }}
+                          onClick={() => loadConversation(convo)}
+                          whileHover={{ scale: 1.005 }}
                         >
-                          <Trash2 className="w-2.5 h-2.5" />
-                          Clear all
-                        </button>
-                      </div>
-                      <div className="space-y-1.5">
-                        {conversations.map((convo) => {
-                          const msgPreview = convo.messages.filter(m => m.role === "assistant").pop();
-                          return (
-                            <div
-                              key={convo.id}
-                              onClick={() => loadConversation(convo)}
-                              className={`group rounded-xl px-3.5 py-3 cursor-pointer transition-all border ${currentConvoId === convo.id ? "bg-white/[0.05] border-white/[0.1]" : "bg-white/[0.015] border-transparent hover:bg-white/[0.035] hover:border-white/[0.06]"}`}
-                            >
-                              <div className="flex items-start justify-between gap-2">
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-[12px] text-white/65 font-light truncate">{convo.title}</p>
-                                  {msgPreview && (
-                                    <p className="text-[10px] text-white/25 font-light mt-1 truncate leading-tight">
-                                      {parsePartnerCards(msgPreview.content).text.slice(0, 60)}...
-                                    </p>
-                                  )}
-                                  <div className="flex items-center gap-2 mt-1.5">
-                                    <span className="text-[9px] text-white/15 font-light">{timeAgo(convo.updatedAt)}</span>
-                                    <span className="text-[8px] text-white/10">•</span>
-                                    <span className="text-[9px] text-white/15 font-light">{convo.messages.length} msgs</span>
-                                  </div>
-                                </div>
-                                <button
-                                  onClick={(e) => deleteConversation(convo.id, e)}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-white/20 hover:text-white/50"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </button>
-                              </div>
+                          <div className="w-7 h-7 rounded-xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center shrink-0 mt-0.5">
+                            <MessageCircle className="w-3 h-3 text-white/25" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[12px] text-white/60 font-light truncate leading-snug">{convo.title}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Clock className="w-2.5 h-2.5 text-white/15" />
+                              <span className="text-[10px] text-white/20">{timeAgo(convo.updatedAt)}</span>
+                              <span className="text-[9px] text-white/10">·</span>
+                              <span className="text-[10px] text-white/15">{convo.messages.length} msgs</span>
                             </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                          </div>
+                          <button
+                            onClick={e => deleteConversation(convo.id, e)}
+                            className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/20 hover:text-white/50 transition-all shrink-0 mt-0.5"
+                          >
+                            <Trash2 className="w-2.5 h-2.5" />
+                          </button>
+                        </motion.div>
+                      ))
+                    )}
+                  </div>
+
+                  <div className="shrink-0 px-4 py-3 border-t border-white/[0.04]">
+                    <button
+                      onClick={startNewChat}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-2xl transition-all"
+                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    >
+                      <Plus className="w-3.5 h-3.5 text-white/30" />
+                      <span className="text-[12px] text-white/35 font-light">New Conversation</span>
+                    </button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -1173,82 +1207,49 @@ export default function ChatBot() {
         )}
       </AnimatePresence>
 
-      {/* ── Floating Button ── */}
-      <div className="fixed bottom-6 right-4 sm:right-6 z-[60] flex items-center justify-center">
-        {/* Outer pulse ring — only when closed */}
-        {!isOpen && (
-          <>
-            <motion.div
-              className="absolute rounded-[22px] border border-white/[0.07]"
-              animate={{ width: [64, 90, 64], height: [64, 90, 64], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              className="absolute rounded-[26px] border border-white/[0.04]"
-              animate={{ width: [64, 112, 64], height: [64, 112, 64], opacity: [0.35, 0, 0.35] }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            />
-          </>
-        )}
+      {/* ── FAB Button ── */}
+      <motion.button
+        onClick={() => { setIsOpen(o => !o); setHasNewMessage(false); }}
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.93 }}
+        className="fixed bottom-6 right-4 sm:right-6 z-[60] w-14 h-14 rounded-2xl flex items-center justify-center relative"
+        style={{
+          background: isOpen
+            ? "rgba(255,255,255,0.06)"
+            : "linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05))",
+          border: isOpen ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(255,255,255,0.15)",
+          boxShadow: isOpen
+            ? "0 8px 30px rgba(0,0,0,0.5)"
+            : "0 12px 50px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.15), 0 0 30px rgba(255,255,255,0.03)",
+        }}
+      >
+        <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 40% 30%, rgba(255,255,255,0.06), transparent 60%)" }} />
+        </div>
+        <AnimatePresence mode="wait">
+          {isOpen ? (
+            <motion.div key="x" initial={{ scale: 0.5, rotate: -90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+              <X className="w-5 h-5 text-white/50 relative z-10" />
+            </motion.div>
+          ) : (
+            <motion.div key="chat" initial={{ scale: 0.5, rotate: 90, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.5, rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+              <MessageCircle className="w-5 h-5 text-white/75 relative z-10" />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <motion.button
-          onClick={() => { setIsOpen(!isOpen); setHasNewMessage(false); }}
-          className="relative w-16 h-16 rounded-[20px] flex items-center justify-center"
-          style={{
-            background: isOpen
-              ? "rgba(10, 10, 14, 0.98)"
-              : "linear-gradient(145deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.08) 100%)",
-            border: "1px solid rgba(255, 255, 255, 0.12)",
-            boxShadow: isOpen
-              ? "0 8px 32px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.06)"
-              : "0 12px 48px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 40px rgba(255,255,255,0.03)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-          }}
-          whileHover={{ scale: 1.06, boxShadow: "0 16px 56px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.15), 0 0 60px rgba(255,255,255,0.04)" }}
-          whileTap={{ scale: 0.93 }}
-          transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        >
-          {/* Inner glow */}
-          <div
-            className="absolute inset-0 rounded-[20px] pointer-events-none"
-            style={{ background: "radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.07) 0%, transparent 65%)" }}
-          />
-
-          <AnimatePresence mode="wait">
-            {isOpen ? (
-              <motion.div key="close"
-                initial={{ rotate: -120, opacity: 0, scale: 0.4 }}
-                animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                exit={{ rotate: 120, opacity: 0, scale: 0.4 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <X className="w-5 h-5 text-white/70" />
-              </motion.div>
-            ) : (
-              <motion.div key="open"
-                initial={{ scale: 0.3, opacity: 0, rotate: -30 }}
-                animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                exit={{ scale: 0.3, opacity: 0, rotate: 30 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <MessageCircle className="w-5 h-5 text-white/85" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* New message badge */}
+        {/* New message dot */}
+        <AnimatePresence>
           {hasNewMessage && !isOpen && (
             <motion.div
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: 1, rotate: 0 }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              transition={{ type: "spring", stiffness: 500, damping: 20 }}
-              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-white border-2 border-black flex items-center justify-center"
+              className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-white/80 border-2 border-[#060609]"
             />
           )}
-        </motion.button>
-      </div>
+        </AnimatePresence>
+      </motion.button>
     </>
   );
 }
