@@ -316,6 +316,9 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
             <span className="font-display font-medium text-[13px] tracking-wide">Continue with Google</span>
+            <span className="auth-google-lock-pill">
+              <Lock className="w-3 h-3" strokeWidth={2.4} />
+            </span>
           </button>
 
           {/* OR Divider */}
@@ -2108,27 +2111,12 @@ export default function Account() {
                       Enter daily giveaways, track your wins, and unlock exclusive membership perks — all in one place.
                     </motion.p>
 
-                    {/* Stats Row */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.75, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                      className="grid grid-cols-4 gap-3 sm:gap-4 w-full max-w-2xl mx-auto mb-8 sm:mb-10"
-                    >
-                      {GUEST_STATS.map((stat) => (
-                        <div key={stat.label} className="guest-stat-cell">
-                          <div className="guest-stat-value">{stat.value}</div>
-                          <div className="guest-stat-label">{stat.label}</div>
-                        </div>
-                      ))}
-                    </motion.div>
-
                     {/* Steps Bar */}
                     <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.9, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                      className="acct-steps-bar"
+                      transition={{ delay: 0.75, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                      className="acct-steps-bar mb-8 sm:mb-10"
                     >
                       <div className="acct-step-item">
                         <div className="acct-step-num">1</div>
@@ -2145,6 +2133,11 @@ export default function Account() {
                         <span className="acct-step-label">Win Daily</span>
                       </div>
                     </motion.div>
+
+                    {/* Auth Form - Inside Hero */}
+                    <div className="w-full max-w-md mx-auto">
+                      <AuthForm onSuccess={loadUser} />
+                    </div>
                   </>
                 )}
 
@@ -2169,44 +2162,35 @@ export default function Account() {
           ) : user ? (
             <Dashboard user={user} entries={entries} onLogout={handleLogout} />
           ) : (
-            <div className="guest-layout">
-              {/* Left column: Features + Partners */}
-              <div className="guest-left-col">
-                {/* Feature Cards */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  className="mb-6"
-                >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {GUEST_FEATURES.map((feat, i) => (
-                      <motion.div
-                        key={feat.title}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                        className="guest-feature-card"
-                      >
-                        <div className="guest-feature-icon-wrap">
-                          <feat.icon className="w-4 h-4 text-white/50" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-display font-light text-white/80 mb-0.5">{feat.title}</div>
-                          <div className="text-xs text-white/35 font-light leading-relaxed">{feat.desc}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
+            <div className="space-y-8 sm:space-y-12">
+              {/* Feature Cards - Full Width */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {GUEST_FEATURES.map((feat, i) => (
+                    <motion.div
+                      key={feat.title}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      className="guest-feature-card"
+                    >
+                      <div className="guest-feature-icon-wrap">
+                        <feat.icon className="w-4 h-4 text-white/50" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-display font-light text-white/80 mb-0.5">{feat.title}</div>
+                        <div className="text-xs text-white/35 font-light leading-relaxed">{feat.desc}</div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
 
-                <OurPartnersSection />
-              </div>
-
-              {/* Right column: Auth Form */}
-              <div className="guest-right-col">
-                <AuthForm onSuccess={loadUser} />
-              </div>
+              <OurPartnersSection />
             </div>
           )}
 
