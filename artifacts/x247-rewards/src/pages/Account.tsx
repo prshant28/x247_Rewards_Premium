@@ -2233,9 +2233,71 @@ export default function Account() {
                       </div>
                     </motion.div>
 
-                    {/* Auth Form - Inside Hero */}
-                    <div className="w-full max-w-md mx-auto">
-                      <AuthForm onSuccess={loadUser} />
+                    {/* Auth Form + Premium Side Panel — 2-column on lg+ */}
+                    <div className="acct-auth-grid">
+                      <div className="acct-auth-form-col">
+                        <AuthForm onSuccess={loadUser} />
+                      </div>
+                      <aside className="acct-side-panel" aria-label="Live activity & platform highlights">
+                        {/* LIVE NOW header */}
+                        <div className="acct-side-head">
+                          <span className="acct-side-pulse" aria-hidden="true" />
+                          <span className="acct-side-head-label">Live Now</span>
+                          <span className="acct-side-head-time">UPDATED JUST NOW</span>
+                        </div>
+
+                        {/* Recent winners feed (compact, vertical) */}
+                        <div className="acct-side-feed" aria-label="Recent winners">
+                          {WINNERS_FEED.slice(0, 4).map((w, i) => (
+                            <div key={w.name + i} className="acct-side-feed-row">
+                              <div className="acct-side-feed-avatar" aria-hidden="true">
+                                {w.name.split(" ").map(n => n[0]).join("")}
+                              </div>
+                              <div className="acct-side-feed-body">
+                                <div className="acct-side-feed-line">
+                                  <strong className="acct-side-feed-name">{w.name}</strong>
+                                  <span className="acct-side-feed-sep">won</span>
+                                  <span className="acct-side-feed-prize">{w.prize}</span>
+                                </div>
+                                <div className="acct-side-feed-meta">
+                                  <span className="acct-side-feed-city">{w.city}</span>
+                                  <span className="acct-side-feed-dot" />
+                                  <span className="acct-side-feed-ago">{["2m", "8m", "14m", "21m"][i]} ago</span>
+                                </div>
+                              </div>
+                              <Trophy className="acct-side-feed-icon" aria-hidden="true" />
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Stat row */}
+                        <div className="acct-side-stats">
+                          {GUEST_STATS.map((s) => (
+                            <div key={s.label} className="acct-side-stat">
+                              <div className="acct-side-stat-value">{s.value}</div>
+                              <div className="acct-side-stat-label">{s.label}</div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Feature highlights — compact list */}
+                        <div className="acct-side-features">
+                          {GUEST_FEATURES.map((feat) => (
+                            <div key={feat.title} className="acct-side-feature">
+                              <span className="acct-side-feature-icon" aria-hidden="true">
+                                <feat.icon className="w-3.5 h-3.5" strokeWidth={1.7} />
+                              </span>
+                              <span className="acct-side-feature-title">{feat.title}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Trust footer */}
+                        <div className="acct-side-foot">
+                          <Shield className="w-3 h-3" aria-hidden="true" />
+                          <span>Bank-grade security · 100% free to join</span>
+                        </div>
+                      </aside>
                     </div>
                   </>
                 )}
@@ -2261,93 +2323,7 @@ export default function Account() {
           ) : user ? (
             <Dashboard user={user} entries={entries} onLogout={handleLogout} />
           ) : (
-            <div className="space-y-8 sm:space-y-12">
-              {/* Stat Strip — social proof under the hero */}
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="acct-stat-strip"
-              >
-                {GUEST_STATS.map((s, i) => (
-                  <motion.div
-                    key={s.label}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="acct-stat-card"
-                  >
-                    <div className="acct-stat-card-value">{s.value}</div>
-                    <div className="acct-stat-card-label">{s.label}</div>
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              {/* Live winners ticker */}
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="acct-ticker"
-              >
-                <span className="acct-ticker-label">
-                  <span className="acct-ticker-dot" />
-                  Live Winners
-                </span>
-                <div className="acct-ticker-track">
-                  <div className="acct-ticker-strip">
-                    {[...WINNERS_FEED, ...WINNERS_FEED].map((w, i) => (
-                      <span key={i} className="acct-ticker-item">
-                        <strong>{w.name}</strong>
-                        <span className="acct-ticker-item-dot" />
-                        <span className="acct-ticker-item-prize">{w.prize}</span>
-                        <span className="acct-ticker-item-dot" />
-                        <span>{w.city}</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Premium feature cards */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="acct-why-header text-center mb-6 sm:mb-8">
-                  <div className="glass-pill-badge inline-flex mb-3">
-                    <Sparkles className="w-3 h-3 mr-2 acct-why-spark" />
-                    Why X247
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-display font-light tracking-tight acct-why-title">
-                    Built for <span className="italic acct-why-emph">winners</span>
-                  </h3>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                  {GUEST_FEATURES.map((feat, i) => (
-                    <motion.div
-                      key={feat.title}
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                      className="acct-feature-card"
-                    >
-                      <span className="acct-feature-card-num">0{i + 1}</span>
-                      <div className="acct-feature-icon-tile">
-                        <feat.icon className="w-5 h-5" strokeWidth={1.6} />
-                      </div>
-                      <div>
-                        <div className="acct-feature-card-title">{feat.title}</div>
-                        <div className="acct-feature-card-desc">{feat.desc}</div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              <OurPartnersSection />
-            </div>
+            <OurPartnersSection />
           )}
 
         </div>
