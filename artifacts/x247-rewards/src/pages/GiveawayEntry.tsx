@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, trackFormFill, getContest, registerUser, isUserLoggedIn, getUserTokenValue, type PartnerData, type GiveawayStatus, type ContestData } from "@/lib/api";
+import { getPartners, getGiveawayStatus, submitGiveawayEntry, uploadScreenshot, checkEntryCode, trackFormFill, getContest, registerUser, getCurrentUser, isUserLoggedIn, getUserTokenValue, type PartnerData, type GiveawayStatus, type ContestData } from "@/lib/api";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -41,6 +41,12 @@ export default function GiveawayEntry() {
     refetchInterval: 15_000,
     staleTime: 0,
   });
+  const { data: currentUser } = useQuery({
+    queryKey: ["current-user"],
+    queryFn: getCurrentUser,
+    staleTime: 60_000,
+    enabled: isUserLoggedIn(),
+  });
   const loading = !!contestSlug && contestLoading;
 
   const [submitting, setSubmitting] = useState(false);
@@ -57,6 +63,18 @@ export default function GiveawayEntry() {
     age: "",
     city: "",
   });
+
+  useEffect(() => {
+    if (!currentUser) return;
+    setForm(prev => ({
+      ...prev,
+      fullName: prev.fullName || currentUser.fullName || "",
+      email: prev.email || currentUser.email || "",
+      phone: prev.phone || currentUser.phone || "",
+      city: prev.city || currentUser.city || "",
+    }));
+  }, [currentUser]);
+
   const [selectedPartners, setSelectedPartners] = useState<number[]>([]);
   const [screenshotConfirmed, setScreenshotConfirmed] = useState(false);
   const [screenshotFiles, setScreenshotFiles] = useState<Record<number, File>>({});
@@ -609,6 +627,15 @@ export default function GiveawayEntry() {
                         <span className="text-[11px] text-white/40 font-light">Submit Anonymously</span>
                       </label>
                     </div>
+
+                    {currentUser && (
+                      <div className="mb-4 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.08] flex items-center gap-2">
+                        <User className="w-3 h-3 text-white/35 shrink-0" />
+                        <p className="text-[11px] text-white/40 font-light">
+                          Pre-filled from your profile — edit any field if needed.
+                        </p>
+                      </div>
+                    )}
 
                     {isAnonymous && (
                       <div className="mb-4 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.08]">
