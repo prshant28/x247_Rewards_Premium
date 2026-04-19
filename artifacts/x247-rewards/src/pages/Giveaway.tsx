@@ -5,7 +5,7 @@ import {
   Trophy, Sparkles, Users, ArrowRight, Gift, Clock, Star,
   Zap, Crown, Target, Search, CheckCircle2, Copy, Shield,
   ExternalLink, Camera, Award, ChevronRight, Loader2,
-  SlidersHorizontal, X, Filter,
+  SlidersHorizontal, X, Filter, Calendar,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getContests, checkEntryCode, type ContestData } from "@/lib/api";
@@ -240,96 +240,161 @@ function GlowLine() {
   );
 }
 
-/* ─── Contest Card ─── */
+/* ─── Contest Card (image banner + info, like attached reference) ─── */
 function ContestCard({ contest, index }: { contest: ContestData; index: number }) {
-  const spotsPercent = ((contest.maxSpots - contest.spotsRemaining) / contest.maxSpots) * 100;
   const isUpcoming = contest.status === "upcoming";
   const isFull = contest.isFull;
+  const taken = contest.maxSpots - contest.spotsRemaining;
+  const percent = Math.min(100, (taken / Math.max(contest.maxSpots, 1)) * 100);
+
+  // Deterministic gradient pair for fallback when no imageUrl
+  const seed = (contest.id * 9301 + 49297) % 233280;
+  const hueShift = (seed / 233280) * 360;
+  const fallbackBg = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 55%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(${135 + hueShift / 8}deg, rgba(40,40,46,0.95), rgba(10,10,12,1))`;
+
+  const dateLabel = contest.endsAt
+    ? new Date(contest.endsAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
+    : "Open";
+
+  // Format compact entry/spots count
+  const fmt = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${n}`;
 
   return (
-    <motion.div custom={index} variants={fadeUp} initial="hidden" animate="visible">
+    <motion.div
+      custom={index}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
+      whileHover={{ y: -4, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }}
+      className="h-full"
+    >
       <Link href={isUpcoming ? `/giveaway` : `/giveaway/${contest.slug}`} aria-label={isUpcoming ? `${contest.name} — coming soon` : `Enter ${contest.name}`}>
-        <div className={`contest-card group ${isUpcoming ? "contest-card-upcoming" : ""} ${isFull ? "contest-card-full" : ""}`}>
-          <div className="contest-card-glow" />
+        <div className={`contest-card-v2 group ${isUpcoming ? "is-upcoming" : ""} ${isFull ? "is-full" : ""}`}>
           <div className="contest-card-shine" />
 
-          <div className="contest-card-inner">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                {isUpcoming ? (
-                  <div className="contest-badge contest-badge-upcoming">
-                    <Clock className="w-3 h-3" />
-                    <span>Coming Soon</span>
-                  </div>
-                ) : isFull ? (
-                  <div className="contest-badge contest-badge-full">
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>Full</span>
-                  </div>
-                ) : (
-                  <div className="contest-badge contest-badge-live">
-                    <span className="contest-badge-pulse" />
-                    <Zap className="w-3 h-3" />
-                    <span>Live</span>
-                  </div>
-                )}
+          {/* ── BANNER IMAGE ── */}
+          <div className="contest-card-banner">
+            {contest.imageUrl ? (
+              <img
+                src={contest.imageUrl}
+                alt={contest.name}
+                loading="lazy"
+                className="contest-card-banner-img"
+              />
+            ) : (
+              <div className="contest-card-banner-fallback" style={{ background: fallbackBg }}>
+                <div className="contest-card-banner-fallback-grid" />
+                <Trophy className="w-12 h-12 text-white/20 relative z-10" />
+                <div className="absolute bottom-3 left-4 right-4 text-center">
+                  <div className="text-[10px] font-display uppercase tracking-[0.2em] text-white/35">{contest.prize}</div>
+                </div>
               </div>
-              <div className="contest-icon-box">
-                <Trophy className="w-5 h-5 text-white/30" />
-              </div>
+            )}
+
+            {/* Top-right status tag (like OPEN_HACKATHON) */}
+            <div className="contest-card-banner-tag">
+              {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
             </div>
 
-            <h3 className="text-xl sm:text-2xl font-display font-medium text-white mb-1.5 tracking-tight leading-tight">{contest.name}</h3>
-            <p className="text-[11px] text-white/30 font-light leading-relaxed mb-5 line-clamp-2">{contest.description}</p>
+            {/* Bottom-left live pulse */}
+            {!isUpcoming && !isFull && (
+              <div className="contest-card-banner-live">
+                <span className="contest-card-banner-pulse" />
+                LIVE
+              </div>
+            )}
+          </div>
 
-            <div className="contest-prize-box">
-              <div className="contest-prize-icon">
-                <Gift className="w-4 h-4 text-white/40" />
-              </div>
-              <div className="flex-1">
-                <div className="text-sm font-display font-light text-white">{contest.prize}</div>
-                {contest.prizeValue && (
-                  <div className="text-[9px] text-white/25 font-light mt-0.5">Worth {contest.prizeValue}</div>
-                )}
-              </div>
-              <ChevronRight className="w-4 h-4 text-white/10" />
+          {/* ── BODY ── */}
+          <div className="contest-card-body">
+            {/* Title + Tagline */}
+            <h3 className="contest-card-title">{contest.name}</h3>
+            <div className="contest-card-org">
+              <Gift className="w-3 h-3 text-white/35" />
+              <span>{contest.prize}{contest.prizeValue ? ` · ${contest.prizeValue}` : ""}</span>
             </div>
 
-            <div className="contest-progress">
-              <div className="flex justify-between items-center mb-2.5">
-                <span className="text-[9px] text-white/25 font-display uppercase tracking-[0.15em]">Capacity</span>
-                <span className="text-[11px] text-white/45 font-light font-mono">{contest.totalEntries}<span className="text-white/15"> / </span>{contest.maxSpots}</span>
-              </div>
-              <div className="contest-progress-track">
+            {/* Status pill row */}
+            <div className="contest-card-status-row">
+              {isUpcoming ? (
+                <span className="contest-card-pill contest-card-pill-muted">
+                  <Clock className="w-2.5 h-2.5" /> Upcoming
+                </span>
+              ) : isFull ? (
+                <span className="contest-card-pill contest-card-pill-muted">
+                  <CheckCircle2 className="w-2.5 h-2.5" /> Closed
+                </span>
+              ) : (
+                <span className="contest-card-pill contest-card-pill-active">
+                  <Zap className="w-2.5 h-2.5" /> Active
+                </span>
+              )}
+              <span className="contest-card-pill-dot">·</span>
+              <span className="contest-card-pill contest-card-pill-meta">
+                Online
+              </span>
+            </div>
+
+            {/* Capacity micro-bar */}
+            <div className="contest-card-capacity">
+              <div className="contest-card-capacity-track">
                 <motion.div
-                  className="contest-progress-fill"
+                  className="contest-card-capacity-fill"
                   initial={{ width: 0 }}
-                  animate={{ width: `${spotsPercent}%` }}
-                  transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                  animate={{ width: `${percent}%` }}
+                  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                 />
               </div>
             </div>
 
-            <div className="contest-footer">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-3 h-3 text-white/20" />
-                  <span className="text-[10px] text-white/25 font-light">{contest.spotsRemaining} spots left</span>
+            {/* 3-COL FOOTER (Attendees | Register by | Entry) */}
+            <div className="contest-card-meta-grid">
+              <div className="contest-card-meta-cell">
+                <div className="contest-card-meta-label">Attendees</div>
+                <div className="contest-card-meta-value">
+                  <div className="contest-card-avatars">
+                    {[0, 1, 2].map(i => (
+                      <span
+                        key={i}
+                        className="contest-card-avatar"
+                        style={{ background: `linear-gradient(135deg, rgba(255,255,255,${0.18 - i * 0.04}), rgba(255,255,255,${0.06 - i * 0.015}))` }}
+                      />
+                    ))}
+                  </div>
+                  <span className="contest-card-meta-num">{fmt(contest.totalEntries)}</span>
                 </div>
+              </div>
+              <div className="contest-card-meta-cell contest-card-meta-cell-divider">
+                <div className="contest-card-meta-label">{contest.endsAt ? "Ends by" : "Open"}</div>
+                <div className="contest-card-meta-value">
+                  <Calendar className="w-3 h-3 text-white/35" />
+                  <span className="contest-card-meta-num">{dateLabel}</span>
+                </div>
+              </div>
+              <div className="contest-card-meta-cell">
+                <div className="contest-card-meta-label">Spots Left</div>
+                <div className="contest-card-meta-value">
+                  <Users className="w-3 h-3 text-white/35" />
+                  <span className="contest-card-meta-num">{fmt(contest.spotsRemaining)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA + Countdown row */}
+            {!isUpcoming && !isFull && (
+              <div className="contest-card-cta-row">
                 {contest.endsAt && (
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-3 h-3 text-white/20" />
+                  <div className="contest-card-countdown">
+                    <Clock className="w-3 h-3 text-white/30" />
                     <CountdownTimer endsAt={contest.endsAt} compact />
                   </div>
                 )}
-              </div>
-              {!isUpcoming && !isFull && (
-                <div className="contest-enter-btn">
+                <div className="contest-card-cta">
                   <span>Enter</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </Link>
@@ -462,51 +527,46 @@ export default function Giveaway() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
+      <main className="relative z-10 pt-[70px] pb-16 sm:pb-24">
 
-        {/* ── Hero ── */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center py-20 sm:py-28 px-4">
-          <div className="glass-pill-badge inline-flex mb-6">
-            <Crown className="w-3 h-3 mr-2 text-white/60" />
-            Daily Prize Draws
+        {/* ── Compact Hero + Stats Strip (combined) ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="container mx-auto px-4 max-w-6xl pt-8 sm:pt-10 pb-6">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            {/* Left: title block */}
+            <div className="flex-1 min-w-0">
+              <div className="glass-pill-badge inline-flex mb-3">
+                <Crown className="w-3 h-3 mr-2 text-white/60" />
+                Daily Prize Draws
+              </div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white mb-2 leading-[1.1] tracking-tight">Contest Hub</h1>
+              <p className="text-white/45 text-xs sm:text-sm font-light leading-relaxed max-w-xl tracking-wide">
+                Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes.
+              </p>
+            </div>
+
+            {/* Right: inline stats strip */}
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1} className="grid grid-cols-4 gap-2 sm:gap-2.5 lg:max-w-md w-full">
+              {[
+                { label: "Active", value: activeCount, icon: <Zap className="w-3 h-3" /> },
+                { label: "Spots", value: totalSpots, icon: <Users className="w-3 h-3" /> },
+                { label: "Entries", value: totalEntries, icon: <Trophy className="w-3 h-3" /> },
+                { label: "Contests", value: contests.length, icon: <Target className="w-3 h-3" /> },
+              ].map((stat) => (
+                <div key={stat.label} className="rounded-xl px-2.5 py-2.5 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="text-white/30 mx-auto mb-1 flex justify-center">{stat.icon}</div>
+                  <AnimatedCounter value={stat.value} className="text-base sm:text-lg font-display font-light text-white block leading-none" />
+                  <div className="text-[8px] sm:text-[9px] text-white/30 uppercase tracking-[0.15em] font-display mt-1">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
           </div>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-light text-white mb-5 leading-tight tracking-tight">Contest Hub</h1>
-          <p className="text-white/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
-            Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes. Each contest has limited spots — act fast!
-          </p>
         </motion.div>
 
-        {/* ── Stats ── */}
-        <div className="container mx-auto px-4 max-w-5xl">
-          <section className="relative mb-12 sm:mb-16">
-            <FloatingParticles />
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-                {[
-                  { label: "Active", value: activeCount, icon: <Zap className="w-4 h-4" /> },
-                  { label: "Total Spots", value: totalSpots, icon: <Users className="w-4 h-4" /> },
-                  { label: "Entries", value: totalEntries, icon: <Trophy className="w-4 h-4" /> },
-                  { label: "Contests", value: contests.length, icon: <Target className="w-4 h-4" /> },
-                ].map((stat) => (
-                  <div key={stat.label} className="glass-card p-4 text-center">
-                    <div className="card-shine" />
-                    <div className="relative z-[2]">
-                      <div className="text-white/30 mx-auto mb-2 flex justify-center">{stat.icon}</div>
-                      <AnimatedCounter value={stat.value} className="text-xl sm:text-2xl font-display font-light text-white" />
-                      <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-1">{stat.label}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </section>
-        </div>
-
         {/* ── Section divider ── */}
-        <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-8">
+        <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-4">
           <GlowLine />
 
-          <section className="py-14 sm:py-20 relative">
+          <section className="py-6 sm:py-10 relative">
             <div className="container mx-auto px-4 max-w-6xl">
 
               {/* Entry code checker */}
