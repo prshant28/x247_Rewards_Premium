@@ -6479,7 +6479,7 @@
 .pricing-hero-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(44px, 7vw, 88px);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.0;
   letter-spacing: -0.04em;
   color: hsl(var(--foreground));
@@ -8098,7 +8098,7 @@
 /* Identity */
 .pub-name {
   font-family: 'Syne', sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: clamp(1.7rem, 5vw, 2.3rem);
   color: rgba(255,255,255,0.95);
   letter-spacing: -0.03em;
@@ -11117,7 +11117,7 @@
 .hiw-hero-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(3rem, 8vw, 5.5rem);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.04em;
   line-height: 1.0;
   color: white;
@@ -11171,8 +11171,9 @@
 }
 .hiw-section--alt {
   background: linear-gradient(180deg, rgba(255,255,255,0.012) 0%, rgba(255,255,255,0.006) 100%);
-  border-top: 1px solid rgba(255,255,255,0.045);
-  border-bottom: 1px solid rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.045);
+  border-radius: 24px;
+  margin-inline: clamp(16px, 3vw, 40px);
 }
 
 /* Section header */
@@ -11202,7 +11203,7 @@
 .hiw-section-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1.1;
   color: white;
@@ -11844,7 +11845,7 @@
 .hiw-cta-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 800;
+  font-weight: 500;
   letter-spacing: -0.04em;
   line-height: 1.05;
   color: white;
@@ -14337,8 +14338,13 @@ svg.lucide,
 [data-light] .chatbot-panel li,
 [data-light] .chatbot-panel a,
 [data-light] .chatbot-panel label,
-[data-light] .chatbot-panel small {
+[data-light] .chatbot-panel small,
+[data-light] .chatbot-panel strong,
+[data-light] .chatbot-panel em,
+[data-light] .chatbot-panel code,
+[data-light] .chatbot-panel pre {
   color: rgba(255, 255, 255, 0.82) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.82) !important;
 }
 /* Headings already covered by earlier rule, keep them brighter */
 [data-light] .chatbot-panel h1,
@@ -14346,6 +14352,7 @@ svg.lucide,
 [data-light] .chatbot-panel h3,
 [data-light] .chatbot-panel h4 {
   color: rgba(255, 255, 255, 0.95) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.95) !important;
 }
 /* SVG icons inside panel */
 [data-light] .chatbot-panel svg {
@@ -14355,10 +14362,12 @@ svg.lucide,
 [data-light] .chatbot-panel input,
 [data-light] .chatbot-panel textarea {
   color: rgba(255, 255, 255, 0.9) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.9) !important;
 }
 [data-light] .chatbot-panel input::placeholder,
 [data-light] .chatbot-panel textarea::placeholder {
   color: rgba(255, 255, 255, 0.35) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.35) !important;
 }
 
 /* ============================================================
@@ -15684,8 +15693,7 @@ button, [role="button"] {
 /* ── Section alternating bg ── */
 [data-light] .hiw-section--alt {
   background: linear-gradient(180deg, hsl(var(--foreground) / 0.025) 0%, hsl(var(--foreground) / 0.010) 100%) !important;
-  border-top-color: hsl(var(--foreground) / 0.07) !important;
-  border-bottom-color: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.07) !important;
 }
 
 /* ── Section headings ── */
