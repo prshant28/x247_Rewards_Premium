@@ -13260,6 +13260,21 @@ button[data-variant="ghost"]:hover,
   border-color: hsl(var(--foreground) / 0.16) !important;
 }
 
+/* 404 number — light themes keep full contrast, no fade-to-near-invisible */
+[data-light] .x404-num-char {
+  background: linear-gradient(180deg,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--foreground) / 0.92) 35%,
+    hsl(var(--foreground) / 0.82) 65%,
+    hsl(var(--foreground) / 0.72) 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+[data-light] .x404-sparkle {
+  color: hsl(var(--foreground) / 0.65) !important;
+}
+
 
 /* ============================================================
    GLOBAL ICON NORMALIZATION — Site-wide consistency in all themes
@@ -14742,7 +14757,7 @@ svg.lucide,
 
 /* Base: always fully centered, no horizontal overflow */
 .x404 {
-  padding: 48px 16px 64px;
+  padding: 96px 16px 64px;
   box-sizing: border-box;
 }
 
@@ -14815,9 +14830,8 @@ svg.lucide,
 /* ── Mobile (< 480px) ── */
 @media (max-width: 480px) {
   .x404 {
-    padding: 32px 12px 48px;
+    padding: 72px 12px 48px;
     align-items: flex-start;
-    padding-top: 48px;
   }
 
   .x404-badge {
