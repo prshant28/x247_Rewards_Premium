@@ -14904,7 +14904,7 @@ svg.lucide,
 /* 404 number */
 .x404-number {
   font-size: clamp(88px, 22vw, 220px);
-  letter-spacing: -0.06em;
+  letter-spacing: 0em;
   margin-bottom: 12px;
 }
 
