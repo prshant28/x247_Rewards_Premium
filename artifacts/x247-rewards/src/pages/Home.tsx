@@ -484,7 +484,7 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
 
 const rewardItems = [
   { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
-  { tier: "Gift Cards", title: "₹500 – ₹2,000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/reward-gift.png" },
+  { tier: "Gift Cards", title: "₹500 – ₹2,000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/giftcards-visual.png" },
   { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
   { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-trophy.png" },
   { tier: "Tech Prizes", title: "Wireless Earbuds", desc: "Premium wireless earbuds and tech gadgets — weekly drops for top entries.", icon: <Headphones className="w-5 h-5" />, img: "/images/reward-headphones.png" },
@@ -850,6 +850,49 @@ export default function Home() {
         </section>
 
         <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-8">
+
+        <GlowLine />
+
+        {/* ── Rewards Visual Showcase ── */}
+        <section className="py-10 sm:py-16 relative overflow-hidden">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+              className="relative"
+            >
+              <div className="absolute inset-x-12 inset-y-6 bg-white/[0.012] rounded-3xl blur-3xl -z-10 pointer-events-none" />
+              <div className="relative rounded-3xl overflow-hidden border border-white/[0.07] shadow-[0_8px_80px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.06)]">
+                <img
+                  src="/images/hero-rewards-visual.png"
+                  alt="Premium rewards — trophies, gift cards, and tech prizes"
+                  className="w-full object-cover"
+                  style={{ maxHeight: 420, objectPosition: "center 30%" }}
+                  loading="eager"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-black/35 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+                  <div>
+                    <div className="glass-pill-badge mb-3 inline-flex w-auto">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                      Real Prizes. Daily Draws.
+                    </div>
+                    <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
+                    <p className="text-sm sm:text-base text-white/55 font-light max-w-md leading-relaxed">Gift cards, tech gadgets, swag kits &amp; cash prizes — drawn daily from all verified entries.</p>
+                  </div>
+                  <Link href="/giveaway" className="premium-btn premium-btn-lg glass-btn-effect group shrink-0 inline-flex items-center">
+                    <span className="relative z-[2]">Enter Now</span>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
         <GlowLine />
 
@@ -1357,7 +1400,7 @@ export default function Home() {
                     </div>
                     <div className="lg:w-[280px] w-full shrink-0">
                       <div className="relative rounded-2xl overflow-hidden aspect-square max-w-[220px] mx-auto border border-white/[0.06]">
-                        <img src="/images/abstract-sphere.png" alt="" className="w-full h-full object-cover opacity-25" loading="lazy" />
+                        <img src="/images/community-visual.png" alt="Community network" className="w-full h-full object-cover opacity-40" loading="lazy" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
                         <div className="absolute inset-0 flex items-center justify-center">
                           <motion.div
