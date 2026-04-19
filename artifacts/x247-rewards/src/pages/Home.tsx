@@ -255,7 +255,7 @@ function HeroBannerSlider() {
                 <div className="absolute inset-0 hero-banner-slide-bg pointer-events-none" />
                 <div className="absolute -top-8 -right-8 w-64 h-64 sm:w-80 sm:h-80 opacity-[0.03] pointer-events-none">
                   <div className="w-full h-full flex items-center justify-center">
-                    {React.cloneElement(slide.icon as React.ReactElement, { className: "w-full h-full" })}
+                    {React.cloneElement(slide.icon as React.ReactElement<{ className?: string }>, { className: "w-full h-full" })}
                   </div>
                 </div>
                 <div className="absolute bottom-0 left-0 w-40 h-40 opacity-[0.015] pointer-events-none blur-3xl bg-white rounded-full" />

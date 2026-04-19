@@ -632,7 +632,7 @@ function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, 
   onMarkRead: (id: string) => void;
   onMarkAllRead: () => void;
   onClose: () => void;
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -2066,7 +2066,7 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
         const reg = await navigator.serviceWorker.ready;
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(vapidKey),
+          applicationServerKey: urlBase64ToUint8Array(vapidKey) as unknown as ArrayBuffer,
         });
         await subscribePush(sub);
         setPushEnabled(true);

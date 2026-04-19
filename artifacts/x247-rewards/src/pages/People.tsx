@@ -13,7 +13,7 @@ import {
 } from "@/lib/api";
 
 /* ── Tier styling helpers ───────────────────────────────── */
-const TIER_ICON: Record<string, React.FC<{ className?: string }>> = {
+const TIER_ICON: Record<string, React.FC<{ className?: string; style?: React.CSSProperties }>> = {
   free: Zap, silver: Star, gold: Crown, black: Diamond,
 };
 const TIER_COLOR: Record<string, string> = {

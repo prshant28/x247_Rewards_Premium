@@ -213,7 +213,7 @@ const CardNav = ({
       }
       setIsHamburgerOpen(true);
       setIsExpanded(true);
-      tl.play(0);
+      tl?.play(0);
     } else {
       closeMenu();
     }
