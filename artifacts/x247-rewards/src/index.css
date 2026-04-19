@@ -3231,10 +3231,10 @@
 
 /* ===== Title + subtitle ===== */
 .x404-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
   font-size: clamp(22px, 3.5vw, 32px);
   font-weight: 300;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   margin: 0 0 12px;
   background: linear-gradient(160deg,
     hsl(var(--foreground)) 0%,
@@ -3245,7 +3245,7 @@
   -webkit-text-fill-color: transparent;
 }
 .x404-title-italic {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
   font-style: italic;
   font-weight: 300;
   display: inline-block;
@@ -3257,14 +3257,14 @@
   line-height: 1.15;
 }
 .x404-subtitle {
-  font-family: 'Syne', sans-serif;
-  font-size: 13.5px;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-size: 14px;
   font-weight: 300;
   color: hsl(var(--foreground) / 0.55);
   line-height: 1.65;
   margin: 0 auto 18px;
   max-width: 480px;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 
 /* ===== Terminal display ===== */
@@ -3391,7 +3391,7 @@
   background: hsl(var(--foreground) / 0.04);
   border: 1px solid hsl(var(--foreground) / 0.1);
   color: hsl(var(--foreground));
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
   font-size: 13px;
   outline: none;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
@@ -3452,7 +3452,7 @@
 }
 .x404-search-result:last-child { border-bottom: none; }
 .x404-search-result:hover { background: hsl(var(--foreground) / 0.04); }
-.x404-search-result-title { font-weight: 500; }
+.x404-search-result-title { font-family: 'Alegreya Sans SC', 'Syne', sans-serif; font-weight: 300; }
 .x404-search-result-desc {
   margin-left: auto;
   margin-right: 4px;
@@ -3593,21 +3593,23 @@
 }
 .x404-suggest-text { flex: 1; min-width: 0; }
 .x404-suggest-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 300;
   color: hsl(var(--foreground) / 0.92);
   margin-bottom: 2px;
+  letter-spacing: 0.01em;
 }
 .x404-suggest-desc {
-  font-family: 'Poppins', sans-serif;
-  font-size: 10.5px;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-size: 11px;
   font-weight: 300;
   color: hsl(var(--foreground) / 0.5);
   line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.01em;
 }
 .x404-suggest-arrow {
   color: hsl(var(--foreground) / 0.5);
@@ -11459,17 +11461,18 @@
 .hiw-mechanic-title {
   font-family: 'Syne', sans-serif;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 300;
   color: rgba(255,255,255,0.85);
   margin-bottom: 6px;
   letter-spacing: -0.01em;
 }
 .hiw-mechanic-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255,255,255,0.38);
-  line-height: 1.6;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
+  letter-spacing: 0.01em;
 }
 
 /* ── Draw section ── */
@@ -11818,18 +11821,19 @@
 .hiw-partner-title {
   font-family: 'Syne', sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 300;
   color: rgba(255,255,255,0.85);
   letter-spacing: -0.01em;
   margin: 0 0 8px;
 }
 .hiw-partner-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.55);
   line-height: 1.65;
   margin: 0;
+  letter-spacing: 0.01em;
 }
 
 /* ── FAQ ── */

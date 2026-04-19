@@ -121,7 +121,7 @@ export default function NotFound() {
           >
             <span className="x404-num-char">4</span>
             <span className="x404-num-char x404-num-zero">
-              <Sparkles className="x404-sparkle" />0 
+              <Sparkles className="x404-sparkle" />0
             </span>
             <span className="x404-num-char">4</span>
           </motion.h1>
