@@ -972,49 +972,6 @@ export default function Home() {
 
         <GlowLine />
 
-        {/* ── Rewards Visual Showcase ── */}
-        <section className="py-10 sm:py-16 relative overflow-hidden">
-          <div className="container mx-auto px-4 max-w-5xl">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative"
-            >
-              <div className="absolute inset-x-12 inset-y-6 bg-white/[0.012] rounded-3xl blur-3xl -z-10 pointer-events-none" />
-              <div className="rewards-showcase-card relative rounded-3xl overflow-hidden border border-foreground/[0.08] shadow-[0_8px_80px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)]">
-                <img
-                  src="/images/hero-rewards-visual.png"
-                  alt="Premium rewards — trophies, gift cards, and tech prizes"
-                  className="w-full object-cover"
-                  style={{ maxHeight: 420, objectPosition: "center 30%" }}
-                  loading="eager"
-                  decoding="async"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-black/50 pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
-                  <div>
-                    <div className="glass-pill-badge mb-3 inline-flex w-auto">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
-                      Real Prizes. Daily Draws.
-                    </div>
-                    <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-foreground mb-2 tracking-tight leading-tight">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
-                    <p className="text-sm sm:text-base text-foreground/55 font-light max-w-md leading-relaxed">Gift cards, tech gadgets, swag kits &amp; cash prizes — drawn daily from all verified entries.</p>
-                  </div>
-                  <Link href="/giveaway" className="premium-btn premium-btn-lg glass-btn-effect group shrink-0 inline-flex items-center">
-                    <span className="relative z-[2]">Enter Now</span>
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        <GlowLine />
-
         <section id="how-it-works" className="py-20 sm:py-32 relative">
           <FloatingParticles />
           <GlowOrb className="top-32 left-[5%] hidden lg:block" size={180} opacity={0.025} />
@@ -1120,6 +1077,49 @@ export default function Home() {
                 ))}
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        <GlowLine />
+
+        {/* ── Rewards Visual Showcase ── */}
+        <section className="py-4 sm:py-8 relative overflow-hidden">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="glass-card !shadow-none !p-0 overflow-hidden">
+                <div className="rewards-showcase-card relative overflow-hidden">
+                  <img
+                    src="/images/hero-rewards-visual.png"
+                    alt="Premium rewards — trophies, gift cards, and tech prizes"
+                    className="w-full object-cover"
+                    style={{ maxHeight: 420, objectPosition: "center 30%" }}
+                    loading="eager"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5">
+                    <div>
+                      <div className="glass-pill-badge mb-3 inline-flex w-auto">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                        Real Prizes. Daily Draws.
+                      </div>
+                      <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight drop-shadow-lg">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
+                      <p className="text-sm sm:text-base text-white/80 font-light max-w-md leading-relaxed drop-shadow">Gift cards, tech gadgets, swag kits &amp; cash prizes — drawn daily from all verified entries.</p>
+                    </div>
+                    <Link href="/giveaway" className="showcase-enter-btn group shrink-0 inline-flex items-center justify-center gap-2 h-12 px-7 rounded-2xl font-medium text-sm tracking-wide transition-all duration-300 bg-white text-black border border-white/20 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
+                      <span>Enter Now</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -1396,13 +1396,13 @@ export default function Home() {
                     <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-2">Ready to start earning?</h3>
                     <p className="text-sm text-foreground/50 font-light">Join the partner program and unlock your personal analytics dashboard.</p>
                   </div>
-                  <div className="flex gap-3 shrink-0">
-                    <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group">
-                      <BarChart3 className="w-4 h-4 mr-2 relative z-[2]" />
+                  <div className="flex flex-wrap gap-2 sm:gap-3 shrink-0 w-full sm:w-auto">
+                    <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group flex-1 sm:flex-initial whitespace-nowrap">
+                      <BarChart3 className="w-4 h-4 mr-2 relative z-[2] shrink-0" />
                       <span className="relative z-[2]">Open Dashboard</span>
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2] shrink-0" />
                     </BorderGlow>
-                    <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-md premium-btn-ghost glass-btn-effect group hidden sm:flex">
+                    <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-md premium-btn-ghost glass-btn-effect group flex-1 sm:flex-initial whitespace-nowrap">
                       <span className="relative z-[2]">Become a Partner</span>
                     </BorderGlow>
                   </div>

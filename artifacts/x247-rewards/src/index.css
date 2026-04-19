@@ -16865,6 +16865,43 @@ svg.lucide,
   filter: saturate(1.12) contrast(1.08) brightness(0.96) !important;
 }
 
+/* ── Force carousel cards to stay DARK in light mode ──
+   The reward images and white text patch only look correct on dark cards.
+   Override the light-theme glass-card background specifically for the carousel.  */
+[data-light] [aria-label="Prizes and rewards"] .glass-card,
+[data-theme="pristine-light"] [aria-label="Prizes and rewards"] .glass-card {
+  background: rgba(10, 10, 10, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.25),
+    0 1px 3px rgba(0, 0, 0, 0.15) !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .glass-card::before,
+[data-light] [aria-label="Prizes and rewards"] .glass-card::after,
+[data-theme="pristine-light"] [aria-label="Prizes and rewards"] .glass-card::before,
+[data-theme="pristine-light"] [aria-label="Prizes and rewards"] .glass-card::after {
+  background: none !important;
+  border: none !important;
+}
+/* Restore dark image fade to match the dark card body */
+[data-light] [aria-label="Prizes and rewards"] .reward-img-fade,
+[data-theme="pristine-light"] [aria-label="Prizes and rewards"] .reward-img-fade {
+  background: linear-gradient(to top,
+    rgba(10, 10, 10, 0.92) 0%,
+    rgba(10, 10, 10, 0.45) 35%,
+    rgba(10, 10, 10, 0.08) 65%,
+    transparent 100%) !important;
+}
+/* Raise opacity of adjacent/distant cards so they're clearly visible */
+[data-light] [aria-label="Prizes and rewards"] .carousel-card-adjacent,
+[data-theme="pristine-light"] [aria-label="Prizes and rewards"] .carousel-card-adjacent {
+  opacity: 0.88 !important;
+}
+[data-light] [aria-label="Prizes and rewards"] .carousel-card-distant,
+[data-theme="pristine-light"] [aria-label="Prizes and rewards"] .carousel-card-distant {
+  opacity: 0.72 !important;
+}
+
 
 /* ──────────────────────────────────────────────────────────────────────
    THEME-AWARE MINI CHARTS — activity heatmap + bar chart
