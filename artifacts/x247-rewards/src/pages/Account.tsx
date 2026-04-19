@@ -2333,73 +2333,123 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
   const closeNotifs = useCallback(() => setShowNotifs(false), []);
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0.5}>
-      <div className="dash-frame">
-        <div className="dash-frame-glow" />
-        <div className="dash-frame-inner">
+    <div className="dash-frame">
+      <div className="dash-frame-glow" />
+      <div className="dash-frame-inner">
 
-          <div className="dash-topbar">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className={`dash-avatar ${user.membershipTier === "black" ? "dash-avatar-black" : ""}`}>
+        {/* ── Sticky topbar ────────────────────────────────────── */}
+        <header className="dash-topbar">
+          <div className="flex items-center gap-3">
+            <div className={`dash-avatar ${user.membershipTier === "black" ? "dash-avatar-black" : ""}`}>
+              {user.avatarUrl ? (
+                <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-sm font-display font-semibold text-white/70 select-none">
+                  {user.fullName?.charAt(0).toUpperCase() || "?"}
+                </span>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-sm font-display font-medium text-white truncate">{user.fullName}</h2>
+                {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-white/45 shrink-0" />}
+                {user.membershipTier && user.membershipTier !== "free" && (
+                  <span className={`acct-pro-badge acct-pro-${user.membershipTier}`}>
+                    {user.membershipTier === "black" ? <Diamond className="w-2.5 h-2.5" /> : user.membershipTier === "gold" ? <Crown className="w-2.5 h-2.5" /> : <Star className="w-2.5 h-2.5" />}
+                    <span>{user.membershipTier === "black" ? "Elite" : user.membershipTier === "gold" ? "Pro" : "Plus"}</span>
+                  </span>
+                )}
+              </div>
+              <div className="text-[10px] text-white/35 font-light truncate hidden sm:block">{user.email} · Since {memberSince}</div>
+            </div>
+          </div>
+
+          <div className="dash-topbar-actions">
+            <div className="relative" ref={notifContainerRef}>
+              <button onClick={toggleNotifs} className="dash-topbar-btn notif-bell-btn" title="Notifications">
+                <Bell className="w-3.5 h-3.5" />
+                {notifs.unread > 0 && <span className="notif-badge-count">{notifs.unread}</span>}
+              </button>
+              <AnimatePresence>
+                {showNotifs && (
+                  <NotificationPanel
+                    notifications={notifs.items}
+                    onMarkRead={notifs.markRead}
+                    onMarkAllRead={notifs.markAllRead}
+                    onClose={closeNotifs}
+                    containerRef={notifContainerRef}
+                  />
+                )}
+              </AnimatePresence>
+            </div>
+            <button onClick={onLogout} className="dash-topbar-btn" title="Sign out">
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </header>
+
+        <AnimatePresence>
+          {showStreakCelebration && (
+            <StreakCelebration streak={streak} onDone={() => setShowStreakCelebration(false)} />
+          )}
+        </AnimatePresence>
+
+        <ToastNotifications toast={notifs.latestToast} onDismiss={notifs.dismissToast} />
+
+        {/* ── Main layout: sidebar + content ───────────────────── */}
+        <div className="dash-layout">
+
+          {/* Desktop sidebar */}
+          <nav className="dash-sidebar" aria-label="Dashboard navigation">
+
+            {/* Mini user profile */}
+            <div className="dash-sidebar-profile">
+              <div className={`dash-sidebar-avatar ${user.membershipTier === "black" ? "dash-avatar-black" : ""}`}>
                 {user.avatarUrl ? (
                   <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-base font-display font-semibold text-white/70 tracking-tight select-none">
+                  <span className="dash-sidebar-avatar-letter">
                     {user.fullName?.charAt(0).toUpperCase() || "?"}
                   </span>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm sm:text-base font-display font-medium text-white truncate">{user.fullName}</h2>
-                  {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-white/50 shrink-0" />}
-                  {user.membershipTier && user.membershipTier !== "free" && (
-                    <span className={`acct-pro-badge acct-pro-${user.membershipTier}`}>
-                      {user.membershipTier === "black" ? <Diamond className="w-2.5 h-2.5" /> : user.membershipTier === "gold" ? <Crown className="w-2.5 h-2.5" /> : <Star className="w-2.5 h-2.5" />}
-                      <span>{user.membershipTier === "black" ? "Elite" : user.membershipTier === "gold" ? "Pro" : "Plus"}</span>
-                    </span>
-                  )}
+              <div className="dash-sidebar-user-info">
+                <div className="dash-sidebar-user-name">{user.fullName?.split(" ")[0]}</div>
+                <div className="dash-sidebar-user-tier">
+                  {user.membershipTier === "black" ? "Elite Member" : user.membershipTier === "gold" ? "Gold Member" : user.membershipTier === "silver" ? "Silver Member" : "Free Member"}
                 </div>
-                <div className="text-[10px] text-white/40 font-light truncate">{user.email} · Joined {memberSince}</div>
               </div>
             </div>
 
-            <div className="dash-topbar-actions">
-              <div className="relative" ref={notifContainerRef}>
-                <button onClick={toggleNotifs} className="dash-topbar-btn notif-bell-btn" title="Notifications">
-                  <Bell className="w-3.5 h-3.5" />
-                  {notifs.unread > 0 && (
-                    <span className="notif-badge-count">{notifs.unread}</span>
-                  )}
+            <div className="dash-sidebar-divider" />
+
+            <div className="dash-sidebar-section">Navigation</div>
+
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`dash-nav-item ${isActive ? "dash-nav-active" : ""}`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
                 </button>
-                <AnimatePresence>
-                  {showNotifs && (
-                    <NotificationPanel
-                      notifications={notifs.items}
-                      onMarkRead={notifs.markRead}
-                      onMarkAllRead={notifs.markAllRead}
-                      onClose={closeNotifs}
-                      containerRef={notifContainerRef}
-                    />
-                  )}
-                </AnimatePresence>
-              </div>
-              <button onClick={onLogout} className="dash-topbar-btn" title="Sign out">
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
+              );
+            })}
 
-          <AnimatePresence>
-            {showStreakCelebration && (
-              <StreakCelebration streak={streak} onDone={() => setShowStreakCelebration(false)} />
-            )}
-          </AnimatePresence>
+            <div className="dash-sidebar-divider" style={{ marginTop: "auto" }} />
+            <button onClick={onLogout} className="dash-nav-item dash-nav-logout">
+              <LogOut className="w-4 h-4" />
+              <span>Sign Out</span>
+            </button>
+          </nav>
 
-          <ToastNotifications toast={notifs.latestToast} onDismiss={notifs.dismissToast} />
-
-          <div className="dash-layout">
-            <nav className="dash-sidebar">
+          {/* Mobile tab row */}
+          <div className="dash-mobile-tabs">
+            <div className="acct-tabs-inner">
               {TABS.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -2407,50 +2457,32 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`dash-nav-item ${isActive ? "dash-nav-active" : ""}`}
+                    className={`acct-tab ${isActive ? "acct-tab-active" : ""}`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span>{tab.label}</span>
+                    <span className="hidden sm:inline">{tab.label}</span>
                   </button>
                 );
               })}
-            </nav>
-
-            <div className="dash-mobile-tabs">
-              <div className="acct-tabs-inner">
-                {TABS.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`acct-tab ${isActive ? "acct-tab-active" : ""}`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span className="hidden sm:inline">{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="dash-content">
-              <AnimatePresence mode="wait">
-                {activeTab === "overview" && <OverviewTab user={user} entries={entries} streak={streak} onChangeTab={setActiveTab} />}
-                {activeTab === "profile" && <ProfileTab user={user} onUpdate={handleUserUpdate} />}
-                {activeTab === "subscription" && <SubscriptionTab user={user} onUpdate={handleUserUpdate} />}
-                {activeTab === "entries" && <EntriesTab entries={entries} />}
-                {activeTab === "referrals" && <ReferralsTab user={user} />}
-                {activeTab === "billing" && <BillingTab user={user} />}
-                {activeTab === "settings" && <SettingsTab user={user} onLogout={onLogout} />}
-              </AnimatePresence>
             </div>
           </div>
 
+          {/* Tab content */}
+          <div className="dash-content">
+            <AnimatePresence mode="wait">
+              {activeTab === "overview" && <OverviewTab user={user} entries={entries} streak={streak} onChangeTab={setActiveTab} />}
+              {activeTab === "profile" && <ProfileTab user={user} onUpdate={handleUserUpdate} />}
+              {activeTab === "subscription" && <SubscriptionTab user={user} onUpdate={handleUserUpdate} />}
+              {activeTab === "entries" && <EntriesTab entries={entries} />}
+              {activeTab === "referrals" && <ReferralsTab user={user} />}
+              {activeTab === "billing" && <BillingTab user={user} />}
+              {activeTab === "settings" && <SettingsTab user={user} onLogout={onLogout} />}
+            </AnimatePresence>
+          </div>
         </div>
+
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -2537,10 +2569,11 @@ export default function Account() {
         </div>
       )}
 
-      <main className="relative z-10 pt-24 pb-20 sm:pt-32 sm:pb-32">
-        <div className={`container mx-auto px-4 sm:px-6 lg:px-8 ${user ? "max-w-6xl" : "max-w-7xl"}`}>
+      <main className={`relative z-10 ${user ? "pt-[70px]" : "pt-24 pb-20 sm:pt-32 sm:pb-32"}`}>
+        <div className={user ? "w-full" : "container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"}>
 
-          {/* Hero Banner */}
+          {/* Hero Banner — guest only */}
+          {!user && (
           <motion.div
             initial="hidden"
             animate="visible"
@@ -2548,7 +2581,7 @@ export default function Account() {
             custom={0}
             className="text-center mb-8 sm:mb-12"
           >
-            <div className="acct-hero-banner" style={{ overflow: user ? "hidden" : "visible" }}>
+            <div className="acct-hero-banner">
               <div className="acct-hero-banner-glow" />
               <div className="acct-hero-banner-inner">
                 <motion.div
@@ -2558,10 +2591,9 @@ export default function Account() {
                   className="glass-pill-badge mb-4 sm:mb-6"
                 >
                   <Shield className="w-3 h-3 text-white/50 mr-2" />
-                  {user ? "My Account" : "X247 Rewards Platform"}
+                  X247 Rewards Platform
                 </motion.div>
 
-                {!user && (
                   <>
                     <motion.h1
                       initial={{ opacity: 0, y: 24 }}
@@ -2671,40 +2703,33 @@ export default function Account() {
                       </aside>
                     </div>
                   </>
-                )}
-
-                {user && (
-                  <motion.p
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    className="text-xs sm:text-sm text-white/30 font-light max-w-md mx-auto leading-relaxed"
-                  >
-                    Manage your entries, membership &amp; rewards in one place
-                  </motion.p>
-                )}
               </div>
             </div>
           </motion.div>
+          )}
 
-          {loading ? (
+          {!user && <OurPartnersSection />}
+
+          {loading && (
             <div className="flex justify-center py-20">
               <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
             </div>
-          ) : user ? (
+          )}
+
+          {user && !loading && (
             <Dashboard user={user} entries={entries} onLogout={handleLogout} />
-          ) : (
-            <OurPartnersSection />
           )}
 
         </div>
       </main>
 
-      <SiteFooter links={[
-        { label: "Home", href: "/" },
-        { label: "Giveaway", href: "/giveaway" },
-        { label: "Winners", href: "/winners" },
-      ]} />
+      {(!user || loading) && (
+        <SiteFooter links={[
+          { label: "Home", href: "/" },
+          { label: "Giveaway", href: "/giveaway" },
+          { label: "Winners", href: "/winners" },
+        ]} />
+      )}
     </div>
   );
 }
