@@ -3231,7 +3231,7 @@
 
 /* ===== Title + subtitle ===== */
 .x404-title {
-  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: clamp(22px, 3.5vw, 32px);
   font-weight: 300;
   letter-spacing: -0.01em;
@@ -3245,7 +3245,7 @@
   -webkit-text-fill-color: transparent;
 }
 .x404-title-italic {
-  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-style: italic;
   font-weight: 300;
   display: inline-block;
@@ -3257,14 +3257,14 @@
   line-height: 1.15;
 }
 .x404-subtitle {
-  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 300;
   color: hsl(var(--foreground) / 0.55);
   line-height: 1.65;
   margin: 0 auto 18px;
   max-width: 480px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 /* ===== Terminal display ===== */
@@ -3391,7 +3391,7 @@
   background: hsl(var(--foreground) / 0.04);
   border: 1px solid hsl(var(--foreground) / 0.1);
   color: hsl(var(--foreground));
-  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   outline: none;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
@@ -3452,7 +3452,7 @@
 }
 .x404-search-result:last-child { border-bottom: none; }
 .x404-search-result:hover { background: hsl(var(--foreground) / 0.04); }
-.x404-search-result-title { font-family: 'Alegreya Sans SC', 'Syne', sans-serif; font-weight: 300; }
+.x404-search-result-title { font-family: 'Syne', sans-serif; font-weight: 300; }
 .x404-search-result-desc {
   margin-left: auto;
   margin-right: 4px;
@@ -3593,15 +3593,15 @@
 }
 .x404-suggest-text { flex: 1; min-width: 0; }
 .x404-suggest-title {
-  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: hsl(var(--foreground) / 0.92);
   margin-bottom: 2px;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 .x404-suggest-desc {
-  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 11px;
   font-weight: 300;
   color: hsl(var(--foreground) / 0.5);
@@ -7184,7 +7184,7 @@
   line-height: 1.4;
 }
 .pricing-faq-a {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 11.5px;
   font-weight: 300;
   color: hsl(var(--foreground)/0.55);
@@ -8190,7 +8190,7 @@
   flex-shrink: 0;
 }
 .pub-bio {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -8391,7 +8391,7 @@
   margin-bottom: 3px;
 }
 .pub-badge-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 9px;
   font-weight: 300;
   color: rgba(255,255,255,0.40);
@@ -8431,7 +8431,7 @@
 }
 .pub-activity-text {
   font-size: 12px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
 }
@@ -8547,7 +8547,7 @@
   margin-bottom: 8px;
 }
 .pub-cta-sub {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -8884,7 +8884,7 @@
 @media (min-width: 640px) { .pub2-name { font-size: 32px; } }
 
 .pub2-bio-hero {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -9466,7 +9466,7 @@
   align-items: center;
   gap: 6px;
   color: rgba(255,255,255,0.55);
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 300;
   font-variant-numeric: tabular-nums;
@@ -9747,7 +9747,7 @@
   color: rgba(255,255,255,0.85);
 }
 .pub2-feat-badge-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -9883,7 +9883,7 @@
 }
 .pub-flip-back-emoji { font-size: 18px; line-height: 1; }
 .pub-flip-back-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 9px;
   font-weight: 300;
   color: rgba(255,255,255,0.50);
@@ -9939,7 +9939,7 @@
   color: rgba(255,255,255,0.65);
 }
 .pub2-timeline-sub {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 10px;
   font-weight: 300;
   color: rgba(255,255,255,0.30);
@@ -10037,7 +10037,7 @@
 }
 @media (min-width: 480px) { .pub2-cta-title { font-size: 26px; } }
 .pub2-cta-sub {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -10573,7 +10573,7 @@
   line-height: 1.1;
 }
 .pub2-feat-badge-v2-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -10973,7 +10973,7 @@
 }
 
 .pricing-bsc-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -10997,7 +10997,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11110,7 +11110,7 @@
 }
 
 .acct-bcs-sub {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11213,7 +11213,7 @@
   background-clip: text;
 }
 .hiw-hero-subtitle {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: clamp(14px, 2vw, 17px);
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11467,7 +11467,7 @@
   letter-spacing: -0.01em;
 }
 .hiw-mechanic-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11556,7 +11556,7 @@
   margin-bottom: 3px;
 }
 .hiw-draw-step-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 11.5px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11601,7 +11601,7 @@
   margin-bottom: 4px;
 }
 .hiw-draw-trust-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 11.5px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11827,7 +11827,7 @@
   margin: 0 0 8px;
 }
 .hiw-partner-desc {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11877,7 +11877,7 @@
 }
 .hiw-faq-a-inner {
   padding: 0 22px 20px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
@@ -11947,7 +11947,7 @@
   margin: 0 0 14px;
 }
 .hiw-cta-sub {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
