@@ -549,8 +549,7 @@ export default function Giveaway() {
             />
             <div className="relative z-[2] px-5 sm:px-9 py-8 sm:py-10 text-center">
               <div className="glass-pill-badge inline-flex mb-4">
-                <Crown className="w-3 h-3 mr-2 text-white/60" />
-                Daily Prize Draws
+               
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white mb-3 leading-[1.1] tracking-tight">Contest Hub</h1>
               <p className="text-white/50 text-xs sm:text-sm font-light leading-relaxed max-w-xl mx-auto tracking-wide mb-7">
@@ -653,7 +652,7 @@ export default function Giveaway() {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -6, scale: 0.98 }}
                           transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                          role="menu"
+                          role="dialog"
                           aria-label="Advanced filters"
                           className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl p-5 z-30"
                           style={{

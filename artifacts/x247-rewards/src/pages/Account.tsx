@@ -878,31 +878,72 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
       {/* ── Curved scallop divider ── */}
       <ScallopDivider label="Today's Snapshot" />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-7">
-        {[
-          { icon: Flame, label: "Day Streak", value: streak, sub: streak > 0 ? "🔥 Active" : "Start today", spark: sparkData, color: "text-orange-400/50" },
-          { icon: Trophy, label: "Total Entries", value: totalEntries, sub: `${entryLimit}/contest`, spark: sparkData, color: "text-white/25" },
-          { icon: CalendarDays, label: "Contests Entered", value: uniqueContests, sub: "All time", color: "text-white/25" },
-          { icon: Target, label: "Partners Done", value: totalPartners, sub: "Tasks completed", color: "text-white/25" },
-          { icon: InfinityIcon, label: "Monthly Left", value: monthlyRemaining, sub: `of ${monthlyCap} cap`, color: monthlyPct > 0.8 ? "text-red-400/50" : "text-white/25" },
-          { icon: Star, label: "Tier Rank", value: `#${tierRank}`, isText: true, sub: tierLabel + " member", color: "text-white/25" },
-        ].map((stat) => (
-          <div key={stat.label} className="acct-stat-card relative overflow-hidden">
-            <div className="flex items-center justify-between mb-4">
-              <stat.icon className={`w-4 h-4 ${stat.color}`} />
-              <span className="text-[9px] text-white/22 uppercase tracking-widest font-display leading-tight text-right max-w-[80px]">{stat.sub}</span>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-7">
+        {([
+          {
+            icon: Flame,
+            label: "Day Streak",
+            value: streak,
+            badge: streak > 0 ? "ACTIVE" : "START TODAY",
+            badgeKind: streak > 0 ? "active" : "dim",
+            iconClass: "acct-ico--fire",
+          },
+          {
+            icon: Trophy,
+            label: "Total Entries",
+            value: totalEntries,
+            badge: `${entryLimit}/CONTEST`,
+            badgeKind: "dim",
+            iconClass: "",
+          },
+          {
+            icon: CalendarDays,
+            label: "Contests Entered",
+            value: uniqueContests,
+            badge: "ALL TIME",
+            badgeKind: "dim",
+            iconClass: "",
+          },
+          {
+            icon: Target,
+            label: "Partners Done",
+            value: totalPartners,
+            badge: "TASKS COMPLETED",
+            badgeKind: "dim",
+            iconClass: "",
+          },
+          {
+            icon: InfinityIcon,
+            label: "Monthly Left",
+            value: monthlyRemaining,
+            badge: `OF ${monthlyCap} CAP`,
+            badgeKind: monthlyPct > 0.8 ? "warn" : "dim",
+            iconClass: monthlyPct > 0.8 ? "acct-ico--warn" : "",
+          },
+          {
+            icon: Star,
+            label: "Tier Rank",
+            value: `#${tierRank}`,
+            isText: true as const,
+            badge: `${tierLabel.toUpperCase()} MEMBER`,
+            badgeKind: tier === "black" || tier === "gold" ? "elite" : "dim",
+            iconClass: "",
+          },
+        ] as const).map((stat) => (
+          <div key={stat.label} className="acct-stat-card">
+            <div className="acct-stat-card-top">
+              <stat.icon className={`acct-stat-card-ico ${stat.iconClass}`} />
+              <span className={`acct-stat-bdg acct-stat-bdg--${stat.badgeKind}`}>
+                {stat.badgeKind !== "dim" && <span className="acct-stat-bdg-dot" />}
+                {stat.badge}
+              </span>
             </div>
-            {stat.isText ? (
-              <span className="text-2xl sm:text-3xl font-display font-light text-white block">{stat.value}</span>
+            {"isText" in stat && stat.isText ? (
+              <div className="acct-stat-card-num">{stat.value}</div>
             ) : (
-              <AnimatedCounter value={stat.value as number} className="text-2xl sm:text-3xl font-display font-light text-white block" />
+              <AnimatedCounter value={stat.value as number} className="acct-stat-card-num" />
             )}
-            <div className="text-[11px] text-white/35 font-light mt-2">{stat.label}</div>
-            {"spark" in stat && stat.spark && stat.spark.length >= 2 && (
-              <div className="absolute bottom-0 right-0 opacity-40 pointer-events-none">
-                <Sparkline data={stat.spark} width={70} height={28} />
-              </div>
-            )}
+            <div className="acct-stat-card-lbl">{stat.label}</div>
           </div>
         ))}
       </div>
