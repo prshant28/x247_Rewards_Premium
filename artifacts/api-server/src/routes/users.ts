@@ -321,7 +321,7 @@ router.put("/users/me/profile", async (req, res) => {
       return res.status(401).json({ error: "Session expired" });
     }
 
-    const { bio, avatarUrl, profileSlug, isPublic, selectedBadge } = req.body;
+    const { bio, avatarUrl, profileSlug, isPublic, selectedBadge, fullName, phone, city } = req.body;
 
     if (profileSlug !== undefined) {
       const slug = profileSlug.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30);
@@ -336,6 +336,9 @@ router.put("/users/me/profile", async (req, res) => {
     }
 
     const updateData: any = {};
+    if (fullName !== undefined) updateData.fullName = fullName.trim().slice(0, 80);
+    if (phone !== undefined) updateData.phone = phone.trim().slice(0, 20) || null;
+    if (city !== undefined) updateData.city = city.trim().slice(0, 50) || null;
     if (bio !== undefined) updateData.bio = bio.slice(0, 200);
     if (avatarUrl !== undefined) updateData.avatarUrl = avatarUrl;
     if (profileSlug !== undefined) updateData.profileSlug = profileSlug.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30);
@@ -369,6 +372,31 @@ router.put("/users/me/profile", async (req, res) => {
     });
   } catch (err) {
     console.error("Profile update error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.put("/users/me/change-password", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) return res.status(401).json({ error: "Not authenticated" });
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+    if (!session || new Date(session.expiresAt) < new Date()) return res.status(401).json({ error: "Session expired" });
+
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) return res.status(400).json({ error: "Both fields are required" });
+    if (newPassword.length < 6) return res.status(400).json({ error: "New password must be at least 6 characters" });
+
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) return res.status(400).json({ error: "Current password is incorrect" });
+
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await db.update(usersTable).set({ passwordHash: newHash }).where(eq(usersTable.id, session.userId));
+    return res.json({ success: true });
+  } catch (err) {
     return res.status(500).json({ error: "Server error" });
   }
 });

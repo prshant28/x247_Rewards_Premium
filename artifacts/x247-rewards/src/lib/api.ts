@@ -381,6 +381,9 @@ export function getUserTokenValue(): string | null {
 }
 
 export async function updateProfile(data: {
+  fullName?: string;
+  phone?: string;
+  city?: string;
   bio?: string;
   avatarUrl?: string;
   profileSlug?: string;
@@ -778,6 +781,25 @@ export async function getVapidPublicKey(): Promise<string> {
   if (!res.ok) return "";
   const data = await res.json();
   return data.publicKey || "";
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  const token = getUserToken();
+  if (!token) return { success: false, error: "Not authenticated" };
+  try {
+    const res = await fetch(`${API_BASE}/users/me/change-password`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      return { success: false, error: err.error || "Update failed" };
+    }
+    return { success: true };
+  } catch {
+    return { success: false, error: "Network error" };
+  }
 }
 
 export async function generateContestAI(input: { theme?: string; prize?: string; description?: string }): Promise<{ name: string; slug: string; description: string; prize: string; prizeValue: string; maxSpots: number }> {

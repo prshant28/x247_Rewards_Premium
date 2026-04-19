@@ -9,7 +9,8 @@ import {
   Palette, Check, Share2, Globe, Lock, BadgeCheck, Crown, Copy, ExternalLink,
   Edit3, Save, X, Award, CreditCard, Settings, LayoutDashboard, Zap,
   ChevronRight, Star, Bell, Key, Trash2, History, Rocket, Medal, TrendingDown,
-  CalendarDays, Infinity as InfinityIcon, Receipt, Diamond
+  CalendarDays, Infinity as InfinityIcon, Receipt, Diamond, Search, AlertTriangle,
+  CheckCircle2, XCircle, RefreshCw, Fingerprint, ChevronDown, ChevronUp
 } from "lucide-react";
 import {
   getCurrentUser, getUserEntries, loginUser, registerUser,
@@ -18,7 +19,7 @@ import {
   getNotifications, markNotificationRead, markAllNotificationsRead,
   getNotificationPreferences, updateNotificationPreferences,
   subscribePush, unsubscribePush, getVapidPublicKey,
-  getPartners, getReferralStats, getReferralProfile
+  getPartners, getReferralStats, getReferralProfile, changePassword
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import X247BlackCard from "@/components/X247BlackCard";
@@ -825,25 +826,52 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
   const monthlyPct = Math.min(1, monthlyUsed / Math.max(1, monthlyCap));
   const totalEntries = entries.length;
   const levelInfo = React.useMemo(() => getLevelInfo(totalEntries), [totalEntries]);
+  const uniqueContests = React.useMemo(() => new Set(entries.map((e: any) => e.contestName)).size, [entries]);
+  const monthlyRemaining = Math.max(0, monthlyCap - monthlyUsed);
 
   const { last7, sparkData, activityDates, thisWeekTotal, lastWeekTotal } = React.useMemo(
     () => buildEntryHistoryData(entries), [entries]
   );
   const weekTrend = thisWeekTotal > lastWeekTotal ? "up" : thisWeekTotal < lastWeekTotal ? "down" : "flat";
 
+  const TIER_RANKS: Record<string, number> = { free: 4, silver: 3, gold: 2, black: 1 };
+  const tierRank = TIER_RANKS[tier] ?? 4;
+
   return (
     <motion.div key="overview" variants={tabFade} initial="hidden" animate="visible" exit="exit">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-7">
+
+      {/* ── Welcome strip ── */}
+      <div className="acct-welcome-strip mb-6">
+        <div className="acct-welcome-strip-left">
+          <div className={`acct-welcome-tier-dot tier-dot-${tier}`} />
+          <div>
+            <div className="text-xs font-display font-light text-white/70">
+              Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, <span className="text-white">{user.fullName?.split(" ")[0]}</span>
+            </div>
+            <div className="text-[10px] text-white/30 font-light mt-0.5">Member since {memberSince} · {tierLabel} tier</div>
+          </div>
+        </div>
+        {tier !== "black" && (
+          <button onClick={() => onChangeTab?.("subscription")} className="acct-welcome-upgrade-btn">
+            <Zap className="w-3 h-3" />
+            <span>Upgrade</span>
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-7">
         {[
-          { icon: Flame, label: "Day Streak", value: streak, sub: streak > 0 ? "Active" : "Start today", spark: sparkData },
-          { icon: Trophy, label: "Total Entries", value: entries.length, sub: `${entryLimit}/contest`, spark: sparkData },
-          { icon: Target, label: "Partners Done", value: totalPartners, sub: "Completed" },
-          { icon: Star, label: "Current Tier", value: tierLabel, isText: true, sub: user.membershipTier === "free" ? "Upgrade available" : "Active" },
+          { icon: Flame, label: "Day Streak", value: streak, sub: streak > 0 ? "🔥 Active" : "Start today", spark: sparkData, color: "text-orange-400/50" },
+          { icon: Trophy, label: "Total Entries", value: totalEntries, sub: `${entryLimit}/contest`, spark: sparkData, color: "text-white/25" },
+          { icon: CalendarDays, label: "Contests Entered", value: uniqueContests, sub: "All time", color: "text-white/25" },
+          { icon: Target, label: "Partners Done", value: totalPartners, sub: "Tasks completed", color: "text-white/25" },
+          { icon: InfinityIcon, label: "Monthly Left", value: monthlyRemaining, sub: `of ${monthlyCap} cap`, color: monthlyPct > 0.8 ? "text-red-400/50" : "text-white/25" },
+          { icon: Star, label: "Tier Rank", value: `#${tierRank}`, isText: true, sub: tierLabel + " member", color: "text-white/25" },
         ].map((stat) => (
           <div key={stat.label} className="acct-stat-card relative overflow-hidden">
             <div className="flex items-center justify-between mb-4">
-              <stat.icon className="w-5 h-5 text-white/25" />
-              <span className="text-[9px] text-white/25 uppercase tracking-widest font-display">{stat.sub}</span>
+              <stat.icon className={`w-4 h-4 ${stat.color}`} />
+              <span className="text-[9px] text-white/22 uppercase tracking-widest font-display leading-tight text-right max-w-[80px]">{stat.sub}</span>
             </div>
             {stat.isText ? (
               <span className="text-2xl sm:text-3xl font-display font-light text-white block">{stat.value}</span>
@@ -852,7 +880,7 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
             )}
             <div className="text-[11px] text-white/35 font-light mt-2">{stat.label}</div>
             {"spark" in stat && stat.spark && stat.spark.length >= 2 && (
-              <div className="absolute bottom-0 right-0 opacity-50 pointer-events-none">
+              <div className="absolute bottom-0 right-0 opacity-40 pointer-events-none">
                 <Sparkline data={stat.spark} width={70} height={28} />
               </div>
             )}
@@ -1123,18 +1151,36 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
   );
 }
 
+function computeProfileCompletion(user: any, bio: string, avatarUrl: string, profileSlug: string, isPublic: boolean): { score: number; missing: string[] } {
+  const checks = [
+    { done: !!user.fullName, label: "Full name" },
+    { done: !!user.email, label: "Email address" },
+    { done: !!user.phone, label: "Phone number" },
+    { done: !!user.city, label: "City" },
+    { done: !!bio, label: "Bio" },
+    { done: !!avatarUrl, label: "Profile photo" },
+    { done: !!profileSlug, label: "Public profile slug" },
+    { done: isPublic, label: "Public visibility" },
+  ];
+  const done = checks.filter(c => c.done).length;
+  const missing = checks.filter(c => !c.done).map(c => c.label);
+  return { score: Math.round((done / checks.length) * 100), missing };
+}
+
 function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [fullName, setFullName] = useState(user.fullName || "");
   const [bio, setBio] = useState(user.bio || "");
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
   const [profileSlug, setProfileSlug] = useState(user.profileSlug || "");
   const [isPublic, setIsPublic] = useState(user.isPublic || false);
   const [badges, setBadges] = useState<{ available: any[]; earned: string[] }>({ available: [], earned: [] });
   const [badgeSaving, setBadgeSaving] = useState(false);
+  const completion = React.useMemo(() => computeProfileCompletion(user, bio, avatarUrl, profileSlug, isPublic), [user, bio, avatarUrl, profileSlug, isPublic]);
 
   useEffect(() => {
     getUserBadges().then(setBadges);
@@ -1164,13 +1210,16 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
     setUploading(false);
   };
 
+  const [phone, setPhone] = useState(user.phone || "");
+  const [city, setCity] = useState(user.city || "");
+
   const handleSave = async () => {
     setSaving(true);
     setError("");
-    const result = await updateProfile({ bio, profileSlug, isPublic });
+    const result = await updateProfile({ fullName, phone, city, bio, profileSlug, isPublic });
     if (result.success) {
-      onUpdate({ ...user, bio, profileSlug: result.data.profileSlug, isPublic, avatarUrl });
-      setProfileSlug(result.data.profileSlug);
+      onUpdate({ ...user, fullName, phone, city, bio, profileSlug: result.data?.profileSlug ?? profileSlug, isPublic, avatarUrl });
+      setProfileSlug(result.data?.profileSlug ?? profileSlug);
       setEditing(false);
     } else {
       setError(result.error || "Failed to save");
@@ -1205,6 +1254,29 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
 
   return (
     <motion.div key="profile" variants={tabFade} initial="hidden" animate="visible" exit="exit">
+
+      {/* Profile completion bar */}
+      <div className="acct-completion-bar mb-6">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <BadgeCheck className="w-3.5 h-3.5 text-white/40" />
+            <span className="text-xs font-display font-light text-white/60">Profile Completion</span>
+          </div>
+          <span className={`text-xs font-display font-medium ${completion.score >= 80 ? "text-emerald-400/70" : completion.score >= 50 ? "text-amber-400/60" : "text-white/40"}`}>{completion.score}%</span>
+        </div>
+        <div className="relative h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${completion.score}%` }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className={`absolute inset-y-0 left-0 rounded-full ${completion.score >= 80 ? "bg-gradient-to-r from-emerald-500/50 to-emerald-400/70" : completion.score >= 50 ? "bg-gradient-to-r from-amber-500/40 to-amber-400/60" : "bg-gradient-to-r from-white/20 to-white/40"}`}
+          />
+        </div>
+        {completion.missing.length > 0 && (
+          <div className="mt-1.5 text-[10px] text-white/25 font-light">Missing: {completion.missing.slice(0, 3).join(", ")}{completion.missing.length > 3 ? ` +${completion.missing.length - 3} more` : ""}</div>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
         <div className="lg:col-span-2 flex justify-center lg:justify-start">
           <UserProfileCard
@@ -1235,47 +1307,57 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
           {editing ? (
             <div className="space-y-3">
               <div>
-                <label className="acct-label">Avatar</label>
+                <label className="acct-label">Photo</label>
                 <label className="flex items-center gap-3 p-3 bg-white/[0.03] border border-white/[0.06] rounded-xl cursor-pointer hover:bg-white/[0.04] transition-all">
                   <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <User className="w-5 h-5 text-white/30" />
-                    )}
+                    {avatarUrl ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" /> : <User className="w-5 h-5 text-white/30" />}
                   </div>
                   <div className="flex-1">
-                    <div className="text-xs text-white/50 font-light">{uploading ? "Uploading..." : "Change avatar"}</div>
-                    <div className="text-[9px] text-white/25 font-light">Max 5MB, JPG/PNG</div>
+                    <div className="text-xs text-white/50 font-light">{uploading ? "Uploading…" : "Change photo"}</div>
+                    <div className="text-[9px] text-white/25 font-light">Max 5MB · JPG / PNG</div>
                   </div>
                   <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" disabled={uploading} />
                 </label>
               </div>
 
-              <div>
-                <label className="acct-label">Bio</label>
-                <textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value.slice(0, 200))}
-                  placeholder="Tell people about yourself..."
-                  rows={3}
-                  className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12] resize-none"
-                />
-                <div className="text-right text-[9px] text-white/20 mt-0.5">{bio.length}/200</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="acct-label">Full Name</label>
+                  <div className="guest-input-wrap">
+                    <User className="guest-input-icon" />
+                    <input type="text" value={fullName} onChange={e => setFullName(e.target.value.slice(0, 80))} placeholder="Your full name" className="guest-input" />
+                  </div>
+                </div>
+                <div>
+                  <label className="acct-label">Phone</label>
+                  <div className="guest-input-wrap">
+                    <Phone className="guest-input-icon" />
+                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value.slice(0, 20))} placeholder="+91 98765 43210" className="guest-input" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="acct-label">City</label>
+                  <div className="guest-input-wrap">
+                    <MapPin className="guest-input-icon" />
+                    <input type="text" value={city} onChange={e => setCity(e.target.value.slice(0, 50))} placeholder="Mumbai, Delhi…" className="guest-input" />
+                  </div>
+                </div>
+                <div>
+                  <label className="acct-label">Profile Link</label>
+                  <div className="guest-input-wrap">
+                    <Globe className="guest-input-icon" />
+                    <input type="text" value={profileSlug} onChange={e => setProfileSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30))} placeholder="your-name" className="guest-input" />
+                  </div>
+                </div>
               </div>
 
               <div>
-                <label className="acct-label">Profile Link</label>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/25 font-light shrink-0">/profile/</span>
-                  <input
-                    type="text"
-                    value={profileSlug}
-                    onChange={(e) => setProfileSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30))}
-                    placeholder="your-name"
-                    className="flex-1 px-3 py-2 bg-white/[0.03] border border-white/[0.06] rounded-lg text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12]"
-                  />
-                </div>
+                <label className="acct-label">Bio <span className="text-white/20 normal-case font-light">({bio.length}/200)</span></label>
+                <textarea value={bio} onChange={e => setBio(e.target.value.slice(0, 200))} placeholder="Tell people about yourself…" rows={3}
+                  className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12] resize-none" />
               </div>
 
               <div className="flex items-center justify-between p-3 bg-white/[0.02] border border-white/[0.06] rounded-xl">
@@ -1283,52 +1365,35 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
                   {isPublic ? <Globe className="w-4 h-4 text-white/40" /> : <Lock className="w-4 h-4 text-white/25" />}
                   <span className="text-xs text-white/50 font-light">{isPublic ? "Profile is public" : "Profile is private"}</span>
                 </div>
-                <button
-                  onClick={() => setIsPublic(!isPublic)}
-                  className={`relative w-10 h-5 rounded-full transition-all ${isPublic ? "bg-white/20" : "bg-white/[0.06]"}`}
-                >
-                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${isPublic ? "left-5.5 bg-white" : "left-0.5 bg-white/40"}`} />
+                <button onClick={() => setIsPublic(!isPublic)} className={`relative w-10 h-5 rounded-full transition-all ${isPublic ? "bg-white/20" : "bg-white/[0.06]"}`}>
+                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${isPublic ? "left-[22px]" : "left-0.5 bg-white/40"}`} />
                 </button>
               </div>
 
               {error && <p className="text-xs text-red-400/60 font-light">{error}</p>}
 
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white font-light hover:bg-white/[0.08] transition-all disabled:opacity-30"
-              >
+              <button onClick={handleSave} disabled={saving}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white font-light hover:bg-white/[0.08] transition-all disabled:opacity-30">
                 <Save className="w-3.5 h-3.5" />
-                {saving ? "Saving..." : "Save Profile"}
+                {saving ? "Saving…" : "Save Changes"}
               </button>
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="acct-info-row">
-                <Mail className="w-4 h-4 text-white/25" />
-                <div>
-                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">Email</div>
-                  <div className="text-sm text-white/60 font-light">{user.email}</div>
-                </div>
-              </div>
-              {user.phone && (
-                <div className="acct-info-row">
-                  <Phone className="w-4 h-4 text-white/25" />
+              {[
+                { icon: User, label: "Full Name", value: user.fullName },
+                { icon: Mail, label: "Email", value: user.email, extra: user.isVerified ? <BadgeCheck className="w-3.5 h-3.5 text-white/40 ml-1 inline" /> : null },
+                { icon: Phone, label: "Phone", value: user.phone },
+                { icon: MapPin, label: "City", value: user.city },
+              ].map((row) => row.value ? (
+                <div key={row.label} className="acct-info-row">
+                  <row.icon className="w-4 h-4 text-white/25" />
                   <div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">Phone</div>
-                    <div className="text-sm text-white/60 font-light">{user.phone}</div>
+                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">{row.label}</div>
+                    <div className="text-sm text-white/60 font-light flex items-center">{row.value}{row.extra}</div>
                   </div>
                 </div>
-              )}
-              {user.city && (
-                <div className="acct-info-row">
-                  <MapPin className="w-4 h-4 text-white/25" />
-                  <div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">City</div>
-                    <div className="text-sm text-white/60 font-light">{user.city}</div>
-                  </div>
-                </div>
-              )}
+              ) : null)}
               {profileSlug && isPublic && (
                 <div className="acct-info-row">
                   <Globe className="w-4 h-4 text-white/25" />
@@ -1722,9 +1787,10 @@ function BillingTab({ user }: { user: any }) {
   const memberSince = new Date(user.createdAt);
   const nextRenewal = new Date();
   nextRenewal.setDate(nextRenewal.getDate() + 30);
+  const daysActive = Math.floor((Date.now() - memberSince.getTime()) / 86400000);
 
   const invoices = isFree ? [] : [
-    { id: `INV-${memberSince.getFullYear()}${String(memberSince.getMonth() + 1).padStart(2, "0")}-001`, date: memberSince, amount: tierPrice, plan: tier },
+    { id: `INV-${memberSince.getFullYear()}${String(memberSince.getMonth() + 1).padStart(2, "0")}-001`, date: memberSince, amount: tierPrice, plan: tier, status: "paid" },
   ];
 
   return (
@@ -1734,33 +1800,67 @@ function BillingTab({ user }: { user: any }) {
         <h3 className="text-base font-display font-light text-white">Billing</h3>
       </div>
 
+      {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-        <div className="glass-card p-4">
-          <div className="card-shine" />
-          <div className="relative z-[2]">
-            <div className="flex items-center gap-2 mb-2"><CreditCard className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">Current Plan</div></div>
-            <div className="text-sm font-display font-light text-white capitalize">{tier}</div>
-            <div className="text-[10px] text-white/35 font-light mt-0.5">{isFree ? "Free forever" : `₹${tierPrice}/mo`}</div>
+        {[
+          { icon: CreditCard, label: "Current Plan", value: tier === "free" ? "Free Forever" : `₹${tierPrice}/mo`, sub: tier.charAt(0).toUpperCase() + tier.slice(1) + " tier" },
+          { icon: CalendarDays, label: "Next Renewal", value: isFree ? "—" : nextRenewal.toLocaleDateString("en-IN", { day: "numeric", month: "short" }), sub: isFree ? "No subscription" : "Auto-renews monthly" },
+          { icon: Calendar, label: "Member Since", value: memberSince.toLocaleDateString("en-IN", { month: "short", year: "numeric" }), sub: `${daysActive} day${daysActive !== 1 ? "s" : ""} active` },
+        ].map(c => (
+          <div key={c.label} className="glass-card p-4">
+            <div className="card-shine" />
+            <div className="relative z-[2]">
+              <div className="flex items-center gap-2 mb-2"><c.icon className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">{c.label}</div></div>
+              <div className="text-sm font-display font-light text-white capitalize">{c.value}</div>
+              <div className="text-[10px] text-white/35 font-light mt-0.5">{c.sub}</div>
+            </div>
           </div>
-        </div>
-        <div className="glass-card p-4">
-          <div className="card-shine" />
-          <div className="relative z-[2]">
-            <div className="flex items-center gap-2 mb-2"><CalendarDays className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">Next Renewal</div></div>
-            <div className="text-sm font-display font-light text-white">{isFree ? "—" : nextRenewal.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
-            <div className="text-[10px] text-white/35 font-light mt-0.5">{isFree ? "No active subscription" : "Auto-renews"}</div>
+        ))}
+      </div>
+
+      {/* Payment method */}
+      <div className="glass-card p-5 mb-5">
+        <div className="card-shine" />
+        <div className="relative z-[2]">
+          <div className="flex items-center justify-between gap-2 mb-4">
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-3.5 h-3.5 text-white/40" />
+              <h4 className="text-sm font-display font-light text-white">Payment Method</h4>
+            </div>
+            <button className="text-[10px] text-white/25 font-light hover:text-white/50 transition-colors flex items-center gap-1">
+              <Edit3 className="w-3 h-3" /> Manage
+            </button>
           </div>
-        </div>
-        <div className="glass-card p-4">
-          <div className="card-shine" />
-          <div className="relative z-[2]">
-            <div className="flex items-center gap-2 mb-2"><Calendar className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">Member Since</div></div>
-            <div className="text-sm font-display font-light text-white">{memberSince.toLocaleDateString("en-IN", { month: "short", year: "numeric" })}</div>
-            <div className="text-[10px] text-white/35 font-light mt-0.5">{Math.floor((Date.now() - memberSince.getTime()) / 86400000)} days</div>
-          </div>
+          {isFree ? (
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] border-dashed">
+              <CreditCard className="w-5 h-5 text-white/15" />
+              <div>
+                <div className="text-xs text-white/35 font-light">No payment method on file</div>
+                <div className="text-[10px] text-white/20 font-light mt-0.5">Add a card when you upgrade to a paid plan</div>
+              </div>
+            </div>
+          ) : (
+            <div className="acct-payment-card">
+              <div className="acct-payment-card-inner">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Saved Card</div>
+                  <div className="flex gap-1">
+                    <div className="w-4 h-4 rounded-full bg-white/10" />
+                    <div className="w-4 h-4 rounded-full bg-white/20 -ml-2" />
+                  </div>
+                </div>
+                <div className="text-sm font-mono text-white/50 tracking-wider mb-3">•••• •••• •••• 4242</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-[9px] text-white/20 font-light">Expires 12/27</div>
+                  <div className="text-[9px] text-emerald-400/50 flex items-center gap-1"><Check className="w-2.5 h-2.5" />Active</div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Invoice history */}
       <div className="glass-card p-5">
         <div className="card-shine" />
         <div className="relative z-[2]">
@@ -1772,13 +1872,21 @@ function BillingTab({ user }: { user: any }) {
           {invoices.length > 0 ? (
             <div className="space-y-2">
               {invoices.map((inv) => (
-                <div key={inv.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                  <Receipt className="w-3.5 h-3.5 text-white/30 shrink-0" />
+                <div key={inv.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.03] transition-all group">
+                  <div className="w-8 h-8 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center shrink-0">
+                    <Receipt className="w-3.5 h-3.5 text-white/30" />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs text-white/65 font-mono truncate">{inv.id}</div>
                     <div className="text-[10px] text-white/30 font-light capitalize">{inv.plan} · {inv.date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
                   </div>
-                  <div className="text-sm text-white/75 font-display font-light shrink-0">₹{inv.amount}</div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[9px] text-emerald-400/50 bg-emerald-400/[0.06] border border-emerald-400/[0.12] px-2 py-0.5 rounded-full">Paid</span>
+                    <div className="text-sm text-white/75 font-display font-light">₹{inv.amount}</div>
+                    <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-white/[0.04] border border-white/[0.06] rounded-lg">
+                      <ArrowRight className="w-3 h-3 text-white/30" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1798,6 +1906,23 @@ function BillingTab({ user }: { user: any }) {
 }
 
 function EntriesTab({ entries }: { entries: any[] }) {
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "pending" | "won">("all");
+
+  const filtered = React.useMemo(() => {
+    let list = entries;
+    if (query.trim()) list = list.filter(e => e.contestName?.toLowerCase().includes(query.toLowerCase()) || e.entryCode?.toLowerCase().includes(query.toLowerCase()));
+    if (filter === "won") list = list.filter(e => e.status === "won");
+    if (filter === "pending") list = list.filter(e => e.status !== "won");
+    return list;
+  }, [entries, query, filter]);
+
+  const FILTERS: { id: "all" | "pending" | "won"; label: string }[] = [
+    { id: "all", label: `All (${entries.length})` },
+    { id: "pending", label: "Pending" },
+    { id: "won", label: "Won 🏆" },
+  ];
+
   return (
     <motion.div key="entries" variants={tabFade} initial="hidden" animate="visible" exit="exit">
       <div className="flex items-center gap-3 mb-4">
@@ -1806,15 +1931,35 @@ function EntriesTab({ entries }: { entries: any[] }) {
         <span className="text-[10px] text-white/20 font-light ml-auto">{entries.length} total</span>
       </div>
 
-      {entries.length > 0 ? (
+      {entries.length > 0 && (
+        <div className="space-y-3 mb-4">
+          <div className="guest-input-wrap">
+            <Search className="guest-input-icon" />
+            <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search by contest or entry code…" className="guest-input" />
+            {query && <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40"><X className="w-3.5 h-3.5" /></button>}
+          </div>
+          <div className="flex gap-2">
+            {FILTERS.map(f => (
+              <button key={f.id} onClick={() => setFilter(f.id)}
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-display font-medium transition-all ${filter === f.id ? "bg-white/[0.08] border border-white/[0.14] text-white/80" : "bg-white/[0.02] border border-white/[0.05] text-white/35 hover:bg-white/[0.04]"}`}>
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {filtered.length > 0 ? (
         <div className="space-y-2">
-          {entries.map((entry: any) => (
+          {filtered.map((entry: any) => (
             <div key={entry.id} className="acct-entry-row">
-              <Trophy className="w-4 h-4 text-white/25 shrink-0" />
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${entry.status === "won" ? "bg-amber-400/10 border border-amber-400/20" : "bg-white/[0.03] border border-white/[0.06]"}`}>
+                <Trophy className={`w-3.5 h-3.5 ${entry.status === "won" ? "text-amber-400/60" : "text-white/25"}`} />
+              </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-light text-white/60 truncate">{entry.contestName}</div>
-                <div className="flex items-center gap-3 text-[10px] text-white/25 font-light mt-0.5">
-                  <span className="font-mono">{entry.entryCode}</span>
+                <div className="text-sm font-light text-white/65 truncate">{entry.contestName}</div>
+                <div className="flex items-center gap-2 text-[10px] text-white/25 font-light mt-0.5 flex-wrap">
+                  <span className="font-mono bg-white/[0.03] px-1.5 py-0.5 rounded">{entry.entryCode}</span>
                   <span className="text-white/10">·</span>
                   <span>{entry.entryCount} {entry.entryCount === 1 ? "entry" : "entries"}</span>
                   <span className="text-white/10">·</span>
@@ -1822,9 +1967,9 @@ function EntriesTab({ entries }: { entries: any[] }) {
                 </div>
               </div>
               <div className="text-right shrink-0">
-                <div className="acct-entry-status">
-                  <Clock className="w-3 h-3" />
-                  <span>Pending</span>
+                <div className={`acct-entry-status ${entry.status === "won" ? "!text-amber-400/70 !border-amber-400/20 !bg-amber-400/[0.06]" : ""}`}>
+                  {entry.status === "won" ? <Star className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                  <span>{entry.status === "won" ? "Won!" : "Pending"}</span>
                 </div>
                 <div className="text-[9px] text-white/20 font-light mt-0.5">
                   {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -1832,6 +1977,10 @@ function EntriesTab({ entries }: { entries: any[] }) {
               </div>
             </div>
           ))}
+        </div>
+      ) : entries.length > 0 ? (
+        <div className="py-12 text-center">
+          <div className="text-[11px] text-white/25 font-light">No entries match your search</div>
         </div>
       ) : (
         <div className="glass-card p-10 sm:p-14 text-center">
@@ -1858,6 +2007,31 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
   const [winnerAnnouncements, setWinnerAnnouncements] = useState(true);
   const [pushEnabled, setPushEnabled] = useState(false);
   const [pushSupported] = useState(() => "serviceWorker" in navigator && "PushManager" in window);
+
+  const [pwOpen, setPwOpen] = useState(false);
+  const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwError, setPwError] = useState("");
+  const [pwSuccess, setPwSuccess] = useState(false);
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPwError("");
+    if (pwForm.next !== pwForm.confirm) { setPwError("New passwords don't match"); return; }
+    if (pwForm.next.length < 6) { setPwError("New password must be at least 6 characters"); return; }
+    setPwSaving(true);
+    const result = await changePassword(pwForm.current, pwForm.next);
+    if (result.success) {
+      setPwSuccess(true);
+      setPwForm({ current: "", next: "", confirm: "" });
+      setTimeout(() => { setPwSuccess(false); setPwOpen(false); }, 2500);
+    } else {
+      setPwError(result.error || "Failed to change password");
+    }
+    setPwSaving(false);
+  };
 
   useEffect(() => {
     getNotificationPreferences().then(prefs => {
@@ -2004,6 +2178,101 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
         <div>
           <div className="flex items-center gap-3 mb-4">
             <Shield className="w-4 h-4 text-white/40" />
+            <h3 className="text-base font-display font-light text-white">Security</h3>
+          </div>
+          <div className="space-y-2">
+            {/* Change password — expandable */}
+            <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden">
+              <button
+                type="button"
+                onClick={() => { setPwOpen(p => !p); setPwError(""); setPwSuccess(false); }}
+                className="w-full flex items-center gap-3 p-4 text-left hover:bg-white/[0.03] transition-all"
+              >
+                <Key className="w-4 h-4 text-white/25" />
+                <div className="flex-1">
+                  <div className="text-sm text-white/60 font-light">Change Password</div>
+                  <div className="text-[10px] text-white/25 font-light">Update your login credentials</div>
+                </div>
+                {pwOpen ? <ChevronUp className="w-4 h-4 text-white/20" /> : <ChevronDown className="w-4 h-4 text-white/20" />}
+              </button>
+              <AnimatePresence>
+                {pwOpen && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}
+                    className="border-t border-white/[0.05] overflow-hidden">
+                    <form onSubmit={handleChangePassword} className="p-4 space-y-3">
+                      {pwSuccess ? (
+                        <div className="flex items-center gap-2 p-3 bg-emerald-500/[0.07] border border-emerald-500/[0.15] rounded-xl">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400/60 shrink-0" />
+                          <span className="text-xs text-emerald-400/70 font-light">Password changed successfully!</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="guest-input-wrap">
+                            <Lock className="guest-input-icon" />
+                            <input type={showCurrentPw ? "text" : "password"} placeholder="Current password" value={pwForm.current}
+                              onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))} className="guest-input pr-10" />
+                            <button type="button" onClick={() => setShowCurrentPw(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40 transition-colors">
+                              {showCurrentPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
+                          <div className="guest-input-wrap">
+                            <Lock className="guest-input-icon" />
+                            <input type={showNewPw ? "text" : "password"} placeholder="New password (min 6 chars)" value={pwForm.next}
+                              onChange={e => setPwForm(f => ({ ...f, next: e.target.value }))} className="guest-input pr-10" />
+                            <button type="button" onClick={() => setShowNewPw(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40 transition-colors">
+                              {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
+                          <div className="guest-input-wrap">
+                            <Lock className="guest-input-icon" />
+                            <input type="password" placeholder="Confirm new password" value={pwForm.confirm}
+                              onChange={e => setPwForm(f => ({ ...f, confirm: e.target.value }))} className="guest-input" />
+                          </div>
+                          {pwForm.next && (
+                            <div className="flex gap-1">
+                              {[6, 8, 12].map((len, i) => (
+                                <div key={len} className={`flex-1 h-1 rounded-full transition-all ${pwForm.next.length >= len ? "bg-white/40" : "bg-white/[0.05]"}`} />
+                              ))}
+                              <span className="text-[9px] text-white/25 font-light ml-1">{pwForm.next.length < 6 ? "Weak" : pwForm.next.length < 12 ? "Fair" : "Strong"}</span>
+                            </div>
+                          )}
+                          {pwError && (
+                            <div className="flex items-center gap-2 p-2.5 bg-red-500/[0.06] border border-red-500/[0.12] rounded-lg">
+                              <XCircle className="w-3.5 h-3.5 text-red-400/60 shrink-0" />
+                              <span className="text-[11px] text-red-400/70 font-light">{pwError}</span>
+                            </div>
+                          )}
+                          <button type="submit" disabled={pwSaving}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white/70 font-light hover:bg-white/[0.08] transition-all disabled:opacity-30">
+                            {pwSaving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Key className="w-3.5 h-3.5" />}
+                            {pwSaving ? "Updating…" : "Update Password"}
+                          </button>
+                        </>
+                      )}
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl opacity-60 cursor-not-allowed">
+              <div className="flex items-center gap-3">
+                <Fingerprint className="w-4 h-4 text-white/25" />
+                <div>
+                  <div className="text-sm text-white/60 font-light">Two-Factor Authentication</div>
+                  <div className="text-[10px] text-white/25 font-light">Add an extra layer of security — coming soon</div>
+                </div>
+              </div>
+              <span className="text-[9px] text-white/20 font-display uppercase tracking-wider px-2 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg">Soon</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="section-divider" />
+
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <AlertTriangle className="w-4 h-4 text-red-400/40" />
             <h3 className="text-base font-display font-light text-white">Account</h3>
           </div>
           <div className="space-y-2">
@@ -2014,9 +2283,19 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
               <LogOut className="w-4 h-4 text-white/25 group-hover:text-white/40 transition-colors" />
               <div>
                 <div className="text-sm text-white/60 font-light">Sign out</div>
-                <div className="text-[10px] text-white/25 font-light">Log out of your account</div>
+                <div className="text-[10px] text-white/25 font-light">Log out of your account on this device</div>
               </div>
               <ChevronRight className="w-4 h-4 text-white/15 ml-auto" />
+            </button>
+            <button
+              className="w-full flex items-center gap-3 p-4 bg-red-500/[0.03] border border-red-500/[0.08] rounded-xl text-left hover:bg-red-500/[0.05] transition-all group opacity-60 cursor-not-allowed"
+              disabled
+            >
+              <Trash2 className="w-4 h-4 text-red-400/30" />
+              <div>
+                <div className="text-sm text-red-400/50 font-light">Delete Account</div>
+                <div className="text-[10px] text-white/20 font-light">Permanently remove your account and all data — contact support</div>
+              </div>
             </button>
           </div>
         </div>
