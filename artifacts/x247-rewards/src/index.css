@@ -5901,9 +5901,9 @@
   --x-dot-active: #999999;
   --x-nav-bg: rgba(255, 255, 255, 0.92);
   --x-nav-text: #1a1a1a;
-  --x-subtle-fill: rgba(0,0,0,0.04);
-  --x-subtle-border: rgba(0,0,0,0.08);
-  --x-subtle-fill-hover: rgba(0,0,0,0.06);
+  --x-subtle-fill: rgba(0,0,0,0.08);
+  --x-subtle-border: rgba(0,0,0,0.14);
+  --x-subtle-fill-hover: rgba(0,0,0,0.12);
   --x-bar-lo: rgba(0,0,0,0.06);
   --x-bar-hi: rgba(0,0,0,0.18);
   --x-bar-fill-lo: rgba(0,0,0,0.1);
@@ -5952,9 +5952,9 @@
   --x-dot-active: #a09888;
   --x-nav-bg: rgba(248, 246, 241, 0.94);
   --x-nav-text: #2a2520;
-  --x-subtle-fill: rgba(0,0,0,0.035);
-  --x-subtle-border: rgba(0,0,0,0.07);
-  --x-subtle-fill-hover: rgba(0,0,0,0.055);
+  --x-subtle-fill: rgba(0,0,0,0.07);
+  --x-subtle-border: rgba(0,0,0,0.13);
+  --x-subtle-fill-hover: rgba(0,0,0,0.11);
   --x-bar-lo: rgba(0,0,0,0.05);
   --x-bar-hi: rgba(0,0,0,0.16);
   --x-bar-fill-lo: rgba(0,0,0,0.08);
@@ -6003,9 +6003,9 @@
   --x-dot-active: #8890a0;
   --x-nav-bg: rgba(240, 241, 245, 0.94);
   --x-nav-text: #1c1e28;
-  --x-subtle-fill: rgba(0,0,0,0.035);
-  --x-subtle-border: rgba(0,0,0,0.07);
-  --x-subtle-fill-hover: rgba(0,0,0,0.055);
+  --x-subtle-fill: rgba(0,0,0,0.07);
+  --x-subtle-border: rgba(0,0,0,0.13);
+  --x-subtle-fill-hover: rgba(0,0,0,0.11);
   --x-bar-lo: rgba(0,0,0,0.05);
   --x-bar-hi: rgba(0,0,0,0.16);
   --x-bar-fill-lo: rgba(0,0,0,0.08);
@@ -6535,98 +6535,98 @@
   background: linear-gradient(168deg, hsl(var(--card) / 1) 0%, hsl(var(--background) / 1) 100%) !important;
 }
 [data-light] .dash-banner-title { color: hsl(var(--foreground) / 0.9) !important; }
-[data-light] .dash-banner-name { color: hsl(var(--foreground) / 0.6) !important; }
-[data-light] .dash-banner-tier-label { color: hsl(var(--foreground) / 0.38) !important; }
-[data-light] .dash-banner-since { color: hsl(var(--foreground) / 0.22) !important; }
-[data-light] .dash-banner-eyebrow { color: hsl(var(--foreground) / 0.3) !important; }
+[data-light] .dash-banner-name { color: hsl(var(--foreground) / 0.72) !important; }
+[data-light] .dash-banner-tier-label { color: hsl(var(--foreground) / 0.55) !important; }
+[data-light] .dash-banner-since { color: hsl(var(--foreground) / 0.48) !important; }
+[data-light] .dash-banner-eyebrow { color: hsl(var(--foreground) / 0.52) !important; }
 [data-light] .dash-banner-action-btn {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
-  color: hsl(var(--foreground) / 0.45) !important;
+  background: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+  color: hsl(var(--foreground) / 0.65) !important;
 }
 [data-light] .dash-premium-divider {
-  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.04) 30%, hsl(var(--foreground) / 0.08) 50%, hsl(var(--foreground) / 0.04) 70%, transparent 100%) !important;
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.08) 30%, hsl(var(--foreground) / 0.15) 50%, hsl(var(--foreground) / 0.08) 70%, transparent 100%) !important;
 }
 [data-light] .dash-avatar {
-  background: hsl(var(--foreground) / 0.03) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  background: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.15) !important;
 }
 [data-light] .dash-topbar-btn {
-  background: hsl(var(--foreground) / 0.03) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
-  color: hsl(var(--foreground) / 0.3) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+  color: hsl(var(--foreground) / 0.65) !important;
 }
 [data-light] .dash-sidebar {
-  background: hsl(var(--foreground) / 0.012) !important;
-  border-right-color: hsl(var(--foreground) / 0.05) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-right-color: hsl(var(--foreground) / 0.10) !important;
 }
 [data-light] .dash-sidebar-profile { border-color: transparent; }
 [data-light] .dash-sidebar-avatar {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.09) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
 }
-[data-light] .dash-sidebar-avatar-letter { color: hsl(var(--foreground) / 0.6) !important; }
-[data-light] .dash-sidebar-user-name { color: hsl(var(--foreground) / 0.82) !important; }
-[data-light] .dash-sidebar-user-tier { color: hsl(var(--foreground) / 0.38) !important; }
-[data-light] .dash-sidebar-divider { background: hsl(var(--foreground) / 0.06) !important; }
-[data-light] .dash-sidebar-section { color: hsl(var(--foreground) / 0.3) !important; }
-[data-light] .dash-nav-logout { color: hsl(var(--foreground) / 0.3) !important; }
-[data-light] .dash-nav-item { color: hsl(var(--foreground) / 0.35) !important; }
+[data-light] .dash-sidebar-avatar-letter { color: hsl(var(--foreground) / 0.75) !important; }
+[data-light] .dash-sidebar-user-name { color: hsl(var(--foreground) / 0.88) !important; }
+[data-light] .dash-sidebar-user-tier { color: hsl(var(--foreground) / 0.58) !important; }
+[data-light] .dash-sidebar-divider { background: hsl(var(--foreground) / 0.12) !important; }
+[data-light] .dash-sidebar-section { color: hsl(var(--foreground) / 0.55) !important; }
+[data-light] .dash-nav-logout { color: hsl(var(--foreground) / 0.52) !important; }
+[data-light] .dash-nav-item { color: hsl(var(--foreground) / 0.62) !important; }
 [data-light] .dash-nav-item:hover {
-  color: hsl(var(--foreground) / 0.55) !important;
-  background: hsl(var(--foreground) / 0.03) !important;
+  color: hsl(var(--foreground) / 0.80) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .dash-nav-active {
-  color: hsl(var(--foreground) / 0.85) !important;
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
+  color: hsl(var(--foreground) / 0.92) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
 }
-[data-light] .dash-mobile-tabs { border-bottom-color: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .dash-mobile-tabs { border-bottom-color: hsl(var(--foreground) / 0.12) !important; }
 [data-light] .acct-tabs-inner {
-  background: hsl(var(--foreground) / 0.02) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
 }
-[data-light] .acct-tab { color: hsl(var(--foreground) / 0.35) !important; }
+[data-light] .acct-tab { color: hsl(var(--foreground) / 0.60) !important; }
 [data-light] .acct-tab:hover {
-  color: hsl(var(--foreground) / 0.55) !important;
-  background: hsl(var(--foreground) / 0.03) !important;
+  color: hsl(var(--foreground) / 0.78) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .acct-tab-active {
-  color: hsl(var(--foreground) / 0.85) !important;
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.92) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
 }
 [data-light] .dash-quick-action {
-  background: hsl(var(--foreground) / 0.02) !important;
-  border-color: hsl(var(--foreground) / 0.05) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
 }
 [data-light] .dash-qa-icon {
-  background: hsl(var(--foreground) / 0.03) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
-  color: hsl(var(--foreground) / 0.3) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  color: hsl(var(--foreground) / 0.65) !important;
 }
 [data-light] .dash-activity-dot {
-  background: hsl(var(--foreground) / 0.1) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  background: hsl(var(--foreground) / 0.20) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
 }
-[data-light] .dash-activity-line { background: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .dash-activity-line { background: hsl(var(--foreground) / 0.12) !important; }
 [data-light] .acct-welcome-strip {
-  background: hsl(var(--foreground) / 0.025) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
 }
 [data-light] .acct-welcome-upgrade-btn {
-  background: hsl(var(--foreground) / 0.05) !important;
-  border-color: hsl(var(--foreground) / 0.10) !important;
-  color: hsl(var(--foreground) / 0.72) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.18) !important;
+  color: hsl(var(--foreground) / 0.82) !important;
 }
 [data-light] .acct-welcome-upgrade-btn:hover {
-  background: hsl(var(--foreground) / 0.09) !important;
-  color: hsl(var(--foreground) / 0.88) !important;
+  background: hsl(var(--foreground) / 0.14) !important;
+  color: hsl(var(--foreground) / 0.92) !important;
 }
 [data-light] .acct-stat-card {
   background: hsl(var(--card) / 1) !important;
-  border-color: hsl(var(--foreground) / 0.07) !important;
-  box-shadow: 0 1px 0 hsl(255 100% 100% / 0.8) inset, 0 4px 20px hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+  box-shadow: 0 1px 0 hsl(255 100% 100% / 0.8) inset, 0 4px 20px hsl(var(--foreground) / 0.08) !important;
   backdrop-filter: none !important;
 }
 [data-light] .acct-stat-card::before {
@@ -6636,16 +6636,16 @@
   background: radial-gradient(ellipse at 50% -10%, hsl(255 100% 100% / 0.6) 0%, transparent 60%) !important;
 }
 [data-light] .dash-chart-card {
-  background: hsl(var(--foreground) / 0.02) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
 }
 [data-light] .acct-info-row {
-  background: hsl(var(--foreground) / 0.02) !important;
-  border-color: hsl(var(--foreground) / 0.05) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
 }
 [data-light] .acct-entry-row {
-  background: hsl(var(--foreground) / 0.02) !important;
-  border-color: hsl(var(--foreground) / 0.05) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
 }
 [data-light] .contest-card {
   background: linear-gradient(165deg, hsl(var(--card) / 1) 0%, hsl(var(--muted) / 1) 100%) !important;
@@ -6663,17 +6663,17 @@
 [data-light] .contest-icon-box,
 [data-light] .contest-prize-icon,
 [data-light] .contest-prize-box {
-  background: hsl(var(--foreground) / 0.03) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
+  background: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.15) !important;
 }
-[data-light] .contest-progress-track { background: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .contest-progress-track { background: hsl(var(--foreground) / 0.14) !important; }
 [data-light] .contest-progress-fill {
-  background: linear-gradient(90deg, hsl(var(--foreground) / 0.1), hsl(var(--foreground) / 0.3)) !important;
+  background: linear-gradient(90deg, hsl(var(--foreground) / 0.30), hsl(var(--foreground) / 0.65)) !important;
 }
 [data-light] .contest-enter-btn {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
-  color: hsl(var(--foreground) / 0.6) !important;
+  background: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  color: hsl(var(--foreground) / 0.78) !important;
 }
 [data-light] .pricing-card {
   background: linear-gradient(165deg, hsl(var(--card) / 1) 0%, hsl(var(--muted) / 1) 100%) !important;
@@ -6685,27 +6685,27 @@
 }
 [data-light] .pricing-tier-icon,
 [data-light] .pricing-feature-check {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
-  color: hsl(var(--foreground) / 0.3) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  color: hsl(var(--foreground) / 0.65) !important;
 }
 [data-light] .pricing-badge-popular {
-  background: hsl(var(--foreground) / 0.05) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
-  color: hsl(var(--foreground) / 0.6) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  color: hsl(var(--foreground) / 0.78) !important;
 }
 [data-light] .pricing-divider {
-  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.06), transparent) !important;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.14), transparent) !important;
 }
 [data-light] .pricing-btn {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
-  color: hsl(var(--foreground) / 0.7) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  color: hsl(var(--foreground) / 0.82) !important;
 }
 [data-light] .acct-tier-pill {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
-  color: hsl(var(--foreground) / 0.5) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  color: hsl(var(--foreground) / 0.70) !important;
 }
 [data-light] .notif-badge-count {
   background: hsl(var(--foreground) / 0.8) !important;
@@ -6751,17 +6751,17 @@
   background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.06) 20%, hsl(var(--foreground) / 0.1) 50%, hsl(var(--foreground) / 0.06) 80%, transparent 100%) !important;
 }
 [data-light] .acct-steps-bar {
-  background: hsl(var(--foreground) / 0.02) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
 }
 [data-light] .acct-step-num {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
-  color: hsl(var(--foreground) / 0.5) !important;
+  background: hsl(var(--foreground) / 0.08) !important;
+  border-color: hsl(var(--foreground) / 0.18) !important;
+  color: hsl(var(--foreground) / 0.72) !important;
 }
-[data-light] .acct-step-label { color: hsl(var(--foreground) / 0.45) !important; }
+[data-light] .acct-step-label { color: hsl(var(--foreground) / 0.70) !important; }
 [data-light] .acct-step-divider {
-  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.1), transparent) !important;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.20), transparent) !important;
 }
 [data-light] .metallic-partners-box {
   background: linear-gradient(165deg, hsl(var(--card) / 0.99) 0%, hsl(var(--muted) / 0.98) 100%) !important;
@@ -6786,7 +6786,7 @@
 }
 [data-light] .upc-photo-area { background: hsl(var(--foreground) / 0.03) !important; }
 [data-light] .upc-photo-placeholder { background: linear-gradient(135deg, hsl(var(--foreground) / 0.04) 0%, hsl(var(--foreground) / 0.02) 100%) !important; }
-[data-light] .upc-initials { color: hsl(var(--foreground) / 0.15) !important; }
+[data-light] .upc-initials { color: hsl(var(--foreground) / 0.40) !important; }
 [data-light] .upc-tier {
   background: hsl(var(--card) / 0.85) !important;
   border-color: hsl(var(--foreground) / 0.08) !important;
@@ -16513,8 +16513,8 @@ button, [role="button"] {
    ══════════════════════════════════════════════════════════════════════ */
 
 [data-light] .acct-social-strip {
-  background: hsl(var(--foreground) / 0.04) !important;
-  border-color: hsl(var(--foreground) / 0.10) !important;
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
 }
 
 [data-light] .acct-social-num {
