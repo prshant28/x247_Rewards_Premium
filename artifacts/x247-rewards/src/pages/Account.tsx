@@ -2337,56 +2337,78 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
       <div className="dash-frame-glow" />
       <div className="dash-frame-inner">
 
-        {/* ── Sticky topbar ────────────────────────────────────── */}
-        <header className="dash-topbar">
-          <div className="flex items-center gap-3">
-            <div className={`dash-avatar ${user.membershipTier === "black" ? "dash-avatar-black" : ""}`}>
-              {user.avatarUrl ? (
-                <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-sm font-display font-semibold text-white/70 select-none">
-                  {user.fullName?.charAt(0).toUpperCase() || "?"}
-                </span>
-              )}
+        {/* ── Full-width premium banner ─────────────────────────── */}
+        <div className="dash-banner">
+          <div className="dash-banner-bg-deco" />
+          <div className="dash-banner-left">
+            <div className="dash-banner-eyebrow">
+              <span className={`dash-banner-tier-dot tier-dot-${user.membershipTier || "free"}`} />
+              <span>Member Area</span>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-sm font-display font-medium text-white truncate">{user.fullName}</h2>
-                {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-white/45 shrink-0" />}
-                {user.membershipTier && user.membershipTier !== "free" && (
-                  <span className={`acct-pro-badge acct-pro-${user.membershipTier}`}>
-                    {user.membershipTier === "black" ? <Diamond className="w-2.5 h-2.5" /> : user.membershipTier === "gold" ? <Crown className="w-2.5 h-2.5" /> : <Star className="w-2.5 h-2.5" />}
-                    <span>{user.membershipTier === "black" ? "Elite" : user.membershipTier === "gold" ? "Pro" : "Plus"}</span>
-                  </span>
-                )}
-              </div>
-              <div className="text-[10px] text-white/35 font-light truncate hidden sm:block">{user.email} · Since {memberSince}</div>
+            <h1 className="dash-banner-title">My Account</h1>
+            <div className="dash-banner-meta">
+              <span className="dash-banner-name">{user.fullName}</span>
+              {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-white/40 shrink-0" />}
+              <span className="dash-banner-sep">·</span>
+              <span className="dash-banner-tier-label">
+                {user.membershipTier === "black" ? "Elite Member" : user.membershipTier === "gold" ? "Gold Member" : user.membershipTier === "silver" ? "Silver Member" : "Free Member"}
+              </span>
             </div>
+            <div className="dash-banner-since">Since {memberSince} · {user.email}</div>
           </div>
 
-          <div className="dash-topbar-actions">
-            <div className="relative" ref={notifContainerRef}>
-              <button onClick={toggleNotifs} className="dash-topbar-btn notif-bell-btn" title="Notifications">
-                <Bell className="w-3.5 h-3.5" />
-                {notifs.unread > 0 && <span className="notif-badge-count">{notifs.unread}</span>}
-              </button>
-              <AnimatePresence>
-                {showNotifs && (
-                  <NotificationPanel
-                    notifications={notifs.items}
-                    onMarkRead={notifs.markRead}
-                    onMarkAllRead={notifs.markAllRead}
-                    onClose={closeNotifs}
-                    containerRef={notifContainerRef}
-                  />
-                )}
-              </AnimatePresence>
+          <div className="dash-banner-right">
+            {/* Notification bell */}
+            <div className="dash-banner-actions">
+              <div className="relative" ref={notifContainerRef}>
+                <button onClick={toggleNotifs} className="dash-banner-action-btn notif-bell-btn" title="Notifications">
+                  <Bell className="w-4 h-4" />
+                  {notifs.unread > 0 && <span className="notif-badge-count">{notifs.unread}</span>}
+                </button>
+                <AnimatePresence>
+                  {showNotifs && (
+                    <NotificationPanel
+                      notifications={notifs.items}
+                      onMarkRead={notifs.markRead}
+                      onMarkAllRead={notifs.markAllRead}
+                      onClose={closeNotifs}
+                      containerRef={notifContainerRef}
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
-            <button onClick={onLogout} className="dash-topbar-btn" title="Sign out">
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
+            {/* Decorative graphic */}
+            <div className="dash-banner-graphic" aria-hidden="true">
+              <svg viewBox="0 0 180 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="dash-banner-svg">
+                {/* Concentric rings */}
+                <circle cx="90" cy="80" r="72" stroke="white" strokeOpacity="0.04" strokeWidth="1"/>
+                <circle cx="90" cy="80" r="55" stroke="white" strokeOpacity="0.06" strokeWidth="1"/>
+                <circle cx="90" cy="80" r="38" stroke="white" strokeOpacity="0.08" strokeWidth="1"/>
+                <circle cx="90" cy="80" r="20" stroke="white" strokeOpacity="0.1" strokeWidth="1"/>
+                {/* Diamond */}
+                <path d="M90 44 L114 80 L90 116 L66 80 Z" stroke="white" strokeOpacity="0.15" strokeWidth="1" fill="none"/>
+                <path d="M90 58 L107 80 L90 102 L73 80 Z" stroke="white" strokeOpacity="0.22" strokeWidth="1" fill="rgba(255,255,255,0.02)"/>
+                {/* Center dot */}
+                <circle cx="90" cy="80" r="4" fill="white" fillOpacity="0.15"/>
+                <circle cx="90" cy="80" r="2" fill="white" fillOpacity="0.4"/>
+                {/* Cross lines */}
+                <line x1="90" y1="8" x2="90" y2="32" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
+                <line x1="90" y1="128" x2="90" y2="152" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
+                <line x1="18" y1="80" x2="42" y2="80" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
+                <line x1="138" y1="80" x2="162" y2="80" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
+                {/* Corner dots */}
+                <circle cx="30" cy="30" r="2" fill="white" fillOpacity="0.1"/>
+                <circle cx="150" cy="30" r="2" fill="white" fillOpacity="0.1"/>
+                <circle cx="30" cy="130" r="2" fill="white" fillOpacity="0.1"/>
+                <circle cx="150" cy="130" r="2" fill="white" fillOpacity="0.1"/>
+              </svg>
+            </div>
           </div>
-        </header>
+        </div>
+
+        {/* Premium section divider */}
+        <div className="dash-premium-divider" />
 
         <AnimatePresence>
           {showStreakCelebration && (

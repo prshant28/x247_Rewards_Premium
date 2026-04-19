@@ -2844,30 +2844,171 @@
   min-height: calc(100vh - 70px);
 }
 
-/* ── TOPBAR ──────────────────────────────────────────────────────────── */
-.dash-topbar {
+/* ── PREMIUM BANNER ──────────────────────────────────────────────────── */
+.dash-banner {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
-  padding: 0 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.055);
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(24px) saturate(1.3);
-  -webkit-backdrop-filter: blur(24px) saturate(1.3);
-  gap: 12px;
-  position: sticky;
-  top: 70px;
-  z-index: 40;
-  flex-shrink: 0;
+  padding: 28px 24px 28px;
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.025) 0%, transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(255,255,255,0.015) 0%, transparent 55%),
+    linear-gradient(168deg, rgba(14,14,17,1) 0%, rgba(6,6,8,1) 100%);
 }
 @media (min-width: 640px) {
-  .dash-topbar { padding: 0 32px; }
+  .dash-banner { padding: 32px 36px; }
 }
 @media (min-width: 1024px) {
-  .dash-topbar { padding: 0 40px; }
+  .dash-banner { padding: 36px 48px; }
 }
 
+/* Subtle animated bg shimmer */
+.dash-banner-bg-deco {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255,255,255,0.018) 40%,
+    rgba(255,255,255,0.008) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.dash-banner-left { flex: 1; min-width: 0; }
+
+.dash-banner-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.dash-banner-tier-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dash-banner-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: rgba(255,255,255,0.94);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 10px;
+}
+
+.dash-banner-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.dash-banner-name {
+  font-size: 0.85rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  color: rgba(255,255,255,0.65);
+}
+
+.dash-banner-sep {
+  color: rgba(255,255,255,0.2);
+  font-size: 0.75rem;
+}
+
+.dash-banner-tier-label {
+  font-size: 0.75rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+}
+
+.dash-banner-since {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.22);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.dash-banner-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.dash-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dash-banner-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  position: relative;
+}
+.dash-banner-action-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.dash-banner-graphic {
+  display: none;
+  width: 140px;
+  height: 120px;
+  opacity: 0.6;
+}
+@media (min-width: 640px) {
+  .dash-banner-graphic { display: block; }
+}
+@media (min-width: 1024px) {
+  .dash-banner-graphic { width: 180px; height: 160px; }
+}
+
+.dash-banner-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── PREMIUM SECTION DIVIDER ─────────────────────────────────────────── */
+.dash-premium-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,0.04) 15%,
+    rgba(255,255,255,0.1) 50%,
+    rgba(255,255,255,0.04) 85%,
+    transparent 100%);
+}
+
+/* ── LEGACY / UNUSED (topbar removed — kept for compat) ──────────────── */
 .dash-avatar {
   width: 42px;
   height: 42px;
@@ -2883,31 +3024,6 @@
 .dash-avatar-black {
   border-color: rgba(255,255,255,0.18) !important;
   background: rgba(255,255,255,0.08) !important;
-}
-
-.dash-topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.dash-topbar-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.5);
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-.dash-topbar-btn:hover {
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.85);
-  border-color: rgba(255,255,255,0.13);
 }
 
 /* ── LAYOUT: sidebar + content ───────────────────────────────────────── */
@@ -2928,8 +3044,8 @@
   padding: 28px 16px 40px;
   border-right: 1px solid rgba(255,255,255,0.048);
   position: sticky;
-  top: calc(70px + 64px); /* site-nav + dash-topbar */
-  height: calc(100vh - 70px - 64px);
+  top: 70px; /* site-nav only, no topbar */
+  height: calc(100vh - 70px);
   overflow-y: auto;
   scrollbar-width: none;
   background: rgba(255,255,255,0.008);
@@ -3046,8 +3162,9 @@
 
 /* ── MOBILE TABS ─────────────────────────────────────────────────────── */
 .dash-mobile-tabs {
-  display: block;
-  padding: 10px 16px 0;
+  display: flex;
+  justify-content: center;
+  padding: 12px 16px 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -3142,9 +3259,8 @@
   gap: 2px;
   padding: 3px;
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  min-width: 100%;
 }
 
 .acct-tab {
@@ -4201,27 +4317,72 @@
 }
 
 .acct-stat-card {
-  padding: 14px 12px;
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.015) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 14px;
+  background: linear-gradient(
+    155deg,
+    rgba(10,10,12,1) 0%,
+    rgba(6,6,7,1) 50%,
+    rgba(3,3,4,1) 100%
+  );
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.2),
-    0 1px 4px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transition: all 0.25s ease;
+    0 1px 0 rgba(255,255,255,0.07) inset,
+    0 0 0 0.5px rgba(255,255,255,0.04) inset,
+    0 12px 40px -6px rgba(0,0,0,0.8),
+    0 4px 16px -2px rgba(0,0,0,0.5);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   min-width: 0;
 }
+/* Gradient border shimmer */
+.acct-stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.14),
+    rgba(255,255,255,0.04),
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.14)
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  z-index: 1;
+}
+/* Top radial highlight */
+.acct-stat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
 @media (min-width: 640px) {
-  .acct-stat-card { padding: 20px 18px; border-radius: 20px; }
+  .acct-stat-card { padding: 22px 20px; border-radius: 22px; }
+  .acct-stat-card::before { border-radius: 22px; }
+  .acct-stat-card::after { border-radius: 22px; }
 }
 .acct-stat-card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255,255,255,0.11);
+  transform: translateY(-2px);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 1px 0 rgba(255,255,255,0.08) inset,
+    0 0 0 0.5px rgba(255,255,255,0.05) inset,
+    0 16px 48px -6px rgba(0,0,0,0.85),
+    0 0 28px -8px rgba(255,255,255,0.02);
 }
 
 .dash-chart-card {
@@ -5307,9 +5468,21 @@
   flex-shrink: 0;
 }
 
-[data-theme="pristine-light"] .dash-topbar {
-  background: rgba(255,255,255,0.88) !important;
-  border-bottom-color: rgba(0,0,0,0.07) !important;
+[data-theme="pristine-light"] .dash-banner {
+  background: linear-gradient(168deg, rgba(248,248,248,1) 0%, rgba(242,242,244,1) 100%) !important;
+}
+[data-theme="pristine-light"] .dash-banner-title { color: rgba(0,0,0,0.88) !important; }
+[data-theme="pristine-light"] .dash-banner-name { color: rgba(0,0,0,0.55) !important; }
+[data-theme="pristine-light"] .dash-banner-tier-label { color: rgba(0,0,0,0.35) !important; }
+[data-theme="pristine-light"] .dash-banner-since { color: rgba(0,0,0,0.22) !important; }
+[data-theme="pristine-light"] .dash-banner-eyebrow { color: rgba(0,0,0,0.3) !important; }
+[data-theme="pristine-light"] .dash-banner-action-btn {
+  background: rgba(0,0,0,0.04) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  color: rgba(0,0,0,0.45) !important;
+}
+[data-theme="pristine-light"] .dash-premium-divider {
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.05) 70%, transparent 100%) !important;
 }
 [data-theme="pristine-light"] .dash-avatar {
   background: rgba(0, 0, 0, 0.03) !important;
@@ -6177,9 +6350,21 @@
 [data-light] textarea:focus { border-color: hsl(var(--foreground) / 0.2) !important; }
 [data-light] .scroll-progress-bar { background: hsl(var(--foreground) / 0.6) !important; }
 [data-light] .acct-grid-dot { background: hsl(var(--foreground)) !important; }
-[data-light] .dash-topbar {
-  background: hsl(var(--card) / 0.92) !important;
-  border-bottom-color: hsl(var(--foreground) / 0.06) !important;
+[data-light] .dash-banner {
+  background: linear-gradient(168deg, hsl(var(--card) / 1) 0%, hsl(var(--background) / 1) 100%) !important;
+}
+[data-light] .dash-banner-title { color: hsl(var(--foreground) / 0.9) !important; }
+[data-light] .dash-banner-name { color: hsl(var(--foreground) / 0.6) !important; }
+[data-light] .dash-banner-tier-label { color: hsl(var(--foreground) / 0.38) !important; }
+[data-light] .dash-banner-since { color: hsl(var(--foreground) / 0.22) !important; }
+[data-light] .dash-banner-eyebrow { color: hsl(var(--foreground) / 0.3) !important; }
+[data-light] .dash-banner-action-btn {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.45) !important;
+}
+[data-light] .dash-premium-divider {
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--foreground) / 0.04) 30%, hsl(var(--foreground) / 0.08) 50%, hsl(var(--foreground) / 0.04) 70%, transparent 100%) !important;
 }
 [data-light] .dash-avatar {
   background: hsl(var(--foreground) / 0.03) !important;
@@ -6258,8 +6443,16 @@
   color: hsl(var(--foreground) / 0.88) !important;
 }
 [data-light] .acct-stat-card {
-  background: hsl(var(--foreground) / 0.02) !important;
-  border-color: hsl(var(--foreground) / 0.06) !important;
+  background: hsl(var(--card) / 1) !important;
+  border-color: hsl(var(--foreground) / 0.07) !important;
+  box-shadow: 0 1px 0 hsl(255 100% 100% / 0.8) inset, 0 4px 20px hsl(var(--foreground) / 0.06) !important;
+  backdrop-filter: none !important;
+}
+[data-light] .acct-stat-card::before {
+  background: linear-gradient(135deg, hsl(var(--foreground) / 0.08), hsl(var(--foreground) / 0.03), hsl(var(--foreground) / 0.06), hsl(var(--foreground) / 0.02), hsl(var(--foreground) / 0.08)) !important;
+}
+[data-light] .acct-stat-card::after {
+  background: radial-gradient(ellipse at 50% -10%, hsl(255 100% 100% / 0.6) 0%, transparent 60%) !important;
 }
 [data-light] .dash-chart-card {
   background: hsl(var(--foreground) / 0.02) !important;
