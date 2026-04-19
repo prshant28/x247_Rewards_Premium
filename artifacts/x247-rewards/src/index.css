@@ -15648,3 +15648,462 @@ button, [role="button"] {
   color: hsl(var(--foreground) / 0.45) !important;
   -webkit-text-fill-color: hsl(var(--foreground) / 0.45) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   LIGHT THEME — /how-it-works page (hiw-*) — COMPREHENSIVE OVERRIDE
+   Every hiw-* element was hardcoded rgba(255,255,255,X); flip to foreground.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Page root */
+[data-light] .hiw-page {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* ── Hero ── */
+[data-light] .hiw-hero-bg-grid {
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.035) 1px, transparent 1px) !important;
+}
+[data-light] .hiw-hero-radial {
+  background: radial-gradient(ellipse, hsl(var(--foreground) / 0.04) 0%, transparent 65%) !important;
+}
+[data-light] .hiw-hero-title {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-hero-accent {
+  background: linear-gradient(135deg, hsl(var(--foreground) / 0.95) 0%, hsl(var(--foreground) / 0.55) 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+[data-light] .hiw-hero-subtitle {
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+
+/* ── Section alternating bg ── */
+[data-light] .hiw-section--alt {
+  background: linear-gradient(180deg, hsl(var(--foreground) / 0.025) 0%, hsl(var(--foreground) / 0.010) 100%) !important;
+  border-top-color: hsl(var(--foreground) / 0.07) !important;
+  border-bottom-color: hsl(var(--foreground) / 0.07) !important;
+}
+
+/* ── Section headings ── */
+[data-light] .hiw-section-title {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-section-sub {
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+
+/* ── Step cards ── */
+[data-light] .hiw-step-card {
+  background: linear-gradient(168deg, hsl(var(--foreground) / 0.04) 0%, hsl(var(--foreground) / 0.015) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .hiw-step-card:hover {
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  box-shadow: 0 8px 30px hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .hiw-step-num {
+  color: hsl(var(--foreground) / 0.30) !important;
+}
+[data-light] .hiw-step-icon-wrap {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.10) !important;
+  color: hsl(var(--foreground) / 0.65) !important;
+}
+[data-light] .hiw-step-card:hover .hiw-step-icon-wrap {
+  background: hsl(var(--foreground) / 0.09) !important;
+  border-color: hsl(var(--foreground) / 0.18) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-step-title {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-step-desc {
+  color: hsl(var(--foreground) / 0.60) !important;
+}
+[data-light] .hiw-step-item {
+  color: hsl(var(--foreground) / 0.65) !important;
+}
+[data-light] .hiw-step-item svg {
+  color: hsl(var(--foreground) / 0.40) !important;
+}
+
+/* ── Mechanic cards ── */
+[data-light] .hiw-mechanic-card {
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+}
+[data-light] .hiw-mechanic-card:hover {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+}
+[data-light] .hiw-mechanic-icon {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .hiw-mechanic-title {
+  color: hsl(var(--foreground) / 0.88) !important;
+}
+[data-light] .hiw-mechanic-desc {
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+
+/* ── Draw / process steps ── */
+[data-light] .hiw-draw-main {
+  background: linear-gradient(165deg, hsl(var(--foreground) / 0.035) 0%, hsl(var(--foreground) / 0.012) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+}
+[data-light] .hiw-draw-step-num {
+  color: hsl(var(--foreground) / 0.28) !important;
+}
+[data-light] .hiw-draw-step-icon {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.50) !important;
+}
+[data-light] .hiw-draw-step-label {
+  color: hsl(var(--foreground) / 0.85) !important;
+}
+[data-light] .hiw-draw-step-desc {
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+[data-light] .hiw-draw-trust-card {
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .hiw-draw-trust-card:hover {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+}
+[data-light] .hiw-draw-trust-icon {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.50) !important;
+}
+[data-light] .hiw-draw-trust-title {
+  color: hsl(var(--foreground) / 0.85) !important;
+}
+[data-light] .hiw-draw-trust-desc {
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+
+/* ── Tier table ── */
+[data-light] .hiw-tier-col-tier,
+[data-light] .hiw-tier-col-num,
+[data-light] .hiw-tier-col-perks--header {
+  color: hsl(var(--foreground) / 0.38) !important;
+}
+[data-light] .hiw-tier-row {
+  background: hsl(var(--foreground) / 0.025) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .hiw-tier-row:hover {
+  background: hsl(var(--foreground) / 0.045) !important;
+  border-color: hsl(var(--foreground) / 0.13) !important;
+}
+[data-light] .hiw-tier-icon {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .hiw-tier-name {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-tier-price {
+  color: hsl(var(--foreground) / 0.52) !important;
+}
+[data-light] .hiw-tier-entries-num {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-tier-entries-lbl {
+  color: hsl(var(--foreground) / 0.48) !important;
+}
+[data-light] .hiw-tier-perk {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+
+/* ── Partner cards ── */
+[data-light] .hiw-partner-card {
+  background: hsl(var(--foreground) / 0.025) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .hiw-partner-card:hover {
+  background: hsl(var(--foreground) / 0.045) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+}
+[data-light] .hiw-partner-icon {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .hiw-partner-title {
+  color: hsl(var(--foreground) / 0.90) !important;
+}
+[data-light] .hiw-partner-desc {
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+
+/* ── FAQ ── */
+[data-light] .hiw-faq-item {
+  background: hsl(var(--foreground) / 0.025) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .hiw-faq-item:hover {
+  border-color: hsl(var(--foreground) / 0.13) !important;
+}
+[data-light] .hiw-faq-q {
+  color: hsl(var(--foreground) / 0.82) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.82) !important;
+}
+[data-light] .hiw-faq-q:hover {
+  color: hsl(var(--foreground)) !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-faq-q svg {
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .hiw-faq-a-inner {
+  color: hsl(var(--foreground) / 0.60) !important;
+}
+
+/* ── CTA section ── */
+[data-light] .hiw-cta-glow {
+  background: radial-gradient(ellipse, hsl(var(--foreground) / 0.04) 0%, transparent 65%) !important;
+}
+[data-light] .hiw-cta-grid {
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px) !important;
+}
+[data-light] .hiw-cta-title {
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-cta-sub {
+  color: hsl(var(--foreground) / 0.58) !important;
+}
+[data-light] .hiw-cta-btn-primary {
+  background: hsl(var(--foreground)) !important;
+  color: hsl(var(--background)) !important;
+  -webkit-text-fill-color: hsl(var(--background)) !important;
+  box-shadow: 0 0 0 1px hsl(var(--foreground) / 0.3), 0 8px 32px hsl(var(--foreground) / 0.15) !important;
+}
+[data-light] .hiw-cta-btn-primary:hover {
+  background: hsl(var(--foreground) / 0.88) !important;
+  box-shadow: 0 0 0 1px hsl(var(--foreground) / 0.4), 0 12px 40px hsl(var(--foreground) / 0.20) !important;
+}
+[data-light] .hiw-cta-btn-secondary {
+  border-color: hsl(var(--foreground) / 0.16) !important;
+  color: hsl(var(--foreground) / 0.72) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.72) !important;
+}
+[data-light] .hiw-cta-btn-secondary:hover {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.25) !important;
+  color: hsl(var(--foreground)) !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
+[data-light] .hiw-cta-trust span {
+  color: hsl(var(--foreground) / 0.48) !important;
+}
+[data-light] .hiw-cta-trust svg {
+  color: hsl(var(--foreground) / 0.30) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LIGHT THEME — PublicProfile page (pub-* classes) — COMPREHENSIVE
+   All pub-* elements were hardcoded rgba(255,255,255,X); flip to foreground.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Navigation ── */
+[data-light] .pub-profile-nav-logo {
+  color: hsl(var(--foreground) / 0.50) !important;
+}
+[data-light] .pub-profile-nav-logo:hover {
+  color: hsl(var(--foreground) / 0.80) !important;
+}
+[data-light] .pub-profile-nav-cta {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .pub-profile-nav-cta:hover {
+  background: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.88) !important;
+  border-color: hsl(var(--foreground) / 0.15) !important;
+}
+
+/* ── Hero grid / glow ── */
+[data-light] .pub-hero-grid {
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px) !important;
+}
+
+/* ── Identity ── */
+[data-light] .pub-avatar-initials {
+  color: hsl(var(--foreground) / 0.55) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .pub-name {
+  color: hsl(var(--foreground) / 0.95) !important;
+}
+[data-light] .pub-verified {
+  color: hsl(var(--foreground) / 0.65) !important;
+}
+[data-light] .pub-bio {
+  color: hsl(var(--foreground) / 0.55) !important;
+}
+
+/* ── Meta pills ── */
+[data-light] .pub-meta-pill {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.48) !important;
+}
+[data-light] .pub-meta-pill-tier {
+  background: hsl(var(--foreground) / 0.07) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+  color: hsl(var(--foreground) / 0.72) !important;
+}
+
+/* ── Share button ── */
+[data-light] .pub-share-btn {
+  background: hsl(var(--foreground) / 0.06) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+  color: hsl(var(--foreground) / 0.65) !important;
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.06) !important;
+}
+[data-light] .pub-share-btn:hover {
+  background: hsl(var(--foreground) / 0.10) !important;
+  color: hsl(var(--foreground) / 0.90) !important;
+  border-color: hsl(var(--foreground) / 0.20) !important;
+}
+
+/* ── Stat cards ── */
+[data-light] .pub-stat-card {
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.05), 0 2px 8px hsl(var(--foreground) / 0.05) !important;
+}
+[data-light] .pub-stat-icon {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.40) !important;
+}
+[data-light] .pub-stat-val {
+  color: hsl(var(--foreground) / 0.92) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.92) !important;
+}
+[data-light] .pub-stat-lbl {
+  color: hsl(var(--foreground) / 0.30) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.30) !important;
+}
+
+/* ── Section headings ── */
+[data-light] .pub-section-title {
+  color: hsl(var(--foreground) / 0.40) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.40) !important;
+}
+[data-light] .pub-section-count {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.32) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.32) !important;
+}
+
+/* ── Badge cards ── */
+[data-light] .pub-badge-card {
+  background: hsl(var(--foreground) / 0.03) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .pub-badge-card:hover {
+  background: hsl(var(--foreground) / 0.055) !important;
+  border-color: hsl(var(--foreground) / 0.14) !important;
+}
+[data-light] .pub-badge-name {
+  color: hsl(var(--foreground) / 0.75) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.75) !important;
+}
+[data-light] .pub-badge-desc {
+  color: hsl(var(--foreground) / 0.45) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.45) !important;
+}
+
+/* ── Activity list ── */
+[data-light] .pub-activity-list {
+  background: hsl(var(--foreground) / 0.025) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.04) !important;
+}
+[data-light] .pub-activity-row {
+  border-bottom-color: hsl(var(--foreground) / 0.06) !important;
+}
+[data-light] .pub-activity-row:hover {
+  background: hsl(var(--foreground) / 0.03) !important;
+}
+[data-light] .pub-activity-dot {
+  background: hsl(var(--foreground) / 0.25) !important;
+}
+[data-light] .pub-activity-text {
+  color: hsl(var(--foreground) / 0.60) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.60) !important;
+}
+[data-light] .pub-activity-sub {
+  color: hsl(var(--foreground) / 0.30) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.30) !important;
+}
+[data-light] .pub-activity-badge {
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+  color: hsl(var(--foreground) / 0.42) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.42) !important;
+}
+
+/* ── URL card ── */
+[data-light] .pub-url-card {
+  background: hsl(var(--foreground) / 0.025) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+}
+[data-light] .pub-url-code {
+  color: hsl(var(--foreground) / 0.55) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.55) !important;
+}
+[data-light] .pub-url-copy {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.48) !important;
+}
+[data-light] .pub-url-copy:hover {
+  background: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.80) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LIGHT THEME — Auth / Login page (auth-* classes)
+   ══════════════════════════════════════════════════════════════════════ */
+
+[data-light] .auth-hero-monogram-247 {
+  color: hsl(var(--foreground) / 0.72) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.72) !important;
+}
+[data-light] .auth-hero-tagline {
+  color: hsl(var(--foreground) / 0.52) !important;
+  background: hsl(var(--foreground) / 0.04) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+}
+[data-light] .auth-google-lock-pill {
+  background: linear-gradient(135deg, hsl(var(--foreground) / 0.08) 0%, hsl(var(--foreground) / 0.04) 100%) !important;
+  border-color: hsl(var(--foreground) / 0.15) !important;
+  color: hsl(var(--foreground) / 0.75) !important;
+}
+[data-light] .auth-divider-text {
+  color: hsl(var(--foreground) / 0.38) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.38) !important;
+}
