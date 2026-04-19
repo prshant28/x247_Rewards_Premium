@@ -124,6 +124,8 @@ const heroBannerSlides = [
     features: ["Daily Prize Draws", "Zero Cost Entry", "Real Rewards"],
     cta: "Get Started",
     href: "/giveaway",
+    img: "/images/hero-rewards-visual.png",
+    imgAlt: "Premium rewards — trophies and prizes",
   },
   {
     badge: "How It Works",
@@ -133,6 +135,8 @@ const heroBannerSlides = [
     features: ["Partner Signups", "Verified Entries", "Auto Draw System"],
     cta: "Enter Now",
     href: "#partners",
+    img: "/images/reward-trophy.png",
+    imgAlt: "Trophy — enter and win",
   },
   {
     badge: "Live Rewards",
@@ -142,6 +146,8 @@ const heroBannerSlides = [
     features: ["Gift Cards", "Tech Gadgets", "Exclusive Merch"],
     cta: "View Rewards",
     href: "#rewards",
+    img: "/images/reward-headphones.png",
+    imgAlt: "Wireless headphones prize",
   },
   {
     badge: "Partner Program",
@@ -151,6 +157,8 @@ const heroBannerSlides = [
     features: ["Live Analytics", "Milestone Bonuses", "Leaderboard Ranks"],
     cta: "Open Dashboard",
     href: "/referral/dashboard",
+    img: "/images/community-visual.png",
+    imgAlt: "Community and partner network",
   },
   {
     badge: "What's New",
@@ -160,6 +168,8 @@ const heroBannerSlides = [
     features: ["Flash Giveaways", "Bonus Events", "Limited Drops"],
     cta: "See Winners",
     href: "/winners",
+    img: "/images/reward-gift.png",
+    imgAlt: "Gift reward drop",
   },
 ];
 
@@ -251,56 +261,65 @@ function HeroBannerSlider() {
                 <div className="absolute bottom-0 left-0 w-40 h-40 opacity-[0.015] pointer-events-none blur-3xl bg-white rounded-full" />
                 <div className="absolute top-0 right-0 w-24 h-24 opacity-[0.015] pointer-events-none blur-2xl bg-white rounded-full" />
 
-                <div className="relative z-[2] p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col justify-center min-h-[260px] sm:min-h-[300px]">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="glass-pill-badge !text-[10px]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
-                      {slide.badge}
+                <div className="relative z-[2] p-6 sm:p-8 md:p-10 lg:p-12 flex items-center gap-4 sm:gap-8 min-h-[260px] sm:min-h-[300px]">
+                  <div className="flex-1 flex flex-col justify-center min-w-0">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="glass-pill-badge !text-[10px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                        {slide.badge}
+                      </div>
+                      <span className="text-[10px] text-white/30 font-mono tracking-wider">{String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}</span>
                     </div>
-                    <span className="text-[10px] text-white/30 font-mono tracking-wider">{String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}</span>
+
+                    <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-light text-white mb-3 tracking-tight leading-tight">
+                      {slide.title}
+                    </h3>
+
+                    <p className="text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-lg">
+                      {slide.desc}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                      {slide.features.map((feat, fi) => (
+                        <span key={fi} className="hero-banner-pill">{feat}</span>
+                      ))}
+
+                      <span className="hidden sm:block w-px h-5 bg-white/[0.08] mx-1" />
+
+                      {isInternal ? (
+                        <Link href={slide.href} className="hero-banner-cta group">
+                          <span>{slide.cta}</span>
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+                      ) : (
+                        <a
+                          href={slide.href}
+                          onClick={(e) => {
+                            if (slide.href.startsWith("#")) {
+                              e.preventDefault();
+                              document.querySelector(slide.href)?.scrollIntoView({ behavior: "smooth" });
+                            }
+                          }}
+                          className="hero-banner-cta group"
+                        >
+                          <span>{slide.cta}</span>
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </a>
+                      )}
+                    </div>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-light text-white mb-3 tracking-tight leading-tight">
-                    {slide.title}
-                  </h3>
-
-                  <p className="text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-lg">
-                    {slide.desc}
-                  </p>
-
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                    {slide.features.map((feat, fi) => (
-                      <span
-                        key={fi}
-                        className="hero-banner-pill"
-                      >
-                        {feat}
-                      </span>
-                    ))}
-
-                    <span className="hidden sm:block w-px h-5 bg-white/[0.08] mx-1" />
-
-                    {isInternal ? (
-                      <Link href={slide.href} className="hero-banner-cta group">
-                        <span>{slide.cta}</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                      </Link>
-                    ) : (
-                      <a
-                        href={slide.href}
-                        onClick={(e) => {
-                          if (slide.href.startsWith("#")) {
-                            e.preventDefault();
-                            document.querySelector(slide.href)?.scrollIntoView({ behavior: "smooth" });
-                          }
-                        }}
-                        className="hero-banner-cta group"
-                      >
-                        <span>{slide.cta}</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                      </a>
-                    )}
-                  </div>
+                  {slide.img && (
+                    <div className="hidden sm:flex hero-slide-img-wrap">
+                      <img
+                        src={slide.img}
+                        alt={slide.imgAlt}
+                        className="hero-slide-img"
+                        loading={i === 0 ? "eager" : "lazy"}
+                        draggable={false}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             );
