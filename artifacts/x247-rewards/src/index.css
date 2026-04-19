@@ -9491,29 +9491,36 @@ a:focus-visible > .contest-card-v2 {
 [data-light] .border-white\/20,
 [data-theme="pristine-light"] .border-white\/20 { border-color: hsl(var(--foreground) / 0.14) !important; }
 
-/* ── Light theme: rewards showcase card fix ── */
+/* ── Rewards showcase card — premium dark stays in all themes ── */
+.rewards-showcase-card { background: #08080e; }
 [data-light] .rewards-showcase-card {
   border-color: hsl(var(--foreground) / 0.10) !important;
   box-shadow: 0 8px 40px hsl(var(--foreground) / 0.10), 0 2px 8px hsl(var(--foreground) / 0.06) !important;
   background: #08080e !important;
 }
-/* Force dark gradient overlays on showcase image regardless of theme so white title remains readable */
-.rewards-showcase-card { position: relative; background: #08080e; }
-.rewards-showcase-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg,
-    rgba(0,0,0,0.20) 0%,
-    rgba(0,0,0,0.45) 35%,
-    rgba(0,0,0,0.78) 70%,
-    rgba(0,0,0,0.92) 100%);
-  pointer-events: none;
-  z-index: 1;
+/* Force white title/text to STAY white inside showcase regardless of theme */
+.rewards-showcase-card .text-white { color: #ffffff !important; }
+.rewards-showcase-card .text-white\/80 { color: rgba(255,255,255,0.85) !important; }
+.rewards-showcase-card .text-white\/70 { color: rgba(255,255,255,0.78) !important; }
+.rewards-showcase-card h3,
+.rewards-showcase-card p { color: #ffffff !important; }
+.rewards-showcase-card p { color: rgba(255,255,255,0.85) !important; }
+.rewards-showcase-card .glass-pill-badge {
+  background: rgba(255,255,255,0.10) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  color: rgba(255,255,255,0.95) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
-.rewards-showcase-card > .absolute,
-.rewards-showcase-card > img { z-index: 0; }
-.rewards-showcase-card > .absolute.bottom-0 { z-index: 2; }
+/* Browse Contests CTA stays white-on-dark in all themes */
+.rewards-showcase-card .showcase-enter-btn {
+  background: #ffffff !important;
+  color: #08080e !important;
+  border-color: rgba(255,255,255,0.30) !important;
+}
+.rewards-showcase-card .showcase-enter-btn:hover {
+  background: rgba(255,255,255,0.92) !important;
+}
 
 /* ── Light theme: step-icon-box (inside how-it-works) ── */
 [data-light] .step-icon-box,
