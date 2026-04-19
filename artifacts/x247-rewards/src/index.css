@@ -3105,12 +3105,12 @@
   min-height: 100vh;
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
   overflow: hidden;
-  padding: 32px 20px 48px;
+  padding: 72px 20px 48px;
   isolation: isolate;
 }
 
@@ -3183,7 +3183,7 @@
 /* ===== Glitch 404 number ===== */
 .x404-number {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(120px, 24vw, 240px);
+  font-size: clamp(96px, 20vw, 200px);
   font-weight: 800;
   font-style: italic;
   line-height: 0.95;
@@ -3192,7 +3192,7 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  margin: 0 0 18px;
+  margin: 0 0 10px;
   position: relative;
 }
 .x404-num-char {
@@ -3261,14 +3261,14 @@
   font-weight: 300;
   color: hsl(var(--foreground) / 0.55);
   line-height: 1.65;
-  margin: 0 auto 28px;
+  margin: 0 auto 18px;
   max-width: 480px;
 }
 
 /* ===== Terminal display ===== */
 .x404-terminal {
   max-width: 540px;
-  margin: 0 auto 24px;
+  margin: 0 auto 16px;
   border-radius: 14px;
   background:
     linear-gradient(180deg,
@@ -3370,15 +3370,17 @@
 .x404-search-wrap {
   position: relative;
   max-width: 480px;
-  margin: 0 auto 24px;
+  margin: 0 auto 16px;
 }
 .x404-search-icon {
   position: absolute;
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: hsl(var(--foreground) / 0.5);
+  color: hsl(var(--foreground) / 0.7);
+  -webkit-text-fill-color: initial;
   pointer-events: none;
+  z-index: 2;
 }
 .x404-search-input {
   width: 100%;
@@ -3462,7 +3464,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 .x404-btn {
@@ -3512,7 +3514,7 @@
 
 /* ===== Suggest cards ===== */
 .x404-suggest {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 .x404-suggest-label {
   display: inline-flex;
@@ -13229,10 +13231,22 @@ button[data-variant="ghost"]:hover,
 }
 [data-light] .x404-suggest-card,
 [data-light] .x404-terminal,
-[data-light] .x404-search,
+[data-light] .x404-search-wrap,
 [data-light] .x404-popular-chip {
   background: hsl(var(--card) / 0.85) !important;
   border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .x404-search-input {
+  background: hsl(var(--card) / 0.85) !important;
+  border-color: hsl(var(--foreground) / 0.1) !important;
+  color: hsl(var(--foreground)) !important;
+}
+[data-light] .x404-search-input::placeholder {
+  color: hsl(var(--foreground) / 0.4) !important;
+}
+[data-light] .x404-search-icon {
+  color: hsl(var(--foreground) / 0.65) !important;
+  stroke: currentColor !important;
 }
 [data-light] .x404-suggest-card:hover {
   background: hsl(var(--card)) !important;
