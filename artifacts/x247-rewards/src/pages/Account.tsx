@@ -56,6 +56,23 @@ const tabFade = {
   exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
 };
 
+/* ── Curved scallop divider — theme-aware decorative section break ── */
+function ScallopDivider({ label }: { label?: string }) {
+  return (
+    <div className="acct-scallop-divider" role="separator" aria-label={label || "section divider"}>
+      <span className="acct-scallop-line" />
+      {label && (
+        <span className="acct-scallop-label">
+          <span className="acct-scallop-dot" />
+          {label}
+          <span className="acct-scallop-dot" />
+        </span>
+      )}
+      <span className="acct-scallop-line" />
+    </div>
+  );
+}
+
 type AuthMode = "login" | "register";
 type TabId = "overview" | "profile" | "subscription" | "entries" | "referrals" | "billing" | "settings";
 
@@ -844,10 +861,10 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
         <div className="acct-welcome-strip-left">
           <div className={`acct-welcome-tier-dot tier-dot-${tier}`} />
           <div>
-            <div className="text-xs font-display font-light text-white/70">
-              Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, <span className="text-white">{user.fullName?.split(" ")[0]}</span>
+            <div className="acct-welcome-greeting">
+              Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, <span className="acct-welcome-greeting-name">{user.fullName?.split(" ")[0]}</span>
             </div>
-            <div className="text-[10px] text-white/30 font-light mt-0.5">Member since {memberSince} · {tierLabel} tier</div>
+            <div className="acct-welcome-meta">Member since {memberSince} · {tierLabel} tier</div>
           </div>
         </div>
         {tier !== "black" && (
@@ -857,6 +874,9 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
           </button>
         )}
       </div>
+
+      {/* ── Curved scallop divider ── */}
+      <ScallopDivider label="Today's Snapshot" />
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-7">
         {[
@@ -2366,6 +2386,34 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                 </AnimatePresence>
               </div>
             </div>
+
+            {/* Inline KPI mini-strip — fills the right-side space with live data */}
+            <div className="dash-banner-kpis" aria-label="Account quick stats">
+              <div className="dash-banner-kpi">
+                <div className="dash-banner-kpi-icon"><Flame className="w-3.5 h-3.5" /></div>
+                <div>
+                  <div className="dash-banner-kpi-value">{streak}</div>
+                  <div className="dash-banner-kpi-label">Streak</div>
+                </div>
+              </div>
+              <div className="dash-banner-kpi-sep" />
+              <div className="dash-banner-kpi">
+                <div className="dash-banner-kpi-icon"><Trophy className="w-3.5 h-3.5" /></div>
+                <div>
+                  <div className="dash-banner-kpi-value">{entries.length}</div>
+                  <div className="dash-banner-kpi-label">Entries</div>
+                </div>
+              </div>
+              <div className="dash-banner-kpi-sep" />
+              <div className="dash-banner-kpi">
+                <div className="dash-banner-kpi-icon"><Star className="w-3.5 h-3.5" /></div>
+                <div>
+                  <div className="dash-banner-kpi-value capitalize">{user.membershipTier || "free"}</div>
+                  <div className="dash-banner-kpi-label">Tier</div>
+                </div>
+              </div>
+            </div>
+
             {/* Decorative graphic */}
             <div className="dash-banner-graphic" aria-hidden="true">
               <svg viewBox="0 0 180 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="dash-banner-svg">
