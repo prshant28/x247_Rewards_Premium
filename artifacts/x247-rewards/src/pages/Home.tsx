@@ -200,29 +200,25 @@ const testimonialRowThree = [
 function HeroBannerSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const totalSlides = heroBannerSlides.length;
 
   useEffect(() => {
-    if (isHovered || reducedMotion) return;
+    if (isHovered || reducedMotion || isDragging) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isHovered, reducedMotion, totalSlides]);
+  }, [isHovered, reducedMotion, isDragging, totalSlides]);
 
   const goTo = useCallback((idx: number) => {
-    setCurrentSlide(idx);
-  }, []);
-
-  const goPrev = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setCurrentSlide(((idx % totalSlides) + totalSlides) % totalSlides);
   }, [totalSlides]);
 
-  const goNext = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
-  }, [totalSlides]);
+  const goPrev = useCallback(() => setCurrentSlide((p) => (p - 1 + totalSlides) % totalSlides), [totalSlides]);
+  const goNext = useCallback(() => setCurrentSlide((p) => (p + 1) % totalSlides), [totalSlides]);
 
   return (
     <motion.div
@@ -233,84 +229,183 @@ function HeroBannerSlider() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative rounded-2xl overflow-hidden hero-banner-container">
+      {/* ── Draggable card wrapper ── */}
+      <motion.div
+        className="relative rounded-2xl overflow-hidden hero-banner-container"
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.1}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={(_, { offset, velocity }) => {
+          setIsDragging(false);
+          if (offset.x < -55 || velocity.x < -350) goNext();
+          else if (offset.x > 55 || velocity.x > 350) goPrev();
+        }}
+        whileDrag={{ scale: 0.988, cursor: "grabbing" }}
+        style={{ cursor: "grab", userSelect: "none" }}
+      >
         <div className="absolute inset-0 hero-banner-glow pointer-events-none" />
 
+        {/* Slide track */}
         <div
           ref={trackRef}
           className="hero-banner-track"
           style={{
             transform: `translate3d(-${currentSlide * 100}%, 0, 0)`,
-            transition: reducedMotion ? "none" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+            transition: isDragging ? "none" : (reducedMotion ? "none" : "transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)"),
           }}
         >
           {heroBannerSlides.map((slide, i) => {
             const isInternal = slide.href.startsWith("/");
+            const isActive = i === currentSlide;
+
+            const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+              if (isDragging) { e.preventDefault(); return; }
+              if (slide.href.startsWith("#")) {
+                e.preventDefault();
+                document.querySelector(slide.href)?.scrollIntoView({ behavior: "smooth" });
+              }
+            };
+
+            const CtaInner = (
+              <>
+                <span>{slide.cta}</span>
+                <ArrowRight className="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+              </>
+            );
+
             return (
-              <div
-                key={i}
-                className="hero-banner-slide"
-                aria-hidden={i !== currentSlide}
-              >
+              <div key={i} className="hero-banner-slide" aria-hidden={!isActive}>
                 <div className="absolute inset-0 hero-banner-slide-bg pointer-events-none" />
-                <div className="absolute -top-8 -right-8 w-64 h-64 sm:w-80 sm:h-80 opacity-[0.03] pointer-events-none">
-                  <div className="w-full h-full flex items-center justify-center">
-                    {React.cloneElement(slide.icon as React.ReactElement<{ className?: string }>, { className: "w-full h-full" })}
-                  </div>
-                </div>
                 <div className="absolute bottom-0 left-0 w-40 h-40 opacity-[0.015] pointer-events-none blur-3xl bg-white rounded-full" />
                 <div className="absolute top-0 right-0 w-24 h-24 opacity-[0.015] pointer-events-none blur-2xl bg-white rounded-full" />
 
-                <div className="relative z-[2] p-6 sm:p-8 md:p-10 lg:p-12 flex items-center gap-4 sm:gap-8 min-h-[260px] sm:min-h-[300px]">
+                {/* ══ MOBILE LAYOUT (< 640px) ══ */}
+                <div className="sm:hidden flex flex-col p-5 pt-6 pb-5" style={{ minHeight: 320 }}>
+
+                  {/* Row 1 — Badge + slide counter */}
+                  <div className="flex items-center justify-between mb-3.5">
+                    <div className="glass-pill-badge !text-[10px] inline-flex">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                      {slide.badge}
+                    </div>
+                    <span className="text-[10px] text-white/30 font-mono tracking-widest tabular-nums">
+                      {String(i + 1).padStart(2, "0")}&nbsp;/&nbsp;{String(totalSlides).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  {/* Row 2 — Title + Image side by side */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <h3 className="flex-1 text-[1.45rem] font-display font-light text-white tracking-tight leading-[1.25] min-w-0">
+                      {slide.title}
+                    </h3>
+                    {slide.img && (
+                      <div
+                        className="w-[84px] h-[84px] shrink-0 flex items-center justify-center"
+                        style={{
+                          filter: "drop-shadow(0 8px 20px rgba(255,255,255,0.08)) drop-shadow(0 2px 8px rgba(0,0,0,0.7))",
+                        }}
+                      >
+                        <img
+                          src={slide.img}
+                          alt={slide.imgAlt}
+                          className="w-full h-full object-contain select-none"
+                          style={{ opacity: 0.9 }}
+                          loading={i === 0 ? "eager" : "lazy"}
+                          draggable={false}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Row 3 — Description */}
+                  <p className="text-[13px] text-white/55 font-light leading-relaxed mb-4">
+                    {slide.desc}
+                  </p>
+
+                  {/* Row 4 — Feature pills */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {slide.features.map((feat, fi) => (
+                      <span key={fi} className="hero-banner-pill">{feat}</span>
+                    ))}
+                  </div>
+
+                  {/* Row 5 — Full-width CTA */}
+                  {isInternal ? (
+                    <Link
+                      href={slide.href}
+                      className="mobile-banner-cta group"
+                      style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                    >
+                      {CtaInner}
+                    </Link>
+                  ) : (
+                    <a
+                      href={slide.href}
+                      onClick={handleHashClick}
+                      className="mobile-banner-cta group"
+                      style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                    >
+                      {CtaInner}
+                    </a>
+                  )}
+
+                  {/* Row 6 — Progress bar (inside card on mobile) */}
+                  <div className="hero-banner-progress mt-4">
+                    {isActive && (
+                      <div
+                        className="hero-banner-progress-bar"
+                        key={`mb-${currentSlide}`}
+                        style={{ animationPlayState: isHovered || isDragging ? "paused" : "running" }}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* ══ DESKTOP LAYOUT (640px+) ══ */}
+                <div className="hidden sm:flex items-center gap-6 md:gap-8 min-h-[300px] p-8 md:p-10 lg:p-12">
                   <div className="flex-1 flex flex-col justify-center min-w-0">
                     <div className="flex items-center gap-3 mb-5">
                       <div className="glass-pill-badge !text-[10px]">
                         <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
                         {slide.badge}
                       </div>
-                      <span className="text-[10px] text-white/30 font-mono tracking-wider">{String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}</span>
+                      <span className="text-[10px] text-white/30 font-mono tracking-wider tabular-nums">
+                        {String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
+                      </span>
                     </div>
-
-                    <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-light text-white mb-3 tracking-tight leading-tight">
+                    <h3 className="text-2xl md:text-3xl lg:text-4xl font-display font-light text-white mb-3 tracking-tight leading-tight">
                       {slide.title}
                     </h3>
-
                     <p className="text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-lg">
                       {slide.desc}
                     </p>
-
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       {slide.features.map((feat, fi) => (
                         <span key={fi} className="hero-banner-pill">{feat}</span>
                       ))}
-
-                      <span className="hidden sm:block w-px h-5 bg-white/[0.08] mx-1" />
-
+                      <span className="w-px h-5 bg-white/[0.08] mx-1" />
                       {isInternal ? (
-                        <Link href={slide.href} className="hero-banner-cta group">
-                          <span>{slide.cta}</span>
-                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        <Link
+                          href={slide.href}
+                          className="hero-banner-cta group"
+                          style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                        >
+                          {CtaInner}
                         </Link>
                       ) : (
                         <a
                           href={slide.href}
-                          onClick={(e) => {
-                            if (slide.href.startsWith("#")) {
-                              e.preventDefault();
-                              document.querySelector(slide.href)?.scrollIntoView({ behavior: "smooth" });
-                            }
-                          }}
+                          onClick={handleHashClick}
                           className="hero-banner-cta group"
                         >
-                          <span>{slide.cta}</span>
-                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                          {CtaInner}
                         </a>
                       )}
                     </div>
                   </div>
-
                   {slide.img && (
-                    <div className="hidden sm:flex hero-slide-img-wrap">
+                    <div className="hero-slide-img-wrap shrink-0">
                       <img
                         src={slide.img}
                         alt={slide.imgAlt}
@@ -327,12 +422,14 @@ function HeroBannerSlider() {
         </div>
 
         <div className="hero-image-shimmer" />
-      </div>
+      </motion.div>
 
+      {/* Nav arrows — positioned at mid-card height */}
       <button
         onClick={goPrev}
         aria-label="Previous slide"
         className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 hero-banner-arrow"
+        style={{ pointerEvents: isDragging ? "none" : "auto" }}
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -340,10 +437,12 @@ function HeroBannerSlider() {
         onClick={goNext}
         aria-label="Next slide"
         className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 hero-banner-arrow"
+        style={{ pointerEvents: isDragging ? "none" : "auto" }}
       >
         <ChevronRight className="w-4 h-4" />
       </button>
 
+      {/* Dots */}
       <div className="flex items-center justify-center gap-2 mt-5">
         {heroBannerSlides.map((_, i) => (
           <button
@@ -355,7 +454,8 @@ function HeroBannerSlider() {
         ))}
       </div>
 
-      <div className="hero-banner-progress mt-3">
+      {/* Desktop progress bar (mobile has it inside the card) */}
+      <div className="hidden sm:block hero-banner-progress mt-3">
         <div
           className="hero-banner-progress-bar"
           style={{
