@@ -7205,17 +7205,17 @@ a:focus-visible > .contest-card-v2 {
 
 [data-theme="pristine-light"] {
   --background: 0 0% 96%;
-  --foreground: 0 0% 10%;
+  --foreground: 0 0% 5%;
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 10%;
+  --card-foreground: 0 0% 5%;
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 10%;
-  --primary: 0 0% 10%;
+  --popover-foreground: 0 0% 5%;
+  --primary: 0 0% 5%;
   --primary-foreground: 0 0% 100%;
   --secondary: 0 0% 92%;
-  --secondary-foreground: 0 0% 15%;
+  --secondary-foreground: 0 0% 12%;
   --muted: 0 0% 94%;
-  --muted-foreground: 0 0% 45%;
+  --muted-foreground: 0 0% 28%;
   --accent: 0 0% 94%;
   --accent-foreground: 0 0% 10%;
   --destructive: 0 84.2% 60.2%;
@@ -9338,6 +9338,91 @@ a:focus-visible > .contest-card-v2 {
 [data-light] #how-it-works .bg-white\/\[0\.04\].border {
   background: hsl(var(--foreground) / 0.05) !important;
   border-color: hsl(var(--foreground) / 0.1) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT THEME — text-foreground opacity boosters
+   The foreground color in light mode is near-black (~5% L).
+   Low-opacity variants like /30 render as very faint gray on white.
+   We boost all common opacity tiers to maintain readable contrast.
+   ═══════════════════════════════════════════════════════════════ */
+[data-light] .text-foreground\/20,
+[data-theme="pristine-light"] .text-foreground\/20 { color: hsl(var(--foreground) / 0.42) !important; }
+[data-light] .text-foreground\/25,
+[data-theme="pristine-light"] .text-foreground\/25 { color: hsl(var(--foreground) / 0.48) !important; }
+[data-light] .text-foreground\/30,
+[data-theme="pristine-light"] .text-foreground\/30 { color: hsl(var(--foreground) / 0.54) !important; }
+[data-light] .text-foreground\/35,
+[data-theme="pristine-light"] .text-foreground\/35 { color: hsl(var(--foreground) / 0.60) !important; }
+[data-light] .text-foreground\/40,
+[data-theme="pristine-light"] .text-foreground\/40 { color: hsl(var(--foreground) / 0.64) !important; }
+[data-light] .text-foreground\/45,
+[data-theme="pristine-light"] .text-foreground\/45 { color: hsl(var(--foreground) / 0.68) !important; }
+[data-light] .text-foreground\/50,
+[data-theme="pristine-light"] .text-foreground\/50 { color: hsl(var(--foreground) / 0.72) !important; }
+[data-light] .text-foreground\/55,
+[data-theme="pristine-light"] .text-foreground\/55 { color: hsl(var(--foreground) / 0.76) !important; }
+[data-light] .text-foreground\/60,
+[data-theme="pristine-light"] .text-foreground\/60 { color: hsl(var(--foreground) / 0.80) !important; }
+[data-light] .text-foreground\/65,
+[data-theme="pristine-light"] .text-foreground\/65 { color: hsl(var(--foreground) / 0.83) !important; }
+[data-light] .text-foreground\/70,
+[data-theme="pristine-light"] .text-foreground\/70 { color: hsl(var(--foreground) / 0.86) !important; }
+[data-light] .text-foreground\/80,
+[data-theme="pristine-light"] .text-foreground\/80 { color: hsl(var(--foreground) / 0.90) !important; }
+
+/* Arbitrary value text-foreground classes used for decorative/inline text */
+[data-light] .text-foreground\/\[0\.04\],
+[data-theme="pristine-light"] .text-foreground\/\[0\.04\] { color: hsl(var(--foreground) / 0.22) !important; }
+
+/* ── Light theme: carousel nav buttons fix ── */
+/* bg-black/60 maps to page bg in light mode which makes buttons invisible;
+   replace with a visible card-like surface */
+[data-light] .carousel-nav-btn,
+[data-theme="pristine-light"] .carousel-nav-btn {
+  background-color: hsl(var(--card) / 0.9) !important;
+  border-color: hsl(var(--foreground) / 0.12) !important;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .carousel-nav-btn:hover,
+[data-theme="pristine-light"] .carousel-nav-btn:hover {
+  background-color: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.18) !important;
+}
+
+/* ── Light theme: missing bg-white fixes ── */
+[data-light] .bg-white\/5,
+[data-theme="pristine-light"] .bg-white\/5 { background-color: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .bg-white\/10,
+[data-theme="pristine-light"] .bg-white\/10 { background-color: hsl(var(--foreground) / 0.06) !important; }
+[data-light] .bg-white\/20,
+[data-theme="pristine-light"] .bg-white\/20 { background-color: hsl(var(--foreground) / 0.08) !important; }
+[data-light] .bg-white\/40,
+[data-theme="pristine-light"] .bg-white\/40 { background-color: hsl(var(--foreground) / 0.25) !important; }
+[data-light] .bg-white\/60,
+[data-theme="pristine-light"] .bg-white\/60 { background-color: hsl(var(--foreground) / 0.35) !important; }
+[data-light] .bg-white\/80,
+[data-theme="pristine-light"] .bg-white\/80 { background-color: hsl(var(--foreground) / 0.50) !important; }
+
+/* ── Light theme: border-white regular fixes ── */
+[data-light] .border-white\/10,
+[data-theme="pristine-light"] .border-white\/10 { border-color: hsl(var(--foreground) / 0.10) !important; }
+[data-light] .border-white\/15,
+[data-theme="pristine-light"] .border-white\/15 { border-color: hsl(var(--foreground) / 0.12) !important; }
+[data-light] .border-white\/20,
+[data-theme="pristine-light"] .border-white\/20 { border-color: hsl(var(--foreground) / 0.14) !important; }
+
+/* ── Light theme: rewards showcase card fix ── */
+[data-light] .rewards-showcase-card {
+  border-color: hsl(var(--foreground) / 0.10) !important;
+  box-shadow: 0 8px 40px hsl(var(--foreground) / 0.10), 0 2px 8px hsl(var(--foreground) / 0.06) !important;
+}
+
+/* ── Light theme: step-icon-box (inside how-it-works) ── */
+[data-light] .step-icon-box,
+[data-theme="pristine-light"] .step-icon-box {
+  background: hsl(var(--card)) !important;
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.06) !important;
 }
 
 /* ─────────────────────────────────────────

@@ -384,7 +384,7 @@ function HeroBannerSlider() {
                       {slide.features.map((feat, fi) => (
                         <span key={fi} className="hero-banner-pill">{feat}</span>
                       ))}
-                      <span className="w-px h-5 bg-white/[0.08] mx-1" />
+                      <span className="w-px h-5 bg-foreground/[0.08] mx-1" />
                       {isInternal ? (
                         <Link
                           href={slide.href}
@@ -505,13 +505,13 @@ function ScrollProgressLine({ containerRef, totalSteps }: { containerRef: React.
 
   return (
     <>
-      <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-white/[0.04]" />
+      <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-foreground/[0.06]" />
       <motion.div
         className="absolute left-[22px] sm:left-[26px] top-0 w-[2px] rounded-full origin-top z-[1]"
         style={{
           height,
-          background: "linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.06) 25%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 75%, rgba(255, 255, 255, 0.1) 100%)",
-          boxShadow: "0 0 8px 1px rgba(255, 255, 255, 0.08), 0 0 16px 2px rgba(255, 255, 255, 0.04)",
+          background: "linear-gradient(180deg, hsl(var(--foreground)/0.16) 0%, hsl(var(--foreground)/0.06) 25%, hsl(var(--foreground)/0.12) 50%, hsl(var(--foreground)/0.06) 75%, hsl(var(--foreground)/0.10) 100%)",
+          boxShadow: "0 0 8px 1px hsl(var(--foreground)/0.08), 0 0 16px 2px hsl(var(--foreground)/0.04)",
           opacity: glowOpacity,
         }}
       />
@@ -519,8 +519,8 @@ function ScrollProgressLine({ containerRef, totalSteps }: { containerRef: React.
         className="absolute left-[20px] sm:left-[24px] w-[6px] h-[6px] rounded-full z-[3]"
         style={{
           top: height,
-          background: "radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%)",
-          boxShadow: "0 0 10px 3px rgba(255, 255, 255, 0.12), 0 0 20px 5px rgba(255, 255, 255, 0.06)",
+          background: "radial-gradient(circle, hsl(var(--foreground)/0.60) 0%, hsl(var(--foreground)/0.30) 100%)",
+          boxShadow: "0 0 10px 3px hsl(var(--foreground)/0.12), 0 0 20px 5px hsl(var(--foreground)/0.06)",
           opacity: glowOpacity,
         }}
       />
@@ -537,18 +537,18 @@ function StepIcon({ icon, index, containerRef }: { icon: React.ReactNode; index:
   const threshold = index / (totalSteps - 1);
   const borderColor = useTransform(scrollYProgress, (v) => {
     if (v >= threshold - 0.02) {
-      return `rgba(255, 255, 255, 0.2)`;
+      return `hsl(var(--foreground) / 0.22)`;
     }
-    return "rgba(255, 255, 255, 0.06)";
+    return "hsl(var(--foreground) / 0.08)";
   });
   const shadowColor = useTransform(scrollYProgress, (v) => {
     if (v >= threshold - 0.02) {
-      return `0 0 12px 1px rgba(255, 255, 255, 0.06), 0 0 24px 2px rgba(255, 255, 255, 0.03)`;
+      return `0 0 12px 1px hsl(var(--foreground) / 0.06), 0 0 24px 2px hsl(var(--foreground) / 0.03)`;
     }
     return "none";
   });
   const iconColor = useTransform(scrollYProgress, (v) =>
-    v >= threshold - 0.02 ? "rgba(255, 255, 255, 0.85)" : "rgba(255, 255, 255, 0.3)"
+    v >= threshold - 0.02 ? "hsl(var(--foreground) / 0.88)" : "hsl(var(--foreground) / 0.30)"
   );
 
   return (
@@ -773,14 +773,14 @@ function RewardsCarousel() {
 
       <button
         onClick={prev}
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
+        className="carousel-nav-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-foreground/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:border-foreground/[0.15] hover:bg-black/80 transition-all duration-300 group"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-0.5 transition-transform" />
       </button>
       <button
         onClick={next}
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
+        className="carousel-nav-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-foreground/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:border-foreground/[0.15] hover:bg-black/80 transition-all duration-300 group"
         aria-label="Next slide"
       >
         <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
@@ -799,19 +799,19 @@ function RewardsCarousel() {
             <div
               className={`h-1 rounded-full transition-all duration-500 ease-out ${
                 idx === current
-                  ? "w-8 bg-white/40 shadow-[0_0_8px_rgba(255,255,255,0.1)]"
-                  : "w-2 bg-white/[0.1] group-hover:bg-white/20"
+                  ? "w-8 bg-foreground/35 shadow-[0_0_8px_rgba(128,128,128,0.15)]"
+                  : "w-2 bg-foreground/[0.12] group-hover:bg-foreground/[0.22]"
               }`}
             />
           </button>
         ))}
       </div>
 
-      <div className="flex items-center justify-center mt-4 gap-3 text-foreground/20 text-[10px] font-display tracking-widest uppercase">
+      <div className="flex items-center justify-center mt-4 gap-3 text-foreground/30 text-[10px] font-display tracking-widest uppercase">
         <span>{String(current + 1).padStart(2, "0")}</span>
-        <div className="w-8 h-px bg-white/10 relative overflow-hidden">
+        <div className="w-8 h-px bg-foreground/[0.1] relative overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-white/30 carousel-progress"
+            className="absolute inset-y-0 left-0 bg-foreground/30 carousel-progress"
             key={current}
             style={{
               animationPlayState: isPaused ? "paused" : "running",
@@ -943,7 +943,7 @@ export default function Home() {
 
             <HeroBannerSlider />
 
-            <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
+            <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-foreground/[0.06] bg-foreground/[0.01] rounded-2xl">
               <div className="marquee-container">
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
@@ -983,7 +983,7 @@ export default function Home() {
               className="relative"
             >
               <div className="absolute inset-x-12 inset-y-6 bg-white/[0.012] rounded-3xl blur-3xl -z-10 pointer-events-none" />
-              <div className="relative rounded-3xl overflow-hidden border border-white/[0.07] shadow-[0_8px_80px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.06)]">
+              <div className="rewards-showcase-card relative rounded-3xl overflow-hidden border border-foreground/[0.08] shadow-[0_8px_80px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)]">
                 <img
                   src="/images/hero-rewards-visual.png"
                   alt="Premium rewards — trophies, gift cards, and tech prizes"
@@ -1108,7 +1108,7 @@ export default function Home() {
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-[11px] font-display font-medium text-foreground/30 tracking-widest">{item.step}</span>
                         {item.tip && (
-                          <span className="text-[10px] font-display font-medium text-foreground/55 bg-white/[0.04] border border-white/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
+                          <span className="text-[10px] font-display font-medium text-foreground/55 bg-foreground/[0.04] border border-foreground/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
                         )}
                       </div>
                       <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">{item.title}</h3>
@@ -1329,7 +1329,7 @@ export default function Home() {
                         <span className="text-foreground/45 font-light">Milestone I</span>
                         <span className="text-foreground/60 font-display">18/20</span>
                       </div>
-                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-foreground/[0.06] rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: "90%" }}
@@ -1347,7 +1347,7 @@ export default function Home() {
                         <span className="text-foreground/45 font-light">Milestone II</span>
                         <span className="text-foreground/60 font-display">5/50</span>
                       </div>
-                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-foreground/[0.06] rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: "10%" }}
@@ -1377,7 +1377,7 @@ export default function Home() {
                     {[SiWhatsapp, SiTelegram, SiInstagram].map((Icon, i) => (
                       <motion.div
                         key={i}
-                        className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center"
+                        className="w-10 h-10 rounded-xl bg-foreground/[0.04] border border-foreground/[0.07] flex items-center justify-center"
                         animate={{ y: [0, -3, 0] }}
                         transition={{ duration: 3, delay: i * 0.6, repeat: Infinity, ease: "easeInOut" }}
                       >
@@ -1422,7 +1422,7 @@ export default function Home() {
               <TiltCard className="glass-card p-6 sm:p-10 border-white/10 relative overflow-hidden">
                 <div className="card-top-accent" />
                 <div className="card-shine" />
-                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-white/30 via-white/10 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-foreground/25 via-foreground/[0.08] to-transparent"></div>
                 <div className="relative z-[2]">
                   <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-foreground">Verification Protocol</h3>
                   <p className="text-foreground/55 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
@@ -1587,7 +1587,7 @@ export default function Home() {
                     <h3 className="text-lg font-display font-light text-foreground mb-2">{item.title}</h3>
                     <p className="text-xs text-foreground/50 font-light leading-relaxed">{item.desc}</p>
                     <div className="mt-auto pt-5">
-                      <div className="h-px w-full bg-gradient-to-r from-white/[0.06] via-white/[0.12] to-white/[0.06]" />
+                      <div className="h-px w-full bg-gradient-to-r from-foreground/[0.06] via-foreground/[0.12] to-foreground/[0.06]" />
                     </div>
                   </div>
                 </motion.div>
@@ -1602,7 +1602,7 @@ export default function Home() {
                       {["AK", "SR", "VP", "MJ", "DP"].map((initials, i) => (
                         <motion.div
                           key={i}
-                          className="w-9 h-9 rounded-xl bg-white/[0.06] border-2 border-black flex items-center justify-center"
+                          className="w-9 h-9 rounded-xl bg-foreground/[0.06] border-2 border-background flex items-center justify-center"
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
@@ -1658,7 +1658,7 @@ export default function Home() {
                 {[...testimonialRowOne, ...testimonialRowOne].map((t, i) => (
                   <div key={`r1-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] border border-foreground/[0.07] flex items-center justify-center shrink-0">
                         <span className="text-[10px] font-display font-bold text-foreground/60">{t.avatar}</span>
                       </div>
                       <div>
@@ -1683,7 +1683,7 @@ export default function Home() {
                 {[...testimonialRowTwo, ...testimonialRowTwo].map((t, i) => (
                   <div key={`r2-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] border border-foreground/[0.07] flex items-center justify-center shrink-0">
                         <span className="text-[10px] font-display font-bold text-foreground/60">{t.avatar}</span>
                       </div>
                       <div>
@@ -1708,7 +1708,7 @@ export default function Home() {
                 {[...testimonialRowThree, ...testimonialRowThree].map((t, i) => (
                   <div key={`r3-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] border border-foreground/[0.07] flex items-center justify-center shrink-0">
                         <span className="text-[10px] font-display font-bold text-foreground/60">{t.avatar}</span>
                       </div>
                       <div>
