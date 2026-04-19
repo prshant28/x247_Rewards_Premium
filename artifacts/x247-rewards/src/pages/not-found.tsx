@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   Home,
   Search,
-  AlertCircle,
   Trophy,
   Gift,
   Crown,
@@ -77,18 +76,6 @@ export default function NotFound() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Status pill */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="x404-badge"
-        >
-          <span className="x404-badge-dot" />
-          <AlertCircle className="w-3 h-3" />
-          <span>HTTP 404 · Resource Not Found</span>
-        </motion.div>
-
         {/* Big glitch 404 */}
         <motion.h1
           initial={{ opacity: 0, scale: 0.92 }}

@@ -3198,8 +3198,9 @@
 .x404-num-char {
   background: linear-gradient(180deg,
     hsl(var(--foreground)) 0%,
-    hsl(var(--foreground) / 0.78) 45%,
-    hsl(var(--foreground) / 0.32) 100%);
+    hsl(var(--foreground) / 0.88) 40%,
+    hsl(var(--foreground) / 0.65) 75%,
+    hsl(var(--foreground) / 0.55) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -3233,8 +3234,14 @@
   font-size: clamp(22px, 3.5vw, 32px);
   font-weight: 400;
   letter-spacing: -0.02em;
-  color: hsl(var(--foreground) / 0.92);
   margin: 0 0 12px;
+  background: linear-gradient(160deg,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--foreground) / 0.80) 60%,
+    hsl(var(--foreground) / 0.60) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .x404-title-italic {
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
@@ -15549,4 +15556,46 @@ svg.lucide,
   .pub2-badges-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   GLOBAL FORM ELEMENT VISIBILITY FIX
+   Prevent -webkit-text-fill-color: transparent from gradient title rules
+   cascading into inputs, selects, textareas, and buttons.
+   ══════════════════════════════════════════════════════════════════════ */
+
+input,
+input::placeholder,
+textarea,
+textarea::placeholder,
+select,
+button {
+  -webkit-text-fill-color: currentColor;
+}
+
+/* Native select + option deep styling for dark mode */
+select {
+  color-scheme: dark;
+}
+select option {
+  background-color: #111114;
+  color: rgba(255, 255, 255, 0.88);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.88);
+}
+
+/* Light theme: flip select to light mode */
+[data-light] select {
+  color-scheme: light !important;
+  color: hsl(var(--foreground)) !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
+[data-light] select option {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--foreground)) !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
+
+/* Buttons should never inherit the transparent text-fill */
+button, [role="button"] {
+  -webkit-text-fill-color: currentColor;
 }
