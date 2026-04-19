@@ -321,39 +321,19 @@ export default function Partners() {
 
       <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
 
-        {/* ── Partners Page Banner ── */}
-        <div className="page-section-banner">
-          <div className="page-section-banner-bg-deco" />
-          <div className="page-section-banner-shimmer" />
-          <div className="page-section-banner-left">
-            <div className="page-section-banner-eyebrow">
-              <span className="page-section-banner-eyebrow-dot" />
-              Partner Registration
-            </div>
-            <h1 className="page-section-banner-title">Our Partners</h1>
-            <p className="page-section-banner-sub">Register with partner platforms to earn giveaway entries and win real prizes.</p>
+        {/* ── Partners Hero ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center py-20 sm:py-28 px-4">
+          <div className="glass-pill-badge inline-flex mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
+            Partner Registration
           </div>
-          <img
-            src="/images/giftcards-visual.png"
-            alt="Gift cards and rewards"
-            className="page-section-banner-img"
-            loading="eager"
-            draggable={false}
-          />
-        </div>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-light text-white mb-5 leading-tight tracking-tight">Our Partners</h1>
+          <p className="text-white/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
+            Register with our partner platforms to earn giveaway entries. Each completed registration = one entry into the daily prize draw. More partners coming soon.
+          </p>
+        </motion.div>
 
-        <div className="container mx-auto px-4 max-w-6xl pt-12 sm:pt-16">
-
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            className="text-center mb-10 sm:mb-16"
-          >
-            <p className="text-white/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
-              Register with our partner platforms to earn giveaway entries. Each completed registration = one entry into the daily prize draw. More partners coming soon.
-            </p>
-          </motion.div>
+        <div className="container mx-auto px-4 max-w-6xl">
 
           <motion.div
             initial="hidden"

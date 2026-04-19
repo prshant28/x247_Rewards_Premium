@@ -194,36 +194,22 @@ export default function Giveaway() {
 
       <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
 
-        {/* ── Giveaway Page Banner ── */}
-        <div className="page-section-banner">
-          <div className="page-section-banner-bg-deco" />
-          <div className="page-section-banner-shimmer" />
-          <div className="page-section-banner-left">
-            <div className="page-section-banner-eyebrow">
-              <span className="page-section-banner-eyebrow-dot" />
-              Daily Prize Draws
-            </div>
-            <h1 className="page-section-banner-title">Contest Hub</h1>
-            <p className="page-section-banner-sub">Limited spots. Daily draws. Win real prizes every single day.</p>
+        {/* ── Contest Hub Hero ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center py-20 sm:py-28 px-4">
+          <div className="glass-pill-badge inline-flex mb-6">
+            <Crown className="w-3 h-3 mr-2 text-white/60" />
+            Daily Prize Draws
           </div>
-          <img
-            src="/images/reward-trophy.png"
-            alt="Trophy prize"
-            className="page-section-banner-img"
-            loading="eager"
-            draggable={false}
-          />
-        </div>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-light text-white mb-5 leading-tight tracking-tight">Contest Hub</h1>
+          <p className="text-white/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
+            Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes. Each contest has limited spots — act fast!
+          </p>
+        </motion.div>
 
-        <div className="container mx-auto px-4 max-w-5xl pt-12 sm:pt-16">
+        <div className="container mx-auto px-4 max-w-5xl">
 
           <section className="relative mb-12 sm:mb-16">
             <FloatingParticles />
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
-              <p className="text-white/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
-                Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes. Each contest has limited spots — act fast!
-              </p>
-            </motion.div>
 
             <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
