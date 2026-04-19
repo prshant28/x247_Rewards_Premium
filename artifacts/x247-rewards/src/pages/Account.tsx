@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import SiteFooter from "@/components/SiteFooter";
@@ -644,12 +645,13 @@ function NotificationIcon({ type }: { type: NotifIconKind }) {
   return <Bell className="w-4 h-4 text-foreground/40" />;
 }
 
-function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, containerRef }: {
+function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, containerRef, style }: {
   notifications: NotificationItem[];
   onMarkRead: (id: string) => void;
   onMarkAllRead: () => void;
   onClose: () => void;
   containerRef: React.RefObject<HTMLDivElement | null>;
+  style?: React.CSSProperties;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -680,6 +682,7 @@ function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, 
       exit={{ opacity: 0, y: -8, scale: 0.96 }}
       transition={{ duration: 0.2 }}
       className="notif-panel"
+      style={style}
     >
       <div className="notif-header">
         <span className="text-xs font-display font-medium text-foreground/70">Notifications</span>
@@ -2364,21 +2367,8 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
   const { streak, isNew: isStreakNew } = useStreak();
   const [showStreakCelebration, setShowStreakCelebration] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
-  const [showMobileNav, setShowMobileNav] = useState(false);
-  const activeTabMeta = TABS.find(t => t.id === activeTab) || TABS[0];
-  const ActiveTabIcon = activeTabMeta.icon;
-  // Close mobile drawer on Escape + body scroll lock while open
-  useEffect(() => {
-    if (!showMobileNav) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setShowMobileNav(false); };
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [showMobileNav]);
+  const [notifPos, setNotifPos] = useState<{ top: number; right: number } | null>(null);
+
   const notifs = useNotifications();
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
 
@@ -2392,8 +2382,18 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
     setUser(updatedUser);
   };
 
+  const notifBtnRef = useRef<HTMLButtonElement>(null);
   const notifContainerRef = useRef<HTMLDivElement>(null);
-  const toggleNotifs = useCallback(() => setShowNotifs(prev => !prev), []);
+  const toggleNotifs = useCallback(() => {
+    setShowNotifs(prev => {
+      if (!prev && notifBtnRef.current) {
+        const rect = notifBtnRef.current.getBoundingClientRect();
+        const right = Math.max(12, window.innerWidth - rect.right);
+        setNotifPos({ top: rect.bottom + 10, right });
+      }
+      return !prev;
+    });
+  }, []);
   const closeNotifs = useCallback(() => setShowNotifs(false), []);
 
   return (
@@ -2408,6 +2408,7 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
           {/* Notification bell — absolute top-right */}
           <div className="dash-banner-bell-wrap" ref={notifContainerRef}>
             <button
+              ref={notifBtnRef}
               onClick={toggleNotifs}
               className="dash-banner-action-btn notif-bell-btn"
               aria-label="Notifications"
@@ -2417,18 +2418,23 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
               <Bell className="w-4 h-4" />
               {notifs.unread > 0 && <span className="notif-badge-count">{notifs.unread}</span>}
             </button>
+          </div>
+          {/* Notification panel — rendered as portal to escape overflow:hidden */}
+          {typeof document !== "undefined" && createPortal(
             <AnimatePresence>
-              {showNotifs && (
+              {showNotifs && notifPos && (
                 <NotificationPanel
                   notifications={notifs.items}
                   onMarkRead={notifs.markRead}
                   onMarkAllRead={notifs.markAllRead}
                   onClose={closeNotifs}
-                  containerRef={notifContainerRef}
+                  containerRef={notifBtnRef as React.RefObject<HTMLDivElement | null>}
+                  style={{ top: notifPos.top, right: notifPos.right }}
                 />
               )}
-            </AnimatePresence>
-          </div>
+            </AnimatePresence>,
+            document.body
+          )}
 
           {/* Centered glass hero card — matches Contest Hub aesthetic */}
           <div className="dash-acct-hero-card">
@@ -2539,90 +2545,28 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
             </button>
           </nav>
 
-          {/* Mobile tab row */}
-          {/* Mobile: premium top bar showing current tab + menu trigger */}
-          <div className="dash-mobile-topbar">
-            <button
-              type="button"
-              onClick={() => setShowMobileNav(true)}
-              className="dash-mobile-topbar-trigger"
-              aria-label="Open account menu"
-            >
-              <span className="dash-mobile-topbar-icon">
-                <ActiveTabIcon className="w-4 h-4" />
-              </span>
-              <span className="dash-mobile-topbar-label">{activeTabMeta.label}</span>
-              <span className="dash-mobile-topbar-chevron">
-                <ChevronDown className="w-3.5 h-3.5" />
-              </span>
-            </button>
-            <div className="dash-mobile-topbar-meta">
-              <span className="dash-mobile-topbar-meta-dot" />
-              {TABS.findIndex(t => t.id === activeTab) + 1} / {TABS.length}
-            </div>
-          </div>
-
-          {/* Mobile: slide-up drawer with all tabs as premium cards */}
-          <AnimatePresence>
-            {showMobileNav && (
-              <>
-                <motion.div
-                  className="dash-mobile-drawer-backdrop"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  onClick={() => setShowMobileNav(false)}
-                />
-                <motion.div
-                  className="dash-mobile-drawer"
-                  role="dialog"
-                  aria-modal="true"
-                  aria-label="Account navigation"
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "100%" }}
-                  transition={{ type: "spring", stiffness: 320, damping: 36 }}
+          {/* Mobile: horizontal scrollable tab strip — all tabs always visible */}
+          <div className="dash-mobile-tabs-scroll" role="tablist" aria-label="Account sections">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`dash-mobile-tab-btn${isActive ? " dash-mobile-tab-btn--active" : ""}`}
                 >
-                  <div className="dash-mobile-drawer-handle" />
-                  <div className="dash-mobile-drawer-header">
-                    <div>
-                      <div className="dash-mobile-drawer-title">Account</div>
-                      <div className="dash-mobile-drawer-sub">Switch sections</div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowMobileNav(false)}
-                      className="dash-mobile-drawer-close"
-                      aria-label="Close menu"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="dash-mobile-drawer-grid">
-                    {TABS.map((tab) => {
-                      const Icon = tab.icon;
-                      const isActive = activeTab === tab.id;
-                      return (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          onClick={() => { setActiveTab(tab.id); setShowMobileNav(false); }}
-                          className={`dash-mobile-drawer-card ${isActive ? "is-active" : ""}`}
-                        >
-                          <span className="dash-mobile-drawer-card-icon">
-                            <Icon className="w-4 h-4" />
-                          </span>
-                          <span className="dash-mobile-drawer-card-label">{tab.label}</span>
-                          {isActive && <span className="dash-mobile-drawer-card-pulse" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+                  <span className="dash-mobile-tab-btn-icon">
+                    <Icon className="w-3.5 h-3.5" />
+                  </span>
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
           {/* Tab content */}
           <div className="dash-content">
