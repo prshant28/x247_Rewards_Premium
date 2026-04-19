@@ -2882,7 +2882,6 @@
 /* ── PREMIUM BANNER ──────────────────────────────────────────────────── */
 .dash-banner {
   position: relative;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10334,6 +10333,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+  overflow: visible;
 }
 @media (min-width: 400px) { .pub2-badges-grid { grid-template-columns: repeat(4, 1fr); } }
 
@@ -10341,6 +10341,11 @@
   perspective: 600px;
   height: 110px;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+.pub-flip-wrapper--flipped {
+  z-index: 20;
 }
 .pub-flip-inner {
   width: 100%;
@@ -13258,6 +13263,257 @@
   .follow-row-name { max-width: 130px; }
 }
 
+/* ══════════════════════════════════════════
+   /people — Find People Page
+   ══════════════════════════════════════════ */
+
+/* Tabs */
+.people-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-bottom: 10px;
+}
+.people-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.people-tab:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.04); }
+.people-tab--active {
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* Search */
+.people-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 9px 14px;
+  margin-bottom: 16px;
+  transition: border-color 0.18s;
+}
+.people-search:focus-within { border-color: rgba(255,255,255,0.18); }
+.people-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.75);
+  min-width: 0;
+}
+.people-search-input::placeholder { color: rgba(255,255,255,0.22); }
+
+/* Person row */
+.people-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.people-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: background 0.18s, border-color 0.18s;
+}
+.people-row:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+.people-row-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+}
+.people-row-avatar {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  flex-shrink: 0;
+}
+.people-row-verified {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #18181b;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.7);
+}
+.people-row-info { flex: 1; min-width: 0; }
+.people-row-name-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+.people-row-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.80);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+.people-row-tier-ico { flex-shrink: 0; }
+.people-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.people-row-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.30);
+}
+
+/* Follow button */
+.people-follow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s, opacity 0.18s;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+.people-follow-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.people-follow-btn--follow {
+  background: rgba(255,255,255,0.90);
+  color: #08080e;
+  border-color: transparent;
+}
+.people-follow-btn--follow:hover:not(:disabled) { background: rgba(255,255,255,1); }
+.people-follow-btn--following {
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  border-color: rgba(255,255,255,0.14);
+}
+.people-follow-btn--following:hover:not(:disabled) {
+  background: rgba(255,0,0,0.07);
+  border-color: rgba(255,80,80,0.25);
+  color: rgba(255,140,140,0.85);
+}
+
+/* Empty state */
+.people-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 56px 24px;
+  text-align: center;
+}
+.people-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.2);
+  margin-bottom: 6px;
+}
+.people-empty-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+}
+.people-empty-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.22);
+  max-width: 240px;
+  line-height: 1.6;
+}
+
+/* Light theme */
+[data-light] .people-tab { color: rgba(10,10,18,0.40); }
+[data-light] .people-tab:hover { color: rgba(10,10,18,0.65); background: rgba(10,10,18,0.05); }
+[data-light] .people-tab--active {
+  color: rgba(10,10,18,0.85);
+  background: rgba(10,10,18,0.07);
+  border-color: rgba(10,10,18,0.12);
+}
+[data-light] .people-search {
+  background: rgba(10,10,18,0.04);
+  border-color: rgba(10,10,18,0.10);
+}
+[data-light] .people-search-input { color: rgba(10,10,18,0.80); }
+[data-light] .people-search-input::placeholder { color: rgba(10,10,18,0.28); }
+[data-light] .people-row {
+  background: rgba(10,10,18,0.04);
+  border-color: rgba(10,10,18,0.08);
+}
+[data-light] .people-row:hover { background: rgba(10,10,18,0.07); border-color: rgba(10,10,18,0.14); }
+[data-light] .people-row-avatar { background: rgba(10,10,18,0.07); border-color: rgba(10,10,18,0.12); color: rgba(10,10,18,0.65); }
+[data-light] .people-row-verified { background: #f4f4f8; border-color: rgba(10,10,18,0.14); color: rgba(10,10,18,0.65); }
+[data-light] .people-row-name { color: rgba(10,10,18,0.82); }
+[data-light] .people-row-chip { color: rgba(10,10,18,0.38); }
+[data-light] .people-follow-btn--follow { background: rgba(10,10,18,0.88); color: #fff; }
+[data-light] .people-follow-btn--following { color: rgba(10,10,18,0.45); border-color: rgba(10,10,18,0.16); }
+[data-light] .people-empty-icon { background: rgba(10,10,18,0.04); border-color: rgba(10,10,18,0.10); color: rgba(10,10,18,0.25); }
+[data-light] .people-empty-title { color: rgba(10,10,18,0.45); }
+[data-light] .people-empty-sub { color: rgba(10,10,18,0.30); }
+[data-light] .people-tabs { border-color: rgba(10,10,18,0.10); }
+
+/* ======================================== */
 /* ========================================
    Account Page — Premium Enhancements
    ======================================== */

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, Link } from "wouter";
+import { useParams, Link, useLocation } from "wouter";
 import {
   motion, AnimatePresence,
   useMotionValue, useSpring,
@@ -7,7 +7,6 @@ import {
 } from "framer-motion";
 import SiteFooter from "@/components/SiteFooter";
 import { ActivityHeatmap } from "@/components/MiniCharts";
-import FollowListModal from "@/components/FollowListModal";
 import { getPublicProfile, followUser, unfollowUser } from "@/lib/api";
 import {
   Calendar, Shield, MapPin, Share2, Copy, Check, Sparkles,
@@ -185,10 +184,33 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
 /* ─── Badge flip card — premium version ─── */
 function BadgeFlipCard({ badgeId, earned = true }: { badgeId: string; earned?: boolean }) {
   const [flipped, setFlipped] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const meta = BADGE_META[badgeId];
+
+  useEffect(() => {
+    if (!flipped) return;
+    const handler = (e: MouseEvent | TouchEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setFlipped(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    document.addEventListener("touchstart", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("touchstart", handler);
+    };
+  }, [flipped]);
+
   if (!meta) return null;
   return (
-    <div className="pub-flip-wrapper" onMouseEnter={() => setFlipped(true)} onMouseLeave={() => setFlipped(false)}>
+    <div
+      ref={wrapRef}
+      className={`pub-flip-wrapper${flipped ? " pub-flip-wrapper--flipped" : ""}`}
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+      onClick={() => setFlipped(f => !f)}
+    >
       <div className={`pub-flip-inner ${flipped ? "pub-flip-inner--flipped" : ""} ${!earned ? "pub-flip-locked" : ""}`}>
         <div className="pub-flip-front" style={{ "--badge-glow": earned ? meta.color : "rgba(255,255,255,0.03)", "--badge-accent": earned ? meta.accent : "rgba(255,255,255,0.10)" } as React.CSSProperties}>
           {earned && <div className="pub-flip-front-glow" />}
@@ -229,8 +251,7 @@ export default function PublicProfile() {
   const [followingCount, setFollowingCount] = useState(0);
   const [followLoading, setFollowLoading] = useState(false);
   const [followsYou, setFollowsYou] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState<"followers" | "following" | "suggestions">("followers");
+  const [, navigate] = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const bandRef = useRef<HTMLDivElement>(null);
   const bandInView = useInView(bandRef, { margin: "0px" });
@@ -456,7 +477,7 @@ export default function PublicProfile() {
                     key={s.lbl}
                     type="button"
                     className="prof-id-stat prof-id-stat--clickable"
-                    onClick={() => { setModalTab(s.tab!); setModalOpen(true); }}
+                    onClick={() => navigate(`/people?slug=${params.slug}&tab=${s.tab}`)}
                   >{Inner}</button>
                 ) : (
                   <div key={s.lbl} className="prof-id-stat">{Inner}</div>
@@ -472,7 +493,7 @@ export default function PublicProfile() {
           <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] xl:grid-cols-[340px_1fr] gap-4 sm:gap-5">
 
             {/* ── LEFT COLUMN (sticky) ── */}
-            <aside className="lg:sticky lg:top-24 lg:self-start space-y-7">
+            <aside className="lg:sticky lg:top-24 lg:self-start space-y-[10px]">
               <TradingCard
                 initials={getInitials(profile.fullName)}
                 fullName={profile.fullName}
@@ -561,7 +582,7 @@ export default function PublicProfile() {
                 </p>
                 <button
                   className="pub2-discover-btn"
-                  onClick={() => { setModalTab("suggestions"); setModalOpen(true); }}
+                  onClick={() => navigate("/people")}
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   Find People to Follow
@@ -570,7 +591,7 @@ export default function PublicProfile() {
                 {!profile.isOwnProfile && (
                   <button
                     className="pub2-discover-btn pub2-discover-btn--followers"
-                    onClick={() => { setModalTab("followers"); setModalOpen(true); }}
+                    onClick={() => navigate(`/people?slug=${params.slug}&tab=followers`)}
                   >
                     <Users className="w-3.5 h-3.5" />
                     {followersCount} Followers
@@ -647,7 +668,7 @@ export default function PublicProfile() {
                   {earnedBadges.length > 0 && <span className="pub2-card-count">{earnedBadges.length}</span>}
                 </div>
                 <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
-                  Hover a badge to learn more. Keep participating to unlock more.
+                  Tap a badge to learn more. Keep participating to unlock more.
                 </p>
                 <div className="pub2-badges-grid">
                   {allBadgeSlots.map((b, i) => (
@@ -844,14 +865,6 @@ export default function PublicProfile() {
         { label: "Account", href: "/account" },
       ]} />
 
-      <FollowListModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        slug={params.slug}
-        initialTab={modalTab}
-        initialFollowersCount={followersCount}
-        initialFollowingCount={followingCount}
-      />
     </div>
   );
 }
