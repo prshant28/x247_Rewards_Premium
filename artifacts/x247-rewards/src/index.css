@@ -3233,8 +3233,8 @@
 .x404-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(22px, 3.5vw, 32px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: 300;
+  letter-spacing: -0.03em;
   margin: 0 0 12px;
   background: linear-gradient(160deg,
     hsl(var(--foreground)) 0%,
@@ -3245,9 +3245,9 @@
   -webkit-text-fill-color: transparent;
 }
 .x404-title-italic {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-family: 'Syne', sans-serif;
   font-style: italic;
-  font-weight: 700;
+  font-weight: 300;
   display: inline-block;
   padding: 0 6px 2px 2px;
   background: linear-gradient(160deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.6) 100%);
@@ -3257,13 +3257,14 @@
   line-height: 1.15;
 }
 .x404-subtitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13.5px;
   font-weight: 300;
   color: hsl(var(--foreground) / 0.55);
   line-height: 1.65;
   margin: 0 auto 18px;
   max-width: 480px;
+  letter-spacing: 0.01em;
 }
 
 /* ===== Terminal display ===== */
@@ -6552,7 +6553,7 @@
 .pricing-hero-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(44px, 7vw, 88px);
-  font-weight: 500;
+  font-weight: 300;
   line-height: 1.0;
   letter-spacing: -0.04em;
   color: hsl(var(--foreground));
@@ -6566,13 +6567,14 @@
   background-clip: text;
 }
 .pricing-hero-subtitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 14px;
   font-weight: 300;
-  color: hsl(var(--foreground)/0.5);
+  color: hsl(var(--foreground)/0.55);
   line-height: 1.7;
   margin: 0 auto 28px;
   max-width: 540px;
+  letter-spacing: 0.01em;
 }
 .pricing-hero-pills {
   display: flex;
@@ -6782,27 +6784,28 @@
 .pricing-card-name {
   font-family: 'Syne', sans-serif;
   font-size: 1.3rem;
-  font-weight: 700;
+  font-weight: 300;
   color: white;
   letter-spacing: -0.02em;
   margin: 0 0 2px;
 }
 .pricing-card-tagline {
   font-family: 'Alegreya Sans SC', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.45);
   margin: 0 0 3px;
 }
 .pricing-card-tagline-detail {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.40);
   margin: 0 0 20px;
-  line-height: 1.5;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
 }
 
 /* Price block */
@@ -10951,11 +10954,11 @@
 .pricing-bsc-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 700;
+  font-weight: 300;
   color: white;
   -webkit-text-fill-color: white;
   line-height: 1.15;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   margin: 0 0 6px;
 }
 .pricing-bsc-black-word {
@@ -10968,13 +10971,14 @@
 }
 
 .pricing-bsc-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255,255,255,0.40);
+  color: rgba(255,255,255,0.55);
   line-height: 1.65;
   margin: 0 0 20px;
   max-width: 440px;
+  letter-spacing: 0.01em;
 }
 
 .pricing-bsc-perks {
@@ -10991,10 +10995,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
+  letter-spacing: 0.01em;
 }
 .pricing-bsc-perk svg {
   color: rgba(255,255,255,0.35);
@@ -11279,21 +11284,22 @@
 .hiw-section-title {
   font-family: 'Syne', sans-serif;
   font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 500;
-  letter-spacing: -0.03em;
+  font-weight: 300;
+  letter-spacing: -0.04em;
   line-height: 1.1;
   color: white;
   margin: 0 0 14px;
 }
 .hiw-section-sub {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 15px;
   font-weight: 300;
-  color: rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.55);
   line-height: 1.65;
   max-width: 520px;
   text-align: center;
   margin: 0;
+  letter-spacing: 0.01em;
 }
 
 /* ── Step cards ── */
@@ -11339,11 +11345,12 @@
 }
 
 .hiw-step-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 11px;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.2em;
-  color: rgba(255,255,255,0.18);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
   margin-bottom: 20px;
 }
 .hiw-step-icon-wrap {
@@ -11379,18 +11386,19 @@
 .hiw-step-title {
   font-family: 'Syne', sans-serif;
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 300;
   color: white;
   letter-spacing: -0.02em;
   margin: 0 0 10px;
 }
 .hiw-step-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255,255,255,0.40);
+  color: rgba(255,255,255,0.55);
   line-height: 1.65;
   margin: 0 0 18px;
+  letter-spacing: 0.01em;
 }
 .hiw-step-items {
   list-style: none;
@@ -11694,16 +11702,17 @@
 .hiw-tier-name {
   font-family: 'Syne', sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 300;
   color: white;
   letter-spacing: -0.01em;
 }
 .hiw-tier-price {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 11px;
   font-weight: 300;
-  color: rgba(255,255,255,0.30);
+  color: rgba(255,255,255,0.40);
   margin-top: 1px;
+  letter-spacing: 0.01em;
 }
 .hiw-tier-entries {
   display: flex;
@@ -11714,16 +11723,18 @@
 .hiw-tier-entries-num {
   font-family: 'Syne', sans-serif;
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 300;
   color: white;
   letter-spacing: -0.03em;
   line-height: 1;
 }
 .hiw-tier-entries-lbl {
-  font-family: 'Poppins', sans-serif;
-  font-size: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 9px;
   font-weight: 300;
-  color: rgba(255,255,255,0.28);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
 }
 .hiw-tier-perks {
   display: flex;
@@ -11736,10 +11747,11 @@
   border-radius: 999px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.07);
-  font-family: 'Poppins', sans-serif;
-  font-size: 10.5px;
+  font-family: 'Syne', sans-serif;
+  font-size: 10px;
   font-weight: 300;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.50);
+  letter-spacing: 0.01em;
 }
 
 .hiw-tier-cta-row {
