@@ -2898,6 +2898,7 @@
   .dash-frame { padding: 20px 32px 64px; }
 }
 
+/* Ambient top glow under the nav */
 .dash-frame-glow {
   position: fixed;
   top: 70px;
@@ -2909,6 +2910,7 @@
   pointer-events: none;
 }
 
+/* ── 3D PREMIUM ACCOUNT FRAME ─────────────────────────────────────────── */
 .dash-frame-inner {
   position: relative;
   display: flex;
@@ -2917,16 +2919,110 @@
   max-width: 1280px;
   margin: 0 auto;
   width: 100%;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 20px;
+
+  /* Premium border — faintly visible top + sides */
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
   overflow: hidden;
-  background: rgba(8,8,10,0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+
+  /* Rich dark background */
+  background: linear-gradient(180deg,
+    rgba(16, 16, 20, 0.99) 0%,
+    rgba(10, 10, 14, 0.99) 40%,
+    rgba(8, 8, 12, 1.0) 100%
+  );
+  backdrop-filter: blur(40px) saturate(1.3);
+  -webkit-backdrop-filter: blur(40px) saturate(1.3);
+
+  /* Multi-layer 3D elevation shadows */
+  box-shadow:
+    /* Outer ambient ring */
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    /* Far depth — card floating high above page */
+    0 60px 120px rgba(0, 0, 0, 0.8),
+    0 30px 60px rgba(0, 0, 0, 0.6),
+    0 12px 28px rgba(0, 0, 0, 0.4),
+    0 4px 10px rgba(0, 0, 0, 0.25),
+    /* Inner top highlight — "lid" catching light */
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    /* Inner side whispers */
+    inset 1px 0 0 rgba(255, 255, 255, 0.03),
+    inset -1px 0 0 rgba(255, 255, 255, 0.03),
+    /* Inner bottom shadow */
+    inset 0 -1px 0 rgba(255, 255, 255, 0.02);
 }
+
+/* Top-edge shine line — metallic highlight on top face of box */
+.dash-frame-inner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 8%,
+    rgba(255, 255, 255, 0.14) 25%,
+    rgba(255, 255, 255, 0.32) 45%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0.32) 55%,
+    rgba(255, 255, 255, 0.14) 75%,
+    rgba(255, 255, 255, 0.04) 92%,
+    transparent 100%
+  );
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Subtle ambient radial glow on top face */
+.dash-frame-inner::after {
+  content: '';
+  position: absolute;
+  inset-x: 0;
+  top: 0;
+  height: 220px;
+  background: radial-gradient(ellipse 90% 60% at 50% -10%,
+    rgba(255, 255, 255, 0.045) 0%,
+    rgba(255, 255, 255, 0.01) 50%,
+    transparent 70%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Light theme 3D frame */
 [data-light] .dash-frame-inner {
-  border-color: hsl(var(--foreground) / 0.07) !important;
-  background: hsl(var(--card) / 0.5) !important;
+  background: linear-gradient(180deg,
+    hsl(var(--card) / 1.0) 0%,
+    hsl(var(--background) / 1.0) 100%
+  ) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow:
+    0 0 0 1px hsl(var(--foreground) / 0.04),
+    0 40px 80px hsl(var(--foreground) / 0.12),
+    0 16px 40px hsl(var(--foreground) / 0.08),
+    0 6px 16px hsl(var(--foreground) / 0.05),
+    inset 0 1px 0 hsl(255 100% 100% / 0.95),
+    inset 0 -1px 0 hsl(var(--foreground) / 0.04) !important;
+  backdrop-filter: none !important;
+}
+[data-light] .dash-frame-inner::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    hsl(var(--foreground) / 0.04) 15%,
+    hsl(var(--foreground) / 0.12) 40%,
+    hsl(var(--foreground) / 0.18) 50%,
+    hsl(var(--foreground) / 0.12) 60%,
+    hsl(var(--foreground) / 0.04) 85%,
+    transparent 100%
+  ) !important;
+}
+[data-light] .dash-frame-inner::after {
+  background: radial-gradient(ellipse 90% 60% at 50% -10%,
+    hsl(var(--foreground) / 0.03) 0%,
+    transparent 70%
+  ) !important;
 }
 
 /* ── MINIMAL BANNER ──────────────────────────────────────────────────── */
