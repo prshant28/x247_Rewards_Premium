@@ -292,19 +292,24 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
               )}
             </div>
           ) : (
-            /* Thin status strip when no image — much more minimal */
-            <div className="contest-card-strip">
-              <div className="contest-card-strip-icon">
-                <Trophy className="w-3.5 h-3.5" />
-              </div>
+            /* Rich image-style hero when no banner — deterministic gradient + big initial */
+            <div className="contest-card-hero" style={{ background: fallbackBg }}>
+              <div className="contest-card-hero-glow" aria-hidden />
+              <div className="contest-card-hero-grid" aria-hidden />
               {!isUpcoming && !isFull && (
-                <div className="contest-card-strip-live">
+                <div className="contest-card-hero-live">
                   <span className="contest-card-banner-pulse" />
                   LIVE
                 </div>
               )}
-              <div className="contest-card-strip-tag">
+              <div className="contest-card-hero-tag">
                 {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
+              </div>
+              <div className="contest-card-hero-initial" aria-hidden>
+                {contest.name.trim().charAt(0).toUpperCase() || "X"}
+              </div>
+              <div className="contest-card-hero-trophy" aria-hidden>
+                <Trophy className="w-3.5 h-3.5" />
               </div>
             </div>
           )}
