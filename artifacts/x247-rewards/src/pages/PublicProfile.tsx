@@ -65,11 +65,12 @@ function AnimatedNumber({ value, delay = 0 }: { value: number; delay?: number })
 /* ─── Trading Card (premium collectible card — no corner arcs) ─── */
 function TradingCard({
   initials, fullName, tier, tierLabel, followers, badges, onShare, copied,
-  isFollowing, followLoading, onFollow, isOwnProfile,
+  isFollowing, followLoading, onFollow, isOwnProfile, isLoggedIn, avatarUrl,
 }: {
   initials: string; fullName: string; tier: string; tierLabel: string;
   followers: number; badges: number; onShare: () => void; copied: boolean;
   isFollowing: boolean; followLoading: boolean; onFollow: () => void; isOwnProfile: boolean;
+  isLoggedIn: boolean; avatarUrl?: string | null;
 }) {
   const tierRing = TIER_META[tier]?.ring ?? "rgba(255,255,255,0.10)";
   return (
@@ -95,9 +96,13 @@ function TradingCard({
         </div>
 
         <div className="pub2-tcard-avatar-area">
-          {/* Glow ring around initials */}
+          {/* Glow ring around initials/photo */}
           <div className="pub2-tcard-initials-ring" style={{ "--tier-ring": tierRing } as React.CSSProperties} />
-          <span className="pub2-tcard-initials">{initials}</span>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={fullName} className="pub2-tcard-avatar-photo" />
+          ) : (
+            <span className="pub2-tcard-initials">{initials}</span>
+          )}
         </div>
       </div>
 
@@ -141,6 +146,10 @@ function TradingCard({
             {followLoading ? (
               <motion.span key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
                 <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
+              </motion.span>
+            ) : !isLoggedIn ? (
+              <motion.span key="login" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
+                <UserPlus className="w-3.5 h-3.5" /> Login to Follow
               </motion.span>
             ) : isFollowing ? (
               <motion.span key="unf" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-2">
@@ -222,8 +231,13 @@ export default function PublicProfile() {
   const [followsYou, setFollowsYou] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<"followers" | "following" | "suggestions">("followers");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const bandRef = useRef<HTMLDivElement>(null);
   const bandInView = useInView(bandRef, { margin: "0px" });
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("user_token"));
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -339,7 +353,11 @@ export default function PublicProfile() {
                 <div className="prof-id-avatar-glow" style={{ "--tier-glow": tierGlow } as React.CSSProperties} />
                 <div className="prof-id-avatar-ring" style={{ "--tier-ring": tierRing } as React.CSSProperties} />
                 <div className="prof-id-avatar">
-                  <span className="prof-id-avatar-initials">{getInitials(profile.fullName)}</span>
+                  {profile.avatarUrl ? (
+                    <img src={profile.avatarUrl} alt={profile.fullName} className="prof-id-avatar-photo" />
+                  ) : (
+                    <span className="prof-id-avatar-initials">{getInitials(profile.fullName)}</span>
+                  )}
                 </div>
                 <div className="prof-id-avatar-verified">
                   <BadgeCheck className="w-3 h-3 text-white" />
@@ -389,6 +407,10 @@ export default function PublicProfile() {
                       {followLoading ? (
                         <motion.span key="load" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
                           <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
+                        </motion.span>
+                      ) : !isLoggedIn ? (
+                        <motion.span key="login" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
+                          <UserPlus className="w-3.5 h-3.5" /> Login to Follow
                         </motion.span>
                       ) : isFollowing ? (
                         <motion.span key="unf" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5">
@@ -464,6 +486,8 @@ export default function PublicProfile() {
                 followLoading={followLoading}
                 onFollow={handleFollow}
                 isOwnProfile={!!profile.isOwnProfile}
+                isLoggedIn={isLoggedIn}
+                avatarUrl={profile.avatarUrl}
               />
 
               {/* Level badge (sidebar) */}
@@ -690,7 +714,7 @@ export default function PublicProfile() {
                           <div className="pub2-timeline-name">{c.contestName ?? "Giveaway"}</div>
                           <div className="pub2-timeline-meta">
                             {c.entries} {c.entries === 1 ? "entry" : "entries"} ·{" "}
-                            {new Date(c.enteredAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                            {c.enteredAt ? new Date(c.enteredAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—"}
                           </div>
                         </div>
                         {c.won && (
@@ -794,6 +818,8 @@ export default function PublicProfile() {
                 >
                   {followLoading ? (
                     <motion.span className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full block" animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 0.8 }} />
+                  ) : !isLoggedIn ? (
+                    <><UserPlus className="w-3.5 h-3.5" /> Login to Follow</>
                   ) : isFollowing ? (
                     <><UserMinus className="w-3.5 h-3.5" /> Following</>
                   ) : (

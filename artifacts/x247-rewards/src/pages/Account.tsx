@@ -1007,7 +1007,7 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
                   {i < Math.min(entries.length - 1, 3) && <div className="dash-activity-line" />}
                   <div className="flex-1 min-w-0">
                     <div className="text-xs font-light text-white/60 truncate">Entered {entry.contestName}</div>
-                    <div className="text-[10px] text-white/25 font-light">{entry.entryCount} entries · {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
+                    <div className="text-[10px] text-white/25 font-light">{entry.entryCount} entries · {entry.submittedAt ? new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—"}</div>
                   </div>
                   <div className="acct-entry-status">
                     <Clock className="w-3 h-3" />
@@ -1432,10 +1432,10 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
                 disabled={!earned || badgeSaving}
                 className={`relative rounded-2xl p-3 text-center transition-all duration-300 border ${
                   isSelected
-                    ? "border-white/20 bg-white/[0.06]"
+                    ? "border-white/30 bg-white/[0.08] ring-1 ring-white/20"
                     : earned
-                    ? "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:bg-white/[0.05] cursor-pointer"
-                    : "border-white/[0.04] bg-white/[0.01] opacity-40 cursor-not-allowed"
+                    ? "border-white/[0.14] bg-white/[0.05] hover:border-white/[0.25] hover:bg-white/[0.08] cursor-pointer"
+                    : "border-white/[0.06] bg-white/[0.02] opacity-50 cursor-not-allowed"
                 }`}
               >
                 {isSelected && (
@@ -1972,7 +1972,7 @@ function EntriesTab({ entries }: { entries: any[] }) {
                   <span>{entry.status === "won" ? "Won!" : "Pending"}</span>
                 </div>
                 <div className="text-[9px] text-white/20 font-light mt-0.5">
-                  {new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                  {entry.submittedAt ? new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
                 </div>
               </div>
             </div>

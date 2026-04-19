@@ -484,6 +484,7 @@ router.get("/users/profile/:slug", async (req, res) => {
       recentContests: contestsWithDetails.slice(0, 6).map(e => ({
         contestId: e.contestId,
         entries: e.entryCount,
+        enteredAt: e.createdAt,
       })),
       memberSince: user.createdAt,
       profileSlug: user.profileSlug,
