@@ -73,7 +73,7 @@
   --secondary-foreground: 0 0% 95%;
 
   --muted: 0 0% 8%;
-  --muted-foreground: 0 0% 55%;
+  --muted-foreground: 0 0% 62%;
 
   --accent: 0 0% 8%;
   --accent-foreground: 0 0% 95%;
@@ -140,7 +140,7 @@
   --secondary-foreground: 0 0% 95%;
 
   --muted: 0 0% 8%;
-  --muted-foreground: 0 0% 55%;
+  --muted-foreground: 0 0% 62%;
 
   --accent: 0 0% 8%;
   --accent-foreground: 0 0% 95%;
@@ -5916,24 +5916,26 @@
 [data-light] h1, [data-light] h2, [data-light] h3, [data-light] h4 { color: hsl(var(--foreground)) !important; }
 [data-light] .text-white { color: hsl(var(--foreground)) !important; }
 [data-light] .text-white\/95,
-[data-light] .text-white\/90 { color: hsl(var(--foreground) / 0.92) !important; }
+[data-light] .text-white\/90 { color: hsl(var(--foreground) / 0.95) !important; }
 [data-light] .text-white\/85,
-[data-light] .text-white\/80,
+[data-light] .text-white\/80 { color: hsl(var(--foreground) / 0.88) !important; }
 [data-light] .text-white\/75,
 [data-light] .text-white\/70 { color: hsl(var(--foreground) / 0.82) !important; }
 [data-light] .text-white\/65,
-[data-light] .text-white\/60,
+[data-light] .text-white\/60 { color: hsl(var(--foreground) / 0.78) !important; }
 [data-light] .text-white\/55,
-[data-light] .text-white\/50 { color: hsl(var(--foreground) / 0.7) !important; }
+[data-light] .text-white\/50 { color: hsl(var(--foreground) / 0.72) !important; }
 [data-light] .text-white\/45,
-[data-light] .text-white\/40,
+[data-light] .text-white\/40 { color: hsl(var(--foreground) / 0.68) !important; }
 [data-light] .text-white\/35,
-[data-light] .text-white\/30 { color: hsl(var(--foreground) / 0.68) !important; }
+[data-light] .text-white\/30 { color: hsl(var(--foreground) / 0.64) !important; }
 [data-light] .text-white\/25,
+[data-light] .text-white\/22 { color: hsl(var(--foreground) / 0.60) !important; }
 [data-light] .text-white\/20 { color: hsl(var(--foreground) / 0.55) !important; }
 [data-light] .text-white\/15,
+[data-light] .text-white\/12 { color: hsl(var(--foreground) / 0.50) !important; }
 [data-light] .text-white\/10,
-[data-light] .text-white\/5 { color: hsl(var(--foreground) / 0.38) !important; }
+[data-light] .text-white\/5 { color: hsl(var(--foreground) / 0.44) !important; }
 [data-light] .bg-white\/\[0\.02\],
 [data-light] .bg-white\/\[0\.03\],
 [data-light] .bg-white\/\[0\.04\] { background-color: var(--x-subtle-fill) !important; }
@@ -5958,6 +5960,24 @@
 [data-light] .border-white\/20 { border-color: hsl(var(--foreground) / 0.12) !important; }
 [data-light] .from-white\/0 { --tw-gradient-from: transparent !important; }
 [data-light] .floating-particle { background: var(--x-grid-dot) !important; }
+
+/* ── Dark theme: boost low-opacity text so it's readable on black ── */
+:not([data-light]) .text-white\/10 { color: rgb(255 255 255 / 0.22) !important; }
+:not([data-light]) .text-white\/12 { color: rgb(255 255 255 / 0.26) !important; }
+:not([data-light]) .text-white\/15 { color: rgb(255 255 255 / 0.30) !important; }
+:not([data-light]) .text-white\/20 { color: rgb(255 255 255 / 0.36) !important; }
+:not([data-light]) .text-white\/22 { color: rgb(255 255 255 / 0.38) !important; }
+:not([data-light]) .text-white\/25 { color: rgb(255 255 255 / 0.42) !important; }
+:not([data-light]) .text-white\/30 { color: rgb(255 255 255 / 0.50) !important; }
+:not([data-light]) .text-white\/35 { color: rgb(255 255 255 / 0.55) !important; }
+:not([data-light]) .text-white\/40 { color: rgb(255 255 255 / 0.60) !important; }
+:not([data-light]) .text-white\/45 { color: rgb(255 255 255 / 0.65) !important; }
+:not([data-light]) .text-white\/50 { color: rgb(255 255 255 / 0.70) !important; }
+:not([data-light]) .text-white\/55 { color: rgb(255 255 255 / 0.74) !important; }
+:not([data-light]) .text-white\/60 { color: rgb(255 255 255 / 0.78) !important; }
+:not([data-light]) .text-white\/65 { color: rgb(255 255 255 / 0.82) !important; }
+:not([data-light]) .text-white\/70 { color: rgb(255 255 255 / 0.85) !important; }
+
 [data-light] .glass-card {
   background: hsl(var(--card) / 0.85) !important;
   border: 1px solid hsl(var(--foreground) / 0.08) !important;
@@ -6125,6 +6145,19 @@
   border-color: hsl(var(--foreground) / 0.08) !important;
 }
 [data-light] .dash-activity-line { background: hsl(var(--foreground) / 0.05) !important; }
+[data-light] .acct-welcome-strip {
+  background: hsl(var(--foreground) / 0.025) !important;
+  border-color: hsl(var(--foreground) / 0.08) !important;
+}
+[data-light] .acct-welcome-upgrade-btn {
+  background: hsl(var(--foreground) / 0.05) !important;
+  border-color: hsl(var(--foreground) / 0.10) !important;
+  color: hsl(var(--foreground) / 0.72) !important;
+}
+[data-light] .acct-welcome-upgrade-btn:hover {
+  background: hsl(var(--foreground) / 0.09) !important;
+  color: hsl(var(--foreground) / 0.88) !important;
+}
 [data-light] .acct-stat-card {
   background: hsl(var(--foreground) / 0.02) !important;
   border-color: hsl(var(--foreground) / 0.06) !important;
@@ -13027,11 +13060,11 @@
   border-color: rgba(0,0,0,0.14);
 }
 [data-light] .acct-stat-card-value {
-  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.7) 100%);
+  background: linear-gradient(180deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.8) 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }
-[data-light] .acct-stat-card-label { color: hsl(var(--foreground) / 0.55); }
+[data-light] .acct-stat-card-label { color: hsl(var(--foreground) / 0.70); }
 
 [data-light] .acct-ticker {
   background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
@@ -13266,11 +13299,11 @@ button[data-variant="ghost"]:hover,
   box-shadow: 0 4px 16px hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .acct-stat-card-value { color: hsl(var(--foreground)) !important; }
-[data-light] .acct-stat-card-label { color: hsl(var(--foreground) / 0.55) !important; }
+[data-light] .acct-stat-card-label { color: hsl(var(--foreground) / 0.70) !important; }
 [data-light] .acct-stat-card-icon {
   background: hsl(var(--foreground) / 0.05) !important;
   border-color: hsl(var(--foreground) / 0.08) !important;
-  color: hsl(var(--foreground) / 0.75) !important;
+  color: hsl(var(--foreground) / 0.80) !important;
 }
 
 /* ---- Account ticker: theme-aware ---- */
@@ -15746,8 +15779,8 @@ button, [role="button"] {
 }
 
 [data-light] .acct-social-lbl {
-  color: hsl(var(--foreground) / 0.45) !important;
-  -webkit-text-fill-color: hsl(var(--foreground) / 0.45) !important;
+  color: hsl(var(--foreground) / 0.62) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.62) !important;
 }
 
 [data-light] .acct-social-divider {
@@ -15775,8 +15808,8 @@ button, [role="button"] {
 }
 
 [data-light] .acct-social-stat--btn .acct-social-lbl {
-  color: hsl(var(--foreground) / 0.45) !important;
-  -webkit-text-fill-color: hsl(var(--foreground) / 0.45) !important;
+  color: hsl(var(--foreground) / 0.62) !important;
+  -webkit-text-fill-color: hsl(var(--foreground) / 0.62) !important;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
