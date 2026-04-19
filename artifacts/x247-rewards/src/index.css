@@ -7092,10 +7092,10 @@
   align-items: center;
 }
 .pricing-table-row-label {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.55);
 }
 .pricing-table-tier-col {
   padding: 14px 12px;
@@ -7113,7 +7113,7 @@
 .pricing-table-tier-name {
   font-family: 'Syne', sans-serif;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 300;
   color: rgba(255,255,255,0.7);
 }
 .pricing-table-value { }
@@ -7184,11 +7184,11 @@
   line-height: 1.4;
 }
 .pricing-faq-a {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 11.5px;
   font-weight: 300;
-  color: hsl(var(--foreground)/0.5);
-  line-height: 1.6;
+  color: hsl(var(--foreground)/0.55);
+  line-height: 1.65;
 }
 
 /* Back row */
@@ -7198,7 +7198,7 @@
   text-align: center;
 }
 .pricing-back-link {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
   color: hsl(var(--foreground)/0.45);
@@ -8190,11 +8190,11 @@
   flex-shrink: 0;
 }
 .pub-bio {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255,255,255,0.4);
-  line-height: 1.6;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
   max-width: 340px;
   margin: 0 auto;
 }
@@ -8391,10 +8391,10 @@
   margin-bottom: 3px;
 }
 .pub-badge-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 9px;
   font-weight: 300;
-  color: rgba(255,255,255,0.28);
+  color: rgba(255,255,255,0.40);
   line-height: 1.4;
 }
 
@@ -8431,7 +8431,7 @@
 }
 .pub-activity-text {
   font-size: 12px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-weight: 300;
   color: rgba(255,255,255,0.55);
 }
@@ -8547,11 +8547,11 @@
   margin-bottom: 8px;
 }
 .pub-cta-sub {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255,255,255,0.35);
-  line-height: 1.6;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
   max-width: 380px;
   margin: 0 auto;
 }
@@ -8884,11 +8884,11 @@
 @media (min-width: 640px) { .pub2-name { font-size: 32px; } }
 
 .pub2-bio-hero {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255,255,255,0.45);
-  line-height: 1.6;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
   max-width: 340px;
 }
 .pub2-meta-row {
@@ -8907,7 +8907,7 @@
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 99px;
   font-size: 11px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-weight: 300;
   color: rgba(255,255,255,0.45);
 }
@@ -8954,10 +8954,10 @@
   margin-bottom: 3px;
 }
 .pub2-hero-stat-lbl {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 9px;
   font-weight: 300;
-  color: rgba(255,255,255,0.30);
+  color: rgba(255,255,255,0.35);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -9466,9 +9466,9 @@
   align-items: center;
   gap: 6px;
   color: rgba(255,255,255,0.55);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
-  font-weight: 400;
+  font-weight: 300;
   font-variant-numeric: tabular-nums;
 }
 .pub2-tcard-stat svg { color: rgba(255,255,255,0.35); }
@@ -9530,9 +9530,9 @@
 .pub2-heatmap-months {
   display: flex;
   justify-content: space-between;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 10px;
-  font-weight: 400;
+  font-weight: 300;
   color: rgba(255,255,255,0.30);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -9747,19 +9747,19 @@
   color: rgba(255,255,255,0.85);
 }
 .pub2-feat-badge-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255,255,255,0.40);
-  line-height: 1.5;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.55;
 }
 .pub2-feat-badge-earned {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   font-size: 10px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
+  font-family: 'Syne', sans-serif;
+  font-weight: 300;
   color: rgba(255,255,255,0.35);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -9805,10 +9805,10 @@
   line-height: 1;
 }
 .pub2-stat-lbl {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 9px;
   font-weight: 300;
-  color: rgba(255,255,255,0.30);
+  color: rgba(255,255,255,0.35);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   text-align: center;
@@ -9868,10 +9868,10 @@
 }
 .pub-flip-emoji { font-size: 26px; line-height: 1; }
 .pub-flip-label {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 9px;
-  font-weight: 400;
-  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+  color: rgba(255,255,255,0.50);
   text-align: center;
   line-height: 1.3;
 }
@@ -9883,7 +9883,7 @@
 }
 .pub-flip-back-emoji { font-size: 18px; line-height: 1; }
 .pub-flip-back-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 9px;
   font-weight: 300;
   color: rgba(255,255,255,0.50);
@@ -9896,7 +9896,7 @@
   gap: 3px;
   font-size: 9px;
   color: rgba(255,255,255,0.25);
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   margin-top: 2px;
 }
 
@@ -9933,16 +9933,16 @@
 }
 .pub2-timeline-content { flex: 1; }
 .pub2-timeline-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
-  font-weight: 400;
-  color: rgba(255,255,255,0.60);
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
 }
 .pub2-timeline-sub {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 10px;
   font-weight: 300;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.30);
   margin-top: 1px;
 }
 .pub2-timeline-badge {
@@ -10037,10 +10037,10 @@
 }
 @media (min-width: 480px) { .pub2-cta-title { font-size: 26px; } }
 .pub2-cta-sub {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.55);
   line-height: 1.65;
 }
 .pub2-cta-primary {
@@ -10365,10 +10365,10 @@
   .prof-id-stat-val { font-size: 15px; }
 }
 .prof-id-stat-lbl {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 9px;
-  font-weight: 400;
-  color: rgba(255,255,255,0.30);
+  font-weight: 300;
+  color: rgba(255,255,255,0.35);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-top: 3px;
@@ -10573,11 +10573,11 @@
   line-height: 1.1;
 }
 .pub2-feat-badge-v2-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255,255,255,0.40);
-  line-height: 1.5;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.55;
 }
 .pub2-feat-badge-v2-earned {
   display: inline-flex;
@@ -11110,11 +11110,11 @@
 }
 
 .acct-bcs-sub {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 12px;
   font-weight: 300;
-  color: rgba(255,255,255,0.38);
-  line-height: 1.55;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
   max-width: 320px;
   margin: 0;
 }
@@ -11213,10 +11213,10 @@
   background-clip: text;
 }
 .hiw-hero-subtitle {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: clamp(14px, 2vw, 17px);
   font-weight: 300;
-  color: rgba(255,255,255,0.40);
+  color: rgba(255,255,255,0.55);
   line-height: 1.7;
   margin: 16px 0 32px;
   max-width: 560px;
@@ -11556,11 +11556,11 @@
   margin-bottom: 3px;
 }
 .hiw-draw-step-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 11.5px;
   font-weight: 300;
-  color: rgba(255,255,255,0.35);
-  line-height: 1.55;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
 }
 .hiw-draw-aside {
   display: flex;
@@ -11601,11 +11601,11 @@
   margin-bottom: 4px;
 }
 .hiw-draw-trust-desc {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 11.5px;
   font-weight: 300;
-  color: rgba(255,255,255,0.35);
-  line-height: 1.55;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
 }
 
 /* ── Tier table ── */
@@ -11877,10 +11877,10 @@
 }
 .hiw-faq-a-inner {
   padding: 0 22px 20px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 300;
-  color: rgba(255,255,255,0.40);
+  color: rgba(255,255,255,0.55);
   line-height: 1.70;
 }
 
@@ -11947,10 +11947,10 @@
   margin: 0 0 14px;
 }
 .hiw-cta-sub {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 15px;
   font-weight: 300;
-  color: rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.55);
   line-height: 1.65;
   margin: 0 0 36px;
   max-width: 440px;
@@ -12053,10 +12053,10 @@
   line-height: 1;
 }
 .acct-social-lbl {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Syne', sans-serif;
   font-size: 10px;
   font-weight: 300;
-  color: rgba(255,255,255,0.30);
+  color: rgba(255,255,255,0.35);
   text-transform: uppercase;
   letter-spacing: 0.10em;
 }
