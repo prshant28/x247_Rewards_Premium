@@ -2360,9 +2360,35 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
       <div className="dash-frame-glow" />
       <div className="dash-frame-inner">
 
-        {/* ── Full-width premium banner ─────────────────────────── */}
+        {/* ── Minimal full-width banner (clean typography + stat boxes) ── */}
         <div className="dash-banner">
-          <div className="dash-banner-bg-deco" />
+          <div className="dash-banner-bg-deco" aria-hidden="true" />
+
+          {/* Notification bell — anchored top-right */}
+          <div className="dash-banner-bell-wrap" ref={notifContainerRef}>
+            <button
+              onClick={toggleNotifs}
+              className="dash-banner-action-btn notif-bell-btn"
+              aria-label="Notifications"
+              aria-haspopup="dialog"
+              aria-expanded={showNotifs}
+            >
+              <Bell className="w-4 h-4" />
+              {notifs.unread > 0 && <span className="notif-badge-count">{notifs.unread}</span>}
+            </button>
+            <AnimatePresence>
+              {showNotifs && (
+                <NotificationPanel
+                  notifications={notifs.items}
+                  onMarkRead={notifs.markRead}
+                  onMarkAllRead={notifs.markAllRead}
+                  onClose={closeNotifs}
+                  containerRef={notifContainerRef}
+                />
+              )}
+            </AnimatePresence>
+          </div>
+
           <div className="dash-banner-left">
             <div className="dash-banner-eyebrow">
               <span className={`dash-banner-tier-dot tier-dot-${user.membershipTier || "free"}`} />
@@ -2380,80 +2406,22 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
             <div className="dash-banner-since">Since {memberSince} · {user.email}</div>
           </div>
 
-          <div className="dash-banner-right">
-            {/* Notification bell */}
-            <div className="dash-banner-actions">
-              <div className="relative" ref={notifContainerRef}>
-                <button onClick={toggleNotifs} className="dash-banner-action-btn notif-bell-btn" title="Notifications">
-                  <Bell className="w-4 h-4" />
-                  {notifs.unread > 0 && <span className="notif-badge-count">{notifs.unread}</span>}
-                </button>
-                <AnimatePresence>
-                  {showNotifs && (
-                    <NotificationPanel
-                      notifications={notifs.items}
-                      onMarkRead={notifs.markRead}
-                      onMarkAllRead={notifs.markAllRead}
-                      onClose={closeNotifs}
-                      containerRef={notifContainerRef}
-                    />
-                  )}
-                </AnimatePresence>
-              </div>
+          {/* Right side: 3 minimal stat boxes side-by-side */}
+          <div className="dash-banner-stats" aria-label="Account quick stats">
+            <div className="dash-stat-box">
+              <div className="dash-stat-icon"><Flame className="w-3.5 h-3.5" /></div>
+              <div className="dash-stat-value">{streak}</div>
+              <div className="dash-stat-label">Streak</div>
             </div>
-
-            {/* Inline KPI mini-strip — fills the right-side space with live data */}
-            <div className="dash-banner-kpis" aria-label="Account quick stats">
-              <div className="dash-banner-kpi">
-                <div className="dash-banner-kpi-icon"><Flame className="w-3.5 h-3.5" /></div>
-                <div>
-                  <div className="dash-banner-kpi-value">{streak}</div>
-                  <div className="dash-banner-kpi-label">Streak</div>
-                </div>
-              </div>
-              <div className="dash-banner-kpi-sep" />
-              <div className="dash-banner-kpi">
-                <div className="dash-banner-kpi-icon"><Trophy className="w-3.5 h-3.5" /></div>
-                <div>
-                  <div className="dash-banner-kpi-value">{entries.length}</div>
-                  <div className="dash-banner-kpi-label">Entries</div>
-                </div>
-              </div>
-              <div className="dash-banner-kpi-sep" />
-              <div className="dash-banner-kpi">
-                <div className="dash-banner-kpi-icon"><Star className="w-3.5 h-3.5" /></div>
-                <div>
-                  <div className="dash-banner-kpi-value capitalize">{user.membershipTier || "free"}</div>
-                  <div className="dash-banner-kpi-label">Tier</div>
-                </div>
-              </div>
+            <div className="dash-stat-box">
+              <div className="dash-stat-icon"><Trophy className="w-3.5 h-3.5" /></div>
+              <div className="dash-stat-value">{entries.length}</div>
+              <div className="dash-stat-label">Entries</div>
             </div>
-
-            {/* Decorative graphic */}
-            <div className="dash-banner-graphic" aria-hidden="true">
-              <svg viewBox="0 0 180 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="dash-banner-svg">
-                {/* Concentric rings */}
-                <circle cx="90" cy="80" r="72" stroke="white" strokeOpacity="0.04" strokeWidth="1"/>
-                <circle cx="90" cy="80" r="55" stroke="white" strokeOpacity="0.06" strokeWidth="1"/>
-                <circle cx="90" cy="80" r="38" stroke="white" strokeOpacity="0.08" strokeWidth="1"/>
-                <circle cx="90" cy="80" r="20" stroke="white" strokeOpacity="0.1" strokeWidth="1"/>
-                {/* Diamond */}
-                <path d="M90 44 L114 80 L90 116 L66 80 Z" stroke="white" strokeOpacity="0.15" strokeWidth="1" fill="none"/>
-                <path d="M90 58 L107 80 L90 102 L73 80 Z" stroke="white" strokeOpacity="0.22" strokeWidth="1" fill="rgba(255,255,255,0.02)"/>
-                {/* Center dot */}
-                <circle cx="90" cy="80" r="4" fill="white" fillOpacity="0.15"/>
-                <circle cx="90" cy="80" r="2" fill="white" fillOpacity="0.4"/>
-                {/* Cross lines */}
-                <line x1="90" y1="8" x2="90" y2="32" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
-                <line x1="90" y1="128" x2="90" y2="152" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
-                <line x1="18" y1="80" x2="42" y2="80" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
-                <line x1="138" y1="80" x2="162" y2="80" stroke="white" strokeOpacity="0.07" strokeWidth="1"/>
-                {/* Corner dots */}
-                <circle cx="30" cy="30" r="2" fill="white" fillOpacity="0.1"/>
-                <circle cx="150" cy="30" r="2" fill="white" fillOpacity="0.1"/>
-                <circle cx="30" cy="130" r="2" fill="white" fillOpacity="0.1"/>
-                <circle cx="150" cy="130" r="2" fill="white" fillOpacity="0.1"/>
-              </svg>
+            <div className="dash-stat-box">
+              <div className="dash-stat-icon"><Star className="w-3.5 h-3.5" /></div>
+              <div className="dash-stat-value capitalize">{user.membershipTier || "free"}</div>
+              <div className="dash-stat-label">Tier</div>
             </div>
           </div>
         </div>

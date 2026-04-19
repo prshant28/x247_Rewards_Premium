@@ -2909,61 +2909,50 @@
   min-height: calc(100vh - 70px);
 }
 
-/* ── PREMIUM BANNER ──────────────────────────────────────────────────── */
+/* ── MINIMAL BANNER ──────────────────────────────────────────────────── */
 .dash-banner {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 28px 24px 28px;
-  background:
-    radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.025) 0%, transparent 60%),
-    radial-gradient(ellipse at 100% 0%, rgba(255,255,255,0.015) 0%, transparent 55%),
-    linear-gradient(168deg, rgba(14,14,17,1) 0%, rgba(6,6,8,1) 100%);
+  gap: 20px;
+  padding: 32px 24px 28px;
+  background: linear-gradient(168deg, rgba(13,13,16,1) 0%, rgba(7,7,9,1) 100%);
   overflow: hidden;
-}
-/* Premium hero image layer (low-opacity) inside the banner — gives 'engaging' feel */
-.dash-banner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url('/images/hero-metallic.png');
-  background-size: cover;
-  background-position: right center;
-  background-repeat: no-repeat;
-  opacity: 0.18;
-  mix-blend-mode: screen;
-  filter: grayscale(100%) contrast(1.05) brightness(0.95);
-  mask-image: linear-gradient(90deg, transparent 0%, transparent 35%, rgba(0,0,0,0.7) 65%, rgba(0,0,0,1) 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 35%, rgba(0,0,0,0.7) 65%, rgba(0,0,0,1) 100%);
-  pointer-events: none;
-  z-index: 0;
+  flex-wrap: wrap;
 }
 .dash-banner > * { position: relative; z-index: 1; }
-[data-light] .dash-banner::before {
-  opacity: 0.10;
-  mix-blend-mode: multiply;
-  filter: grayscale(100%) contrast(0.9) brightness(1.1);
-}
 @media (min-width: 640px) {
-  .dash-banner { padding: 32px 36px; }
+  .dash-banner { padding: 36px 36px 30px; flex-wrap: nowrap; }
 }
 @media (min-width: 1024px) {
-  .dash-banner { padding: 36px 48px; }
+  .dash-banner { padding: 40px 48px 34px; }
 }
 
-/* Subtle animated bg shimmer */
+/* Subtle geometric background decoration — clean, faint, non-busy */
 .dash-banner-bg-deco {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 0%,
-    rgba(255,255,255,0.018) 40%,
-    rgba(255,255,255,0.008) 60%,
-    transparent 100%
-  );
+  background-image:
+    linear-gradient(115deg, transparent 0%, transparent 55%, rgba(255,255,255,0.018) 60%, transparent 65%),
+    linear-gradient(115deg, transparent 0%, transparent 70%, rgba(255,255,255,0.012) 75%, transparent 80%),
+    radial-gradient(ellipse at 100% 50%, rgba(255,255,255,0.018) 0%, transparent 55%);
   pointer-events: none;
+  z-index: 0;
+}
+
+/* Bell icon anchored top-right */
+.dash-banner-bell-wrap {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 5;
+}
+@media (min-width: 640px) {
+  .dash-banner-bell-wrap { top: 20px; right: 28px; }
+}
+@media (min-width: 1024px) {
+  .dash-banner-bell-wrap { top: 22px; right: 36px; }
 }
 
 .dash-banner-left { flex: 1; min-width: 0; }
@@ -3033,56 +3022,24 @@
   letter-spacing: 0.02em;
 }
 
-.dash-banner-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.dash-banner-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .dash-banner-action-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.55);
   cursor: pointer;
   transition: all 0.18s ease;
   position: relative;
 }
 .dash-banner-action-btn:hover {
   background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.9);
   border-color: rgba(255,255,255,0.14);
-}
-
-.dash-banner-graphic {
-  display: none;
-  width: 140px;
-  height: 120px;
-  opacity: 0.6;
-}
-@media (min-width: 640px) {
-  .dash-banner-graphic { display: block; }
-}
-@media (min-width: 1024px) {
-  .dash-banner-graphic { width: 180px; height: 160px; }
-}
-
-.dash-banner-svg {
-  width: 100%;
-  height: 100%;
 }
 
 /* ── PREMIUM SECTION DIVIDER ─────────────────────────────────────────── */
@@ -3096,76 +3053,71 @@
     transparent 100%);
 }
 
-/* ── BANNER KPI MINI-STRIP (right side of dash-banner) ───────────────── */
-.dash-banner-kpis {
+/* ── MINIMAL STAT BOXES (right side of dash-banner) ──────────────────── */
+.dash-banner-stats {
   display: none;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 16px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.07);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 6px 20px rgba(0,0,0,0.18);
+  align-items: stretch;
+  gap: 8px;
+  flex-shrink: 0;
 }
 @media (min-width: 640px) {
-  .dash-banner-kpis { display: inline-flex; }
+  .dash-banner-stats { display: inline-flex; }
 }
-.dash-banner-kpi {
+.dash-stat-box {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 9px;
-  min-width: 0;
+  justify-content: center;
+  gap: 4px;
+  min-width: 78px;
+  padding: 12px 14px 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
-.dash-banner-kpi-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
+.dash-stat-box:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.10);
+}
+@media (min-width: 1024px) {
+  .dash-stat-box { min-width: 88px; padding: 14px 16px 12px; }
+}
+.dash-stat-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.55);
-  flex-shrink: 0;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 2px;
 }
-.dash-banner-kpi-value {
+.dash-stat-value {
   font-family: 'Syne', sans-serif;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255,255,255,0.96);
   font-variant-numeric: tabular-nums;
 }
-.dash-banner-kpi-label {
-  font-family: 'Syne', sans-serif;
-  font-size: 10px;
+.dash-stat-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 9px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: rgba(255,255,255,0.55);
-  margin-top: 3px;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.42);
+  margin-top: 4px;
 }
-.dash-banner-kpi-sep {
-  width: 1px;
-  height: 24px;
-  background: rgba(255,255,255,0.07);
-  flex-shrink: 0;
-}
-[data-light] .dash-banner-kpis {
-  background: hsl(var(--foreground) / 0.04) !important;
+[data-light] .dash-stat-box {
+  background: hsl(var(--foreground) / 0.035) !important;
   border-color: hsl(var(--foreground) / 0.10) !important;
-  box-shadow: 0 1px 0 hsl(0 0% 100% / 0.6) inset, 0 6px 20px hsl(var(--foreground) / 0.06) !important;
 }
-[data-light] .dash-banner-kpi-icon {
+[data-light] .dash-stat-box:hover {
   background: hsl(var(--foreground) / 0.06) !important;
   border-color: hsl(var(--foreground) / 0.14) !important;
-  color: hsl(var(--foreground) / 0.65) !important;
 }
-[data-light] .dash-banner-kpi-value { color: hsl(var(--foreground) / 0.95) !important; }
-[data-light] .dash-banner-kpi-label { color: hsl(var(--foreground) / 0.55) !important; }
-[data-light] .dash-banner-kpi-sep { background: hsl(var(--foreground) / 0.10) !important; }
+[data-light] .dash-stat-icon { color: hsl(var(--foreground) / 0.55) !important; }
+[data-light] .dash-stat-value { color: hsl(var(--foreground) / 0.96) !important; }
+[data-light] .dash-stat-label { color: hsl(var(--foreground) / 0.55) !important; }
 
 /* ── CURVED SCALLOP DIVIDER (decorative section break with curved ends) ─ */
 .acct-scallop-divider {
