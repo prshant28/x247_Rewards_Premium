@@ -319,23 +319,38 @@ export default function Partners() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <main className="relative z-10 pt-32 sm:pt-40 pb-20 sm:pb-32">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
+
+        {/* ── Partners Page Banner ── */}
+        <div className="page-section-banner">
+          <div className="page-section-banner-bg-deco" />
+          <div className="page-section-banner-shimmer" />
+          <div className="page-section-banner-left">
+            <div className="page-section-banner-eyebrow">
+              <span className="page-section-banner-eyebrow-dot" />
+              Partner Registration
+            </div>
+            <h1 className="page-section-banner-title">Our Partners</h1>
+            <p className="page-section-banner-sub">Register with partner platforms to earn giveaway entries and win real prizes.</p>
+          </div>
+          <img
+            src="/images/giftcards-visual.png"
+            alt="Gift cards and rewards"
+            className="page-section-banner-img"
+            loading="eager"
+            draggable={false}
+          />
+        </div>
+
+        <div className="container mx-auto px-4 max-w-6xl pt-12 sm:pt-16">
 
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="text-center mb-16 sm:mb-24"
+            className="text-center mb-10 sm:mb-16"
           >
-            <div className="glass-pill-badge mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-              Partner Registration
-            </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
-              Our Partners
-            </h1>
-            <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+            <p className="text-white/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
               Register with our partner platforms to earn giveaway entries. Each completed registration = one entry into the daily prize draw. More partners coming soon.
             </p>
           </motion.div>

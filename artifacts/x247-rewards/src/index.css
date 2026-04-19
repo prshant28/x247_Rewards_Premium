@@ -5048,6 +5048,153 @@
   box-shadow: 0 6px 20px -4px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
+/* ─── Slim Page Section Banner (Giveaway / Partners) ─────────────────────── */
+.page-section-banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 24px 22px 28px;
+  background: linear-gradient(168deg, rgba(14,14,17,1) 0%, rgba(6,6,8,1) 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.055);
+  min-height: 100px;
+}
+@media (min-width: 640px) {
+  .page-section-banner { padding: 28px 40px 28px 44px; min-height: 118px; }
+}
+@media (min-width: 1024px) {
+  .page-section-banner { padding: 32px 56px 32px 56px; min-height: 128px; }
+}
+
+.page-section-banner::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.10) 30%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.10) 70%, transparent 100%);
+}
+
+.page-section-banner-left {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+}
+
+.page-section-banner-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Alegreya Sans SC', 'Syne', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 8px;
+}
+.page-section-banner-eyebrow-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+}
+
+.page-section-banner-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.25rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: rgba(255,255,255,0.92);
+  margin: 0 0 6px;
+}
+
+.page-section-banner-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.35);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  margin: 0;
+  max-width: 400px;
+}
+@media (min-width: 640px) {
+  .page-section-banner-sub { font-size: 13px; }
+}
+
+.page-section-banner-img {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.80;
+  filter: drop-shadow(0 4px 20px rgba(255,255,255,0.06));
+  pointer-events: none;
+}
+@media (min-width: 640px) {
+  .page-section-banner-img { width: 100px; height: 100px; }
+}
+@media (min-width: 1024px) {
+  .page-section-banner-img { width: 116px; height: 116px; }
+}
+
+.page-section-banner-bg-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 55% 80% at 85% 50%, rgba(255,255,255,0.018) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 60% at 10% 50%, rgba(255,255,255,0.012) 0%, transparent 55%);
+}
+
+.page-section-banner-shimmer {
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.022) 50%, transparent 100%);
+  animation: psb-shimmer 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes psb-shimmer {
+  0%   { left: -60%; }
+  50%  { left: 120%; }
+  100% { left: 120%; }
+}
+
+/* light theme */
+[data-theme="pristine-light"] .page-section-banner,
+[data-light] .page-section-banner {
+  background: linear-gradient(168deg, #fafafa 0%, #f3f3f5 100%);
+  border-bottom-color: rgba(0,0,0,0.06);
+}
+[data-theme="pristine-light"] .page-section-banner::before,
+[data-light] .page-section-banner::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.07) 50%, transparent 100%);
+}
+[data-theme="pristine-light"] .page-section-banner-eyebrow,
+[data-light] .page-section-banner-eyebrow { color: rgba(0,0,0,0.38); }
+[data-theme="pristine-light"] .page-section-banner-eyebrow-dot,
+[data-light] .page-section-banner-eyebrow-dot { background: rgba(0,0,0,0.45); }
+[data-theme="pristine-light"] .page-section-banner-title,
+[data-light] .page-section-banner-title { color: rgba(0,0,0,0.82); }
+[data-theme="pristine-light"] .page-section-banner-sub,
+[data-light] .page-section-banner-sub { color: rgba(0,0,0,0.42); }
+[data-theme="pristine-light"] .page-section-banner-img,
+[data-light] .page-section-banner-img { opacity: 0.75; filter: drop-shadow(0 2px 10px rgba(0,0,0,0.08)); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 .page-hero-banner,
 .acct-hero-banner {
   position: relative;

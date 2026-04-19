@@ -192,20 +192,35 @@ export default function Giveaway() {
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <main className="relative z-10 pt-28 pb-20 sm:pt-36 sm:pb-32">
-        <div className="container mx-auto px-4 max-w-5xl">
+      <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
+
+        {/* ── Giveaway Page Banner ── */}
+        <div className="page-section-banner">
+          <div className="page-section-banner-bg-deco" />
+          <div className="page-section-banner-shimmer" />
+          <div className="page-section-banner-left">
+            <div className="page-section-banner-eyebrow">
+              <span className="page-section-banner-eyebrow-dot" />
+              Daily Prize Draws
+            </div>
+            <h1 className="page-section-banner-title">Contest Hub</h1>
+            <p className="page-section-banner-sub">Limited spots. Daily draws. Win real prizes every single day.</p>
+          </div>
+          <img
+            src="/images/reward-trophy.png"
+            alt="Trophy prize"
+            className="page-section-banner-img"
+            loading="eager"
+            draggable={false}
+          />
+        </div>
+
+        <div className="container mx-auto px-4 max-w-5xl pt-12 sm:pt-16">
 
           <section className="relative mb-12 sm:mb-16">
             <FloatingParticles />
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-16 sm:mb-24">
-              <div className="glass-pill-badge mb-6">
-                <Crown className="w-3 h-3 text-white/50 mr-2" />
-                Daily Prize Draws
-              </div>
-              <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
-                Contest Hub
-              </h1>
-              <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-10 sm:mb-14">
+              <p className="text-white/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
                 Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes. Each contest has limited spots — act fast!
               </p>
             </motion.div>
