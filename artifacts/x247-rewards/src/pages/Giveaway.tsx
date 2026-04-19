@@ -1,18 +1,16 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { Link } from "wouter";
 import {
-  Trophy, Sparkles, Users, ArrowRight, Gift, Clock, Star,
+  Trophy, Users, ArrowRight, Gift, Clock, Star,
   Zap, Crown, Target, Search, CheckCircle2, Copy, Shield,
-  ExternalLink, Camera, Award, ChevronRight, Loader2,
-  SlidersHorizontal, X, Filter, Calendar,
+  ExternalLink, Camera, Award, ChevronRight,
+  SlidersHorizontal, X, Filter, Calendar, Layers,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { getContests, checkEntryCode, type ContestData } from "@/lib/api";
+import { getContests, type ContestData } from "@/lib/api";
 import SiteFooter from "@/components/SiteFooter";
-import BorderGlow from "@/components/BorderGlow";
 import CountdownTimer from "@/components/CountdownTimer";
-import ConfettiEffect from "@/components/ConfettiEffect";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
 const fadeUp: Variants = {
@@ -26,12 +24,6 @@ const fadeUp: Variants = {
 const stagger: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.12 } },
-};
-
-const drawerVariants: Variants = {
-  hidden: { x: "-100%", opacity: 0 },
-  visible: { x: 0, opacity: 1, transition: { type: "spring", damping: 28, stiffness: 300 } },
-  exit: { x: "-100%", opacity: 0, transition: { duration: 0.2, ease: "easeIn" } },
 };
 
 /* ─── Filter types ─── */
@@ -240,8 +232,16 @@ function GlowLine() {
   );
 }
 
+/* ─── Status quick-filter chips config ─── */
+const STATUS_CHIPS: { value: StatusFilter; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { value: "all", label: "All", icon: Layers },
+  { value: "active", label: "Active", icon: Zap },
+  { value: "upcoming", label: "Upcoming", icon: Clock },
+  { value: "completed", label: "Completed", icon: CheckCircle2 },
+];
+
 /* ─── Contest Card (image banner + info, like attached reference) ─── */
-function ContestCard({ contest, index }: { contest: ContestData; index: number }) {
+const ContestCard = React.memo(function ContestCard({ contest, index }: { contest: ContestData; index: number }) {
   const isUpcoming = contest.status === "upcoming";
   const isFull = contest.isFull;
   const taken = contest.maxSpots - contest.spotsRemaining;
@@ -400,19 +400,21 @@ function ContestCard({ contest, index }: { contest: ContestData; index: number }
       </Link>
     </motion.div>
   );
-}
+});
 
 /* ─── Active filter chip ─── */
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-display text-white/60 transition-all cursor-pointer hover:text-white/80"
-      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
+    <button
+      type="button"
       onClick={onRemove}
+      aria-label={`Remove filter: ${label}`}
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-display text-white/60 transition-all cursor-pointer hover:text-white/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
     >
       {label}
       <X className="w-2.5 h-2.5" />
-    </span>
+    </button>
   );
 }
 
@@ -425,15 +427,30 @@ export default function Giveaway() {
     staleTime: 0,
   });
 
-  const [searchCode, setSearchCode] = useState("");
-  const [checking, setChecking] = useState(false);
-  const [checkResult, setCheckResult] = useState<any>(null);
-  const [checkError, setCheckError] = useState("");
-  const [confettiActive, setConfettiActive] = useState(false);
-
   // Filter state
   const [filters, setFilters] = useState<Filters>(defaultFilters);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
+  // Advanced filter popover state + click-outside
+  const [advFilterOpen, setAdvFilterOpen] = useState(false);
+  const advFilterRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!advFilterOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (advFilterRef.current && !advFilterRef.current.contains(e.target as Node)) {
+        setAdvFilterOpen(false);
+      }
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setAdvFilterOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [advFilterOpen]);
 
   const updateFilters = useCallback((patch: Partial<Filters>) => {
     setFilters((prev) => ({ ...prev, ...patch }));
@@ -442,23 +459,8 @@ export default function Giveaway() {
   const clearFilters = useCallback(() => setFilters(defaultFilters), []);
 
   const activeFilterCount = countActiveFilters(filters);
-
-  // Entry code checker
-  const handleCheckCode = async () => {
-    if (!searchCode.trim()) return;
-    setChecking(true);
-    setCheckError("");
-    setCheckResult(null);
-    setConfettiActive(false);
-    const result = await checkEntryCode(searchCode.trim());
-    if (result.found) {
-      setCheckResult(result.entry);
-      setConfettiActive(true);
-    } else {
-      setCheckError(result.error || "Entry code not found");
-    }
-    setChecking(false);
-  };
+  // "Advanced" count = deadline + openOnly only (status is handled by visible chip bar)
+  const advFilterCount = filters.deadline.size + (filters.openOnly ? 1 : 0);
 
   // Filtered + searched contest list
   const filteredContests = useMemo(() => {
@@ -529,36 +531,63 @@ export default function Giveaway() {
 
       <main className="relative z-10 pt-[70px] pb-16 sm:pb-24">
 
-        {/* ── Compact Hero + Stats Strip (combined) ── */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="container mx-auto px-4 max-w-6xl pt-8 sm:pt-10 pb-6">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-            {/* Left: title block */}
-            <div className="flex-1 min-w-0">
-              <div className="glass-pill-badge inline-flex mb-3">
+        {/* ── Centered Hero Box (title + stats + entry-check CTA) ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="container mx-auto px-4 max-w-3xl pt-8 sm:pt-12 pb-6">
+          <div
+            className="relative rounded-[28px] overflow-hidden"
+            style={{
+              background: "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.012) 100%)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 60px rgba(0,0,0,0.35)",
+            }}
+          >
+            {/* Decorative top wash */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)" }}
+            />
+            <div className="relative z-[2] px-5 sm:px-9 py-8 sm:py-10 text-center">
+              <div className="glass-pill-badge inline-flex mb-4">
                 <Crown className="w-3 h-3 mr-2 text-white/60" />
                 Daily Prize Draws
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white mb-2 leading-[1.1] tracking-tight">Contest Hub</h1>
-              <p className="text-white/45 text-xs sm:text-sm font-light leading-relaxed max-w-xl tracking-wide">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white mb-3 leading-[1.1] tracking-tight">Contest Hub</h1>
+              <p className="text-white/50 text-xs sm:text-sm font-light leading-relaxed max-w-xl mx-auto tracking-wide mb-7">
                 Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes.
               </p>
-            </div>
 
-            {/* Right: inline stats strip */}
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1} className="grid grid-cols-4 gap-2 sm:gap-2.5 lg:max-w-md w-full">
-              {[
-                { label: "Active", value: activeCount, icon: <Zap className="w-3 h-3" /> },
-                { label: "Spots", value: totalSpots, icon: <Users className="w-3 h-3" /> },
-                { label: "Entries", value: totalEntries, icon: <Trophy className="w-3 h-3" /> },
-                { label: "Contests", value: contests.length, icon: <Target className="w-3 h-3" /> },
-              ].map((stat) => (
-                <div key={stat.label} className="rounded-xl px-2.5 py-2.5 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div className="text-white/30 mx-auto mb-1 flex justify-center">{stat.icon}</div>
-                  <AnimatedCounter value={stat.value} className="text-base sm:text-lg font-display font-light text-white block leading-none" />
-                  <div className="text-[8px] sm:text-[9px] text-white/30 uppercase tracking-[0.15em] font-display mt-1">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
+              {/* Inline stats strip — centered */}
+              <div className="grid grid-cols-4 gap-2 sm:gap-2.5 max-w-lg mx-auto mb-6">
+                {[
+                  { label: "Active", value: activeCount, icon: <Zap className="w-3 h-3" /> },
+                  { label: "Spots", value: totalSpots, icon: <Users className="w-3 h-3" /> },
+                  { label: "Entries", value: totalEntries, icon: <Trophy className="w-3 h-3" /> },
+                  { label: "Contests", value: contests.length, icon: <Target className="w-3 h-3" /> },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-xl px-2.5 py-2.5 text-center" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div className="text-white/35 mx-auto mb-1 flex justify-center">{stat.icon}</div>
+                    <AnimatedCounter value={stat.value} className="text-base sm:text-lg font-display font-light text-white block leading-none" />
+                    <div className="text-[8px] sm:text-[9px] text-white/35 uppercase tracking-[0.15em] font-display mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Check-entry CTA → separate page */}
+              <Link
+                href="/entry-check"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-display font-light text-white/85 transition-all hover:text-white"
+                style={{
+                  background: "linear-gradient(140deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 100%)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset",
+                }}
+              >
+                <Search className="w-3.5 h-3.5 text-white/55" />
+                Check Entry Code
+                <ChevronRight className="w-3.5 h-3.5 text-white/45" />
+              </Link>
+            </div>
           </div>
         </motion.div>
 
@@ -569,115 +598,119 @@ export default function Giveaway() {
           <section className="py-6 sm:py-10 relative">
             <div className="container mx-auto px-4 max-w-6xl">
 
-              {/* Entry code checker */}
-              <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5} className="mb-10 max-w-5xl mx-auto">
-                <div className="glass-card p-5 sm:p-6 relative overflow-hidden">
-                  <div className="card-shine" />
-                  <ConfettiEffect active={confettiActive} />
-                  <div className="relative z-[2]">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                        <Search className="w-4 h-4 text-white/40" />
-                      </div>
-                      <span className="text-sm font-display font-light text-white">Check Entry Code</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={searchCode}
-                        onChange={(e) => setSearchCode(e.target.value.toUpperCase())}
-                        placeholder="X247-XXXX-XXXX"
-                        aria-label="Entry code"
-                        className="flex-1 px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-mono focus:outline-none focus:border-white/[0.12] transition-colors"
-                        onKeyDown={(e) => e.key === "Enter" && handleCheckCode()}
-                      />
-                      <button
-                        onClick={handleCheckCode}
-                        disabled={checking || !searchCode.trim()}
-                        aria-label={checking ? "Checking entry code" : "Check entry code"}
-                        className="px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white/70 font-light hover:bg-white/[0.08] transition-all disabled:opacity-30"
-                      >
-                        {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : "Check"}
-                      </button>
-                    </div>
-                    {checkError && <p className="text-xs text-red-400/60 font-light mt-2">{checkError}</p>}
-                    {checkResult && (
-                      <div className="mt-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                        <div className="flex items-center gap-2 mb-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-white/50" />
-                          <span className="text-xs text-white/60 font-light">Entry Found</span>
-                        </div>
-                        <div className="text-xs text-white/40 font-light space-y-0.5">
-                          <p>Code: <span className="text-white/60 font-mono">{checkResult.entryCode}</span></p>
-                          <p>Name: <span className="text-white/60">{checkResult.fullName}</span></p>
-                          <p>Entries: <span className="text-white/60">{checkResult.entryCount}</span></p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* ── FILTER + CONTEST AREA ── */}
-              <div className="flex gap-6 xl:gap-8 items-start">
-
-                {/* ── Desktop Filter Sidebar ── */}
-                <aside className="hidden lg:block w-52 xl:w-56 shrink-0 sticky top-24 self-start">
-                  <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                    <FilterPanel
-                      filters={filters}
-                      onChange={updateFilters}
-                      onClear={clearFilters}
-                      activeCount={activeFilterCount}
+              {/* ── Unified Filter Bar (chips + advanced popover, no sidebar) ── */}
+              <div className="mb-6">
+                {/* Search + Advanced filter button */}
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={filters.search}
+                      onChange={(e) => updateFilters({ search: e.target.value })}
+                      placeholder="Search contests, prizes..."
+                      aria-label="Search contests"
+                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-light placeholder-white/25 focus:outline-none transition-all text-white"
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                      onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                      onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                     />
                   </div>
-                </aside>
 
-                {/* ── Main Contest Area ── */}
-                <div className="flex-1 min-w-0">
-
-                  {/* Search bar + mobile filter trigger */}
-                  <div className="flex items-center gap-2 mb-5">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20" />
-                      <input
-                        type="text"
-                        value={filters.search}
-                        onChange={(e) => updateFilters({ search: e.target.value })}
-                        placeholder="Search contests, prizes..."
-                        className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-light placeholder-white/20 focus:outline-none transition-all text-white"
-                        style={{
-                          background: "rgba(255,255,255,0.04)",
-                          border: "1px solid rgba(255,255,255,0.08)",
-                        }}
-                        onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.16)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
-                        onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
-                      />
-                    </div>
-
-                    {/* Mobile filter button */}
+                  <div className="relative" ref={advFilterRef}>
                     <button
-                      onClick={() => setMobileFilterOpen(true)}
-                      className="lg:hidden flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-display font-light transition-all relative shrink-0"
+                      type="button"
+                      onClick={() => setAdvFilterOpen((v) => !v)}
+                      aria-expanded={advFilterOpen}
+                      aria-haspopup="dialog"
+                      className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-display font-light transition-all relative shrink-0"
                       style={{
-                        background: activeFilterCount > 0 ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.04)",
-                        border: `1px solid ${activeFilterCount > 0 ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
-                        color: activeFilterCount > 0 ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.45)",
+                        background: advFilterCount > 0 ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.04)",
+                        border: `1px solid ${advFilterCount > 0 ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
+                        color: advFilterCount > 0 ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.55)",
                       }}
                     >
                       <SlidersHorizontal className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Filters</span>
-                      {activeFilterCount > 0 && (
+                      <span className="hidden sm:inline">More</span>
+                      {advFilterCount > 0 && (
                         <span
                           className="w-4 h-4 rounded-full text-[9px] font-display flex items-center justify-center"
-                          style={{ background: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.9)" }}
+                          style={{ background: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.95)" }}
                         >
-                          {activeFilterCount}
+                          {advFilterCount}
                         </span>
                       )}
                     </button>
-                  </div>
 
+                    {/* Advanced filters popover */}
+                    <AnimatePresence>
+                      {advFilterOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                          transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                          role="menu"
+                          aria-label="Advanced filters"
+                          className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl p-5 z-30"
+                          style={{
+                            background: "linear-gradient(160deg, rgba(20,20,24,0.98) 0%, rgba(10,10,12,0.98) 100%)",
+                            border: "1px solid rgba(255,255,255,0.10)",
+                            boxShadow: "0 24px 60px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06) inset",
+                            backdropFilter: "blur(12px)",
+                            WebkitBackdropFilter: "blur(12px)",
+                          }}
+                        >
+                          <FilterPanel
+                            filters={filters}
+                            onChange={updateFilters}
+                            onClear={clearFilters}
+                            activeCount={activeFilterCount}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                {/* Status chips bar — always visible quick toggles */}
+                <div
+                  role="radiogroup"
+                  aria-label="Filter contests by status"
+                  className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide"
+                >
+                  {STATUS_CHIPS.map((chip) => {
+                    const active = filters.status === chip.value;
+                    const Icon = chip.icon;
+                    return (
+                      <button
+                        key={chip.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={active}
+                        aria-pressed={active}
+                        onClick={() => updateFilters({ status: chip.value })}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-display font-light transition-all whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                        style={{
+                          background: active ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.03)",
+                          border: `1px solid ${active ? "rgba(255,255,255,0.20)" : "rgba(255,255,255,0.07)"}`,
+                          color: active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.55)",
+                          boxShadow: active ? "0 1px 0 rgba(255,255,255,0.06) inset" : "none",
+                        }}
+                      >
+                        <Icon className="w-3 h-3" />
+                        {chip.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ── Main Contest Area (full width, no sidebar) ── */}
+              <div className="min-w-0">
                   {/* Active filter chips */}
                   {activeFilterCount > 0 && (
                     <div className="flex flex-wrap gap-2 mb-5">
@@ -790,7 +823,6 @@ export default function Giveaway() {
                     </>
                   )}
                 </div>
-              </div>
             </div>
           </section>
 
@@ -902,73 +934,6 @@ export default function Giveaway() {
         <SiteFooter />
       </main>
 
-      {/* ── Mobile Filter Drawer ── */}
-      <AnimatePresence>
-        {mobileFilterOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 lg:hidden"
-              style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}
-              onClick={() => setMobileFilterOpen(false)}
-            />
-
-            {/* Drawer */}
-            <motion.div
-              variants={drawerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="fixed top-0 left-0 bottom-0 z-50 lg:hidden flex flex-col"
-              style={{
-                width: "min(320px, 88vw)",
-                background: "#0a0a0a",
-                borderRight: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              {/* Drawer header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-4 h-4 text-white/50" />
-                  <span className="text-sm font-display text-white/80">Filters</span>
-                  {activeFilterCount > 0 && (
-                    <span className="w-5 h-5 rounded-full text-[9px] font-display flex items-center justify-center" style={{ background: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)" }}>
-                      {activeFilterCount}
-                    </span>
-                  )}
-                </div>
-                <button onClick={() => setMobileFilterOpen(false)} className="text-white/30 hover:text-white/60 transition-colors">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Drawer body */}
-              <div className="flex-1 overflow-y-auto px-5 py-5">
-                <FilterPanel
-                  filters={filters}
-                  onChange={updateFilters}
-                  onClear={clearFilters}
-                  activeCount={activeFilterCount}
-                />
-              </div>
-
-              {/* Drawer footer */}
-              <div className="px-5 py-4 border-t" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
-                <button
-                  onClick={() => setMobileFilterOpen(false)}
-                  className="w-full py-3 rounded-xl text-sm font-display font-light text-white transition-all"
-                  style={{ background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.15)" }}
-                >
-                  Show {filteredContests.length} result{filteredContests.length !== 1 ? "s" : ""}
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

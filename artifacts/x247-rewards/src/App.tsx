@@ -17,6 +17,7 @@ const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const AdminPanel = lazy(() => import("@/pages/AdminPanel"));
 const GiveawayEntry = lazy(() => import("@/pages/GiveawayEntry"));
 const Giveaway = lazy(() => import("@/pages/Giveaway"));
+const EntryCheck = lazy(() => import("@/pages/EntryCheck"));
 const Winners = lazy(() => import("@/pages/Winners"));
 const Account = lazy(() => import("@/pages/Account"));
 const Community = lazy(() => import("@/pages/Community"));
@@ -101,6 +102,9 @@ function Router() {
           </Route>
           <Route path="/giveaway">
             <AnimatedRoute component={Giveaway} />
+          </Route>
+          <Route path="/entry-check">
+            <AnimatedRoute component={EntryCheck} />
           </Route>
           <Route path="/winners">
             <AnimatedRoute component={Winners} />
