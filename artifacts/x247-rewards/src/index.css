@@ -15247,11 +15247,17 @@ a:focus-visible > .contest-card-v2 {
   padding: 0 2px;
 }
 
-/* List */
+/* List — responsive grid (1 col mobile → 2 col tablet+) */
 .ppl-list {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+@media (min-width: 720px) {
+  .ppl-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+}
+@media (min-width: 1280px) {
+  .ppl-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 }
 
 /* Loading */
@@ -15461,6 +15467,44 @@ a:focus-visible > .contest-card-v2 {
   color: rgba(255,255,255,0.22);
   max-width: 240px;
   line-height: 1.65;
+}
+
+/* Mobile responsive — ppl-* (≤480px) */
+@media (max-width: 480px) {
+  .ppl-stats-bar { margin-bottom: 14px; border-radius: 12px; }
+  .ppl-stat-item { padding: 11px 4px; gap: 3px; }
+  .ppl-stat-value { font-size: 14px; }
+  .ppl-stat-label { font-size: 8px; letter-spacing: 0.07em; }
+
+  .ppl-tabs-row { gap: 6px; margin-bottom: 10px; }
+  .ppl-tabs { gap: 3px; }
+  .ppl-tab { padding: 7px 10px; font-size: 10.5px; gap: 4px; }
+  .ppl-tab svg { width: 11px; height: 11px; }
+  .ppl-tab-count { min-width: 16px; height: 14px; font-size: 8.5px; padding: 0 3px; }
+  .ppl-refresh-btn { width: 30px; height: 30px; border-radius: 9px; }
+  .ppl-refresh-btn svg { width: 12px; height: 12px; }
+
+  .ppl-search { padding: 9px 12px; border-radius: 11px; margin-bottom: 12px; }
+  .ppl-search-input { font-size: 12px; }
+
+  .ppl-card { padding: 12px 12px; gap: 11px; border-radius: 14px; }
+  .ppl-card-link { gap: 11px; }
+  .ppl-avatar { width: 42px; height: 42px; }
+  .ppl-avatar-initials { font-size: 13.5px; }
+  .ppl-avatar-verified { width: 16px; height: 16px; }
+  .ppl-card-name { font-size: 12.5px; max-width: 140px; }
+  .ppl-mutual-tag { font-size: 8.5px; padding: 1px 5px; }
+  .ppl-card-chips { gap: 4px; margin-bottom: 3px; }
+  .ppl-chip { font-size: 9px; padding: 1.5px 6px; }
+  .ppl-badge-line { font-size: 9px; max-width: 150px; }
+  .ppl-follow-btn { padding: 6px 11px; font-size: 10px; gap: 4px; border-radius: 8px; }
+  .ppl-follow-btn svg { width: 11px; height: 11px; }
+}
+
+/* Hide tab text on tiny screens — keep icon + count */
+@media (max-width: 380px) {
+  .ppl-tab-label { display: none; }
+  .ppl-tab { padding: 7px 9px; }
 }
 
 /* Light theme overrides for ppl-* */

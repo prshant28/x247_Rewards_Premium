@@ -363,7 +363,7 @@ export default function People() {
                 className={`ppl-tab${tab === t.id ? " ppl-tab--active" : ""}`}
               >
                 <t.icon className="w-3 h-3 shrink-0" />
-                <span>{t.label}</span>
+                <span className="ppl-tab-label">{t.label}</span>
                 {t.id === "followers" && followers.length > 0 && (
                   <span className="ppl-tab-count">{formatCount(followers.length)}</span>
                 )}
