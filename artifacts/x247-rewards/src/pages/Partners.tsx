@@ -369,9 +369,9 @@ export default function Partners() {
           </motion.div>
 
           {!isLoading && (
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8 sm:mb-10">
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8 sm:mb-10 ctx-filterbar">
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="flex items-center gap-1.5 mr-1 text-foreground/25">
+                <div className="flex items-center gap-1.5 mr-1 text-foreground/45">
                   <SlidersHorizontal className="w-3.5 h-3.5" />
                   <span className="text-[10px] uppercase tracking-widest font-display">Filter</span>
                 </div>
@@ -379,11 +379,8 @@ export default function Partners() {
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
-                    className={`px-4 py-1.5 rounded-full text-[11px] font-display font-light tracking-wide border transition-all ${
-                      activeFilter === filter
-                        ? "bg-white/[0.1] border-white/[0.2] text-foreground"
-                        : "bg-white/[0.02] border-white/[0.06] text-foreground/40 hover:text-foreground/60 hover:bg-white/[0.04]"
-                    }`}
+                    data-active={activeFilter === filter ? "true" : "false"}
+                    className="ctx-status-chip px-4 py-1.5 rounded-full text-[11px] font-display font-light tracking-wide transition-all"
                   >
                     {filter === "Featured" && <span className="mr-1 opacity-60">★</span>}
                     {filter}
@@ -411,6 +408,44 @@ export default function Partners() {
               ))}
             </motion.div>
           )}
+
+          {/* ── Premium Rewards Visual Showcase ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-16 sm:mb-24"
+          >
+            <div className="glass-card !shadow-none !p-0 overflow-hidden">
+              <div className="rewards-showcase-card relative overflow-hidden">
+                <img
+                  src="/images/hero-rewards-visual.png"
+                  alt="Premium rewards — trophies, gift cards, and tech prizes"
+                  className="w-full object-cover"
+                  style={{ maxHeight: 420, objectPosition: "center 30%" }}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5">
+                  <div>
+                    <div className="glass-pill-badge mb-3 inline-flex w-auto">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                      Real Prizes. Daily Draws.
+                    </div>
+                    <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight drop-shadow-lg">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
+                    <p className="text-sm sm:text-base text-white/80 font-light max-w-md leading-relaxed drop-shadow">Register with our partners → earn extra entries → win premium prizes drawn daily.</p>
+                  </div>
+                  <Link href="/giveaway" className="showcase-enter-btn group shrink-0 inline-flex items-center justify-center gap-2 h-12 px-7 rounded-2xl font-medium text-sm tracking-wide transition-all duration-300 bg-white text-black border border-white/20 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
+                    <span>Enter Now</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           <motion.div
             initial="hidden"

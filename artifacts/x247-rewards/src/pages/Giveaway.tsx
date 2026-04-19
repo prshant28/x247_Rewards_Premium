@@ -269,41 +269,45 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
       className="h-full"
     >
       <Link href={isUpcoming ? `/giveaway` : `/giveaway/${contest.slug}`} aria-label={isUpcoming ? `${contest.name} — coming soon` : `Enter ${contest.name}`}>
-        <div className={`contest-card-v2 group ${isUpcoming ? "is-upcoming" : ""} ${isFull ? "is-full" : ""}`}>
+        <div className={`contest-card-v2 group ${isUpcoming ? "is-upcoming" : ""} ${isFull ? "is-full" : ""} ${contest.imageUrl ? "has-banner" : "no-banner"}`}>
           <div className="contest-card-shine" />
 
-          {/* ── BANNER IMAGE ── */}
-          <div className="contest-card-banner">
-            {contest.imageUrl ? (
+          {/* ── BANNER (only if image exists) ── */}
+          {contest.imageUrl ? (
+            <div className="contest-card-banner">
               <img
                 src={contest.imageUrl}
                 alt={contest.name}
                 loading="lazy"
                 className="contest-card-banner-img"
               />
-            ) : (
-              <div className="contest-card-banner-fallback" style={{ background: fallbackBg }}>
-                <div className="contest-card-banner-fallback-grid" />
-                <Trophy className="w-12 h-12 text-foreground/20 relative z-10" />
-                <div className="absolute bottom-3 left-4 right-4 text-center">
-                  <div className="text-[10px] font-display uppercase tracking-[0.2em] text-foreground/35">{contest.prize}</div>
+              <div className="contest-card-banner-tag">
+                {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
+              </div>
+              {!isUpcoming && !isFull && (
+                <div className="contest-card-banner-live">
+                  <span className="contest-card-banner-pulse" />
+                  LIVE
                 </div>
-              </div>
-            )}
-
-            {/* Top-right status tag (like OPEN_HACKATHON) */}
-            <div className="contest-card-banner-tag">
-              {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
+              )}
             </div>
-
-            {/* Bottom-left live pulse */}
-            {!isUpcoming && !isFull && (
-              <div className="contest-card-banner-live">
-                <span className="contest-card-banner-pulse" />
-                LIVE
+          ) : (
+            /* Thin status strip when no image — much more minimal */
+            <div className="contest-card-strip">
+              <div className="contest-card-strip-icon">
+                <Trophy className="w-3.5 h-3.5" />
               </div>
-            )}
-          </div>
+              {!isUpcoming && !isFull && (
+                <div className="contest-card-strip-live">
+                  <span className="contest-card-banner-pulse" />
+                  LIVE
+                </div>
+              )}
+              <div className="contest-card-strip-tag">
+                {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
+              </div>
+            </div>
+          )}
 
           {/* ── BODY ── */}
           <div className="contest-card-body">
@@ -582,24 +586,18 @@ export default function Giveaway() {
               </motion.div>
 
               {/* ── Unified Filter Bar (chips + advanced popover, no sidebar) ── */}
-              <div className="mb-6">
+              <div className="mb-6 ctx-filterbar">
                 {/* Search + Advanced filter button */}
                 <div className="flex items-center gap-2 mb-3">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/25 pointer-events-none" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/40 pointer-events-none z-[1]" />
                     <input
                       type="text"
                       value={filters.search}
                       onChange={(e) => updateFilters({ search: e.target.value })}
                       placeholder="Search contests, prizes..."
                       aria-label="Search contests"
-                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-light placeholder-white/25 focus:outline-none transition-all text-foreground"
-                      style={{
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                      }}
-                      onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
-                      onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+                      className="ctx-search-input w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-light focus:outline-none transition-all text-foreground"
                     />
                   </div>
 
@@ -609,20 +607,13 @@ export default function Giveaway() {
                       onClick={() => setAdvFilterOpen((v) => !v)}
                       aria-expanded={advFilterOpen}
                       aria-haspopup="dialog"
-                      className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-display font-light transition-all relative shrink-0"
-                      style={{
-                        background: advFilterCount > 0 ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.04)",
-                        border: `1px solid ${advFilterCount > 0 ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.08)"}`,
-                        color: advFilterCount > 0 ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.55)",
-                      }}
+                      data-active={advFilterCount > 0 ? "true" : "false"}
+                      className="ctx-adv-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-display font-light transition-all relative shrink-0"
                     >
                       <SlidersHorizontal className="w-3.5 h-3.5" />
                       <span className="hidden sm:inline">More</span>
                       {advFilterCount > 0 && (
-                        <span
-                          className="w-4 h-4 rounded-full text-[9px] font-display flex items-center justify-center"
-                          style={{ background: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.95)" }}
-                        >
+                        <span className="ctx-adv-count w-4 h-4 rounded-full text-[9px] font-display flex items-center justify-center">
                           {advFilterCount}
                         </span>
                       )}
@@ -675,14 +666,9 @@ export default function Giveaway() {
                         role="radio"
                         aria-checked={active}
                         aria-pressed={active}
+                        data-active={active ? "true" : "false"}
                         onClick={() => updateFilters({ status: chip.value })}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-display font-light transition-all whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-                        style={{
-                          background: active ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.03)",
-                          border: `1px solid ${active ? "rgba(255,255,255,0.20)" : "rgba(255,255,255,0.07)"}`,
-                          color: active ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.55)",
-                          boxShadow: active ? "0 1px 0 rgba(255,255,255,0.06) inset" : "none",
-                        }}
+                        className="ctx-status-chip inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-display font-light transition-all whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40"
                       >
                         <Icon className="w-3 h-3" />
                         {chip.label}
@@ -865,6 +851,49 @@ export default function Giveaway() {
                     </div>
                   </motion.div>
                 ))}
+              </motion.div>
+            </div>
+          </section>
+
+          <GlowLine />
+
+          {/* ── Premium Rewards Visual Showcase ── */}
+          <section className="py-6 sm:py-10 relative overflow-hidden">
+            <div className="container mx-auto px-4 max-w-5xl">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="glass-card !shadow-none !p-0 overflow-hidden">
+                  <div className="rewards-showcase-card relative overflow-hidden">
+                    <img
+                      src="/images/hero-rewards-visual.png"
+                      alt="Premium rewards — trophies, gift cards, and tech prizes"
+                      className="w-full object-cover"
+                      style={{ maxHeight: 420, objectPosition: "center 30%" }}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5">
+                      <div>
+                        <div className="glass-pill-badge mb-3 inline-flex w-auto">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                          Real Prizes. Daily Draws.
+                        </div>
+                        <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight drop-shadow-lg">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
+                        <p className="text-sm sm:text-base text-white/80 font-light max-w-md leading-relaxed drop-shadow">Gift cards, tech gadgets, swag kits &amp; cash prizes — drawn daily from all verified entries.</p>
+                      </div>
+                      <a href="#contests" className="showcase-enter-btn group shrink-0 inline-flex items-center justify-center gap-2 h-12 px-7 rounded-2xl font-medium text-sm tracking-wide transition-all duration-300 bg-white text-black border border-white/20 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
+                        <span>Browse Contests</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             </div>
           </section>
