@@ -16292,3 +16292,142 @@ button, [role="button"] {
   color: hsl(var(--foreground) / 0.38) !important;
   -webkit-text-fill-color: hsl(var(--foreground) / 0.38) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   WIN CELEBRATION POPUP
+   ══════════════════════════════════════════════════════════════════════ */
+.win-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 1rem;
+}
+.win-popup-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(145deg, #0d0d0d 0%, #111 50%, #0a0a0a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 2.5rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 0 80px rgba(255, 255, 255, 0.04), 0 32px 64px rgba(0, 0, 0, 0.8);
+}
+.win-popup-glow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.win-popup-confetti-row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 1rem;
+  pointer-events: none;
+}
+.win-popup-confetti-star {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  display: inline-block;
+}
+.win-popup-trophy-ring {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0 30px rgba(255,255,255,0.06);
+}
+.win-popup-trophy-icon {
+  width: 32px;
+  height: 32px;
+  color: rgba(255, 255, 255, 0.85);
+}
+.win-popup-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 0.5rem;
+}
+.win-popup-prize {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 0.35rem;
+}
+.win-popup-meta {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.38);
+  margin-bottom: 0.75rem;
+}
+.win-popup-entry-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.win-popup-body {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.6;
+  max-width: 300px;
+  margin-bottom: 1.75rem;
+}
+.win-popup-btn {
+  width: 100%;
+  max-width: 260px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.win-popup-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.win-popup-btn:active {
+  transform: translateY(0);
+  opacity: 1;
+}

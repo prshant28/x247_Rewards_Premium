@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable, userBadgesTable, userFollowsTable, notificationsTable } from "@workspace/db";
+import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable, userBadgesTable, userFollowsTable, notificationsTable, winnersTable } from "@workspace/db";
 import { eq, sql, and, count, desc, ne, notInArray, inArray } from "drizzle-orm";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
@@ -258,6 +258,8 @@ router.get("/users/me/entries", async (req, res) => {
 
     const entries = await db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.userId, session.userId));
 
+    const allWinners = await db.select().from(winnersTable);
+
     const entriesWithContest = await Promise.all(
       entries.map(async (entry) => {
         let contestName = "General Giveaway";
@@ -265,6 +267,10 @@ router.get("/users/me/entries", async (req, res) => {
           const [contest] = await db.select().from(contestsTable).where(eq(contestsTable.id, entry.contestId)).limit(1);
           if (contest) contestName = contest.name;
         }
+        const matchedWinner = allWinners.find(
+          w => (entry.entryCode && w.entryCode && w.entryCode === entry.entryCode) ||
+               (w.entryId && w.entryId === entry.id)
+        );
         return {
           id: entry.id,
           entryCode: entry.entryCode,
@@ -273,6 +279,9 @@ router.get("/users/me/entries", async (req, res) => {
           contestId: entry.contestId,
           partnersCompleted: (entry.completedPartners as number[]).length,
           submittedAt: entry.createdAt,
+          status: matchedWinner ? "won" : "pending",
+          prize: matchedWinner?.prize ?? null,
+          announcedAt: matchedWinner?.announcedAt ?? null,
         };
       })
     );

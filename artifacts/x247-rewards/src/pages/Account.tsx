@@ -1971,9 +1971,14 @@ function EntriesTab({ entries }: { entries: any[] }) {
                   {entry.status === "won" ? <Star className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
                   <span>{entry.status === "won" ? "Won!" : "Pending"}</span>
                 </div>
-                <div className="text-[9px] text-white/20 font-light mt-0.5">
-                  {entry.submittedAt ? new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
-                </div>
+                {entry.status === "won" && entry.prize && (
+                  <div className="text-[9px] text-amber-400/50 font-light mt-0.5 max-w-[90px] truncate">{entry.prize}</div>
+                )}
+                {!(entry.status === "won" && entry.prize) && (
+                  <div className="text-[9px] text-white/20 font-light mt-0.5">
+                    {entry.submittedAt ? new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -2454,6 +2459,7 @@ export default function Account() {
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [, navigate] = useLocation();
+  const [winPopupData, setWinPopupData] = useState<{ prize: string; contestName: string; entryCode: string } | null>(null);
 
   const loadUser = async () => {
     setLoading(true);
@@ -2462,6 +2468,17 @@ export default function Account() {
       setUser(u);
       const e = await getUserEntries();
       setEntries(e);
+      const wonEntries = e.filter((en: any) => en.status === "won");
+      if (wonEntries.length > 0) {
+        const seenKey = "x247_seen_wins";
+        const seenWins: string[] = JSON.parse(localStorage.getItem(seenKey) || "[]");
+        const unseen = wonEntries.find((en: any) => !seenWins.includes(String(en.id)));
+        if (unseen) {
+          setWinPopupData({ prize: unseen.prize || "a prize", contestName: unseen.contestName || "the giveaway", entryCode: unseen.entryCode || "" });
+          const updated = [...seenWins, String(unseen.id)];
+          localStorage.setItem(seenKey, JSON.stringify(updated));
+        }
+      }
     }
     setLoading(false);
   };
@@ -2480,6 +2497,45 @@ export default function Account() {
     <div className="min-h-screen bg-black text-white">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
+
+      {winPopupData && (
+        <div className="win-popup-overlay" onClick={() => setWinPopupData(null)}>
+          <motion.div
+            className="win-popup-card"
+            initial={{ opacity: 0, scale: 0.8, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="win-popup-glow" />
+            <div className="win-popup-confetti-row">
+              {["✦","✧","★","✦","✧","✦","★","✧","✦"].map((c, i) => (
+                <motion.span key={i} className="win-popup-confetti-star"
+                  initial={{ opacity: 0, y: 0 }}
+                  animate={{ opacity: [0, 1, 0], y: [-10, -30, -50] }}
+                  transition={{ delay: 0.3 + i * 0.07, duration: 1.2, repeat: Infinity, repeatDelay: 2 }}
+                >{c}</motion.span>
+              ))}
+            </div>
+            <div className="win-popup-trophy-ring">
+              <Trophy className="win-popup-trophy-icon" />
+            </div>
+            <div className="win-popup-eyebrow">You Won!</div>
+            <div className="win-popup-prize">{winPopupData.prize}</div>
+            <div className="win-popup-meta">in {winPopupData.contestName}</div>
+            {winPopupData.entryCode && (
+              <div className="win-popup-entry-code">Entry: {winPopupData.entryCode}</div>
+            )}
+            <p className="win-popup-body">
+              Congratulations! Our team will reach out to you shortly to arrange your prize delivery.
+            </p>
+            <button className="win-popup-btn" onClick={() => setWinPopupData(null)}>
+              Claim My Win
+            </button>
+          </motion.div>
+        </div>
+      )}
 
       <main className="relative z-10 pt-24 pb-20 sm:pt-32 sm:pb-32">
         <div className={`container mx-auto px-4 sm:px-6 lg:px-8 ${user ? "max-w-6xl" : "max-w-7xl"}`}>

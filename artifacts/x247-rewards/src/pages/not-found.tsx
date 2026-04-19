@@ -113,7 +113,7 @@ export default function NotFound() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{
               delay: 0.18,
-              duration: 0.7,
+              duration: 0.7,  
               ease: [0.22, 1, 0.36, 1],
             }}
             className="x404-number"
