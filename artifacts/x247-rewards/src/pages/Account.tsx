@@ -2323,6 +2323,21 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
   const { streak, isNew: isStreakNew } = useStreak();
   const [showStreakCelebration, setShowStreakCelebration] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
+  const activeTabMeta = TABS.find(t => t.id === activeTab) || TABS[0];
+  const ActiveTabIcon = activeTabMeta.icon;
+  // Close mobile drawer on Escape + body scroll lock while open
+  useEffect(() => {
+    if (!showMobileNav) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setShowMobileNav(false); };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [showMobileNav]);
   const notifs = useNotifications();
   const memberSince = new Date(user.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" });
 
@@ -2506,24 +2521,89 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
           </nav>
 
           {/* Mobile tab row */}
-          <div className="dash-mobile-tabs">
-            <div className="acct-tabs-inner">
-              {TABS.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`acct-tab ${isActive ? "acct-tab-active" : ""}`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{tab.label}</span>
-                  </button>
-                );
-              })}
+          {/* Mobile: premium top bar showing current tab + menu trigger */}
+          <div className="dash-mobile-topbar">
+            <button
+              type="button"
+              onClick={() => setShowMobileNav(true)}
+              className="dash-mobile-topbar-trigger"
+              aria-label="Open account menu"
+            >
+              <span className="dash-mobile-topbar-icon">
+                <ActiveTabIcon className="w-4 h-4" />
+              </span>
+              <span className="dash-mobile-topbar-label">{activeTabMeta.label}</span>
+              <span className="dash-mobile-topbar-chevron">
+                <ChevronDown className="w-3.5 h-3.5" />
+              </span>
+            </button>
+            <div className="dash-mobile-topbar-meta">
+              <span className="dash-mobile-topbar-meta-dot" />
+              {TABS.findIndex(t => t.id === activeTab) + 1} / {TABS.length}
             </div>
           </div>
+
+          {/* Mobile: slide-up drawer with all tabs as premium cards */}
+          <AnimatePresence>
+            {showMobileNav && (
+              <>
+                <motion.div
+                  className="dash-mobile-drawer-backdrop"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setShowMobileNav(false)}
+                />
+                <motion.div
+                  className="dash-mobile-drawer"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Account navigation"
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "100%" }}
+                  transition={{ type: "spring", stiffness: 320, damping: 36 }}
+                >
+                  <div className="dash-mobile-drawer-handle" />
+                  <div className="dash-mobile-drawer-header">
+                    <div>
+                      <div className="dash-mobile-drawer-title">Account</div>
+                      <div className="dash-mobile-drawer-sub">Switch sections</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowMobileNav(false)}
+                      className="dash-mobile-drawer-close"
+                      aria-label="Close menu"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="dash-mobile-drawer-grid">
+                    {TABS.map((tab) => {
+                      const Icon = tab.icon;
+                      const isActive = activeTab === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => { setActiveTab(tab.id); setShowMobileNav(false); }}
+                          className={`dash-mobile-drawer-card ${isActive ? "is-active" : ""}`}
+                        >
+                          <span className="dash-mobile-drawer-card-icon">
+                            <Icon className="w-4 h-4" />
+                          </span>
+                          <span className="dash-mobile-drawer-card-label">{tab.label}</span>
+                          {isActive && <span className="dash-mobile-drawer-card-pulse" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
 
           {/* Tab content */}
           <div className="dash-content">
