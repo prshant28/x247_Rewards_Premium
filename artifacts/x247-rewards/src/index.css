@@ -180,6 +180,7 @@
     font-family: 'Syne', var(--font-display), sans-serif;
     font-weight: 300;
     letter-spacing: -0.03em;
+    -webkit-text-fill-color: currentColor;
   }
 
   img {
@@ -6486,6 +6487,7 @@
   letter-spacing: -0.04em;
   color: hsl(var(--foreground));
   margin: 0 0 8px;
+  -webkit-text-fill-color: currentColor;
 }
 .pricing-hero-title-accent {
   background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--foreground)/0.45) 100%);
@@ -10881,6 +10883,7 @@
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 700;
   color: white;
+  -webkit-text-fill-color: white;
   line-height: 1.15;
   letter-spacing: -0.03em;
   margin: 0 0 6px;
@@ -11123,6 +11126,7 @@
   letter-spacing: -0.04em;
   line-height: 1.0;
   color: white;
+  -webkit-text-fill-color: white;
   margin: 0 0 12px;
 }
 .hiw-hero-accent {
