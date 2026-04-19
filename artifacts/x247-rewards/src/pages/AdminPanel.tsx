@@ -523,29 +523,29 @@ export default function AdminPanel() {
     return items.slice(0, 8);
   }, [entries, winners, referralApplications]);
 
-  const inputCls = "w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/[0.25] focus:bg-white/[0.06] transition-all";
-  const labelCls = "block text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] mb-2";
-  const btnPrimary = "flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.1] border border-white/[0.18] text-white text-sm font-display font-light hover:bg-white/[0.15] transition-all";
-  const btnSecondary = "flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/60 text-sm font-display font-light hover:bg-white/[0.08] hover:text-white/80 transition-all";
-  const btnGhost = "flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white/35 text-xs hover:bg-white/[0.06] hover:text-white/60 transition-all";
-  const iconBtn = "p-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/35 hover:text-white/70 hover:bg-white/[0.08] transition-all";
-  const iconBtnDanger = "p-2 rounded-xl bg-white/[0.02] border border-white/[0.05] text-white/25 hover:text-red-400/70 hover:bg-red-500/[0.06] hover:border-red-500/[0.12] transition-all";
+  const inputCls = "w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-foreground text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/[0.25] focus:bg-white/[0.06] transition-all";
+  const labelCls = "block text-[10px] font-display font-medium text-foreground/40 uppercase tracking-[0.15em] mb-2";
+  const btnPrimary = "flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.1] border border-white/[0.18] text-foreground text-sm font-display font-light hover:bg-white/[0.15] transition-all";
+  const btnSecondary = "flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-foreground/60 text-sm font-display font-light hover:bg-white/[0.08] hover:text-foreground/80 transition-all";
+  const btnGhost = "flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.06] text-foreground/35 text-xs hover:bg-white/[0.06] hover:text-foreground/60 transition-all";
+  const iconBtn = "p-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-foreground/35 hover:text-foreground/70 hover:bg-white/[0.08] transition-all";
+  const iconBtnDanger = "p-2 rounded-xl bg-white/[0.02] border border-white/[0.05] text-foreground/25 hover:text-red-400/70 hover:bg-red-500/[0.06] hover:border-red-500/[0.12] transition-all";
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#040404] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#040404] text-foreground flex items-center justify-center">
         <div className="text-center">
           <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center mx-auto mb-4">
-            <Sparkles className="w-5 h-5 text-white/60 animate-pulse" />
+            <Sparkles className="w-5 h-5 text-foreground/60 animate-pulse" />
           </div>
-          <div className="text-white/40 text-sm font-light font-display tracking-widest uppercase">Initialising dashboard...</div>
+          <div className="text-foreground/40 text-sm font-light font-display tracking-widest uppercase">Initialising dashboard...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen text-white" style={{ background: "#040404" }}>
+    <div className="min-h-screen text-foreground" style={{ background: "#040404" }}>
       {/* subtle noise */}
       <div className="fixed inset-0 pointer-events-none" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E\")", opacity: 0.4, zIndex: 0 }} />
 
@@ -555,23 +555,23 @@ export default function AdminPanel() {
           {/* Brand block */}
           <div className="flex items-center gap-2.5 shrink-0">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04))", border: "1px solid rgba(255,255,255,0.16)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)" }}>
-              <Shield className="w-4 h-4 text-white/85" />
+              <Shield className="w-4 h-4 text-foreground/85" />
             </div>
             <div className="hidden md:block">
-              <div className="flex items-center gap-2 text-[11px] text-white/35 font-display">
-                <span className="text-white/75 font-medium tracking-wide">X247</span>
+              <div className="flex items-center gap-2 text-[11px] text-foreground/35 font-display">
+                <span className="text-foreground/75 font-medium tracking-wide">X247</span>
                 <ChevronRight className="w-3 h-3" />
                 <span className="capitalize">{activeTab}</span>
               </div>
-              <div className="text-[9px] text-white/25 font-mono tracking-widest uppercase">Control Panel · Admin</div>
+              <div className="text-[9px] text-foreground/25 font-mono tracking-widest uppercase">Control Panel · Admin</div>
             </div>
-            <div className="md:hidden text-sm font-display text-white/80">Admin</div>
+            <div className="md:hidden text-sm font-display text-foreground/80">Admin</div>
             <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full ml-2" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <span className="relative flex w-1.5 h-1.5">
                 <span className="absolute inline-flex w-full h-full rounded-full bg-white/40 animate-ping" />
                 <span className="relative w-1.5 h-1.5 rounded-full bg-white/70" />
               </span>
-              <span className="text-[9px] text-white/45 font-display uppercase tracking-widest">Live</span>
+              <span className="text-[9px] text-foreground/45 font-display uppercase tracking-widest">Live</span>
             </div>
           </div>
 
@@ -582,9 +582,9 @@ export default function AdminPanel() {
               className="hidden sm:flex w-full items-center gap-3 px-3.5 py-2 rounded-xl text-left transition-all hover:bg-white/[0.05]"
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
             >
-              <Search className="w-3.5 h-3.5 text-white/30 shrink-0" />
-              <span className="flex-1 text-xs text-white/35 font-light">Search anything · partners, contests, entries…</span>
-              <span className="flex items-center gap-1 text-[10px] text-white/30 font-mono px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              <Search className="w-3.5 h-3.5 text-foreground/30 shrink-0" />
+              <span className="flex-1 text-xs text-foreground/35 font-light">Search anything · partners, contests, entries…</span>
+              <span className="flex items-center gap-1 text-[10px] text-foreground/30 font-mono px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>
                 <CommandIcon className="w-2.5 h-2.5" /> K
               </span>
             </button>
@@ -593,7 +593,7 @@ export default function AdminPanel() {
               className="sm:hidden p-2 rounded-xl"
               style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
             >
-              <Search className="w-4 h-4 text-white/50" />
+              <Search className="w-4 h-4 text-foreground/50" />
             </button>
           </div>
 
@@ -619,7 +619,7 @@ export default function AdminPanel() {
               title="AI Assistant"
               aria-label="Open AI Assistant"
             >
-              <Brain className="w-4 h-4 text-white/70" />
+              <Brain className="w-4 h-4 text-foreground/70" />
             </motion.button>
 
             <motion.button
@@ -630,9 +630,9 @@ export default function AdminPanel() {
               title="Notifications"
               aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
             >
-              <Bell className="w-4 h-4 text-white/55" />
+              <Bell className="w-4 h-4 text-foreground/55" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-display font-medium text-white" style={{ background: "rgba(255,255,255,0.95)", color: "#040404", boxShadow: "0 0 0 2px #040404" }}>
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center text-[9px] font-display font-medium text-foreground" style={{ background: "rgba(255,255,255,0.95)", color: "#040404", boxShadow: "0 0 0 2px #040404" }}>
                   {unreadCount}
                 </span>
               )}
@@ -644,7 +644,7 @@ export default function AdminPanel() {
               style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
               title="Refresh"
             >
-              <RefreshCw className={`w-4 h-4 text-white/45 ${refreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-4 h-4 text-foreground/45 ${refreshing ? "animate-spin" : ""}`} />
             </button>
 
             {/* Profile menu */}
@@ -654,11 +654,11 @@ export default function AdminPanel() {
                 className="flex items-center gap-2 pl-1.5 pr-2.5 py-1.5 rounded-xl transition-all hover:bg-white/[0.06]"
                 style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
               >
-                <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-display font-medium text-white" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04))" }}>
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-display font-medium text-foreground" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04))" }}>
                   C
                 </div>
-                <span className="hidden lg:inline text-xs font-display text-white/65">CEO</span>
-                <ChevronDown className={`w-3 h-3 text-white/35 transition-transform ${showProfileMenu ? "rotate-180" : ""}`} />
+                <span className="hidden lg:inline text-xs font-display text-foreground/65">CEO</span>
+                <ChevronDown className={`w-3 h-3 text-foreground/35 transition-transform ${showProfileMenu ? "rotate-180" : ""}`} />
               </button>
               <AnimatePresence>
                 {showProfileMenu && (
@@ -672,13 +672,13 @@ export default function AdminPanel() {
                   >
                     <div className="p-3 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
                       <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-display font-medium text-white" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05))" }}>C</div>
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-display font-medium text-foreground" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05))" }}>C</div>
                         <div className="min-w-0">
-                          <div className="text-sm font-display text-white/85 truncate">CEO</div>
-                          <div className="text-[10px] text-white/40 font-mono truncate">ceo@x247.app</div>
+                          <div className="text-sm font-display text-foreground/85 truncate">CEO</div>
+                          <div className="text-[10px] text-foreground/40 font-mono truncate">ceo@x247.app</div>
                         </div>
                       </div>
-                      <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-display uppercase tracking-widest text-white/60" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                      <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-display uppercase tracking-widest text-foreground/60" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
                         <Shield className="w-2.5 h-2.5" /> Super Admin
                       </div>
                     </div>
@@ -688,14 +688,14 @@ export default function AdminPanel() {
                         { icon: <Database className="w-3.5 h-3.5" />, label: "API & Webhooks", action: () => {} },
                         { icon: <Lightbulb className="w-3.5 h-3.5" />, label: "Tips & Shortcuts", action: () => { setShowProfileMenu(false); setShowCommandPalette(true); } },
                       ].map(item => (
-                        <button key={item.label} onClick={item.action} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-white/60 hover:text-white/90 hover:bg-white/[0.06] transition-all">
-                          <span className="text-white/40">{item.icon}</span>
+                        <button key={item.label} onClick={item.action} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-foreground/60 hover:text-foreground/90 hover:bg-white/[0.06] transition-all">
+                          <span className="text-foreground/40">{item.icon}</span>
                           {item.label}
                         </button>
                       ))}
                     </div>
                     <div className="border-t p-1.5" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-                      <button onClick={handleLogout} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-white/55 hover:text-red-400/80 hover:bg-red-500/[0.06] transition-all">
+                      <button onClick={handleLogout} className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-foreground/55 hover:text-red-400/80 hover:bg-red-500/[0.06] transition-all">
                         <LogOut className="w-3.5 h-3.5" />
                         Logout
                       </button>
@@ -714,14 +714,14 @@ export default function AdminPanel() {
         {message && (
           <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl mb-6 text-sm font-light transition-all ${
             message.type === "success"
-              ? "text-white/80"
+              ? "text-foreground/80"
               : "text-red-400/90"
           }`} style={{
             background: message.type === "success" ? "rgba(255,255,255,0.06)" : "rgba(239,68,68,0.08)",
             border: `1px solid ${message.type === "success" ? "rgba(255,255,255,0.1)" : "rgba(239,68,68,0.18)"}`,
           }}>
             {message.type === "success"
-              ? <CheckCircle2 className="w-4 h-4 shrink-0 text-white/50" />
+              ? <CheckCircle2 className="w-4 h-4 shrink-0 text-foreground/50" />
               : <AlertCircle className="w-4 h-4 shrink-0 text-red-400/70" />
             }
             <span>{message.text}</span>
@@ -737,7 +737,7 @@ export default function AdminPanel() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-display font-light whitespace-nowrap transition-colors flex-shrink-0 ${isActive ? "text-white" : "text-white/40 hover:text-white/70"}`}
+                  className={`relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-display font-light whitespace-nowrap transition-colors flex-shrink-0 ${isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground/70"}`}
                 >
                   {isActive && (
                     <motion.div
@@ -747,7 +747,7 @@ export default function AdminPanel() {
                       transition={{ type: "spring", stiffness: 400, damping: 32 }}
                     />
                   )}
-                  <span className={`relative ${isActive ? "text-white/85" : "text-white/35"}`}>{tab.icon}</span>
+                  <span className={`relative ${isActive ? "text-foreground/85" : "text-foreground/35"}`}>{tab.icon}</span>
                   <span className="relative">{tab.label}</span>
                   {tab.count !== undefined && tab.count > 0 && (
                     <span className="relative min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[9px] font-display" style={{ background: isActive ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.07)", color: isActive ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)" }}>
@@ -768,12 +768,12 @@ export default function AdminPanel() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                    <Sparkles className="w-3 h-3 text-white/60" />
-                    <span className="text-[9px] font-display uppercase tracking-widest text-white/55">AI Dashboard</span>
+                    <Sparkles className="w-3 h-3 text-foreground/60" />
+                    <span className="text-[9px] font-display uppercase tracking-widest text-foreground/55">AI Dashboard</span>
                   </div>
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-display font-light text-white tracking-tight">Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, CEO</h1>
-                <p className="text-xs text-white/40 font-light mt-1">Here's what's happening across X247 today.</p>
+                <h1 className="text-2xl sm:text-3xl font-display font-light text-foreground tracking-tight">Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 17 ? "afternoon" : "evening"}, CEO</h1>
+                <p className="text-xs text-foreground/40 font-light mt-1">Here's what's happening across X247 today.</p>
               </div>
               <button onClick={() => setShowAIPanel(true)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-display transition-all hover:bg-white/[0.08] self-start lg:self-auto" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.8)" }}>
                 <Brain className="w-3.5 h-3.5" />
@@ -807,7 +807,7 @@ export default function AdminPanel() {
                     <div className="relative p-4 sm:p-5">
                       <div className="flex items-center justify-between mb-4">
                         <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                          <div className="text-white/55">{kpi.icon}</div>
+                          <div className="text-foreground/55">{kpi.icon}</div>
                         </div>
                         {kpi.live && (
                           <span className="relative flex w-2 h-2">
@@ -817,16 +817,16 @@ export default function AdminPanel() {
                         )}
                       </div>
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-2xl sm:text-3xl lg:text-4xl font-display font-light text-white tracking-tight leading-none">{kpi.value.toLocaleString()}</span>
+                        <span className="text-2xl sm:text-3xl lg:text-4xl font-display font-light text-foreground tracking-tight leading-none">{kpi.value.toLocaleString()}</span>
                         {!isNeutral && (
-                          <span className={`flex items-center gap-0.5 text-[10px] font-display font-medium ${isPositive ? "text-white/70" : "text-white/45"}`}>
+                          <span className={`flex items-center gap-0.5 text-[10px] font-display font-medium ${isPositive ? "text-foreground/70" : "text-foreground/45"}`}>
                             {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                             {Math.abs(kpi.delta)}%
                           </span>
                         )}
                       </div>
-                      <div className="text-[9px] font-display uppercase tracking-[0.18em] text-white/40">{kpi.label}</div>
-                      <div className="text-[10px] text-white/25 font-light mt-0.5">{kpi.sub}</div>
+                      <div className="text-[9px] font-display uppercase tracking-[0.18em] text-foreground/40">{kpi.label}</div>
+                      <div className="text-[10px] text-foreground/25 font-light mt-0.5">{kpi.sub}</div>
                       <div className="mt-3 -mx-1 -mb-1">
                         <Sparkline data={kpi.trend} height={28} accent={isPositive ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.4)"} />
                       </div>
@@ -842,13 +842,13 @@ export default function AdminPanel() {
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)" }}>
                 <div className="flex items-center justify-between p-4 sm:p-5 pb-2">
                   <div>
-                    <div className="text-xs font-display text-white/80 mb-0.5">Engagement Trend</div>
-                    <div className="text-[10px] text-white/35 font-light">Last 14 days · clicks · impressions · fills</div>
+                    <div className="text-xs font-display text-foreground/80 mb-0.5">Engagement Trend</div>
+                    <div className="text-[10px] text-foreground/35 font-light">Last 14 days · clicks · impressions · fills</div>
                   </div>
                   <div className="flex items-center gap-3 text-[10px] font-display">
-                    <span className="flex items-center gap-1.5 text-white/55"><span className="w-2 h-2 rounded-full" style={{ background: "rgba(255,255,255,0.85)" }} />Clicks</span>
-                    <span className="hidden sm:flex items-center gap-1.5 text-white/45"><span className="w-2 h-2 rounded-full" style={{ background: "rgba(255,255,255,0.45)" }} />Impressions</span>
-                    <span className="hidden sm:flex items-center gap-1.5 text-white/35"><span className="w-2 h-2 rounded-full" style={{ background: "rgba(255,255,255,0.25)" }} />Fills</span>
+                    <span className="flex items-center gap-1.5 text-foreground/55"><span className="w-2 h-2 rounded-full" style={{ background: "rgba(255,255,255,0.85)" }} />Clicks</span>
+                    <span className="hidden sm:flex items-center gap-1.5 text-foreground/45"><span className="w-2 h-2 rounded-full" style={{ background: "rgba(255,255,255,0.45)" }} />Impressions</span>
+                    <span className="hidden sm:flex items-center gap-1.5 text-foreground/35"><span className="w-2 h-2 rounded-full" style={{ background: "rgba(255,255,255,0.25)" }} />Fills</span>
                   </div>
                 </div>
                 <div className="h-56 sm:h-64 px-2 pb-3">
@@ -878,8 +878,8 @@ export default function AdminPanel() {
               {/* Distribution donut */}
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)" }}>
                 <div className="p-4 sm:p-5 pb-2">
-                  <div className="text-xs font-display text-white/80 mb-0.5">Engagement Mix</div>
-                  <div className="text-[10px] text-white/35 font-light">Distribution across signals</div>
+                  <div className="text-xs font-display text-foreground/80 mb-0.5">Engagement Mix</div>
+                  <div className="text-[10px] text-foreground/35 font-light">Distribution across signals</div>
                 </div>
                 <div className="h-56 sm:h-64 flex items-center justify-center relative">
                   <ResponsiveContainer width="100%" height="100%">
@@ -893,15 +893,15 @@ export default function AdminPanel() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <div className="text-2xl font-display font-light text-white">{((overview?.totalClicks ?? 0) + (overview?.totalImpressions ?? 0) + (overview?.totalFormFills ?? 0)).toLocaleString()}</div>
-                    <div className="text-[9px] font-display uppercase tracking-widest text-white/35">Total Signals</div>
+                    <div className="text-2xl font-display font-light text-foreground">{((overview?.totalClicks ?? 0) + (overview?.totalImpressions ?? 0) + (overview?.totalFormFills ?? 0)).toLocaleString()}</div>
+                    <div className="text-[9px] font-display uppercase tracking-widest text-foreground/35">Total Signals</div>
                   </div>
                 </div>
                 <div className="px-4 pb-4 space-y-1.5">
                   {distributionData.map((d, i) => (
                     <div key={d.name} className="flex items-center justify-between text-[10px] font-display">
-                      <span className="flex items-center gap-2 text-white/55"><span className="w-2 h-2 rounded-full" style={{ background: ["rgba(255,255,255,0.85)", "rgba(255,255,255,0.5)", "rgba(255,255,255,0.28)"][i] }} />{d.name}</span>
-                      <span className="text-white/40 tabular-nums">{d.value.toLocaleString()}</span>
+                      <span className="flex items-center gap-2 text-foreground/55"><span className="w-2 h-2 rounded-full" style={{ background: ["rgba(255,255,255,0.85)", "rgba(255,255,255,0.5)", "rgba(255,255,255,0.28)"][i] }} />{d.name}</span>
+                      <span className="text-foreground/40 tabular-nums">{d.value.toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
@@ -914,16 +914,16 @@ export default function AdminPanel() {
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)" }}>
                 <div className="flex items-center justify-between p-4 sm:p-5 pb-2">
                   <div>
-                    <div className="text-xs font-display text-white/80 mb-0.5">Top Partners</div>
-                    <div className="text-[10px] text-white/35 font-light">By total clicks · this period</div>
+                    <div className="text-xs font-display text-foreground/80 mb-0.5">Top Partners</div>
+                    <div className="text-[10px] text-foreground/35 font-light">By total clicks · this period</div>
                   </div>
-                  <button onClick={() => setActiveTab("partners")} className="text-[10px] text-white/40 hover:text-white/70 font-display flex items-center gap-1 transition-colors">
+                  <button onClick={() => setActiveTab("partners")} className="text-[10px] text-foreground/40 hover:text-foreground/70 font-display flex items-center gap-1 transition-colors">
                     View all <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
                 <div className="h-56 sm:h-60 px-2 pb-3">
                   {topPartnersData.length === 0 ? (
-                    <div className="h-full flex items-center justify-center text-xs text-white/30 font-light">No partner data yet</div>
+                    <div className="h-full flex items-center justify-center text-xs text-foreground/30 font-light">No partner data yet</div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={topPartnersData} layout="vertical" margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
@@ -947,13 +947,13 @@ export default function AdminPanel() {
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="rounded-2xl overflow-hidden" style={{ background: "linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))", border: "1px solid rgba(255,255,255,0.09)" }}>
                 <div className="p-4 sm:p-5 pb-3 flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04))", border: "1px solid rgba(255,255,255,0.16)" }}>
-                    <Lightbulb className="w-3.5 h-3.5 text-white/75" />
+                    <Lightbulb className="w-3.5 h-3.5 text-foreground/75" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-xs font-display text-white/85">AI Insights</div>
-                    <div className="text-[10px] text-white/35 font-light">Smart recommendations</div>
+                    <div className="text-xs font-display text-foreground/85">AI Insights</div>
+                    <div className="text-[10px] text-foreground/35 font-light">Smart recommendations</div>
                   </div>
-                  <span className="text-[8px] font-mono px-1.5 py-0.5 rounded text-white/50" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>BETA</span>
+                  <span className="text-[8px] font-mono px-1.5 py-0.5 rounded text-foreground/50" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>BETA</span>
                 </div>
                 <div className="px-3 pb-3 space-y-2">
                   {aiInsights.map((ins, i) => (
@@ -961,11 +961,11 @@ export default function AdminPanel() {
                       <div className="flex items-start gap-2 mb-1.5">
                         <span className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: ins.tone === "good" ? "rgba(255,255,255,0.85)" : ins.tone === "warn" ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.35)" }} />
                         <div className="flex-1 min-w-0">
-                          <div className="text-[11px] font-display text-white/85 leading-snug">{ins.title}</div>
+                          <div className="text-[11px] font-display text-foreground/85 leading-snug">{ins.title}</div>
                         </div>
                       </div>
-                      <p className="text-[10px] text-white/40 font-light leading-relaxed mb-2 pl-3.5">{ins.desc}</p>
-                      <button className="ml-3.5 inline-flex items-center gap-1 text-[10px] font-display text-white/55 hover:text-white/85 transition-colors">
+                      <p className="text-[10px] text-foreground/40 font-light leading-relaxed mb-2 pl-3.5">{ins.desc}</p>
+                      <button className="ml-3.5 inline-flex items-center gap-1 text-[10px] font-display text-foreground/55 hover:text-foreground/85 transition-colors">
                         {ins.action} <ArrowRight className="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform" />
                       </button>
                     </motion.div>
@@ -979,21 +979,21 @@ export default function AdminPanel() {
               <div className="flex items-center justify-between p-4 sm:p-5 pb-3 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <Activity className="w-3.5 h-3.5 text-white/65" />
+                    <Activity className="w-3.5 h-3.5 text-foreground/65" />
                   </div>
                   <div>
-                    <div className="text-xs font-display text-white/85">Live Activity</div>
-                    <div className="text-[10px] text-white/35 font-light">Real-time platform events</div>
+                    <div className="text-xs font-display text-foreground/85">Live Activity</div>
+                    <div className="text-[10px] text-foreground/35 font-light">Real-time platform events</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-display text-white/40">
+                <div className="flex items-center gap-1.5 text-[10px] font-display text-foreground/40">
                   <span className="w-1.5 h-1.5 rounded-full bg-white/50 animate-pulse" />
                   Streaming
                 </div>
               </div>
               <div className="p-2">
                 {activityFeed.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-white/30 font-light">No activity yet — check back soon</div>
+                  <div className="p-8 text-center text-xs text-foreground/30 font-light">No activity yet — check back soon</div>
                 ) : (
                   <div className="relative">
                     <div className="absolute left-[26px] top-3 bottom-3 w-px" style={{ background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
@@ -1004,11 +1004,11 @@ export default function AdminPanel() {
                         </div>
                         <div className="flex-1 min-w-0 pt-1">
                           <div className="flex items-baseline gap-2 flex-wrap">
-                            <span className="text-xs font-display text-white/80">{item.title}</span>
-                            <span className="text-[10px] text-white/30 font-light truncate">· {item.desc}</span>
+                            <span className="text-xs font-display text-foreground/80">{item.title}</span>
+                            <span className="text-[10px] text-foreground/30 font-light truncate">· {item.desc}</span>
                           </div>
                         </div>
-                        <span className="text-[10px] text-white/30 font-mono shrink-0 pt-1">{item.time}</span>
+                        <span className="text-[10px] text-foreground/30 font-mono shrink-0 pt-1">{item.time}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -1024,8 +1024,8 @@ export default function AdminPanel() {
             {/* Header row */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-display font-light text-white">Partner Management</h2>
-                <p className="text-xs text-white/30 font-light mt-0.5">{data?.partners.length ?? 0} partners · {overview?.activePartners ?? 0} active</p>
+                <h2 className="text-xl font-display font-light text-foreground">Partner Management</h2>
+                <p className="text-xs text-foreground/30 font-light mt-0.5">{data?.partners.length ?? 0} partners · {overview?.activePartners ?? 0} active</p>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => { setShowAiForm(true); setShowAddForm(false); setEditingId(null); }} className={btnSecondary}>
@@ -1047,18 +1047,18 @@ export default function AdminPanel() {
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
-                      <Sparkles className="w-3.5 h-3.5 text-white/60" />
+                      <Sparkles className="w-3.5 h-3.5 text-foreground/60" />
                     </div>
-                    <h3 className="text-sm font-display font-light text-white">AI Partner Generator</h3>
+                    <h3 className="text-sm font-display font-light text-foreground">AI Partner Generator</h3>
                   </div>
-                  <button onClick={() => setShowAiForm(false)} className="text-white/25 hover:text-white/60 transition-colors"><X className="w-5 h-5" /></button>
+                  <button onClick={() => setShowAiForm(false)} className="text-foreground/25 hover:text-foreground/60 transition-colors"><X className="w-5 h-5" /></button>
                 </div>
-                <p className="text-xs text-white/30 font-light mb-4 leading-relaxed">Paste a registration URL or describe the partner — AI fills all details automatically.</p>
+                <p className="text-xs text-foreground/30 font-light mb-4 leading-relaxed">Paste a registration URL or describe the partner — AI fills all details automatically.</p>
                 <div className="space-y-3">
                   <input type="url" value={aiUrl} onChange={(e) => setAiUrl(e.target.value)} className={inputCls} placeholder="https://partner.com/register" />
                   <div className="flex items-center gap-3">
                     <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.06)" }} />
-                    <span className="text-[10px] text-white/20 uppercase tracking-widest font-display">or describe</span>
+                    <span className="text-[10px] text-foreground/20 uppercase tracking-widest font-display">or describe</span>
                     <div className="h-px flex-1" style={{ background: "rgba(255,255,255,0.06)" }} />
                   </div>
                   <textarea value={aiDescription} onChange={(e) => setAiDescription(e.target.value)} rows={2} className={inputCls + " resize-none"} placeholder="e.g. Google Solution Challenge 2026 — coding hackathon for students" />
@@ -1073,8 +1073,8 @@ export default function AdminPanel() {
             {(showAddForm || editingId) && (
               <div className="rounded-2xl p-6 mb-6" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-sm font-display font-light text-white">{editingId ? "Edit Partner" : "New Partner"}</h3>
-                  <button onClick={() => { setShowAddForm(false); setEditingId(null); resetForm(); }} className="text-white/25 hover:text-white/60 transition-colors"><X className="w-5 h-5" /></button>
+                  <h3 className="text-sm font-display font-light text-foreground">{editingId ? "Edit Partner" : "New Partner"}</h3>
+                  <button onClick={() => { setShowAddForm(false); setEditingId(null); resetForm(); }} className="text-foreground/25 hover:text-foreground/60 transition-colors"><X className="w-5 h-5" /></button>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1109,9 +1109,9 @@ export default function AdminPanel() {
                           className="w-4 h-4 rounded flex items-center justify-center cursor-pointer transition-all"
                           style={{ background: (form as any)[key] ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.04)", border: `1px solid ${(form as any)[key] ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.1)"}` }}
                         >
-                          {(form as any)[key] && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+                          {(form as any)[key] && <CheckCircle2 className="w-2.5 h-2.5 text-foreground" />}
                         </div>
-                        <span className="text-xs text-white/45 font-light">{label}</span>
+                        <span className="text-xs text-foreground/45 font-light">{label}</span>
                       </label>
                     ))}
                   </div>
@@ -1131,14 +1131,14 @@ export default function AdminPanel() {
                     <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                          <h3 className="text-sm font-display font-light text-white">{item.partner.name}</h3>
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-display tracking-widest uppercase ${item.partner.isActive ? "text-white/65" : "text-white/25"}`} style={{ background: item.partner.isActive ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.03)", border: `1px solid ${item.partner.isActive ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.06)"}` }}>
+                          <h3 className="text-sm font-display font-light text-foreground">{item.partner.name}</h3>
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-display tracking-widest uppercase ${item.partner.isActive ? "text-foreground/65" : "text-foreground/25"}`} style={{ background: item.partner.isActive ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.03)", border: `1px solid ${item.partner.isActive ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.06)"}` }}>
                             {item.partner.isActive ? "● Live" : "○ Off"}
                           </span>
-                          {item.partner.isFeatured && <span className="px-2 py-0.5 rounded-full text-[9px] text-white/45 font-display" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>★ Featured</span>}
-                          {item.partner.badge && <span className="px-2 py-0.5 rounded-full text-[9px] text-white/35 font-display" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>{item.partner.badge}</span>}
+                          {item.partner.isFeatured && <span className="px-2 py-0.5 rounded-full text-[9px] text-foreground/45 font-display" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>★ Featured</span>}
+                          {item.partner.badge && <span className="px-2 py-0.5 rounded-full text-[9px] text-foreground/35 font-display" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>{item.partner.badge}</span>}
                         </div>
-                        <p className="text-[11px] text-white/25 font-light font-mono truncate">{item.partner.registrationUrl}</p>
+                        <p className="text-[11px] text-foreground/25 font-light font-mono truncate">{item.partner.registrationUrl}</p>
                       </div>
 
                       {/* Stats */}
@@ -1149,12 +1149,12 @@ export default function AdminPanel() {
                           { icon: <FileText className="w-3 h-3" />, total: item.total.formFills, today: item.today.formFills, label: "Fills" },
                         ].map((s) => (
                           <div key={s.label} className="text-center min-w-[40px]">
-                            <div className="flex items-center gap-1 text-white/55 justify-center mb-0.5">
-                              <span className="text-white/30">{s.icon}</span>
+                            <div className="flex items-center gap-1 text-foreground/55 justify-center mb-0.5">
+                              <span className="text-foreground/30">{s.icon}</span>
                               <span className="text-lg font-display font-light leading-none">{s.total}</span>
                             </div>
-                            <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">{s.label}</div>
-                            {s.today > 0 && <div className="text-[9px] text-white/30 mt-0.5">+{s.today}</div>}
+                            <div className="text-[9px] text-foreground/25 uppercase tracking-widest font-display">{s.label}</div>
+                            {s.today > 0 && <div className="text-[9px] text-foreground/30 mt-0.5">+{s.today}</div>}
                           </div>
                         ))}
                       </div>
@@ -1171,8 +1171,8 @@ export default function AdminPanel() {
               ))}
               {(data?.partners.length ?? 0) === 0 && (
                 <div className="rounded-2xl p-16 text-center" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <Link2 className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                  <p className="text-white/25 font-light text-sm">No partners yet. Add your first partner above.</p>
+                  <Link2 className="w-8 h-8 text-foreground/10 mx-auto mb-3" />
+                  <p className="text-foreground/25 font-light text-sm">No partners yet. Add your first partner above.</p>
                 </div>
               )}
             </div>
@@ -1184,8 +1184,8 @@ export default function AdminPanel() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-display font-light text-white">Contest Management</h2>
-                <p className="text-xs text-white/30 font-light mt-0.5">{contests.length} contests · {contests.filter(c => c.status === "active").length} active</p>
+                <h2 className="text-xl font-display font-light text-foreground">Contest Management</h2>
+                <p className="text-xs text-foreground/30 font-light mt-0.5">{contests.length} contests · {contests.filter(c => c.status === "active").length} active</p>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => { setShowAiContestForm(true); setShowContestForm(false); setEditingContestId(null); }} className={btnSecondary}>
@@ -1207,13 +1207,13 @@ export default function AdminPanel() {
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
-                      <Sparkles className="w-3.5 h-3.5 text-white/60" />
+                      <Sparkles className="w-3.5 h-3.5 text-foreground/60" />
                     </div>
-                    <h3 className="text-sm font-display font-light text-white">AI Contest Generator</h3>
+                    <h3 className="text-sm font-display font-light text-foreground">AI Contest Generator</h3>
                   </div>
-                  <button onClick={() => setShowAiContestForm(false)} className="text-white/25 hover:text-white/60 transition-colors"><X className="w-5 h-5" /></button>
+                  <button onClick={() => setShowAiContestForm(false)} className="text-foreground/25 hover:text-foreground/60 transition-colors"><X className="w-5 h-5" /></button>
                 </div>
-                <p className="text-xs text-white/30 font-light mb-4">Give a theme and prize — AI generates the full contest details.</p>
+                <p className="text-xs text-foreground/30 font-light mb-4">Give a theme and prize — AI generates the full contest details.</p>
                 <div className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div><label className={labelCls}>Contest Theme</label><input type="text" value={aiContestTheme} onChange={(e) => setAiContestTheme(e.target.value)} className={inputCls} placeholder="e.g. Student Tech Giveaway" /></div>
@@ -1230,8 +1230,8 @@ export default function AdminPanel() {
             {(showContestForm || editingContestId !== null) && (
               <div className="rounded-2xl p-6 mb-6" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-sm font-display font-light text-white">{editingContestId ? "Edit Contest" : "New Contest"}</h3>
-                  <button onClick={() => { setShowContestForm(false); setEditingContestId(null); resetContestForm(); }} className="text-white/25 hover:text-white/60 transition-colors"><X className="w-5 h-5" /></button>
+                  <h3 className="text-sm font-display font-light text-foreground">{editingContestId ? "Edit Contest" : "New Contest"}</h3>
+                  <button onClick={() => { setShowContestForm(false); setEditingContestId(null); resetContestForm(); }} className="text-foreground/25 hover:text-foreground/60 transition-colors"><X className="w-5 h-5" /></button>
                 </div>
                 <form onSubmit={handleContestSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1257,23 +1257,23 @@ export default function AdminPanel() {
                   </div>
                   <div>
                     <label className={labelCls + " flex items-center gap-1.5"}><Link2 className="w-3 h-3" />Linked Partners</label>
-                    <p className="text-[11px] text-white/25 mb-3 font-light">Users must register with these partners to enter.</p>
+                    <p className="text-[11px] text-foreground/25 mb-3 font-light">Users must register with these partners to enter.</p>
                     {data?.partners && data.partners.length > 0 ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {data.partners.map((item: PartnerAnalytics) => (
                           <button key={item.partner.id} type="button" onClick={() => toggleContestPartner(item.partner.id)} className="flex items-center gap-3 p-3 rounded-xl border text-left transition-all" style={{ background: contestForm.partnerIds.includes(item.partner.id) ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.02)", borderColor: contestForm.partnerIds.includes(item.partner.id) ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.06)" }}>
                             <div className="w-5 h-5 rounded-md border flex items-center justify-center transition-all shrink-0" style={{ background: contestForm.partnerIds.includes(item.partner.id) ? "rgba(255,255,255,0.2)" : "transparent", borderColor: contestForm.partnerIds.includes(item.partner.id) ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.1)" }}>
-                              {contestForm.partnerIds.includes(item.partner.id) && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                              {contestForm.partnerIds.includes(item.partner.id) && <CheckCircle2 className="w-3.5 h-3.5 text-foreground" />}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="text-sm text-white/75 font-light truncate">{item.partner.name}</div>
-                              <div className="text-[10px] text-white/30">{item.partner.isActive ? "Active" : "Inactive"} · {item.partner.entryPoints ?? 1} pts</div>
+                              <div className="text-sm text-foreground/75 font-light truncate">{item.partner.name}</div>
+                              <div className="text-[10px] text-foreground/30">{item.partner.isActive ? "Active" : "Inactive"} · {item.partner.entryPoints ?? 1} pts</div>
                             </div>
                           </button>
                         ))}
                       </div>
-                    ) : <p className="text-xs text-white/25 font-light">No partners available.</p>}
-                    {contestForm.partnerIds.length > 0 && <div className="mt-2 text-[11px] text-white/35 font-light">{contestForm.partnerIds.length} partner{contestForm.partnerIds.length !== 1 ? "s" : ""} linked</div>}
+                    ) : <p className="text-xs text-foreground/25 font-light">No partners available.</p>}
+                    {contestForm.partnerIds.length > 0 && <div className="mt-2 text-[11px] text-foreground/35 font-light">{contestForm.partnerIds.length} partner{contestForm.partnerIds.length !== 1 ? "s" : ""} linked</div>}
                   </div>
                   <div className="flex items-center gap-3 pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
                     <button type="submit" className={btnPrimary}><Save className="w-4 h-4" />{editingContestId ? "Update Contest" : "Create Contest"}</button>
@@ -1293,8 +1293,8 @@ export default function AdminPanel() {
                       <div className="flex items-start justify-between gap-4 mb-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                            <Trophy className="w-4 h-4 text-white/35 shrink-0" />
-                            <h3 className="font-display font-light text-white">{contest.name}</h3>
+                            <Trophy className="w-4 h-4 text-foreground/35 shrink-0" />
+                            <h3 className="font-display font-light text-foreground">{contest.name}</h3>
                             <span className={`text-[9px] px-2 py-0.5 rounded-full uppercase tracking-widest font-display`} style={{
                               background: contest.status === "active" ? "rgba(255,255,255,0.1)" : contest.status === "upcoming" ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
                               border: `1px solid ${contest.status === "active" ? "rgba(255,255,255,0.18)" : contest.status === "upcoming" ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)"}`,
@@ -1303,7 +1303,7 @@ export default function AdminPanel() {
                               {contest.status === "active" && "● "}{contest.status}
                             </span>
                           </div>
-                          <p className="text-xs text-white/30 font-light line-clamp-2 leading-relaxed">{contest.description}</p>
+                          <p className="text-xs text-foreground/30 font-light line-clamp-2 leading-relaxed">{contest.description}</p>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
                           <button onClick={() => startContestEdit(contest)} className={iconBtn}><Edit3 className="w-3.5 h-3.5" /></button>
@@ -1321,8 +1321,8 @@ export default function AdminPanel() {
                           <React.Fragment key={item.label}>
                             {i > 0 && <div className="w-px h-6 shrink-0" style={{ background: "rgba(255,255,255,0.06)" }} />}
                             <div>
-                              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mb-0.5">{item.label}</div>
-                              <div className="text-white/55 font-light">{item.value}</div>
+                              <div className="text-[9px] text-foreground/25 uppercase tracking-widest font-display mb-0.5">{item.label}</div>
+                              <div className="text-foreground/55 font-light">{item.value}</div>
                             </div>
                           </React.Fragment>
                         ))}
@@ -1331,8 +1331,8 @@ export default function AdminPanel() {
                       {/* Fill rate bar */}
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-[9px] text-white/25 font-display uppercase tracking-widest">Fill Rate</span>
-                          <span className="text-[9px] text-white/40 font-light">{fillPct}%</span>
+                          <span className="text-[9px] text-foreground/25 font-display uppercase tracking-widest">Fill Rate</span>
+                          <span className="text-[9px] text-foreground/40 font-light">{fillPct}%</span>
                         </div>
                         <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
                           <div className="h-full rounded-full transition-all" style={{ width: `${fillPct}%`, background: fillPct > 80 ? "rgba(255,255,255,0.5)" : fillPct > 50 ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.2)" }} />
@@ -1344,8 +1344,8 @@ export default function AdminPanel() {
               })}
               {contests.length === 0 && (
                 <div className="rounded-2xl p-16 text-center" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <Trophy className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                  <p className="text-white/25 font-light text-sm">No contests yet. Create your first contest above.</p>
+                  <Trophy className="w-8 h-8 text-foreground/10 mx-auto mb-3" />
+                  <p className="text-foreground/25 font-light text-sm">No contests yet. Create your first contest above.</p>
                 </div>
               )}
             </div>
@@ -1356,8 +1356,8 @@ export default function AdminPanel() {
         {activeTab === "analytics" && (
           <div>
             <div className="mb-6">
-              <h2 className="text-xl font-display font-light text-white">Link Performance & Analytics</h2>
-              <p className="text-xs text-white/30 font-light mt-0.5">Conversion funnel · partner-level breakdown</p>
+              <h2 className="text-xl font-display font-light text-foreground">Link Performance & Analytics</h2>
+              <p className="text-xs text-foreground/30 font-light mt-0.5">Conversion funnel · partner-level breakdown</p>
             </div>
 
             {/* Funnel stats */}
@@ -1375,17 +1375,17 @@ export default function AdminPanel() {
                   { label: "Overall Funnel", value: `${overall}%`, sub: `${fills} registrations / ${impressions} views`, icon: <BarChart3 className="w-4 h-4" /> },
                 ].map((stat) => (
                   <div key={stat.label} className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-3 text-white/40" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>{stat.icon}</div>
-                    <div className="text-3xl font-display font-light text-white mb-1">{stat.value}</div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">{stat.label}</div>
-                    <div className="text-xs text-white/30 font-light mt-1">{stat.sub}</div>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-3 text-foreground/40" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>{stat.icon}</div>
+                    <div className="text-3xl font-display font-light text-foreground mb-1">{stat.value}</div>
+                    <div className="text-[9px] text-foreground/25 uppercase tracking-widest font-display">{stat.label}</div>
+                    <div className="text-xs text-foreground/30 font-light mt-1">{stat.sub}</div>
                   </div>
                 ));
               })()}
             </div>
 
             {/* Per-partner breakdown */}
-            <h3 className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.2em] mb-4">Partner Link Tracing</h3>
+            <h3 className="text-[10px] font-display font-medium text-foreground/30 uppercase tracking-[0.2em] mb-4">Partner Link Tracing</h3>
             <div className="space-y-4">
               {(data?.partners ?? []).filter((item) => item.partner.isActive).map((item) => {
                 const maxClicks = Math.max(...(data?.partners ?? []).map((p) => p.total.clicks), 1);
@@ -1396,12 +1396,12 @@ export default function AdminPanel() {
                   <div key={item.partner.id} className="rounded-2xl p-5 sm:p-6" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.065)" }}>
                     <div className="flex items-center justify-between mb-5">
                       <div>
-                        <h4 className="font-display font-light text-white mb-0.5">{item.partner.name}</h4>
-                        <div className="text-[10px] text-white/25 font-light font-mono">{item.partner.registrationUrl}</div>
+                        <h4 className="font-display font-light text-foreground mb-0.5">{item.partner.name}</h4>
+                        <div className="text-[10px] text-foreground/25 font-light font-mono">{item.partner.registrationUrl}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[10px] text-white/25 font-light mb-0.5">Today</div>
-                        <div className="text-sm text-white/55 font-display">+{item.today.clicks} clicks</div>
+                        <div className="text-[10px] text-foreground/25 font-light mb-0.5">Today</div>
+                        <div className="text-sm text-foreground/55 font-display">+{item.today.clicks} clicks</div>
                       </div>
                     </div>
 
@@ -1413,8 +1413,8 @@ export default function AdminPanel() {
                       ].map((bar) => (
                         <div key={bar.label}>
                           <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-[9px] text-white/30 uppercase tracking-widest font-display">{bar.label}</span>
-                            <span className="text-xs text-white/50 font-light">{bar.value.toLocaleString()}</span>
+                            <span className="text-[9px] text-foreground/30 uppercase tracking-widest font-display">{bar.label}</span>
+                            <span className="text-xs text-foreground/50 font-light">{bar.value.toLocaleString()}</span>
                           </div>
                           <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
                             <div className="h-full rounded-full transition-all" style={{ width: bar.max > 0 ? `${(bar.value / bar.max) * 100}%` : "0%", background: `rgba(255,255,255,${bar.opacity})` }} />
@@ -1431,8 +1431,8 @@ export default function AdminPanel() {
                         { label: "Entry Points", value: item.partner.entryPoints ?? 1 },
                       ].map((m) => (
                         <div key={m.label} className="text-center">
-                          <div className="text-lg font-display font-light text-white">{m.value}</div>
-                          <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">{m.label}</div>
+                          <div className="text-lg font-display font-light text-foreground">{m.value}</div>
+                          <div className="text-[9px] text-foreground/25 uppercase tracking-widest font-display">{m.label}</div>
                         </div>
                       ))}
                     </div>
@@ -1441,8 +1441,8 @@ export default function AdminPanel() {
               })}
               {(data?.partners ?? []).filter((p) => p.partner.isActive).length === 0 && (
                 <div className="rounded-2xl p-16 text-center" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <BarChart3 className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                  <p className="text-white/25 font-light text-sm">No active partners to analyze yet.</p>
+                  <BarChart3 className="w-8 h-8 text-foreground/10 mx-auto mb-3" />
+                  <p className="text-foreground/25 font-light text-sm">No active partners to analyze yet.</p>
                 </div>
               )}
             </div>
@@ -1454,8 +1454,8 @@ export default function AdminPanel() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-display font-light text-white">Giveaway Entries</h2>
-                <p className="text-xs text-white/30 font-light mt-0.5">{filteredEntries.length} {entrySearch ? "matching" : "total"} entries</p>
+                <h2 className="text-xl font-display font-light text-foreground">Giveaway Entries</h2>
+                <p className="text-xs text-foreground/30 font-light mt-0.5">{filteredEntries.length} {entrySearch ? "matching" : "total"} entries</p>
               </div>
               <button onClick={loadEntries} disabled={entriesLoading} className={btnGhost}>
                 <RefreshCw className={`w-3.5 h-3.5 ${entriesLoading ? "animate-spin" : ""}`} />
@@ -1465,7 +1465,7 @@ export default function AdminPanel() {
 
             {/* Search */}
             <div className="relative mb-5">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-foreground/20" />
               <input
                 type="text"
                 value={entrySearch}
@@ -1479,7 +1479,7 @@ export default function AdminPanel() {
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                   <div className="w-6 h-6 border border-white/15 border-t-white/50 rounded-full animate-spin mx-auto mb-3" />
-                  <div className="text-white/30 text-sm font-light">Loading entries...</div>
+                  <div className="text-foreground/30 text-sm font-light">Loading entries...</div>
                 </div>
               </div>
             ) : (
@@ -1490,12 +1490,12 @@ export default function AdminPanel() {
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                            <h4 className="text-sm font-display font-light text-white">{entry.isAnonymous ? "Anonymous" : entry.fullName}</h4>
-                            <span className="px-2 py-0.5 rounded-full text-[9px] font-display text-white/40" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                            <h4 className="text-sm font-display font-light text-foreground">{entry.isAnonymous ? "Anonymous" : entry.fullName}</h4>
+                            <span className="px-2 py-0.5 rounded-full text-[9px] font-display text-foreground/40" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
                               {entry.entryCount} {entry.entryCount === 1 ? "entry" : "entries"}
                             </span>
                           </div>
-                          <div className="flex items-center gap-3 text-xs text-white/30 font-light flex-wrap">
+                          <div className="flex items-center gap-3 text-xs text-foreground/30 font-light flex-wrap">
                             {!entry.isAnonymous && <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{entry.email}</span>}
                             <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{entry.city}</span>
                             <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(entry.createdAt).toLocaleDateString()}</span>
@@ -1519,9 +1519,9 @@ export default function AdminPanel() {
 
                       {/* Tags */}
                       <div className="mt-3 flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-[10px] text-white/25 px-2 py-1 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>{entry.entryCode}</span>
+                        <span className="font-mono text-[10px] text-foreground/25 px-2 py-1 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>{entry.entryCode}</span>
                         {entry.partnerNames.map((pName, i) => (
-                          <span key={i} className="px-2 py-0.5 rounded-full text-[10px] text-white/30 font-light" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>{pName}</span>
+                          <span key={i} className="px-2 py-0.5 rounded-full text-[10px] text-foreground/30 font-light" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>{pName}</span>
                         ))}
                       </div>
 
@@ -1535,8 +1535,8 @@ export default function AdminPanel() {
                             { label: "Screenshot", value: entry.screenshotConfirmed ? "✓ Confirmed" : "Not confirmed" },
                           ].map((f) => (
                             <div key={f.label}>
-                              <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mb-0.5">{f.label}</div>
-                              <div className="text-white/50 font-light">{f.value}</div>
+                              <div className="text-[9px] text-foreground/25 uppercase tracking-widest font-display mb-0.5">{f.label}</div>
+                              <div className="text-foreground/50 font-light">{f.value}</div>
                             </div>
                           ))}
                         </div>
@@ -1546,8 +1546,8 @@ export default function AdminPanel() {
                 ))}
                 {filteredEntries.length === 0 && !entriesLoading && (
                   <div className="rounded-2xl p-16 text-center" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                    <Database className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                    <p className="text-white/25 font-light text-sm">{entrySearch ? "No entries match your search." : "No entries yet."}</p>
+                    <Database className="w-8 h-8 text-foreground/10 mx-auto mb-3" />
+                    <p className="text-foreground/25 font-light text-sm">{entrySearch ? "No entries match your search." : "No entries yet."}</p>
                   </div>
                 )}
               </div>
@@ -1560,8 +1560,8 @@ export default function AdminPanel() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-display font-light text-white">Winners</h2>
-                <p className="text-xs text-white/30 font-light mt-0.5">{winners.length} declared</p>
+                <h2 className="text-xl font-display font-light text-foreground">Winners</h2>
+                <p className="text-xs text-foreground/30 font-light mt-0.5">{winners.length} declared</p>
               </div>
               <button onClick={() => setShowWinnerForm((v) => !v)} className={showWinnerForm ? btnSecondary : btnPrimary}>
                 {showWinnerForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
@@ -1573,10 +1573,10 @@ export default function AdminPanel() {
             {showWinnerForm && (
               <div className="rounded-2xl p-6 mb-6" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)" }}>
                 <div className="flex items-center gap-2.5 mb-5">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white/50" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center text-foreground/50" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
                     <Award className="w-3.5 h-3.5" />
                   </div>
-                  <h3 className="text-sm font-display font-light text-white">Declare a Winner</h3>
+                  <h3 className="text-sm font-display font-light text-foreground">Declare a Winner</h3>
                 </div>
                 <form onSubmit={handleDeclareWinner} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1606,7 +1606,7 @@ export default function AdminPanel() {
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                   <div className="w-6 h-6 border border-white/15 border-t-white/50 rounded-full animate-spin mx-auto mb-3" />
-                  <div className="text-white/30 text-sm font-light">Loading winners...</div>
+                  <div className="text-foreground/30 text-sm font-light">Loading winners...</div>
                 </div>
               </div>
             ) : (
@@ -1616,19 +1616,19 @@ export default function AdminPanel() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)" }}>
-                          <Trophy className="w-4 h-4 text-white/40" />
+                          <Trophy className="w-4 h-4 text-foreground/40" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
-                            <h4 className="font-display font-light text-white">{winner.winnerName}</h4>
-                            {winner.winnerCity && <span className="flex items-center gap-1 text-[10px] text-white/30 font-light"><MapPin className="w-3 h-3" />{winner.winnerCity}</span>}
+                            <h4 className="font-display font-light text-foreground">{winner.winnerName}</h4>
+                            {winner.winnerCity && <span className="flex items-center gap-1 text-[10px] text-foreground/30 font-light"><MapPin className="w-3 h-3" />{winner.winnerCity}</span>}
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-white/35 font-light flex-wrap">
-                            <span className="font-medium text-white/55">{winner.prize}</span>
-                            <span className="text-white/20">·</span>
+                          <div className="flex items-center gap-2 text-xs text-foreground/35 font-light flex-wrap">
+                            <span className="font-medium text-foreground/55">{winner.prize}</span>
+                            <span className="text-foreground/20">·</span>
                             <span>{winner.contestName}</span>
-                            {winner.entryCode && <><span className="text-white/20">·</span><span className="font-mono text-[10px] text-white/30">{winner.entryCode}</span></>}
-                            <span className="text-white/20">·</span>
+                            {winner.entryCode && <><span className="text-foreground/20">·</span><span className="font-mono text-[10px] text-foreground/30">{winner.entryCode}</span></>}
+                            <span className="text-foreground/20">·</span>
                             <span>{new Date(winner.announcedAt).toLocaleDateString()}</span>
                           </div>
                         </div>
@@ -1639,8 +1639,8 @@ export default function AdminPanel() {
                 ))}
                 {winners.length === 0 && (
                   <div className="rounded-2xl p-16 text-center" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                    <Award className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                    <p className="text-white/25 font-light text-sm">No winners declared yet.</p>
+                    <Award className="w-8 h-8 text-foreground/10 mx-auto mb-3" />
+                    <p className="text-foreground/25 font-light text-sm">No winners declared yet.</p>
                   </div>
                 )}
               </div>
@@ -1653,8 +1653,8 @@ export default function AdminPanel() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-display font-light text-white">Referral Partners</h2>
-                <p className="text-xs text-white/30 font-light mt-0.5">
+                <h2 className="text-xl font-display font-light text-foreground">Referral Partners</h2>
+                <p className="text-xs text-foreground/30 font-light mt-0.5">
                   {referralApplications.filter(r => r.status === "pending").length} pending · {referralApplications.filter(r => r.status === "approved").length} approved
                 </p>
               </div>
@@ -1668,13 +1668,13 @@ export default function AdminPanel() {
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                   <div className="w-6 h-6 border border-white/15 border-t-white/50 rounded-full animate-spin mx-auto mb-3" />
-                  <div className="text-white/30 text-sm font-light">Loading applications...</div>
+                  <div className="text-foreground/30 text-sm font-light">Loading applications...</div>
                 </div>
               </div>
             ) : referralApplications.length === 0 ? (
               <div className="rounded-2xl p-16 text-center" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                <Users className="w-8 h-8 text-white/10 mx-auto mb-3" />
-                <p className="text-white/25 font-light text-sm">No referral applications yet.</p>
+                <Users className="w-8 h-8 text-foreground/10 mx-auto mb-3" />
+                <p className="text-foreground/25 font-light text-sm">No referral applications yet.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -1686,7 +1686,7 @@ export default function AdminPanel() {
                       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2 flex-wrap">
-                            <h4 className="font-display font-light text-white">{app.name}</h4>
+                            <h4 className="font-display font-light text-foreground">{app.name}</h4>
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-display uppercase tracking-widest" style={{
                               background: app.status === "approved" ? "rgba(255,255,255,0.1)" : app.status === "pending" ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
                               border: `1px solid ${app.status === "approved" ? "rgba(255,255,255,0.18)" : app.status === "pending" ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)"}`,
@@ -1696,13 +1696,13 @@ export default function AdminPanel() {
                               {app.status}
                             </span>
                           </div>
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-white/30 font-light mb-2">
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-foreground/30 font-light mb-2">
                             <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{app.email}</span>
                             {app.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{app.phone}</span>}
-                            <span className="font-mono text-[10px] text-white/20">{app.code}</span>
+                            <span className="font-mono text-[10px] text-foreground/20">{app.code}</span>
                           </div>
-                          {app.bio && <p className="text-xs text-white/25 font-light line-clamp-2 mb-3">{app.bio}</p>}
-                          <div className="flex items-center gap-4 text-[10px] text-white/20 font-light">
+                          {app.bio && <p className="text-xs text-foreground/25 font-light line-clamp-2 mb-3">{app.bio}</p>}
+                          <div className="flex items-center gap-4 text-[10px] text-foreground/20 font-light">
                             <span className="flex items-center gap-1"><MousePointer className="w-3 h-3" />{(app as any).totalClicks ?? 0} clicks</span>
                             <span className="flex items-center gap-1"><UserCheck className="w-3 h-3" />{(app as any).totalConversions ?? 0} conversions</span>
                             <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{new Date(app.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span>
@@ -1763,18 +1763,18 @@ export default function AdminPanel() {
               <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04))", border: "1px solid rgba(255,255,255,0.16)" }}>
-                    <Brain className="w-5 h-5 text-white/80" />
+                    <Brain className="w-5 h-5 text-foreground/80" />
                   </div>
                   <div>
-                    <div className="text-sm font-display text-white/90">AI Assistant</div>
-                    <div className="text-[10px] text-white/40 font-light flex items-center gap-1.5">
+                    <div className="text-sm font-display text-foreground/90">AI Assistant</div>
+                    <div className="text-[10px] text-foreground/40 font-light flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" />
                       Online · GPT-class
                     </div>
                   </div>
                 </div>
                 <button onClick={() => setShowAIPanel(false)} aria-label="Close AI Assistant" className="p-2 rounded-xl hover:bg-white/[0.06] transition-all" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <X className="w-4 h-4 text-white/55" />
+                  <X className="w-4 h-4 text-foreground/55" />
                 </button>
               </div>
 
@@ -1783,10 +1783,10 @@ export default function AdminPanel() {
                 {aiMessages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center px-6 py-8">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03))", border: "1px solid rgba(255,255,255,0.14)" }}>
-                      <Sparkles className="w-6 h-6 text-white/65" />
+                      <Sparkles className="w-6 h-6 text-foreground/65" />
                     </div>
-                    <div className="text-sm font-display text-white/85 mb-1">How can I help today?</div>
-                    <div className="text-[11px] text-white/40 font-light mb-5">Ask about your rewards data, partners, contests or get a quick summary.</div>
+                    <div className="text-sm font-display text-foreground/85 mb-1">How can I help today?</div>
+                    <div className="text-[11px] text-foreground/40 font-light mb-5">Ask about your rewards data, partners, contests or get a quick summary.</div>
                     <div className="grid grid-cols-1 gap-2 w-full">
                       {[
                         { icon: <TrendingUp className="w-3.5 h-3.5" />, label: "Show me top performing partners" },
@@ -1794,8 +1794,8 @@ export default function AdminPanel() {
                         { icon: <Lightbulb className="w-3.5 h-3.5" />, label: "Suggest optimisations" },
                         { icon: <Users className="w-3.5 h-3.5" />, label: "How many entries did we get?" },
                       ].map(s => (
-                        <button key={s.label} onClick={() => { setAiInput(s.label); setTimeout(() => handleAiSend(), 80); }} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs text-white/65 hover:text-white/90 hover:bg-white/[0.05] transition-all" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                          <span className="text-white/45">{s.icon}</span>
+                        <button key={s.label} onClick={() => { setAiInput(s.label); setTimeout(() => handleAiSend(), 80); }} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs text-foreground/65 hover:text-foreground/90 hover:bg-white/[0.05] transition-all" style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                          <span className="text-foreground/45">{s.icon}</span>
                           {s.label}
                         </button>
                       ))}
@@ -1806,9 +1806,9 @@ export default function AdminPanel() {
                     {aiMessages.map((msg, i) => (
                       <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: msg.role === "user" ? "rgba(255,255,255,0.1)" : "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.03))", border: "1px solid rgba(255,255,255,0.1)" }}>
-                          {msg.role === "user" ? <span className="text-[10px] font-display text-white/80">C</span> : <Brain className="w-3.5 h-3.5 text-white/70" />}
+                          {msg.role === "user" ? <span className="text-[10px] font-display text-foreground/80">C</span> : <Brain className="w-3.5 h-3.5 text-foreground/70" />}
                         </div>
-                        <div className={`flex-1 max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs font-light leading-relaxed whitespace-pre-wrap ${msg.role === "user" ? "text-white/85" : "text-white/75"}`} style={{ background: msg.role === "user" ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                        <div className={`flex-1 max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs font-light leading-relaxed whitespace-pre-wrap ${msg.role === "user" ? "text-foreground/85" : "text-foreground/75"}`} style={{ background: msg.role === "user" ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                           {msg.text}
                         </div>
                       </motion.div>
@@ -1816,7 +1816,7 @@ export default function AdminPanel() {
                     {aiThinking && (
                       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.03))", border: "1px solid rgba(255,255,255,0.1)" }}>
-                          <Brain className="w-3.5 h-3.5 text-white/70" />
+                          <Brain className="w-3.5 h-3.5 text-foreground/70" />
                         </div>
                         <div className="rounded-2xl px-4 py-3 flex items-center gap-1.5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                           <span className="w-1.5 h-1.5 rounded-full bg-white/55 animate-bounce" />
@@ -1838,13 +1838,13 @@ export default function AdminPanel() {
                     onChange={e => setAiInput(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAiSend(); } }}
                     placeholder="Ask anything about your data…"
-                    className="flex-1 bg-transparent text-sm text-white placeholder-white/30 font-light focus:outline-none"
+                    className="flex-1 bg-transparent text-sm text-foreground placeholder-white/30 font-light focus:outline-none"
                   />
                   <button onClick={() => handleAiSend()} disabled={!aiInput.trim() || aiThinking} className="p-1.5 rounded-lg transition-all disabled:opacity-30" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.14)" }}>
-                    <Send className="w-3.5 h-3.5 text-white/80" />
+                    <Send className="w-3.5 h-3.5 text-foreground/80" />
                   </button>
                 </div>
-                <div className="text-[9px] text-white/25 font-mono text-center mt-2 uppercase tracking-widest">AI may produce inaccurate info · always verify</div>
+                <div className="text-[9px] text-foreground/25 font-mono text-center mt-2 uppercase tracking-widest">AI may produce inaccurate info · always verify</div>
               </div>
             </motion.aside>
           </>
@@ -1867,29 +1867,29 @@ export default function AdminPanel() {
               <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center relative" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                    <Bell className="w-4 h-4 text-white/75" />
+                    <Bell className="w-4 h-4 text-foreground/75" />
                     {unreadCount > 0 && <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-white" style={{ boxShadow: "0 0 0 2px #080808" }} />}
                   </div>
                   <div>
-                    <div className="text-sm font-display text-white/90">Notifications</div>
-                    <div className="text-[10px] text-white/40 font-light">{unreadCount > 0 ? `${unreadCount} unread` : "All caught up"}</div>
+                    <div className="text-sm font-display text-foreground/90">Notifications</div>
+                    <div className="text-[10px] text-foreground/40 font-light">{unreadCount > 0 ? `${unreadCount} unread` : "All caught up"}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5">
                   {unreadCount > 0 && (
-                    <button onClick={markAllRead} className="text-[10px] font-display text-white/55 hover:text-white/85 px-2 py-1 rounded-lg transition-colors">Mark all read</button>
+                    <button onClick={markAllRead} className="text-[10px] font-display text-foreground/55 hover:text-foreground/85 px-2 py-1 rounded-lg transition-colors">Mark all read</button>
                   )}
                   <button onClick={() => setShowNotifPanel(false)} aria-label="Close notifications" className="p-2 rounded-xl hover:bg-white/[0.06] transition-all" style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
-                    <X className="w-4 h-4 text-white/55" />
+                    <X className="w-4 h-4 text-foreground/55" />
                   </button>
                 </div>
               </div>
               <div className="flex-1 overflow-y-auto p-3">
                 {notifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                    <CheckCircle2 className="w-10 h-10 text-white/25 mb-3" />
-                    <div className="text-sm font-display text-white/55">No notifications</div>
-                    <div className="text-[11px] text-white/30 font-light mt-1">You're all caught up</div>
+                    <CheckCircle2 className="w-10 h-10 text-foreground/25 mb-3" />
+                    <div className="text-sm font-display text-foreground/55">No notifications</div>
+                    <div className="text-[11px] text-foreground/30 font-light mt-1">You're all caught up</div>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -1898,15 +1898,15 @@ export default function AdminPanel() {
                         {!n.read && <span className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-white/85" />}
                         <div className="flex items-start gap-2.5">
                           <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                            {n.type === "success" ? <CheckCircle2 className="w-3.5 h-3.5 text-white/65" /> : n.type === "warning" ? <AlertCircle className="w-3.5 h-3.5 text-white/65" /> : n.type === "ai" ? <Brain className="w-3.5 h-3.5 text-white/65" /> : <Bell className="w-3.5 h-3.5 text-white/65" />}
+                            {n.type === "success" ? <CheckCircle2 className="w-3.5 h-3.5 text-foreground/65" /> : n.type === "warning" ? <AlertCircle className="w-3.5 h-3.5 text-foreground/65" /> : n.type === "ai" ? <Brain className="w-3.5 h-3.5 text-foreground/65" /> : <Bell className="w-3.5 h-3.5 text-foreground/65" />}
                           </div>
                           <div className="flex-1 min-w-0 pr-3">
-                            <div className="text-xs font-display text-white/85 mb-0.5">{n.title}</div>
-                            <div className="text-[11px] text-white/45 font-light leading-snug">{n.desc}</div>
-                            <div className="text-[10px] text-white/30 font-mono mt-1.5">{n.time}</div>
+                            <div className="text-xs font-display text-foreground/85 mb-0.5">{n.title}</div>
+                            <div className="text-[11px] text-foreground/45 font-light leading-snug">{n.desc}</div>
+                            <div className="text-[10px] text-foreground/30 font-mono mt-1.5">{n.time}</div>
                           </div>
                           <button onClick={(e) => { e.stopPropagation(); dismissNotif(n.id); }} className="p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-white/[0.08] transition-all">
-                            <X className="w-3 h-3 text-white/40" />
+                            <X className="w-3 h-3 text-foreground/40" />
                           </button>
                         </div>
                       </motion.div>
@@ -1934,49 +1934,49 @@ export default function AdminPanel() {
             >
               <CommandPrimitive className="bg-transparent">
                 <div className="flex items-center gap-3 px-4 py-3.5 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-                  <Search className="w-4 h-4 text-white/45 shrink-0" />
+                  <Search className="w-4 h-4 text-foreground/45 shrink-0" />
                   <CommandPrimitive.Input
                     placeholder="Search commands, navigate, or ask AI…"
-                    className="flex-1 bg-transparent text-sm text-white placeholder-white/35 font-light focus:outline-none"
+                    className="flex-1 bg-transparent text-sm text-foreground placeholder-white/35 font-light focus:outline-none"
                   />
-                  <span className="text-[10px] text-white/35 font-mono px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>ESC</span>
+                  <span className="text-[10px] text-foreground/35 font-mono px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}>ESC</span>
                 </div>
                 <CommandPrimitive.List className="max-h-[400px] overflow-y-auto p-2">
-                  <CommandPrimitive.Empty className="py-8 text-center text-xs text-white/35 font-light">No results found</CommandPrimitive.Empty>
+                  <CommandPrimitive.Empty className="py-8 text-center text-xs text-foreground/35 font-light">No results found</CommandPrimitive.Empty>
 
-                  <CommandPrimitive.Group heading="Navigate" className="text-[9px] font-display uppercase tracking-widest text-white/30 px-2 py-1.5">
+                  <CommandPrimitive.Group heading="Navigate" className="text-[9px] font-display uppercase tracking-widest text-foreground/30 px-2 py-1.5">
                     {tabs.map(tab => (
                       <CommandPrimitive.Item
                         key={tab.id}
                         value={`navigate ${tab.label}`}
                         onSelect={() => { setActiveTab(tab.id); setShowCommandPalette(false); }}
-                        className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-white/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all"
+                        className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-foreground/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all"
                       >
-                        <span className="text-white/45">{tab.icon}</span>
+                        <span className="text-foreground/45">{tab.icon}</span>
                         <span className="flex-1">Go to {tab.label}</span>
-                        {tab.count !== undefined && tab.count > 0 && <span className="text-[10px] text-white/35 font-mono">{tab.count}</span>}
+                        {tab.count !== undefined && tab.count > 0 && <span className="text-[10px] text-foreground/35 font-mono">{tab.count}</span>}
                       </CommandPrimitive.Item>
                     ))}
                   </CommandPrimitive.Group>
 
-                  <CommandPrimitive.Group heading="Actions" className="text-[9px] font-display uppercase tracking-widest text-white/30 px-2 py-1.5 mt-2">
-                    <CommandPrimitive.Item value="ai assistant ask" onSelect={() => { setShowCommandPalette(false); setShowAIPanel(true); }} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-white/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all">
-                      <Brain className="w-3.5 h-3.5 text-white/45" />
+                  <CommandPrimitive.Group heading="Actions" className="text-[9px] font-display uppercase tracking-widest text-foreground/30 px-2 py-1.5 mt-2">
+                    <CommandPrimitive.Item value="ai assistant ask" onSelect={() => { setShowCommandPalette(false); setShowAIPanel(true); }} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-foreground/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all">
+                      <Brain className="w-3.5 h-3.5 text-foreground/45" />
                       <span className="flex-1">Open AI Assistant</span>
-                      <span className="text-[10px] text-white/30 font-mono">⌘K</span>
+                      <span className="text-[10px] text-foreground/30 font-mono">⌘K</span>
                     </CommandPrimitive.Item>
-                    <CommandPrimitive.Item value="notifications bell" onSelect={() => { setShowCommandPalette(false); setShowNotifPanel(true); }} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-white/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all">
-                      <Bell className="w-3.5 h-3.5 text-white/45" />
+                    <CommandPrimitive.Item value="notifications bell" onSelect={() => { setShowCommandPalette(false); setShowNotifPanel(true); }} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-foreground/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all">
+                      <Bell className="w-3.5 h-3.5 text-foreground/45" />
                       <span className="flex-1">View Notifications</span>
-                      {unreadCount > 0 && <span className="text-[10px] text-white/45 font-mono">{unreadCount}</span>}
+                      {unreadCount > 0 && <span className="text-[10px] text-foreground/45 font-mono">{unreadCount}</span>}
                     </CommandPrimitive.Item>
-                    <CommandPrimitive.Item value="refresh data sync" onSelect={() => { setShowCommandPalette(false); handleRefresh(); }} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-white/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all">
-                      <RefreshCw className="w-3.5 h-3.5 text-white/45" />
+                    <CommandPrimitive.Item value="refresh data sync" onSelect={() => { setShowCommandPalette(false); handleRefresh(); }} className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-foreground/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all">
+                      <RefreshCw className="w-3.5 h-3.5 text-foreground/45" />
                       <span className="flex-1">Refresh all data</span>
                     </CommandPrimitive.Item>
                   </CommandPrimitive.Group>
 
-                  <CommandPrimitive.Group heading="Quick AI Prompts" className="text-[9px] font-display uppercase tracking-widest text-white/30 px-2 py-1.5 mt-2">
+                  <CommandPrimitive.Group heading="Quick AI Prompts" className="text-[9px] font-display uppercase tracking-widest text-foreground/30 px-2 py-1.5 mt-2">
                     {[
                       "Show top performing partners",
                       "Generate weekly report",
@@ -1987,15 +1987,15 @@ export default function AdminPanel() {
                         key={p}
                         value={`ai ${p}`}
                         onSelect={() => { setShowCommandPalette(false); setShowAIPanel(true); setAiInput(p); setTimeout(() => handleAiSend(), 120); }}
-                        className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-white/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all"
+                        className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-foreground/65 cursor-pointer aria-selected:bg-white/[0.06] aria-selected:text-white/95 transition-all"
                       >
-                        <Sparkles className="w-3.5 h-3.5 text-white/45" />
+                        <Sparkles className="w-3.5 h-3.5 text-foreground/45" />
                         <span className="flex-1 truncate">{p}</span>
                       </CommandPrimitive.Item>
                     ))}
                   </CommandPrimitive.Group>
                 </CommandPrimitive.List>
-                <div className="flex items-center justify-between px-4 py-2.5 border-t text-[10px] text-white/35 font-display" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+                <div className="flex items-center justify-between px-4 py-2.5 border-t text-[10px] text-foreground/35 font-display" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1"><span className="font-mono text-[9px] px-1 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)" }}>↵</span> Open</span>
                     <span className="flex items-center gap-1"><span className="font-mono text-[9px] px-1 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.05)" }}>↑↓</span> Navigate</span>

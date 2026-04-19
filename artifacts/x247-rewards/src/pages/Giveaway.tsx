@@ -89,11 +89,11 @@ function FilterPanel({
     <div className="space-y-0">
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
-        <span className="text-xs font-display text-white/60 tracking-wide">Filters</span>
+        <span className="text-xs font-display text-foreground/60 tracking-wide">Filters</span>
         {activeCount > 0 && (
           <button
             onClick={onClear}
-            className="flex items-center gap-1 text-[10px] text-white/35 hover:text-white/65 transition-colors"
+            className="flex items-center gap-1 text-[10px] text-foreground/35 hover:text-foreground/65 transition-colors"
           >
             <X className="w-3 h-3" />
             Clear all
@@ -103,7 +103,7 @@ function FilterPanel({
 
       {/* Status */}
       <div>
-        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-white/25 mb-3">Status</div>
+        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-foreground/25 mb-3">Status</div>
         <div className="space-y-1">
           {STATUS_OPTIONS.map((opt) => {
             const active = filters.status === opt.value;
@@ -139,7 +139,7 @@ function FilterPanel({
 
       {/* Deadline */}
       <div>
-        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-white/25 mb-3">Deadline</div>
+        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-foreground/25 mb-3">Deadline</div>
         <div className="space-y-1">
           {DEADLINE_OPTIONS.map((opt) => {
             const checked = filters.deadline.has(opt.value);
@@ -157,7 +157,7 @@ function FilterPanel({
                     background: checked ? "rgba(255,255,255,0.15)" : "transparent",
                   }}
                 >
-                  {checked && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+                  {checked && <CheckCircle2 className="w-2.5 h-2.5 text-foreground" />}
                 </div>
                 <span
                   className="text-[13px] font-light transition-colors"
@@ -175,7 +175,7 @@ function FilterPanel({
 
       {/* Availability */}
       <div>
-        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-white/25 mb-3">Availability</div>
+        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-foreground/25 mb-3">Availability</div>
         <button
           onClick={() => onChange({ openOnly: !filters.openOnly })}
           className="w-full flex items-center gap-2.5 py-1.5 px-1 rounded-lg transition-all text-left"
@@ -188,7 +188,7 @@ function FilterPanel({
               background: filters.openOnly ? "rgba(255,255,255,0.15)" : "transparent",
             }}
           >
-            {filters.openOnly && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+            {filters.openOnly && <CheckCircle2 className="w-2.5 h-2.5 text-foreground" />}
           </div>
           <span
             className="text-[13px] font-light transition-colors"
@@ -284,9 +284,9 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
             ) : (
               <div className="contest-card-banner-fallback" style={{ background: fallbackBg }}>
                 <div className="contest-card-banner-fallback-grid" />
-                <Trophy className="w-12 h-12 text-white/20 relative z-10" />
+                <Trophy className="w-12 h-12 text-foreground/20 relative z-10" />
                 <div className="absolute bottom-3 left-4 right-4 text-center">
-                  <div className="text-[10px] font-display uppercase tracking-[0.2em] text-white/35">{contest.prize}</div>
+                  <div className="text-[10px] font-display uppercase tracking-[0.2em] text-foreground/35">{contest.prize}</div>
                 </div>
               </div>
             )}
@@ -310,7 +310,7 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
             {/* Title + Tagline */}
             <h3 className="contest-card-title">{contest.name}</h3>
             <div className="contest-card-org">
-              <Gift className="w-3 h-3 text-white/35" />
+              <Gift className="w-3 h-3 text-foreground/35" />
               <span>{contest.prize}{contest.prizeValue ? ` · ${contest.prizeValue}` : ""}</span>
             </div>
 
@@ -367,14 +367,14 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
               <div className="contest-card-meta-cell contest-card-meta-cell-divider">
                 <div className="contest-card-meta-label">{contest.endsAt ? "Ends by" : "Open"}</div>
                 <div className="contest-card-meta-value">
-                  <Calendar className="w-3 h-3 text-white/35" />
+                  <Calendar className="w-3 h-3 text-foreground/35" />
                   <span className="contest-card-meta-num">{dateLabel}</span>
                 </div>
               </div>
               <div className="contest-card-meta-cell">
                 <div className="contest-card-meta-label">Spots Left</div>
                 <div className="contest-card-meta-value">
-                  <Users className="w-3 h-3 text-white/35" />
+                  <Users className="w-3 h-3 text-foreground/35" />
                   <span className="contest-card-meta-num">{fmt(contest.spotsRemaining)}</span>
                 </div>
               </div>
@@ -385,7 +385,7 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
               <div className="contest-card-cta-row">
                 {contest.endsAt && (
                   <div className="contest-card-countdown">
-                    <Clock className="w-3 h-3 text-white/30" />
+                    <Clock className="w-3 h-3 text-foreground/30" />
                     <CountdownTimer endsAt={contest.endsAt} compact />
                   </div>
                 )}
@@ -409,7 +409,7 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
       type="button"
       onClick={onRemove}
       aria-label={`Remove filter: ${label}`}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-display text-white/60 transition-all cursor-pointer hover:text-white/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-display text-foreground/60 transition-all cursor-pointer hover:text-foreground/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
       style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
     >
       {label}
@@ -525,7 +525,7 @@ export default function Giveaway() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-foreground">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -558,24 +558,24 @@ export default function Giveaway() {
                     <div className="glass-pill-badge inline-flex mb-4">
 
                     </div>
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white mb-3 leading-[1.1] tracking-tight">Contest Hub</h1>
-                    <p className="text-white/50 text-xs sm:text-sm font-light leading-relaxed max-w-xl mx-auto tracking-wide mb-7">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-foreground mb-3 leading-[1.1] tracking-tight">Contest Hub</h1>
+                    <p className="text-foreground/50 text-xs sm:text-sm font-light leading-relaxed max-w-xl mx-auto tracking-wide mb-7">
                       Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes.
                     </p>
 
                     {/* Check-entry CTA → separate page */}
                     <Link
                       href="/entry-check"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-display font-light text-white/85 transition-all hover:text-white"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-display font-light text-foreground/85 transition-all hover:text-foreground"
                       style={{
                         background: "linear-gradient(140deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 100%)",
                         border: "1px solid rgba(255,255,255,0.12)",
                         boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset",
                       }}
                     >
-                      <Search className="w-3.5 h-3.5 text-white/55" />
+                      <Search className="w-3.5 h-3.5 text-foreground/55" />
                       Check Entry Code
-                      <ChevronRight className="w-3.5 h-3.5 text-white/45" />
+                      <ChevronRight className="w-3.5 h-3.5 text-foreground/45" />
                     </Link>
                   </div>
                 </div>
@@ -586,14 +586,14 @@ export default function Giveaway() {
                 {/* Search + Advanced filter button */}
                 <div className="flex items-center gap-2 mb-3">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25 pointer-events-none" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/25 pointer-events-none" />
                     <input
                       type="text"
                       value={filters.search}
                       onChange={(e) => updateFilters({ search: e.target.value })}
                       placeholder="Search contests, prizes..."
                       aria-label="Search contests"
-                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-light placeholder-white/25 focus:outline-none transition-all text-white"
+                      className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-light placeholder-white/25 focus:outline-none transition-all text-foreground"
                       style={{
                         background: "rgba(255,255,255,0.04)",
                         border: "1px solid rgba(255,255,255,0.08)",
@@ -722,7 +722,7 @@ export default function Giveaway() {
 
                   {/* Results count */}
                   {(activeFilterCount > 0 || filters.search) && (
-                    <div className="mb-5 text-[11px] text-white/30 font-light">
+                    <div className="mb-5 text-[11px] text-foreground/30 font-light">
                       {filteredContests.length} contest{filteredContests.length !== 1 ? "s" : ""} match{filteredContests.length === 1 ? "es" : ""} your filters
                     </div>
                   )}
@@ -738,8 +738,8 @@ export default function Giveaway() {
                         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="mb-12">
                           <div className="flex items-center gap-3 mb-5">
                             <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-                            <h2 className="text-base sm:text-lg font-display font-light text-white">Active Contests</h2>
-                            <span className="text-[10px] text-white/25 font-light">{activeContests.length} available</span>
+                            <h2 className="text-base sm:text-lg font-display font-light text-foreground">Active Contests</h2>
+                            <span className="text-[10px] text-foreground/25 font-light">{activeContests.length} available</span>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             {activeContests.map((contest, i) => (
@@ -753,7 +753,7 @@ export default function Giveaway() {
                         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={4} className="mb-12">
                           <div className="flex items-center gap-3 mb-5">
                             <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/25 to-white/0" />
-                            <h2 className="text-base sm:text-lg font-display font-light text-white/70">Upcoming</h2>
+                            <h2 className="text-base sm:text-lg font-display font-light text-foreground/70">Upcoming</h2>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             {upcomingContests.map((contest, i) => (
@@ -767,7 +767,7 @@ export default function Giveaway() {
                         <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={6} className="mb-12">
                           <div className="flex items-center gap-3 mb-5">
                             <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/15 to-white/0" />
-                            <h2 className="text-base sm:text-lg font-display font-light text-white/50">Completed</h2>
+                            <h2 className="text-base sm:text-lg font-display font-light text-foreground/50">Completed</h2>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             {completedContests.map((contest, i) => (
@@ -782,12 +782,12 @@ export default function Giveaway() {
                         <div className="text-center py-20">
                           {activeFilterCount > 0 || filters.search ? (
                             <>
-                              <Filter className="w-10 h-10 text-white/10 mx-auto mb-4" />
-                              <h3 className="text-lg font-display font-light text-white/40 mb-2">No contests match</h3>
-                              <p className="text-sm text-white/25 font-light mb-5">Try adjusting your filters or search term</p>
+                              <Filter className="w-10 h-10 text-foreground/10 mx-auto mb-4" />
+                              <h3 className="text-lg font-display font-light text-foreground/40 mb-2">No contests match</h3>
+                              <p className="text-sm text-foreground/25 font-light mb-5">Try adjusting your filters or search term</p>
                               <button
                                 onClick={clearFilters}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-display font-light text-white/50 hover:text-white/75 transition-all"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-display font-light text-foreground/50 hover:text-foreground/75 transition-all"
                                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
                               >
                                 <X className="w-3.5 h-3.5" />
@@ -796,9 +796,9 @@ export default function Giveaway() {
                             </>
                           ) : (
                             <>
-                              <Trophy className="w-12 h-12 text-white/15 mx-auto mb-4" />
-                              <h3 className="text-xl font-display font-light text-white/50 mb-2">No Contests Yet</h3>
-                              <p className="text-sm text-white/30 font-light">Check back soon for exciting giveaway contests!</p>
+                              <Trophy className="w-12 h-12 text-foreground/15 mx-auto mb-4" />
+                              <h3 className="text-xl font-display font-light text-foreground/50 mb-2">No Contests Yet</h3>
+                              <p className="text-sm text-foreground/30 font-light">Check back soon for exciting giveaway contests!</p>
                             </>
                           )}
                         </div>
@@ -827,8 +827,8 @@ export default function Giveaway() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
                   Step-by-Step Guide
                 </div>
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-white mb-5 tracking-tight">How to Enter</h2>
-                <p className="text-white/40 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-foreground mb-5 tracking-tight">How to Enter</h2>
+                <p className="text-foreground/40 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto">
                   Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
                 </p>
               </motion.div>
@@ -847,19 +847,19 @@ export default function Giveaway() {
                       <div className="card-shine" />
                       <div className="relative z-[2] flex gap-4 sm:gap-5">
                         <div className="flex flex-col items-center gap-2 shrink-0">
-                          <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/40 group-hover:text-white/60 transition-colors">
+                          <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-foreground/40 group-hover:text-foreground/60 transition-colors">
                             {item.icon}
                           </div>
-                          <span className="text-[9px] font-display font-medium text-white/20 uppercase tracking-widest">{item.step}</span>
+                          <span className="text-[9px] font-display font-medium text-foreground/20 uppercase tracking-widest">{item.step}</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                            <h4 className="text-sm sm:text-base font-display font-light text-white">{item.title}</h4>
+                            <h4 className="text-sm sm:text-base font-display font-light text-foreground">{item.title}</h4>
                             {item.tip && (
-                              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[9px] text-white/40 font-light">{item.tip}</span>
+                              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[9px] text-foreground/40 font-light">{item.tip}</span>
                             )}
                           </div>
-                          <p className="text-xs text-white/35 font-light leading-relaxed">{item.desc}</p>
+                          <p className="text-xs text-foreground/35 font-light leading-relaxed">{item.desc}</p>
                         </div>
                       </div>
                     </div>
@@ -886,8 +886,8 @@ export default function Giveaway() {
                   <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
                   Trust & Verification
                 </div>
-                <h2 className="text-xl sm:text-3xl font-display font-light text-white mb-4 tracking-tight">Fair & Transparent</h2>
-                <p className="text-white/40 text-sm font-light leading-relaxed max-w-xl mx-auto">
+                <h2 className="text-xl sm:text-3xl font-display font-light text-foreground mb-4 tracking-tight">Fair & Transparent</h2>
+                <p className="text-foreground/40 text-sm font-light leading-relaxed max-w-xl mx-auto">
                   Every entry is verified manually. Winners are selected randomly and announced transparently.
                 </p>
               </motion.div>
@@ -903,8 +903,8 @@ export default function Giveaway() {
                     <div className="glass-card p-4 text-center">
                       <div className="card-shine" />
                       <div className="relative z-[2]">
-                        <div className="text-white/25 mx-auto mb-2 flex justify-center">{item.icon}</div>
-                        <div className="text-[10px] text-white/40 font-display uppercase tracking-widest">{item.name}</div>
+                        <div className="text-foreground/25 mx-auto mb-2 flex justify-center">{item.icon}</div>
+                        <div className="text-[10px] text-foreground/40 font-display uppercase tracking-widest">{item.name}</div>
                       </div>
                     </div>
                   </motion.div>

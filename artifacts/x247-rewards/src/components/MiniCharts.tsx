@@ -139,8 +139,8 @@ export function UsageGauge({
         <rect x={0} y={0} width={fillW} height={height} rx={height / 2} fill={getColor()} />
       </svg>
       <div className="flex justify-between mt-1">
-        <span className="text-[8px] text-white/20 font-light">{used} used</span>
-        <span className="text-[8px] text-white/20 font-light">{limit ? `${limit} limit` : "Unlimited"}</span>
+        <span className="text-[8px] text-foreground/20 font-light">{used} used</span>
+        <span className="text-[8px] text-foreground/20 font-light">{limit ? `${limit} limit` : "Unlimited"}</span>
       </div>
     </div>
   );

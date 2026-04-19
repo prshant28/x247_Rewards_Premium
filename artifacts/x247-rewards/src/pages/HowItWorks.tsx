@@ -135,7 +135,7 @@ function FaqItem({ q, a, delay = 0 }: { q: string; a: string; delay?: number }) 
       <button className="hiw-faq-q" onClick={() => setOpen(v => !v)}>
         <span>{q}</span>
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.3 }}>
-          <ChevronDown className="w-4 h-4 text-white/30" />
+          <ChevronDown className="w-4 h-4 text-foreground/30" />
         </motion.span>
       </button>
       <AnimatePresence>
@@ -225,7 +225,7 @@ export default function HowItWorks() {
             animate={{ y: [0, 6, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
           >
-            <ChevronDown className="w-5 h-5 text-white/20" />
+            <ChevronDown className="w-5 h-5 text-foreground/20" />
           </motion.div>
         </motion.div>
       </section>

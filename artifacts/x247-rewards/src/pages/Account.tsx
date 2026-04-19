@@ -154,12 +154,12 @@ function OurPartnersSection() {
         <div className="relative z-[2]">
           <div className="flex items-center justify-between mb-4">
             <div className="glass-pill-badge">
-              <Sparkles className="w-3 h-3 text-white/50 mr-2" />
+              <Sparkles className="w-3 h-3 text-foreground/50 mr-2" />
               Our Partners
             </div>
             <Link
               href="/partners"
-              className="inline-flex items-center gap-1 text-[10px] text-white/30 hover:text-white/50 font-display uppercase tracking-widest transition-colors"
+              className="inline-flex items-center gap-1 text-[10px] text-foreground/30 hover:text-foreground/50 font-display uppercase tracking-widest transition-colors"
             >
               View All
               <ChevronRight className="w-3 h-3" />
@@ -173,10 +173,10 @@ function OurPartnersSection() {
                 className="metallic-partner-chip group"
               >
                 <div className="metallic-partner-chip-inner">
-                  <span className="text-xs font-display font-light text-white/70 group-hover:text-white/90 transition-colors truncate">
+                  <span className="text-xs font-display font-light text-foreground/70 group-hover:text-foreground/90 transition-colors truncate">
                     {partner.name}
                   </span>
-                  <ExternalLink className="w-2.5 h-2.5 text-white/20 group-hover:text-white/40 transition-colors flex-shrink-0" />
+                  <ExternalLink className="w-2.5 h-2.5 text-foreground/20 group-hover:text-foreground/40 transition-colors flex-shrink-0" />
                 </div>
               </Link>
             ))}
@@ -325,7 +325,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
                 <span className="auth-eyebrow-dot" />
                 <span>{mode === "login" ? "WELCOME BACK" : "JOIN X247"}</span>
               </motion.div>
-              <h2 className="auth-heading text-2xl sm:text-[28px] font-display font-light text-white tracking-tight leading-[1.15]">
+              <h2 className="auth-heading text-2xl sm:text-[28px] font-display font-light text-foreground tracking-tight leading-[1.15]">
                 {(mode === "login" ? "Sign in to your rewards" : "Create your free account").split(" ").map((word, i) => (
                   <motion.span
                     key={`${mode}-${i}-${word}`}
@@ -342,7 +342,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
                 initial={reduceMotion ? false : { opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: reduceMotion ? 0 : 0.45, duration: reduceMotion ? 0 : 0.5 }}
-                className="text-xs sm:text-[13px] text-white/40 font-light mt-2"
+                className="text-xs sm:text-[13px] text-foreground/40 font-light mt-2"
               >
                 {mode === "login" ? "Continue your winning streak" : "Daily prizes await — start in seconds"}
               </motion.p>
@@ -437,7 +437,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/20 hover:text-foreground/40 transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -505,7 +505,7 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               </button>
 
               {mode === "register" && (
-                <p className="text-center text-[10px] text-white/20 font-light pt-1">
+                <p className="text-center text-[10px] text-foreground/20 font-light pt-1">
                   By creating an account you agree to our terms. Free forever.
                 </p>
               )}
@@ -514,18 +514,18 @@ function AuthForm({ onSuccess }: { onSuccess: () => void }) {
 
           <div className="mt-6 pt-5 border-t border-white/[0.05] flex items-center justify-center gap-4">
             <div className="flex items-center gap-1.5">
-              <Shield className="w-3 h-3 text-white/20" />
-              <span className="text-[10px] text-white/20 font-light">Secure</span>
+              <Shield className="w-3 h-3 text-foreground/20" />
+              <span className="text-[10px] text-foreground/20 font-light">Secure</span>
             </div>
             <div className="w-px h-3 bg-white/[0.06]" />
             <div className="flex items-center gap-1.5">
-              <BadgeCheck className="w-3 h-3 text-white/20" />
-              <span className="text-[10px] text-white/20 font-light">Verified Platform</span>
+              <BadgeCheck className="w-3 h-3 text-foreground/20" />
+              <span className="text-[10px] text-foreground/20 font-light">Verified Platform</span>
             </div>
             <div className="w-px h-3 bg-white/[0.06]" />
             <div className="flex items-center gap-1.5">
-              <Zap className="w-3 h-3 text-white/20" />
-              <span className="text-[10px] text-white/20 font-light">Instant Access</span>
+              <Zap className="w-3 h-3 text-foreground/20" />
+              <span className="text-[10px] text-foreground/20 font-light">Instant Access</span>
             </div>
           </div>
         </div>
@@ -638,10 +638,10 @@ function useNotifications(): {
 }
 
 function NotificationIcon({ type }: { type: NotifIconKind }) {
-  if (type === "trophy") return <Trophy className="w-4 h-4 text-white/40" />;
-  if (type === "star") return <Star className="w-4 h-4 text-white/40" />;
-  if (type === "gift") return <Gift className="w-4 h-4 text-white/40" />;
-  return <Bell className="w-4 h-4 text-white/40" />;
+  if (type === "trophy") return <Trophy className="w-4 h-4 text-foreground/40" />;
+  if (type === "star") return <Star className="w-4 h-4 text-foreground/40" />;
+  if (type === "gift") return <Gift className="w-4 h-4 text-foreground/40" />;
+  return <Bell className="w-4 h-4 text-foreground/40" />;
 }
 
 function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, containerRef }: {
@@ -682,9 +682,9 @@ function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, 
       className="notif-panel"
     >
       <div className="notif-header">
-        <span className="text-xs font-display font-medium text-white/70">Notifications</span>
+        <span className="text-xs font-display font-medium text-foreground/70">Notifications</span>
         {notifications.some(n => !n.read) && (
-          <button onClick={onMarkAllRead} className="text-[10px] text-white/30 hover:text-white/50 transition-colors font-light">
+          <button onClick={onMarkAllRead} className="text-[10px] text-foreground/30 hover:text-foreground/50 transition-colors font-light">
             Mark all read
           </button>
         )}
@@ -700,10 +700,10 @@ function NotificationPanel({ notifications, onMarkRead, onMarkAllRead, onClose, 
               <NotificationIcon type={n.icon} />
             </div>
             <div className="flex-1 min-w-0 text-left">
-              <div className="text-[11px] font-display font-medium text-white/70">{n.title}</div>
-              <div className="text-[10px] text-white/30 font-light leading-snug mt-0.5 line-clamp-2">{n.body}</div>
+              <div className="text-[11px] font-display font-medium text-foreground/70">{n.title}</div>
+              <div className="text-[10px] text-foreground/30 font-light leading-snug mt-0.5 line-clamp-2">{n.body}</div>
             </div>
-            <div className="text-[9px] text-white/20 font-light shrink-0">{formatTime(n.time)}</div>
+            <div className="text-[9px] text-foreground/20 font-light shrink-0">{formatTime(n.time)}</div>
           </button>
         ))}
       </div>
@@ -743,9 +743,9 @@ function StreakCelebration({ streak, onDone }: { streak: number; onDone: () => v
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
         className="streak-badge"
       >
-        <Flame className="w-5 h-5 text-white/80" />
-        <span className="text-lg font-display font-bold text-white">{streak}</span>
-        <span className="text-[9px] text-white/50 font-display uppercase tracking-wider">Day Streak</span>
+        <Flame className="w-5 h-5 text-foreground/80" />
+        <span className="text-lg font-display font-bold text-foreground">{streak}</span>
+        <span className="text-[9px] text-foreground/50 font-display uppercase tracking-wider">Day Streak</span>
       </motion.div>
     </motion.div>
   );
@@ -771,16 +771,16 @@ function ToastNotifications({ toast, onDismiss }: { toast: NotificationItem | nu
             className="toast-item"
           >
             <div className="toast-icon">
-              {toast.icon === "trophy" && <Trophy className="w-4 h-4 text-white/50" />}
-              {toast.icon === "gift" && <Gift className="w-4 h-4 text-white/50" />}
-              {toast.icon === "star" && <Star className="w-4 h-4 text-white/50" />}
-              {toast.icon !== "trophy" && toast.icon !== "gift" && toast.icon !== "star" && <Sparkles className="w-4 h-4 text-white/50" />}
+              {toast.icon === "trophy" && <Trophy className="w-4 h-4 text-foreground/50" />}
+              {toast.icon === "gift" && <Gift className="w-4 h-4 text-foreground/50" />}
+              {toast.icon === "star" && <Star className="w-4 h-4 text-foreground/50" />}
+              {toast.icon !== "trophy" && toast.icon !== "gift" && toast.icon !== "star" && <Sparkles className="w-4 h-4 text-foreground/50" />}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[11px] font-display font-medium text-white/80">{toast.title}</div>
-              <div className="text-[10px] text-white/30 font-light mt-0.5">{toast.body}</div>
+              <div className="text-[11px] font-display font-medium text-foreground/80">{toast.title}</div>
+              <div className="text-[10px] text-foreground/30 font-light mt-0.5">{toast.body}</div>
             </div>
-            <button onClick={onDismiss} className="text-white/20 hover:text-white/40 transition-colors shrink-0">
+            <button onClick={onDismiss} className="text-foreground/20 hover:text-foreground/40 transition-colors shrink-0">
               <X className="w-3.5 h-3.5" />
             </button>
           </motion.div>
@@ -984,12 +984,12 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
         <div className="dash-chart-card">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-white/30" />
-              <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Entry History</h3>
+              <BarChart3 className="w-4 h-4 text-foreground/30" />
+              <h3 className="text-xs font-display font-medium text-foreground/50 uppercase tracking-wider">Entry History</h3>
             </div>
             <div className="flex items-center gap-1.5">
-              <TrendingUp className={`w-3.5 h-3.5 ${weekTrend === "up" ? "text-emerald-400/40" : weekTrend === "down" ? "text-red-400/40 rotate-180" : "text-white/20"}`} />
-              <span className="text-[10px] text-white/30 font-light">{thisWeekTotal} this week</span>
+              <TrendingUp className={`w-3.5 h-3.5 ${weekTrend === "up" ? "text-emerald-400/40" : weekTrend === "down" ? "text-red-400/40 rotate-180" : "text-foreground/20"}`} />
+              <span className="text-[10px] text-foreground/30 font-light">{thisWeekTotal} this week</span>
             </div>
           </div>
           <div className="flex justify-center">
@@ -999,18 +999,18 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
 
         <div className="dash-chart-card">
           <div className="flex items-center gap-2 mb-5">
-            <Activity className="w-4 h-4 text-white/30" />
-            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Activity Map</h3>
+            <Activity className="w-4 h-4 text-foreground/30" />
+            <h3 className="text-xs font-display font-medium text-foreground/50 uppercase tracking-wider">Activity Map</h3>
           </div>
           <div className="flex justify-center overflow-x-auto">
             <ActivityHeatmap dates={activityDates} weeks={8} />
           </div>
           <div className="flex items-center justify-end gap-1.5 mt-3">
-            <span className="text-[9px] text-white/20 font-light">Less</span>
+            <span className="text-[9px] text-foreground/20 font-light">Less</span>
             {[0.03, 0.1, 0.2, 0.35].map((op, i) => (
               <div key={i} className="w-[9px] h-[9px] rounded-[2px] acct-grid-dot" style={{ opacity: op }} />
             ))}
-            <span className="text-[9px] text-white/20 font-light">More</span>
+            <span className="text-[9px] text-foreground/20 font-light">More</span>
           </div>
         </div>
       </div>
@@ -1019,34 +1019,34 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
         <Link href="/giveaway" className="dash-quick-action group">
           <div className="dash-qa-icon"><Sparkles className="w-4 h-4" /></div>
           <div>
-            <div className="text-sm font-display font-light text-white/70 group-hover:text-white transition-colors">Enter Giveaway</div>
-            <div className="text-[10px] text-white/30 font-light">Browse active contests</div>
+            <div className="text-sm font-display font-light text-foreground/70 group-hover:text-foreground transition-colors">Enter Giveaway</div>
+            <div className="text-[10px] text-foreground/30 font-light">Browse active contests</div>
           </div>
-          <ChevronRight className="w-4 h-4 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-foreground/15 ml-auto group-hover:text-foreground/30 transition-colors" />
         </Link>
         <Link href="/partners" className="dash-quick-action group">
           <div className="dash-qa-icon"><Users className="w-4 h-4" /></div>
           <div>
-            <div className="text-sm font-display font-light text-white/70 group-hover:text-white transition-colors">Visit Partners</div>
-            <div className="text-[10px] text-white/30 font-light">Earn more entries</div>
+            <div className="text-sm font-display font-light text-foreground/70 group-hover:text-foreground transition-colors">Visit Partners</div>
+            <div className="text-[10px] text-foreground/30 font-light">Earn more entries</div>
           </div>
-          <ChevronRight className="w-4 h-4 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-foreground/15 ml-auto group-hover:text-foreground/30 transition-colors" />
         </Link>
         <Link href="/winners" className="dash-quick-action group">
           <div className="dash-qa-icon"><Award className="w-4 h-4" /></div>
           <div>
-            <div className="text-sm font-display font-light text-white/70 group-hover:text-white transition-colors">View Winners</div>
-            <div className="text-[10px] text-white/30 font-light">Hall of fame</div>
+            <div className="text-sm font-display font-light text-foreground/70 group-hover:text-foreground transition-colors">View Winners</div>
+            <div className="text-[10px] text-foreground/30 font-light">Hall of fame</div>
           </div>
-          <ChevronRight className="w-4 h-4 text-white/15 ml-auto group-hover:text-white/30 transition-colors" />
+          <ChevronRight className="w-4 h-4 text-foreground/15 ml-auto group-hover:text-foreground/30 transition-colors" />
         </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="dash-chart-card">
           <div className="flex items-center gap-2 mb-4">
-            <History className="w-4 h-4 text-white/30" />
-            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Recent Activity</h3>
+            <History className="w-4 h-4 text-foreground/30" />
+            <h3 className="text-xs font-display font-medium text-foreground/50 uppercase tracking-wider">Recent Activity</h3>
           </div>
           {entries.length > 0 ? (
             <div className="dash-activity">
@@ -1055,8 +1055,8 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
                   <div className="dash-activity-dot" />
                   {i < Math.min(entries.length - 1, 3) && <div className="dash-activity-line" />}
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-light text-white/60 truncate">Entered {entry.contestName}</div>
-                    <div className="text-[10px] text-white/25 font-light">{entry.entryCount} entries · {entry.submittedAt ? new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—"}</div>
+                    <div className="text-xs font-light text-foreground/60 truncate">Entered {entry.contestName}</div>
+                    <div className="text-[10px] text-foreground/25 font-light">{entry.entryCount} entries · {entry.submittedAt ? new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—"}</div>
                   </div>
                   <div className="acct-entry-status">
                     <Clock className="w-3 h-3" />
@@ -1067,55 +1067,55 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
             </div>
           ) : (
             <div className="p-8 text-center">
-              <Gift className="w-10 h-10 text-white/10 mx-auto mb-3" />
-              <p className="text-xs text-white/30 font-light">No activity yet</p>
+              <Gift className="w-10 h-10 text-foreground/10 mx-auto mb-3" />
+              <p className="text-xs text-foreground/30 font-light">No activity yet</p>
             </div>
           )}
         </div>
 
         <div className="dash-chart-card">
           <div className="flex items-center gap-2 mb-4">
-            <Crown className="w-4 h-4 text-white/30" />
-            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Membership</h3>
+            <Crown className="w-4 h-4 text-foreground/30" />
+            <h3 className="text-xs font-display font-medium text-foreground/50 uppercase tracking-wider">Membership</h3>
           </div>
           <div className={`p-5 rounded-xl border ${user.membershipTier === "black" ? "bg-white/[0.04] border-white/[0.1]" : "bg-white/[0.02] border-white/[0.05]"}`}>
             <div className="flex items-center gap-3 mb-3">
-              <Crown className="w-5 h-5 text-white/30" />
+              <Crown className="w-5 h-5 text-foreground/30" />
               <div>
-                <div className="text-sm font-display font-light text-white capitalize">{tierLabel}</div>
-                <div className="text-[9px] text-white/25 font-light">
+                <div className="text-sm font-display font-light text-foreground capitalize">{tierLabel}</div>
+                <div className="text-[9px] text-foreground/25 font-light">
                   {user.membershipTier === "free" ? "Free plan" : "Active subscription"}
                 </div>
               </div>
-              {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/40 ml-auto" />}
+              {user.isVerified && <BadgeCheck className="w-4 h-4 text-foreground/40 ml-auto" />}
             </div>
 
             <div className="mb-3">
               <div className="flex items-center justify-between mb-1.5">
-                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Per Contest</div>
-                <div className="text-[9px] text-white/35 font-light">{Math.min(entries.length, entryLimitNum)}/{entryLimit}</div>
+                <div className="text-[8px] text-foreground/20 uppercase tracking-wider font-display">Per Contest</div>
+                <div className="text-[9px] text-foreground/35 font-light">{Math.min(entries.length, entryLimitNum)}/{entryLimit}</div>
               </div>
               <UsageGauge used={entries.length} limit={entryLimitNum} />
             </div>
 
             <div className="mb-3">
               <div className="flex items-center justify-between mb-1.5">
-                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display flex items-center gap-1">
+                <div className="text-[8px] text-foreground/20 uppercase tracking-wider font-display flex items-center gap-1">
                   <CalendarDays className="w-2.5 h-2.5" /> Monthly Cap
                 </div>
-                <div className="text-[9px] text-white/35 font-light">{monthlyUsed}/{monthlyCap} · {Math.round(monthlyPct * 100)}%</div>
+                <div className="text-[9px] text-foreground/35 font-light">{monthlyUsed}/{monthlyCap} · {Math.round(monthlyPct * 100)}%</div>
               </div>
               <UsageGauge used={monthlyUsed} limit={monthlyCap} />
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div className="p-2.5 bg-white/[0.02] border border-white/[0.04] rounded-lg">
-                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Entries</div>
-                <div className="text-xs text-white/50 font-light mt-0.5">{entryLimit}/contest</div>
+                <div className="text-[8px] text-foreground/20 uppercase tracking-wider font-display">Entries</div>
+                <div className="text-xs text-foreground/50 font-light mt-0.5">{entryLimit}/contest</div>
               </div>
               <div className="p-2.5 bg-white/[0.02] border border-white/[0.04] rounded-lg">
-                <div className="text-[8px] text-white/20 uppercase tracking-wider font-display">Voice Chat</div>
-                <div className="text-xs text-white/50 font-light mt-0.5">{tier === "silver" || tier === "free" ? "Off" : "On"}</div>
+                <div className="text-[8px] text-foreground/20 uppercase tracking-wider font-display">Voice Chat</div>
+                <div className="text-xs text-foreground/50 font-light mt-0.5">{tier === "silver" || tier === "free" ? "Off" : "On"}</div>
               </div>
             </div>
             {tier !== "black" && (
@@ -1124,8 +1124,8 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
                 onClick={() => onChangeTab?.("subscription")}
                 className="w-full mt-3 flex items-center justify-between p-2.5 rounded-lg border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.13] hover:bg-white/[0.04] transition-all group"
               >
-                <span className="text-[10px] text-white/50 font-light">Upgrade for more entries</span>
-                <ArrowRight className="w-3 h-3 text-white/30 group-hover:text-white/60 group-hover:translate-x-0.5 transition-all" />
+                <span className="text-[10px] text-foreground/50 font-light">Upgrade for more entries</span>
+                <ArrowRight className="w-3 h-3 text-foreground/30 group-hover:text-foreground/60 group-hover:translate-x-0.5 transition-all" />
               </button>
             )}
           </div>
@@ -1136,10 +1136,10 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
       <div className="dash-chart-card mt-7">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Rocket className="w-4 h-4 text-white/30" />
-            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Level {levelInfo.level}</h3>
+            <Rocket className="w-4 h-4 text-foreground/30" />
+            <h3 className="text-xs font-display font-medium text-foreground/50 uppercase tracking-wider">Level {levelInfo.level}</h3>
           </div>
-          <div className="text-[10px] text-white/30 font-light">
+          <div className="text-[10px] text-foreground/30 font-light">
             {levelInfo.needed > 0 ? `${levelInfo.needed} entries to Level ${levelInfo.level + 1}` : "Max level"}
           </div>
         </div>
@@ -1151,7 +1151,7 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
             className="absolute inset-y-0 left-0 bg-gradient-to-r from-white/30 to-white/60 rounded-full"
           />
         </div>
-        <div className="flex items-center justify-between text-[10px] text-white/25 font-light">
+        <div className="flex items-center justify-between text-[10px] text-foreground/25 font-light">
           <span>{totalEntries} total entries</span>
           <span>{levelInfo.nextThreshold} for next level</span>
         </div>
@@ -1161,10 +1161,10 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
       <div className="dash-chart-card mt-5">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <Medal className="w-4 h-4 text-white/30" />
-            <h3 className="text-xs font-display font-medium text-white/50 uppercase tracking-wider">Achievements</h3>
+            <Medal className="w-4 h-4 text-foreground/30" />
+            <h3 className="text-xs font-display font-medium text-foreground/50 uppercase tracking-wider">Achievements</h3>
           </div>
-          <span className="text-[10px] text-white/25 font-light">
+          <span className="text-[10px] text-foreground/25 font-light">
             {ACHIEVEMENTS.filter(a => totalEntries >= a.threshold).length}/{ACHIEVEMENTS.length} unlocked
           </span>
         </div>
@@ -1185,12 +1185,12 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 border ${
                   unlocked ? "bg-white/[0.08] border-white/[0.15]" : "bg-white/[0.02] border-white/[0.05]"
                 }`}>
-                  {unlocked ? <Icon className="w-4 h-4 text-white/70" /> : <Lock className="w-3 h-3 text-white/20" />}
+                  {unlocked ? <Icon className="w-4 h-4 text-foreground/70" /> : <Lock className="w-3 h-3 text-foreground/20" />}
                 </div>
-                <div className={`text-[10px] font-display font-light leading-tight ${unlocked ? "text-white/70" : "text-white/25"}`}>
+                <div className={`text-[10px] font-display font-light leading-tight ${unlocked ? "text-foreground/70" : "text-foreground/25"}`}>
                   {a.label}
                 </div>
-                <div className="text-[8px] text-white/25 font-light mt-0.5">{a.threshold}</div>
+                <div className="text-[8px] text-foreground/25 font-light mt-0.5">{a.threshold}</div>
               </div>
             );
           })}
@@ -1308,10 +1308,10 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
       <div className="acct-completion-bar mb-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <BadgeCheck className="w-3.5 h-3.5 text-white/40" />
-            <span className="text-xs font-display font-light text-white/60">Profile Completion</span>
+            <BadgeCheck className="w-3.5 h-3.5 text-foreground/40" />
+            <span className="text-xs font-display font-light text-foreground/60">Profile Completion</span>
           </div>
-          <span className={`text-xs font-display font-medium ${completion.score >= 80 ? "text-emerald-400/70" : completion.score >= 50 ? "text-amber-400/60" : "text-white/40"}`}>{completion.score}%</span>
+          <span className={`text-xs font-display font-medium ${completion.score >= 80 ? "text-emerald-400/70" : completion.score >= 50 ? "text-amber-400/60" : "text-foreground/40"}`}>{completion.score}%</span>
         </div>
         <div className="relative h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
           <motion.div
@@ -1322,7 +1322,7 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
           />
         </div>
         {completion.missing.length > 0 && (
-          <div className="mt-1.5 text-[10px] text-white/25 font-light">Missing: {completion.missing.slice(0, 3).join(", ")}{completion.missing.length > 3 ? ` +${completion.missing.length - 3} more` : ""}</div>
+          <div className="mt-1.5 text-[10px] text-foreground/25 font-light">Missing: {completion.missing.slice(0, 3).join(", ")}{completion.missing.length > 3 ? ` +${completion.missing.length - 3} more` : ""}</div>
         )}
       </div>
 
@@ -1343,10 +1343,10 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
 
         <div className="lg:col-span-3 space-y-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-base font-display font-light text-white">Profile Details</h3>
+            <h3 className="text-base font-display font-light text-foreground">Profile Details</h3>
             <button
               onClick={() => setEditing(!editing)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-white/40 font-light hover:bg-white/[0.06] transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg text-[10px] text-foreground/40 font-light hover:bg-white/[0.06] transition-all"
             >
               {editing ? <X className="w-3 h-3" /> : <Edit3 className="w-3 h-3" />}
               {editing ? "Cancel" : "Edit"}
@@ -1359,11 +1359,11 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
                 <label className="acct-label">Photo</label>
                 <label className="flex items-center gap-3 p-3 bg-white/[0.03] border border-white/[0.06] rounded-xl cursor-pointer hover:bg-white/[0.04] transition-all">
                   <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center overflow-hidden shrink-0">
-                    {avatarUrl ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" /> : <User className="w-5 h-5 text-white/30" />}
+                    {avatarUrl ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" /> : <User className="w-5 h-5 text-foreground/30" />}
                   </div>
                   <div className="flex-1">
-                    <div className="text-xs text-white/50 font-light">{uploading ? "Uploading…" : "Change photo"}</div>
-                    <div className="text-[9px] text-white/25 font-light">Max 5MB · JPG / PNG</div>
+                    <div className="text-xs text-foreground/50 font-light">{uploading ? "Uploading…" : "Change photo"}</div>
+                    <div className="text-[9px] text-foreground/25 font-light">Max 5MB · JPG / PNG</div>
                   </div>
                   <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" disabled={uploading} />
                 </label>
@@ -1404,15 +1404,15 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
               </div>
 
               <div>
-                <label className="acct-label">Bio <span className="text-white/20 normal-case font-light">({bio.length}/200)</span></label>
+                <label className="acct-label">Bio <span className="text-foreground/20 normal-case font-light">({bio.length}/200)</span></label>
                 <textarea value={bio} onChange={e => setBio(e.target.value.slice(0, 200))} placeholder="Tell people about yourself…" rows={3}
-                  className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12] resize-none" />
+                  className="w-full px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-foreground placeholder-white/20 font-light focus:outline-none focus:border-white/[0.12] resize-none" />
               </div>
 
               <div className="flex items-center justify-between p-3 bg-white/[0.02] border border-white/[0.06] rounded-xl">
                 <div className="flex items-center gap-2">
-                  {isPublic ? <Globe className="w-4 h-4 text-white/40" /> : <Lock className="w-4 h-4 text-white/25" />}
-                  <span className="text-xs text-white/50 font-light">{isPublic ? "Profile is public" : "Profile is private"}</span>
+                  {isPublic ? <Globe className="w-4 h-4 text-foreground/40" /> : <Lock className="w-4 h-4 text-foreground/25" />}
+                  <span className="text-xs text-foreground/50 font-light">{isPublic ? "Profile is public" : "Profile is private"}</span>
                 </div>
                 <button onClick={() => setIsPublic(!isPublic)} className={`relative w-10 h-5 rounded-full transition-all ${isPublic ? "bg-white/20" : "bg-white/[0.06]"}`}>
                   <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${isPublic ? "left-[22px]" : "left-0.5 bg-white/40"}`} />
@@ -1422,7 +1422,7 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
               {error && <p className="text-xs text-red-400/60 font-light">{error}</p>}
 
               <button onClick={handleSave} disabled={saving}
-                className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white font-light hover:bg-white/[0.08] transition-all disabled:opacity-30">
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-foreground font-light hover:bg-white/[0.08] transition-all disabled:opacity-30">
                 <Save className="w-3.5 h-3.5" />
                 {saving ? "Saving…" : "Save Changes"}
               </button>
@@ -1431,31 +1431,31 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
             <div className="space-y-3">
               {[
                 { icon: User, label: "Full Name", value: user.fullName },
-                { icon: Mail, label: "Email", value: user.email, extra: user.isVerified ? <BadgeCheck className="w-3.5 h-3.5 text-white/40 ml-1 inline" /> : null },
+                { icon: Mail, label: "Email", value: user.email, extra: user.isVerified ? <BadgeCheck className="w-3.5 h-3.5 text-foreground/40 ml-1 inline" /> : null },
                 { icon: Phone, label: "Phone", value: user.phone },
                 { icon: MapPin, label: "City", value: user.city },
               ].map((row) => row.value ? (
                 <div key={row.label} className="acct-info-row">
-                  <row.icon className="w-4 h-4 text-white/25" />
+                  <row.icon className="w-4 h-4 text-foreground/25" />
                   <div>
-                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">{row.label}</div>
-                    <div className="text-sm text-white/60 font-light flex items-center">{row.value}{row.extra}</div>
+                    <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display">{row.label}</div>
+                    <div className="text-sm text-foreground/60 font-light flex items-center">{row.value}{row.extra}</div>
                   </div>
                 </div>
               ) : null)}
               {profileSlug && isPublic && (
                 <div className="acct-info-row">
-                  <Globe className="w-4 h-4 text-white/25" />
+                  <Globe className="w-4 h-4 text-foreground/25" />
                   <div className="flex-1">
-                    <div className="text-[9px] text-white/25 uppercase tracking-wider font-display">Public Profile</div>
-                    <div className="text-sm text-white/60 font-light font-mono">/profile/{profileSlug}</div>
+                    <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display">Public Profile</div>
+                    <div className="text-sm text-foreground/60 font-light font-mono">/profile/{profileSlug}</div>
                   </div>
                   <div className="flex gap-1.5">
                     <button onClick={handleCopyLink} className="p-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg hover:bg-white/[0.06] transition-all">
-                      {copied ? <Check className="w-3 h-3 text-white/60" /> : <Copy className="w-3 h-3 text-white/30" />}
+                      {copied ? <Check className="w-3 h-3 text-foreground/60" /> : <Copy className="w-3 h-3 text-foreground/30" />}
                     </button>
                     <Link href={`/profile/${profileSlug}`} className="p-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg hover:bg-white/[0.06] transition-all">
-                      <ExternalLink className="w-3 h-3 text-white/30" />
+                      <ExternalLink className="w-3 h-3 text-foreground/30" />
                     </Link>
                   </div>
                 </div>
@@ -1467,8 +1467,8 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
 
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <Award className="w-4 h-4 text-white/40" />
-          <h3 className="text-base font-display font-light text-white">Badges</h3>
+          <Award className="w-4 h-4 text-foreground/40" />
+          <h3 className="text-base font-display font-light text-foreground">Badges</h3>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {badges.available.map((badge) => {
@@ -1489,13 +1489,13 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
               >
                 {isSelected && (
                   <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                    <Check className="w-2.5 h-2.5 text-white/80" />
+                    <Check className="w-2.5 h-2.5 text-foreground/80" />
                   </div>
                 )}
                 <div className="text-2xl mb-1.5">{badge.icon}</div>
-                <div className="text-[10px] font-display font-medium text-white/70 mb-0.5">{badge.name}</div>
-                <div className="text-[8px] text-white/30 font-light leading-tight">{badge.description}</div>
-                {!earned && <div className="text-[8px] text-white/20 mt-1 font-display uppercase tracking-wider">Locked</div>}
+                <div className="text-[10px] font-display font-medium text-foreground/70 mb-0.5">{badge.name}</div>
+                <div className="text-[8px] text-foreground/30 font-light leading-tight">{badge.description}</div>
+                {!earned && <div className="text-[8px] text-foreground/20 mt-1 font-display uppercase tracking-wider">Locked</div>}
               </button>
             );
           })}
@@ -1626,12 +1626,12 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
           <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
             <div className="flex items-center gap-4">
               <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${isBlackTier ? "acct-black-icon" : "bg-white/[0.04] border-white/[0.08]"}`}>
-                {isBlackTier ? <Diamond className="w-5 h-5 text-white" /> : <Crown className="w-6 h-6 text-white/50" />}
+                {isBlackTier ? <Diamond className="w-5 h-5 text-foreground" /> : <Crown className="w-6 h-6 text-foreground/50" />}
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-lg font-display font-light text-white capitalize">{activeTier} Membership</h3>
-                  {user.isVerified && <BadgeCheck className="w-4 h-4 text-white/50" />}
+                  <h3 className="text-lg font-display font-light text-foreground capitalize">{activeTier} Membership</h3>
+                  {user.isVerified && <BadgeCheck className="w-4 h-4 text-foreground/50" />}
                   {isBlackTier && (
                     <span className="acct-black-badge">
                       <Diamond className="w-2.5 h-2.5" />
@@ -1639,7 +1639,7 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-white/30 font-light">{activeTier === "free" ? "No commitment · Upgrade anytime" : "Active · Renews monthly"}</div>
+                <div className="text-xs text-foreground/30 font-light">{activeTier === "free" ? "No commitment · Upgrade anytime" : "Active · Renews monthly"}</div>
               </div>
             </div>
             {activeTier !== "black" && (
@@ -1657,20 +1657,20 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
           </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Status</div>
-                <div className="text-xs text-white/60 font-light">Active</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display mb-1">Status</div>
+                <div className="text-xs text-foreground/60 font-light">Active</div>
               </div>
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Per Contest</div>
-                <div className="text-xs text-white/60 font-light">{getTierLimits(activeTier).perContest}</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display mb-1">Per Contest</div>
+                <div className="text-xs text-foreground/60 font-light">{getTierLimits(activeTier).perContest}</div>
               </div>
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Per Month</div>
-                <div className="text-xs text-white/60 font-light">{getTierLimits(activeTier).perMonth}</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display mb-1">Per Month</div>
+                <div className="text-xs text-foreground/60 font-light">{getTierLimits(activeTier).perMonth}</div>
               </div>
               <div className="p-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-                <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Voice Chat</div>
-                <div className="text-xs text-white/60 font-light">{activeTier === "silver" ? "Not included" : "Enabled"}</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display mb-1">Voice Chat</div>
+                <div className="text-xs text-foreground/60 font-light">{activeTier === "silver" ? "Not included" : "Enabled"}</div>
               </div>
             </div>
           </div>
@@ -1680,14 +1680,14 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
         <div className="card-shine" />
         <div className="relative z-[2]">
           <div className="flex items-center gap-3 mb-4">
-            <Check className="w-4 h-4 text-white/40" />
-            <h3 className="text-sm font-display font-light text-white">What's included in {currentPlan.name}</h3>
+            <Check className="w-4 h-4 text-foreground/40" />
+            <h3 className="text-sm font-display font-light text-foreground">What's included in {currentPlan.name}</h3>
           </div>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
             {currentPlan.features.map((f) => (
-              <li key={f} className="flex items-start gap-2.5 text-xs text-white/55 font-light">
+              <li key={f} className="flex items-start gap-2.5 text-xs text-foreground/55 font-light">
                 <div className="w-4 h-4 rounded-md bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0 mt-0.5">
-                  <Check className="w-2.5 h-2.5 text-white/40" />
+                  <Check className="w-2.5 h-2.5 text-foreground/40" />
                 </div>
                 <span>{f}</span>
               </li>
@@ -1700,8 +1700,8 @@ function SubscriptionTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => 
         <div className="acct-pricing-cta-left">
           <div className="acct-pricing-cta-icon"><Crown className="w-4 h-4" /></div>
           <div>
-            <div className="text-sm font-display text-white font-light">Compare All Plans</div>
-            <div className="text-[10px] text-white/35 font-light mt-0.5">Explore full features, perks and pricing for every tier</div>
+            <div className="text-sm font-display text-foreground font-light">Compare All Plans</div>
+            <div className="text-[10px] text-foreground/35 font-light mt-0.5">Explore full features, perks and pricing for every tier</div>
           </div>
         </div>
         <Link href="/pricing" className="acct-pricing-cta-btn">
@@ -1742,8 +1742,8 @@ function ReferralsTab({ user }: { user: any }) {
   return (
     <motion.div key="referrals" variants={tabFade} initial="hidden" animate="visible" exit="exit">
       <div className="flex items-center gap-3 mb-5">
-        <Share2 className="w-4 h-4 text-white/40" />
-        <h3 className="text-base font-display font-light text-white">Referrals</h3>
+        <Share2 className="w-4 h-4 text-foreground/40" />
+        <h3 className="text-base font-display font-light text-foreground">Referrals</h3>
       </div>
 
       {isLoading ? (
@@ -1756,11 +1756,11 @@ function ReferralsTab({ user }: { user: any }) {
           <div className="card-shine" />
           <div className="relative z-[2] flex flex-col items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center">
-              <Share2 className="w-6 h-6 text-white/25" />
+              <Share2 className="w-6 h-6 text-foreground/25" />
             </div>
             <div>
-              <h4 className="text-sm font-display font-light text-white mb-1">Not Enrolled in Referral Program</h4>
-              <p className="text-xs text-white/35 font-light leading-relaxed max-w-xs mx-auto">
+              <h4 className="text-sm font-display font-light text-foreground mb-1">Not Enrolled in Referral Program</h4>
+              <p className="text-xs text-foreground/35 font-light leading-relaxed max-w-xs mx-auto">
                 Join the X247 referral program to earn bonus entries and rewards every time a friend signs up through your link.
               </p>
             </div>
@@ -1769,9 +1769,9 @@ function ReferralsTab({ user }: { user: any }) {
               <span>Join Referral Program</span>
             </Link>
             <div className="mt-2 space-y-2 w-full max-w-xs text-left">
-              <div className="flex gap-3 text-xs text-white/40 font-light"><span className="text-white/20 font-mono">01</span><span>Apply to become a referral partner.</span></div>
-              <div className="flex gap-3 text-xs text-white/40 font-light"><span className="text-white/20 font-mono">02</span><span>Get your unique link after approval.</span></div>
-              <div className="flex gap-3 text-xs text-white/40 font-light"><span className="text-white/20 font-mono">03</span><span>Earn bonus entries per successful referral.</span></div>
+              <div className="flex gap-3 text-xs text-foreground/40 font-light"><span className="text-foreground/20 font-mono">01</span><span>Apply to become a referral partner.</span></div>
+              <div className="flex gap-3 text-xs text-foreground/40 font-light"><span className="text-foreground/20 font-mono">02</span><span>Get your unique link after approval.</span></div>
+              <div className="flex gap-3 text-xs text-foreground/40 font-light"><span className="text-foreground/20 font-mono">03</span><span>Earn bonus entries per successful referral.</span></div>
             </div>
           </div>
         </div>
@@ -1780,9 +1780,9 @@ function ReferralsTab({ user }: { user: any }) {
           <div className="glass-card p-6 mb-5">
             <div className="card-shine" />
             <div className="relative z-[2]">
-              <div className="text-[10px] uppercase tracking-wider font-display text-white/30 mb-2">Your Referral Code</div>
+              <div className="text-[10px] uppercase tracking-wider font-display text-foreground/30 mb-2">Your Referral Code</div>
               <div className="flex items-center gap-2 flex-wrap">
-                <code className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] font-mono text-sm text-white/85 flex-1 min-w-[160px] truncate">{refCode}</code>
+                <code className="px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] font-mono text-sm text-foreground/85 flex-1 min-w-[160px] truncate">{refCode}</code>
                 <button onClick={copy} className="acct-copy-btn">
                   {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copied ? "Copied" : "Copy Link"}</span>
@@ -1790,16 +1790,16 @@ function ReferralsTab({ user }: { user: any }) {
               </div>
               <div className="mt-4 grid grid-cols-3 gap-3">
                 <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Total Referrals</div>
-                  <div className="text-lg font-display font-light text-white">{stats?.totalReferrals ?? 0}</div>
+                  <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display mb-1">Total Referrals</div>
+                  <div className="text-lg font-display font-light text-foreground">{stats?.totalReferrals ?? 0}</div>
                 </div>
                 <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Conversions</div>
-                  <div className="text-lg font-display font-light text-white">{stats?.conversions ?? 0}</div>
+                  <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display mb-1">Conversions</div>
+                  <div className="text-lg font-display font-light text-foreground">{stats?.conversions ?? 0}</div>
                 </div>
                 <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-                  <div className="text-[9px] text-white/25 uppercase tracking-wider font-display mb-1">Earnings</div>
-                  <div className="text-lg font-display font-light text-white">₹{stats?.earnings ?? 0}</div>
+                  <div className="text-[9px] text-foreground/25 uppercase tracking-wider font-display mb-1">Earnings</div>
+                  <div className="text-lg font-display font-light text-foreground">₹{stats?.earnings ?? 0}</div>
                 </div>
               </div>
               <Link href="/referral-dashboard" className="mt-5 acct-compare-link inline-flex">
@@ -1813,13 +1813,13 @@ function ReferralsTab({ user }: { user: any }) {
             <div className="card-shine" />
             <div className="relative z-[2]">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-3.5 h-3.5 text-white/40" />
-                <h4 className="text-sm font-display font-light text-white">How it works</h4>
+                <Sparkles className="w-3.5 h-3.5 text-foreground/40" />
+                <h4 className="text-sm font-display font-light text-foreground">How it works</h4>
               </div>
-              <ol className="space-y-2 text-xs text-white/50 font-light">
-                <li className="flex gap-3"><span className="text-white/30 font-mono">01</span><span>Share your unique link with friends and on social.</span></li>
-                <li className="flex gap-3"><span className="text-white/30 font-mono">02</span><span>They register and complete partner tasks for entries.</span></li>
-                <li className="flex gap-3"><span className="text-white/30 font-mono">03</span><span>You earn bonus entries and rewards for every conversion.</span></li>
+              <ol className="space-y-2 text-xs text-foreground/50 font-light">
+                <li className="flex gap-3"><span className="text-foreground/30 font-mono">01</span><span>Share your unique link with friends and on social.</span></li>
+                <li className="flex gap-3"><span className="text-foreground/30 font-mono">02</span><span>They register and complete partner tasks for entries.</span></li>
+                <li className="flex gap-3"><span className="text-foreground/30 font-mono">03</span><span>You earn bonus entries and rewards for every conversion.</span></li>
               </ol>
             </div>
           </div>
@@ -1845,8 +1845,8 @@ function BillingTab({ user }: { user: any }) {
   return (
     <motion.div key="billing" variants={tabFade} initial="hidden" animate="visible" exit="exit">
       <div className="flex items-center gap-3 mb-5">
-        <Receipt className="w-4 h-4 text-white/40" />
-        <h3 className="text-base font-display font-light text-white">Billing</h3>
+        <Receipt className="w-4 h-4 text-foreground/40" />
+        <h3 className="text-base font-display font-light text-foreground">Billing</h3>
       </div>
 
       {/* Summary cards */}
@@ -1859,9 +1859,9 @@ function BillingTab({ user }: { user: any }) {
           <div key={c.label} className="glass-card p-4">
             <div className="card-shine" />
             <div className="relative z-[2]">
-              <div className="flex items-center gap-2 mb-2"><c.icon className="w-3.5 h-3.5 text-white/30" /><div className="text-[9px] uppercase tracking-wider font-display text-white/30">{c.label}</div></div>
-              <div className="text-sm font-display font-light text-white capitalize">{c.value}</div>
-              <div className="text-[10px] text-white/35 font-light mt-0.5">{c.sub}</div>
+              <div className="flex items-center gap-2 mb-2"><c.icon className="w-3.5 h-3.5 text-foreground/30" /><div className="text-[9px] uppercase tracking-wider font-display text-foreground/30">{c.label}</div></div>
+              <div className="text-sm font-display font-light text-foreground capitalize">{c.value}</div>
+              <div className="text-[10px] text-foreground/35 font-light mt-0.5">{c.sub}</div>
             </div>
           </div>
         ))}
@@ -1873,34 +1873,34 @@ function BillingTab({ user }: { user: any }) {
         <div className="relative z-[2]">
           <div className="flex items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
-              <CreditCard className="w-3.5 h-3.5 text-white/40" />
-              <h4 className="text-sm font-display font-light text-white">Payment Method</h4>
+              <CreditCard className="w-3.5 h-3.5 text-foreground/40" />
+              <h4 className="text-sm font-display font-light text-foreground">Payment Method</h4>
             </div>
-            <button className="text-[10px] text-white/25 font-light hover:text-white/50 transition-colors flex items-center gap-1">
+            <button className="text-[10px] text-foreground/25 font-light hover:text-foreground/50 transition-colors flex items-center gap-1">
               <Edit3 className="w-3 h-3" /> Manage
             </button>
           </div>
           {isFree ? (
             <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] border-dashed">
-              <CreditCard className="w-5 h-5 text-white/15" />
+              <CreditCard className="w-5 h-5 text-foreground/15" />
               <div>
-                <div className="text-xs text-white/35 font-light">No payment method on file</div>
-                <div className="text-[10px] text-white/20 font-light mt-0.5">Add a card when you upgrade to a paid plan</div>
+                <div className="text-xs text-foreground/35 font-light">No payment method on file</div>
+                <div className="text-[10px] text-foreground/20 font-light mt-0.5">Add a card when you upgrade to a paid plan</div>
               </div>
             </div>
           ) : (
             <div className="acct-payment-card">
               <div className="acct-payment-card-inner">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-[9px] text-white/25 uppercase tracking-widest font-display">Saved Card</div>
+                  <div className="text-[9px] text-foreground/25 uppercase tracking-widest font-display">Saved Card</div>
                   <div className="flex gap-1">
                     <div className="w-4 h-4 rounded-full bg-white/10" />
                     <div className="w-4 h-4 rounded-full bg-white/20 -ml-2" />
                   </div>
                 </div>
-                <div className="text-sm font-mono text-white/50 tracking-wider mb-3">•••• •••• •••• 4242</div>
+                <div className="text-sm font-mono text-foreground/50 tracking-wider mb-3">•••• •••• •••• 4242</div>
                 <div className="flex items-center justify-between">
-                  <div className="text-[9px] text-white/20 font-light">Expires 12/27</div>
+                  <div className="text-[9px] text-foreground/20 font-light">Expires 12/27</div>
                   <div className="text-[9px] text-emerald-400/50 flex items-center gap-1"><Check className="w-2.5 h-2.5" />Active</div>
                 </div>
               </div>
@@ -1914,26 +1914,26 @@ function BillingTab({ user }: { user: any }) {
         <div className="card-shine" />
         <div className="relative z-[2]">
           <div className="flex items-center gap-2 mb-4">
-            <History className="w-3.5 h-3.5 text-white/40" />
-            <h4 className="text-sm font-display font-light text-white">Invoice History</h4>
-            <span className="text-[10px] text-white/25 font-light ml-auto">{invoices.length} {invoices.length === 1 ? "invoice" : "invoices"}</span>
+            <History className="w-3.5 h-3.5 text-foreground/40" />
+            <h4 className="text-sm font-display font-light text-foreground">Invoice History</h4>
+            <span className="text-[10px] text-foreground/25 font-light ml-auto">{invoices.length} {invoices.length === 1 ? "invoice" : "invoices"}</span>
           </div>
           {invoices.length > 0 ? (
             <div className="space-y-2">
               {invoices.map((inv) => (
                 <div key={inv.id} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.03] transition-all group">
                   <div className="w-8 h-8 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center shrink-0">
-                    <Receipt className="w-3.5 h-3.5 text-white/30" />
+                    <Receipt className="w-3.5 h-3.5 text-foreground/30" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs text-white/65 font-mono truncate">{inv.id}</div>
-                    <div className="text-[10px] text-white/30 font-light capitalize">{inv.plan} · {inv.date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+                    <div className="text-xs text-foreground/65 font-mono truncate">{inv.id}</div>
+                    <div className="text-[10px] text-foreground/30 font-light capitalize">{inv.plan} · {inv.date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="text-[9px] text-emerald-400/50 bg-emerald-400/[0.06] border border-emerald-400/[0.12] px-2 py-0.5 rounded-full">Paid</span>
-                    <div className="text-sm text-white/75 font-display font-light">₹{inv.amount}</div>
+                    <div className="text-sm text-foreground/75 font-display font-light">₹{inv.amount}</div>
                     <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-white/[0.04] border border-white/[0.06] rounded-lg">
-                      <ArrowRight className="w-3 h-3 text-white/30" />
+                      <ArrowRight className="w-3 h-3 text-foreground/30" />
                     </button>
                   </div>
                 </div>
@@ -1942,10 +1942,10 @@ function BillingTab({ user }: { user: any }) {
           ) : (
             <div className="text-center py-8">
               <div className="w-10 h-10 rounded-2xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center mx-auto mb-3">
-                <Receipt className="w-4 h-4 text-white/20" />
+                <Receipt className="w-4 h-4 text-foreground/20" />
               </div>
-              <div className="text-xs text-white/40 font-light">No invoices yet</div>
-              <div className="text-[10px] text-white/25 font-light mt-1">Upgrade to a paid plan to see invoices here</div>
+              <div className="text-xs text-foreground/40 font-light">No invoices yet</div>
+              <div className="text-[10px] text-foreground/25 font-light mt-1">Upgrade to a paid plan to see invoices here</div>
             </div>
           )}
         </div>
@@ -1975,9 +1975,9 @@ function EntriesTab({ entries }: { entries: any[] }) {
   return (
     <motion.div key="entries" variants={tabFade} initial="hidden" animate="visible" exit="exit">
       <div className="flex items-center gap-3 mb-4">
-        <Trophy className="w-4 h-4 text-white/40" />
-        <h3 className="text-base font-display font-light text-white">Giveaway Entries</h3>
-        <span className="text-[10px] text-white/20 font-light ml-auto">{entries.length} total</span>
+        <Trophy className="w-4 h-4 text-foreground/40" />
+        <h3 className="text-base font-display font-light text-foreground">Giveaway Entries</h3>
+        <span className="text-[10px] text-foreground/20 font-light ml-auto">{entries.length} total</span>
       </div>
 
       {entries.length > 0 && (
@@ -1985,12 +1985,12 @@ function EntriesTab({ entries }: { entries: any[] }) {
           <div className="guest-input-wrap">
             <Search className="guest-input-icon" />
             <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search by contest or entry code…" className="guest-input" />
-            {query && <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40"><X className="w-3.5 h-3.5" /></button>}
+            {query && <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/20 hover:text-foreground/40"><X className="w-3.5 h-3.5" /></button>}
           </div>
           <div className="flex gap-2">
             {FILTERS.map(f => (
               <button key={f.id} onClick={() => setFilter(f.id)}
-                className={`px-3 py-1.5 rounded-lg text-[10px] font-display font-medium transition-all ${filter === f.id ? "bg-white/[0.08] border border-white/[0.14] text-white/80" : "bg-white/[0.02] border border-white/[0.05] text-white/35 hover:bg-white/[0.04]"}`}>
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-display font-medium transition-all ${filter === f.id ? "bg-white/[0.08] border border-white/[0.14] text-foreground/80" : "bg-white/[0.02] border border-white/[0.05] text-foreground/35 hover:bg-white/[0.04]"}`}>
                 {f.label}
               </button>
             ))}
@@ -2003,15 +2003,15 @@ function EntriesTab({ entries }: { entries: any[] }) {
           {filtered.map((entry: any) => (
             <div key={entry.id} className="acct-entry-row">
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${entry.status === "won" ? "bg-amber-400/10 border border-amber-400/20" : "bg-white/[0.03] border border-white/[0.06]"}`}>
-                <Trophy className={`w-3.5 h-3.5 ${entry.status === "won" ? "text-amber-400/60" : "text-white/25"}`} />
+                <Trophy className={`w-3.5 h-3.5 ${entry.status === "won" ? "text-amber-400/60" : "text-foreground/25"}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-light text-white/65 truncate">{entry.contestName}</div>
-                <div className="flex items-center gap-2 text-[10px] text-white/25 font-light mt-0.5 flex-wrap">
+                <div className="text-sm font-light text-foreground/65 truncate">{entry.contestName}</div>
+                <div className="flex items-center gap-2 text-[10px] text-foreground/25 font-light mt-0.5 flex-wrap">
                   <span className="font-mono bg-white/[0.03] px-1.5 py-0.5 rounded">{entry.entryCode}</span>
-                  <span className="text-white/10">·</span>
+                  <span className="text-foreground/10">·</span>
                   <span>{entry.entryCount} {entry.entryCount === 1 ? "entry" : "entries"}</span>
-                  <span className="text-white/10">·</span>
+                  <span className="text-foreground/10">·</span>
                   <span>{entry.partnersCompleted} partners</span>
                 </div>
               </div>
@@ -2024,7 +2024,7 @@ function EntriesTab({ entries }: { entries: any[] }) {
                   <div className="text-[9px] text-amber-400/50 font-light mt-0.5 max-w-[90px] truncate">{entry.prize}</div>
                 )}
                 {!(entry.status === "won" && entry.prize) && (
-                  <div className="text-[9px] text-white/20 font-light mt-0.5">
+                  <div className="text-[9px] text-foreground/20 font-light mt-0.5">
                     {entry.submittedAt ? new Date(entry.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
                   </div>
                 )}
@@ -2034,16 +2034,16 @@ function EntriesTab({ entries }: { entries: any[] }) {
         </div>
       ) : entries.length > 0 ? (
         <div className="py-12 text-center">
-          <div className="text-[11px] text-white/25 font-light">No entries match your search</div>
+          <div className="text-[11px] text-foreground/25 font-light">No entries match your search</div>
         </div>
       ) : (
         <div className="glass-card p-10 sm:p-14 text-center">
           <div className="card-shine" />
           <div className="relative z-[2]">
-            <Gift className="w-12 h-12 text-white/10 mx-auto mb-4" />
-            <h4 className="text-lg font-display font-light text-white/40 mb-2">No Entries Yet</h4>
-            <p className="text-sm text-white/25 font-light mb-6">You haven't entered any giveaway contests yet</p>
-            <Link href="/giveaway" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white/60 font-light hover:bg-white/[0.08] transition-all">
+            <Gift className="w-12 h-12 text-foreground/10 mx-auto mb-4" />
+            <h4 className="text-lg font-display font-light text-foreground/40 mb-2">No Entries Yet</h4>
+            <p className="text-sm text-foreground/25 font-light mb-6">You haven't entered any giveaway contests yet</p>
+            <Link href="/giveaway" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-foreground/60 font-light hover:bg-white/[0.08] transition-all">
               <Sparkles className="w-4 h-4" />
               Browse Contests
               <ArrowRight className="w-4 h-4" />
@@ -2143,8 +2143,8 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
       <div className="space-y-6">
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <Palette className="w-4 h-4 text-white/40" />
-            <h3 className="text-base font-display font-light text-white">Appearance</h3>
+            <Palette className="w-4 h-4 text-foreground/40" />
+            <h3 className="text-base font-display font-light text-foreground">Appearance</h3>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {THEMES.map((t) => {
@@ -2161,7 +2161,7 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                 >
                   {isActive && (
                     <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
-                      <Check className="w-3 h-3 text-white/80" />
+                      <Check className="w-3 h-3 text-foreground/80" />
                     </div>
                   )}
                   <div className="flex gap-1 mb-2.5 h-7 rounded-lg overflow-hidden border border-white/[0.06]">
@@ -2170,8 +2170,8 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                     <div className="flex-1" style={{ background: t.preview.border }} />
                     <div className="w-1" style={{ background: t.preview.accent }} />
                   </div>
-                  <div className="text-[10px] font-display font-medium text-white/80">{t.name}</div>
-                  <div className="text-[8px] text-white/30 font-light leading-relaxed mt-0.5">{t.description}</div>
+                  <div className="text-[10px] font-display font-medium text-foreground/80">{t.name}</div>
+                  <div className="text-[8px] text-foreground/30 font-light leading-relaxed mt-0.5">{t.description}</div>
                 </button>
               );
             })}
@@ -2182,14 +2182,14 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
 
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <Bell className="w-4 h-4 text-white/40" />
-            <h3 className="text-base font-display font-light text-white">Notifications</h3>
+            <Bell className="w-4 h-4 text-foreground/40" />
+            <h3 className="text-base font-display font-light text-foreground">Notifications</h3>
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl">
               <div>
-                <div className="text-sm text-white/60 font-light">Contest alerts</div>
-                <div className="text-[10px] text-white/25 font-light">Get notified about new giveaways</div>
+                <div className="text-sm text-foreground/60 font-light">Contest alerts</div>
+                <div className="text-[10px] text-foreground/25 font-light">Get notified about new giveaways</div>
               </div>
               <button
                 onClick={toggleContestAlerts}
@@ -2200,8 +2200,8 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
             </div>
             <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl">
               <div>
-                <div className="text-sm text-white/60 font-light">Winner announcements</div>
-                <div className="text-[10px] text-white/25 font-light">Be first to know when winners are drawn</div>
+                <div className="text-sm text-foreground/60 font-light">Winner announcements</div>
+                <div className="text-[10px] text-foreground/25 font-light">Be first to know when winners are drawn</div>
               </div>
               <button
                 onClick={toggleWinnerAnnouncements}
@@ -2213,8 +2213,8 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
             {pushSupported && (
               <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl">
                 <div>
-                  <div className="text-sm text-white/60 font-light">Push notifications</div>
-                  <div className="text-[10px] text-white/25 font-light">Receive alerts even when the page is closed</div>
+                  <div className="text-sm text-foreground/60 font-light">Push notifications</div>
+                  <div className="text-[10px] text-foreground/25 font-light">Receive alerts even when the page is closed</div>
                 </div>
                 <button
                   onClick={togglePush}
@@ -2231,8 +2231,8 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
 
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <Shield className="w-4 h-4 text-white/40" />
-            <h3 className="text-base font-display font-light text-white">Security</h3>
+            <Shield className="w-4 h-4 text-foreground/40" />
+            <h3 className="text-base font-display font-light text-foreground">Security</h3>
           </div>
           <div className="space-y-2">
             {/* Change password — expandable */}
@@ -2242,12 +2242,12 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                 onClick={() => { setPwOpen(p => !p); setPwError(""); setPwSuccess(false); }}
                 className="w-full flex items-center gap-3 p-4 text-left hover:bg-white/[0.03] transition-all"
               >
-                <Key className="w-4 h-4 text-white/25" />
+                <Key className="w-4 h-4 text-foreground/25" />
                 <div className="flex-1">
-                  <div className="text-sm text-white/60 font-light">Change Password</div>
-                  <div className="text-[10px] text-white/25 font-light">Update your login credentials</div>
+                  <div className="text-sm text-foreground/60 font-light">Change Password</div>
+                  <div className="text-[10px] text-foreground/25 font-light">Update your login credentials</div>
                 </div>
-                {pwOpen ? <ChevronUp className="w-4 h-4 text-white/20" /> : <ChevronDown className="w-4 h-4 text-white/20" />}
+                {pwOpen ? <ChevronUp className="w-4 h-4 text-foreground/20" /> : <ChevronDown className="w-4 h-4 text-foreground/20" />}
               </button>
               <AnimatePresence>
                 {pwOpen && (
@@ -2265,7 +2265,7 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                             <Lock className="guest-input-icon" />
                             <input type={showCurrentPw ? "text" : "password"} placeholder="Current password" value={pwForm.current}
                               onChange={e => setPwForm(f => ({ ...f, current: e.target.value }))} className="guest-input pr-10" />
-                            <button type="button" onClick={() => setShowCurrentPw(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40 transition-colors">
+                            <button type="button" onClick={() => setShowCurrentPw(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/20 hover:text-foreground/40 transition-colors">
                               {showCurrentPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
                           </div>
@@ -2273,7 +2273,7 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                             <Lock className="guest-input-icon" />
                             <input type={showNewPw ? "text" : "password"} placeholder="New password (min 6 chars)" value={pwForm.next}
                               onChange={e => setPwForm(f => ({ ...f, next: e.target.value }))} className="guest-input pr-10" />
-                            <button type="button" onClick={() => setShowNewPw(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/40 transition-colors">
+                            <button type="button" onClick={() => setShowNewPw(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/20 hover:text-foreground/40 transition-colors">
                               {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
                           </div>
@@ -2287,7 +2287,7 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                               {[6, 8, 12].map((len, i) => (
                                 <div key={len} className={`flex-1 h-1 rounded-full transition-all ${pwForm.next.length >= len ? "bg-white/40" : "bg-white/[0.05]"}`} />
                               ))}
-                              <span className="text-[9px] text-white/25 font-light ml-1">{pwForm.next.length < 6 ? "Weak" : pwForm.next.length < 12 ? "Fair" : "Strong"}</span>
+                              <span className="text-[9px] text-foreground/25 font-light ml-1">{pwForm.next.length < 6 ? "Weak" : pwForm.next.length < 12 ? "Fair" : "Strong"}</span>
                             </div>
                           )}
                           {pwError && (
@@ -2297,7 +2297,7 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
                             </div>
                           )}
                           <button type="submit" disabled={pwSaving}
-                            className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white/70 font-light hover:bg-white/[0.08] transition-all disabled:opacity-30">
+                            className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-foreground/70 font-light hover:bg-white/[0.08] transition-all disabled:opacity-30">
                             {pwSaving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Key className="w-3.5 h-3.5" />}
                             {pwSaving ? "Updating…" : "Update Password"}
                           </button>
@@ -2311,13 +2311,13 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
 
             <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl opacity-60 cursor-not-allowed">
               <div className="flex items-center gap-3">
-                <Fingerprint className="w-4 h-4 text-white/25" />
+                <Fingerprint className="w-4 h-4 text-foreground/25" />
                 <div>
-                  <div className="text-sm text-white/60 font-light">Two-Factor Authentication</div>
-                  <div className="text-[10px] text-white/25 font-light">Add an extra layer of security — coming soon</div>
+                  <div className="text-sm text-foreground/60 font-light">Two-Factor Authentication</div>
+                  <div className="text-[10px] text-foreground/25 font-light">Add an extra layer of security — coming soon</div>
                 </div>
               </div>
-              <span className="text-[9px] text-white/20 font-display uppercase tracking-wider px-2 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg">Soon</span>
+              <span className="text-[9px] text-foreground/20 font-display uppercase tracking-wider px-2 py-1 bg-white/[0.03] border border-white/[0.06] rounded-lg">Soon</span>
             </div>
           </div>
         </div>
@@ -2327,19 +2327,19 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
         <div>
           <div className="flex items-center gap-3 mb-4">
             <AlertTriangle className="w-4 h-4 text-red-400/40" />
-            <h3 className="text-base font-display font-light text-white">Account</h3>
+            <h3 className="text-base font-display font-light text-foreground">Account</h3>
           </div>
           <div className="space-y-2">
             <button
               onClick={onLogout}
               className="w-full flex items-center gap-3 p-4 bg-white/[0.02] border border-white/[0.06] rounded-xl text-left hover:bg-white/[0.04] transition-all group"
             >
-              <LogOut className="w-4 h-4 text-white/25 group-hover:text-white/40 transition-colors" />
+              <LogOut className="w-4 h-4 text-foreground/25 group-hover:text-foreground/40 transition-colors" />
               <div>
-                <div className="text-sm text-white/60 font-light">Sign out</div>
-                <div className="text-[10px] text-white/25 font-light">Log out of your account on this device</div>
+                <div className="text-sm text-foreground/60 font-light">Sign out</div>
+                <div className="text-[10px] text-foreground/25 font-light">Log out of your account on this device</div>
               </div>
-              <ChevronRight className="w-4 h-4 text-white/15 ml-auto" />
+              <ChevronRight className="w-4 h-4 text-foreground/15 ml-auto" />
             </button>
             <button
               className="w-full flex items-center gap-3 p-4 bg-red-500/[0.03] border border-red-500/[0.08] rounded-xl text-left hover:bg-red-500/[0.05] transition-all group opacity-60 cursor-not-allowed"
@@ -2348,7 +2348,7 @@ function SettingsTab({ user, onLogout }: { user: any; onLogout: () => void }) {
               <Trash2 className="w-4 h-4 text-red-400/30" />
               <div>
                 <div className="text-sm text-red-400/50 font-light">Delete Account</div>
-                <div className="text-[10px] text-white/20 font-light">Permanently remove your account and all data — contact support</div>
+                <div className="text-[10px] text-foreground/20 font-light">Permanently remove your account and all data — contact support</div>
               </div>
             </button>
           </div>
@@ -2683,7 +2683,7 @@ export default function Account() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-foreground">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -2747,7 +2747,7 @@ export default function Account() {
                   transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   className="glass-pill-badge mb-4 sm:mb-6"
                 >
-                  <Shield className="w-3 h-3 text-white/50 mr-2" />
+                  <Shield className="w-3 h-3 text-foreground/50 mr-2" />
                   X247 Rewards Platform
                 </motion.div>
 
@@ -2756,7 +2756,7 @@ export default function Account() {
                       initial={{ opacity: 0, y: 24 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                      className="text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-display font-light text-white mb-3 sm:mb-4 tracking-tight leading-[1.15] px-4 sm:px-8"
+                      className="text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] font-display font-light text-foreground mb-3 sm:mb-4 tracking-tight leading-[1.15] px-4 sm:px-8"
                     >
                       <span className="text-gradient" style={{ paddingBottom: "0.12em", display: "inline-block" }}>Your Rewards Hub</span>
                     </motion.h1>
@@ -2765,7 +2765,7 @@ export default function Account() {
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                      className="text-sm sm:text-base text-white/40 font-light max-w-lg mx-auto leading-relaxed mb-8 sm:mb-10"
+                      className="text-sm sm:text-base text-foreground/40 font-light max-w-lg mx-auto leading-relaxed mb-8 sm:mb-10"
                     >
                       Enter daily giveaways, track your wins, and unlock exclusive membership perks — all in one place.
                     </motion.p>

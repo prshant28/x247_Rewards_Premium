@@ -92,13 +92,13 @@ function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
         <div className="card-shine" />
         <div className="relative z-[2]">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-sm font-display font-light text-white">{q}</span>
+            <span className="text-sm font-display font-light text-foreground">{q}</span>
             <motion.div
               animate={{ rotate: open ? 180 : 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="shrink-0"
             >
-              <ChevronDown className="w-4 h-4 text-white/30" />
+              <ChevronDown className="w-4 h-4 text-foreground/30" />
             </motion.div>
           </div>
           <AnimatePresence>
@@ -110,7 +110,7 @@ function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="overflow-hidden"
               >
-                <p className="text-xs text-white/35 font-light leading-relaxed mt-3 pt-3 border-t border-white/[0.04]">
+                <p className="text-xs text-foreground/35 font-light leading-relaxed mt-3 pt-3 border-t border-white/[0.04]">
                   {a}
                 </p>
               </motion.div>
@@ -124,7 +124,7 @@ function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
 
 export default function Community() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-foreground">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -133,13 +133,13 @@ export default function Community() {
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-16 sm:mb-24">
             <div className="glass-pill-badge mb-6">
-              <Users className="w-3 h-3 text-white/50 mr-2" />
+              <Users className="w-3 h-3 text-foreground/50 mr-2" />
               Community
             </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight">
               Join the Community
             </h1>
-            <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+            <p className="text-foreground/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
               Connect with thousands of members, get instant contest updates, and never miss a giveaway opportunity.
             </p>
           </motion.div>
@@ -151,11 +151,11 @@ export default function Community() {
                   <div className="glass-card p-4 sm:p-5 text-center">
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-2 text-white/30">
+                      <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-2 text-foreground/30">
                         {stat.icon}
                       </div>
-                      <div className="text-lg sm:text-xl font-display font-light text-white">{stat.value}</div>
-                      <div className="text-[9px] text-white/25 uppercase tracking-widest font-display mt-0.5">{stat.label}</div>
+                      <div className="text-lg sm:text-xl font-display font-light text-foreground">{stat.value}</div>
+                      <div className="text-[9px] text-foreground/25 uppercase tracking-widest font-display mt-0.5">{stat.label}</div>
                     </div>
                   </div>
                 </motion.div>
@@ -166,7 +166,7 @@ export default function Community() {
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3} className="mb-10">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-              <h2 className="text-lg sm:text-xl font-display font-light text-white">Connect With Us</h2>
+              <h2 className="text-lg sm:text-xl font-display font-light text-foreground">Connect With Us</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {communityLinks.map((item, i) => (
@@ -176,18 +176,18 @@ export default function Community() {
                       <div className="card-shine" />
                       <div className="relative z-[2] p-5 sm:p-6">
                         <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0 text-white/40">
+                          <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0 text-foreground/40">
                             {item.icon}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-base font-display font-light text-white">{item.name}</h3>
-                              <ArrowRight className="w-3.5 h-3.5 text-white/20 group-hover:translate-x-0.5 group-hover:text-white/40 transition-all" />
+                              <h3 className="text-base font-display font-light text-foreground">{item.name}</h3>
+                              <ArrowRight className="w-3.5 h-3.5 text-foreground/20 group-hover:translate-x-0.5 group-hover:text-foreground/40 transition-all" />
                             </div>
-                            <p className="text-xs text-white/35 font-light leading-relaxed mb-2">{item.description}</p>
+                            <p className="text-xs text-foreground/35 font-light leading-relaxed mb-2">{item.description}</p>
                             <div className="flex items-center gap-1.5">
-                              <Users className="w-3 h-3 text-white/20" />
-                              <span className="text-[10px] text-white/25 font-light">{item.members} members</span>
+                              <Users className="w-3 h-3 text-foreground/20" />
+                              <span className="text-[10px] text-foreground/25 font-light">{item.members} members</span>
                             </div>
                           </div>
                         </div>
@@ -202,7 +202,7 @@ export default function Community() {
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={8} className="mb-10">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-              <h2 className="text-lg sm:text-xl font-display font-light text-white">Frequently Asked Questions</h2>
+              <h2 className="text-lg sm:text-xl font-display font-light text-foreground">Frequently Asked Questions</h2>
             </div>
             <div className="space-y-3">
               {faqs.map((faq, i) => (
@@ -215,7 +215,7 @@ export default function Community() {
             <div className="glass-card p-6 sm:p-8">
               <div className="card-shine" />
               <div className="relative z-[2]">
-                <h3 className="text-lg sm:text-xl font-display font-light text-white mb-3 text-center">Community Guidelines</h3>
+                <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-3 text-center">Community Guidelines</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   {[
                     { icon: <Shield className="w-4 h-4" />, title: "Be Respectful", desc: "Treat every member with kindness and respect." },
@@ -224,12 +224,12 @@ export default function Community() {
                     { icon: <Sparkles className="w-4 h-4" />, title: "Stay Active", desc: "Engage regularly to never miss flash contests and bonus entries." },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0 text-white/30">
+                      <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0 text-foreground/30">
                         {item.icon}
                       </div>
                       <div>
-                        <h4 className="text-sm font-display font-light text-white mb-0.5">{item.title}</h4>
-                        <p className="text-[11px] text-white/30 font-light">{item.desc}</p>
+                        <h4 className="text-sm font-display font-light text-foreground mb-0.5">{item.title}</h4>
+                        <p className="text-[11px] text-foreground/30 font-light">{item.desc}</p>
                       </div>
                     </div>
                   ))}

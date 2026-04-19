@@ -317,7 +317,7 @@ export default function PublicProfile() {
         <div className="flex flex-col items-center gap-4">
           <motion.div className="w-8 h-8 border border-white/15 border-t-white/50 rounded-full"
             animate={{ rotate: 360 }} transition={{ repeat: Infinity, ease: "linear", duration: 1 }} />
-          <span className="text-[11px] text-white/20 font-light tracking-widest uppercase">Loading profile</span>
+          <span className="text-[11px] text-foreground/20 font-light tracking-widest uppercase">Loading profile</span>
         </div>
       </div>
     );
@@ -330,11 +330,11 @@ export default function PublicProfile() {
         <div className="noise-overlay" />
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-3xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-7 h-7 text-white/20" />
+            <Shield className="w-7 h-7 text-foreground/20" />
           </div>
-          <h1 className="text-xl font-display font-light text-white mb-2">Profile Not Found</h1>
-          <p className="text-sm text-white/30 font-light mb-6 leading-relaxed">This profile is private or doesn't exist yet.</p>
-          <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.06] border border-white/[0.08] text-sm text-white/60 hover:text-white/90 transition-all">
+          <h1 className="text-xl font-display font-light text-foreground mb-2">Profile Not Found</h1>
+          <p className="text-sm text-foreground/30 font-light mb-6 leading-relaxed">This profile is private or doesn't exist yet.</p>
+          <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.06] border border-white/[0.08] text-sm text-foreground/60 hover:text-foreground/90 transition-all">
             <ArrowRight className="w-4 h-4 rotate-180" /> Back to Home
           </Link>
         </motion.div>
@@ -349,7 +349,7 @@ export default function PublicProfile() {
   const nextNeeded = 500 - xpInLevel;
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -381,7 +381,7 @@ export default function PublicProfile() {
                   )}
                 </div>
                 <div className="prof-id-avatar-verified">
-                  <BadgeCheck className="w-3 h-3 text-white" />
+                  <BadgeCheck className="w-3 h-3 text-foreground" />
                 </div>
               </div>
 
@@ -520,7 +520,7 @@ export default function PublicProfile() {
                 className="pub2-card"
               >
                 <div className="pub2-card-head">
-                  <Sparkles className="w-3.5 h-3.5 text-white/30" />
+                  <Sparkles className="w-3.5 h-3.5 text-foreground/30" />
                   <span className="pub2-card-title">Level & XP</span>
                   <span className="pub2-card-count">LVL {level}</span>
                 </div>
@@ -554,7 +554,7 @@ export default function PublicProfile() {
                   className="pub2-card"
                 >
                   <div className="pub2-card-head">
-                    <Quote className="w-3.5 h-3.5 text-white/30" />
+                    <Quote className="w-3.5 h-3.5 text-foreground/30" />
                     <span className="pub2-card-title">About</span>
                   </div>
                   <blockquote className="pub2-bio-block">
@@ -574,7 +574,7 @@ export default function PublicProfile() {
                 className="pub2-card pub2-discover-card"
               >
                 <div className="pub2-card-head">
-                  <Users className="w-3.5 h-3.5 text-white/30" />
+                  <Users className="w-3.5 h-3.5 text-foreground/30" />
                   <span className="pub2-card-title">Community</span>
                 </div>
                 <p className="pub2-discover-desc">
@@ -615,7 +615,7 @@ export default function PublicProfile() {
                 >
                   <div className="pub2-feat-ambient" />
                   <div className="pub2-card-head">
-                    <Trophy className="w-3.5 h-3.5 text-white/30" />
+                    <Trophy className="w-3.5 h-3.5 text-foreground/30" />
                     <span className="pub2-card-title">Featured Achievement</span>
                   </div>
                   <div className="pub2-feat-badge-v2">
@@ -663,11 +663,11 @@ export default function PublicProfile() {
                 className="pub2-card"
               >
                 <div className="pub2-card-head">
-                  <Award className="w-3.5 h-3.5 text-white/30" />
+                  <Award className="w-3.5 h-3.5 text-foreground/30" />
                   <span className="pub2-card-title">Badges & Achievements</span>
                   {earnedBadges.length > 0 && <span className="pub2-card-count">{earnedBadges.length}</span>}
                 </div>
-                <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
+                <p className="text-[11px] text-foreground/25 font-light mb-4 leading-relaxed">
                   Tap a badge to learn more. Keep participating to unlock more.
                 </p>
                 <div className="pub2-badges-grid">
@@ -690,11 +690,11 @@ export default function PublicProfile() {
                 className="pub2-card"
               >
                 <div className="pub2-card-head">
-                  <Flame className="w-3.5 h-3.5 text-white/30" />
+                  <Flame className="w-3.5 h-3.5 text-foreground/30" />
                   <span className="pub2-card-title">Activity Map</span>
                   <span className="pub2-card-count">{profile.stats?.daysActive ?? 0}d</span>
                 </div>
-                <p className="text-[11px] text-white/25 font-light mb-4 leading-relaxed">
+                <p className="text-[11px] text-foreground/25 font-light mb-4 leading-relaxed">
                   Last 14 weeks of giveaway activity. Brighter cells = more entries.
                 </p>
                 <div className="overflow-x-auto flex justify-center">
@@ -704,11 +704,11 @@ export default function PublicProfile() {
                   />
                 </div>
                 <div className="flex items-center justify-end gap-1.5 mt-3">
-                  <span className="text-[9px] text-white/20 font-light">Less</span>
+                  <span className="text-[9px] text-foreground/20 font-light">Less</span>
                   {[0.03, 0.10, 0.20, 0.35].map((op, i) => (
                     <div key={i} className="w-[9px] h-[9px] rounded-[2px] bg-white" style={{ opacity: op }} />
                   ))}
-                  <span className="text-[9px] text-white/20 font-light">More</span>
+                  <span className="text-[9px] text-foreground/20 font-light">More</span>
                 </div>
               </motion.div>
 
@@ -721,7 +721,7 @@ export default function PublicProfile() {
                   className="pub2-card"
                 >
                   <div className="pub2-card-head">
-                    <Zap className="w-3.5 h-3.5 text-white/30" />
+                    <Zap className="w-3.5 h-3.5 text-foreground/30" />
                     <span className="pub2-card-title">Contest Activity</span>
                   </div>
                   <div className="pub2-timeline">
@@ -755,7 +755,7 @@ export default function PublicProfile() {
                 className="pub2-card"
               >
                 <div className="pub2-card-head">
-                  <ExternalLink className="w-3.5 h-3.5 text-white/30" />
+                  <ExternalLink className="w-3.5 h-3.5 text-foreground/30" />
                   <span className="pub2-card-title">Public Profile URL</span>
                 </div>
                 <div className="pub2-url-row">

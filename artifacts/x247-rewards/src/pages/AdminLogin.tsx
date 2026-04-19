@@ -50,7 +50,7 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-black text-foreground flex items-center justify-center px-4 py-8">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -58,12 +58,12 @@ export default function AdminLogin() {
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-2.5 mb-5">
             <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center backdrop-blur-sm">
-              <Sparkles className="w-6 h-6 text-white" />
+              <Sparkles className="w-6 h-6 text-foreground" />
             </div>
-            <span className="font-display text-2xl tracking-wide text-white font-normal">X247</span>
+            <span className="font-display text-2xl tracking-wide text-foreground font-normal">X247</span>
           </div>
-          <h1 className="text-3xl font-display font-light text-white mb-2">Admin Access</h1>
-          <p className="text-white/35 text-sm font-light">Restricted area. Authorized personnel only.</p>
+          <h1 className="text-3xl font-display font-light text-foreground mb-2">Admin Access</h1>
+          <p className="text-foreground/35 text-sm font-light">Restricted area. Authorized personnel only.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card p-6 sm:p-8 space-y-5">
@@ -79,12 +79,12 @@ export default function AdminLogin() {
             )}
 
             <div>
-              <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] block mb-2">Username</label>
+              <label className="text-[10px] font-display font-medium text-foreground/40 uppercase tracking-[0.15em] block mb-2">Username</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-foreground text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors"
                 placeholder="Enter username"
                 autoComplete="username"
                 required
@@ -92,12 +92,12 @@ export default function AdminLogin() {
             </div>
 
             <div>
-              <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em] block mb-2">Password</label>
+              <label className="text-[10px] font-display font-medium text-foreground/40 uppercase tracking-[0.15em] block mb-2">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-foreground text-sm font-light placeholder-white/20 focus:outline-none focus:border-white/20 transition-colors"
                 placeholder="Enter password"
                 autoComplete="current-password"
                 required
@@ -107,16 +107,16 @@ export default function AdminLogin() {
             {/* ── hCaptcha Section ── */}
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3 h-3 text-white/40" />
-                <label className="text-[10px] font-display font-medium text-white/40 uppercase tracking-[0.15em]">
+                <ShieldCheck className="w-3 h-3 text-foreground/40" />
+                <label className="text-[10px] font-display font-medium text-foreground/40 uppercase tracking-[0.15em]">
                   Security Verification
                 </label>
-                <span className="ml-auto text-[9px] text-white/20 font-light uppercase tracking-wider">Required</span>
+                <span className="ml-auto text-[9px] text-foreground/20 font-light uppercase tracking-wider">Required</span>
               </div>
 
               <div className="rounded-xl border border-white/[0.1] bg-white/[0.03] p-3 flex flex-col items-center justify-center min-h-[100px] relative">
                 {!captchaLoaded && !captchaError && (
-                  <div className="absolute inset-0 flex items-center justify-center gap-2 text-white/30 rounded-xl">
+                  <div className="absolute inset-0 flex items-center justify-center gap-2 text-foreground/30 rounded-xl">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span className="text-xs font-light">Loading verification...</span>
                   </div>
@@ -124,11 +124,11 @@ export default function AdminLogin() {
 
                 {captchaError && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 rounded-xl">
-                    <p className="text-xs text-white/40 font-light text-center">Verification failed to load.</p>
+                    <p className="text-xs text-foreground/40 font-light text-center">Verification failed to load.</p>
                     <button
                       type="button"
                       onClick={handleReloadCaptcha}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.1] text-white/60 text-xs font-light hover:bg-white/[0.1] transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.1] text-foreground/60 text-xs font-light hover:bg-white/[0.1] transition-colors"
                     >
                       <RefreshCw className="w-3 h-3" />
                       Retry
@@ -150,12 +150,12 @@ export default function AdminLogin() {
               </div>
 
               {captchaToken ? (
-                <p className="text-[10px] text-white/40 font-light flex items-center gap-1">
+                <p className="text-[10px] text-foreground/40 font-light flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-white/40 inline-block" />
                   Verification complete — you may now login
                 </p>
               ) : (
-                <p className="text-[10px] text-white/25 font-light">
+                <p className="text-[10px] text-foreground/25 font-light">
                   Complete the captcha above to enable the login button.
                 </p>
               )}
@@ -164,7 +164,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={loading || !captchaToken}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-display font-light hover:bg-white/[0.1] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.06] border border-white/[0.1] text-foreground text-sm font-display font-light hover:bg-white/[0.1] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -182,7 +182,7 @@ export default function AdminLogin() {
           </div>
         </form>
 
-        <p className="text-center text-[10px] text-white/20 mt-6 font-light">
+        <p className="text-center text-[10px] text-foreground/20 mt-6 font-light">
           Unauthorized access attempts are monitored and logged.
         </p>
       </div>

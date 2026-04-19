@@ -201,7 +201,7 @@ export default function People() {
         {slugParam && (
           <Link
             href={`/profile/${slugParam}`}
-            className="inline-flex items-center gap-1.5 text-[11px] text-white/30 hover:text-white/55 transition-colors mb-6 font-light"
+            className="inline-flex items-center gap-1.5 text-[11px] text-foreground/30 hover:text-foreground/55 transition-colors mb-6 font-light"
           >
             <ArrowLeft className="w-3 h-3" />
             Back to profile
@@ -224,7 +224,7 @@ export default function People() {
 
         {/* Search */}
         <div className="people-search">
-          <Search className="w-3.5 h-3.5 text-white/30 shrink-0" />
+          <Search className="w-3.5 h-3.5 text-foreground/30 shrink-0" />
           <input
             ref={searchRef}
             value={query}
@@ -233,7 +233,7 @@ export default function People() {
             className="people-search-input"
           />
           {query && (
-            <button onClick={() => setQuery("")} className="text-white/20 hover:text-white/40 transition-colors text-xs shrink-0">✕</button>
+            <button onClick={() => setQuery("")} className="text-foreground/20 hover:text-foreground/40 transition-colors text-xs shrink-0">✕</button>
           )}
         </div>
 
@@ -246,7 +246,7 @@ export default function People() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 className="people-empty"
               >
-                <Loader2 className="w-6 h-6 animate-spin text-white/20" />
+                <Loader2 className="w-6 h-6 animate-spin text-foreground/20" />
               </motion.div>
             ) : filtered.length === 0 ? (
               <motion.div
