@@ -4351,17 +4351,17 @@
   padding: 0;
   border-radius: 24px;
   overflow: hidden;
-  background: linear-gradient(165deg, rgba(16, 16, 20, 1) 0%, rgba(6, 6, 8, 1) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--foreground) / 0.09);
+  box-shadow: 0 4px 24px hsl(var(--foreground) / 0.08), inset 0 1px 0 hsl(var(--foreground) / 0.05);
   display: flex;
   flex-direction: column;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pricing-card:hover {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: hsl(var(--foreground) / 0.16);
   transform: translateY(-2px);
-  box-shadow: 0 12px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 50px hsl(var(--foreground) / 0.12), inset 0 1px 0 hsl(var(--foreground) / 0.07);
 }
 
 .pricing-card-glow {
@@ -11243,12 +11243,13 @@
 
 .hiw-step-card {
   position: relative;
-  background: linear-gradient(168deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.010) 100%);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--foreground) / 0.09);
   border-radius: 24px;
   padding: 32px 28px;
   overflow: hidden;
   transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  box-shadow: 0 2px 16px hsl(var(--foreground) / 0.06);
 }
 .hiw-step-card::before {
   content: '';
@@ -11256,16 +11257,16 @@
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(168deg, rgba(255,255,255,0.12), transparent 50%);
+  background: linear-gradient(168deg, hsl(var(--foreground) / 0.1), transparent 50%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
 }
 .hiw-step-card:hover {
-  border-color: rgba(255,255,255,0.12);
+  border-color: hsl(var(--foreground) / 0.18);
   transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 60px hsl(var(--foreground) / 0.12);
 }
 
 .hiw-step-num {
@@ -11355,14 +11356,16 @@
   gap: 16px;
   padding: 24px;
   border-radius: 20px;
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--foreground) / 0.09);
   transition: border-color 0.35s ease, background 0.3s ease, transform 0.35s ease;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05);
 }
 .hiw-mechanic-card:hover {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(255,255,255,0.12);
+  background: hsl(var(--card));
+  border-color: hsl(var(--foreground) / 0.16);
   transform: translateY(-3px);
+  box-shadow: 0 8px 28px hsl(var(--foreground) / 0.1);
 }
 .hiw-mechanic-icon {
   width: 40px;
@@ -11403,11 +11406,12 @@
 }
 .hiw-draw-main {
   position: relative;
-  background: linear-gradient(165deg, rgba(255,255,255,0.030) 0%, rgba(255,255,255,0.010) 100%);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--foreground) / 0.09);
   border-radius: 24px;
   padding: 32px;
   overflow: hidden;
+  box-shadow: 0 2px 16px hsl(var(--foreground) / 0.06);
 }
 .hiw-draw-main::before {
   content: '';
@@ -11488,13 +11492,14 @@
   gap: 14px;
   padding: 20px;
   border-radius: 20px;
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--foreground) / 0.09);
   transition: border-color 0.35s ease, background 0.3s ease;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05);
 }
 .hiw-draw-trust-card:hover {
-  border-color: rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.038);
+  border-color: hsl(var(--foreground) / 0.16);
+  background: hsl(var(--card));
 }
 .hiw-draw-trust-icon {
   width: 36px;
@@ -11558,10 +11563,11 @@
   gap: 12px;
   padding: 20px;
   border-radius: 20px;
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--foreground) / 0.09);
   transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
   overflow: hidden;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05);
 }
 @media (min-width: 640px) {
   .hiw-tier-row {
@@ -11571,9 +11577,10 @@
   }
 }
 .hiw-tier-row:hover {
-  border-color: rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.04);
+  border-color: hsl(var(--foreground) / 0.16);
+  background: hsl(var(--card));
   transform: translateX(4px);
+  box-shadow: 0 8px 28px hsl(var(--foreground) / 0.1);
 }
 .hiw-tier-row--black {
   background: linear-gradient(135deg, rgba(20,20,24,0.95) 0%, rgba(6,6,8,0.98) 100%) !important;
@@ -11752,13 +11759,14 @@
 }
 .hiw-faq-item {
   border-radius: 16px;
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--foreground) / 0.09);
   overflow: hidden;
   transition: border-color 0.3s ease;
+  box-shadow: 0 2px 10px hsl(var(--foreground) / 0.04);
 }
 .hiw-faq-item:hover {
-  border-color: rgba(255,255,255,0.10);
+  border-color: hsl(var(--foreground) / 0.16);
 }
 .hiw-faq-q {
   width: 100%;
@@ -15720,13 +15728,13 @@ button, [role="button"] {
 
 /* ── Step cards ── */
 [data-light] .hiw-step-card {
-  background: linear-gradient(168deg, hsl(var(--foreground) / 0.04) 0%, hsl(var(--foreground) / 0.015) 100%) !important;
+  background: hsl(var(--card)) !important;
   border-color: hsl(var(--foreground) / 0.09) !important;
-  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.04) !important;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05), 0 1px 0 hsl(var(--foreground) / 0.04) inset !important;
 }
 [data-light] .hiw-step-card:hover {
   border-color: hsl(var(--foreground) / 0.16) !important;
-  box-shadow: 0 8px 30px hsl(var(--foreground) / 0.08) !important;
+  box-shadow: 0 8px 30px hsl(var(--foreground) / 0.09) !important;
 }
 [data-light] .hiw-step-num {
   color: hsl(var(--foreground) / 0.30) !important;
@@ -15756,12 +15764,13 @@ button, [role="button"] {
 
 /* ── Mechanic cards ── */
 [data-light] .hiw-mechanic-card {
-  background: hsl(var(--foreground) / 0.03) !important;
+  background: hsl(var(--card)) !important;
   border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .hiw-mechanic-card:hover {
-  background: hsl(var(--foreground) / 0.05) !important;
-  border-color: hsl(var(--foreground) / 0.14) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
 }
 [data-light] .hiw-mechanic-icon {
   background: hsl(var(--foreground) / 0.05) !important;
@@ -15777,8 +15786,9 @@ button, [role="button"] {
 
 /* ── Draw / process steps ── */
 [data-light] .hiw-draw-main {
-  background: linear-gradient(165deg, hsl(var(--foreground) / 0.035) 0%, hsl(var(--foreground) / 0.012) 100%) !important;
+  background: hsl(var(--card)) !important;
   border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow: 0 2px 16px hsl(var(--foreground) / 0.06) !important;
 }
 [data-light] .hiw-draw-step-num {
   color: hsl(var(--foreground) / 0.28) !important;
@@ -15795,12 +15805,13 @@ button, [role="button"] {
   color: hsl(var(--foreground) / 0.58) !important;
 }
 [data-light] .hiw-draw-trust-card {
-  background: hsl(var(--foreground) / 0.03) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .hiw-draw-trust-card:hover {
-  background: hsl(var(--foreground) / 0.05) !important;
-  border-color: hsl(var(--foreground) / 0.14) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
 }
 [data-light] .hiw-draw-trust-icon {
   background: hsl(var(--foreground) / 0.04) !important;
@@ -15821,12 +15832,13 @@ button, [role="button"] {
   color: hsl(var(--foreground) / 0.38) !important;
 }
 [data-light] .hiw-tier-row {
-  background: hsl(var(--foreground) / 0.025) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .hiw-tier-row:hover {
-  background: hsl(var(--foreground) / 0.045) !important;
-  border-color: hsl(var(--foreground) / 0.13) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
 }
 [data-light] .hiw-tier-icon {
   background: hsl(var(--foreground) / 0.05) !important;
@@ -15874,11 +15886,12 @@ button, [role="button"] {
 
 /* ── FAQ ── */
 [data-light] .hiw-faq-item {
-  background: hsl(var(--foreground) / 0.025) !important;
-  border-color: hsl(var(--foreground) / 0.08) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--foreground) / 0.09) !important;
+  box-shadow: 0 2px 10px hsl(var(--foreground) / 0.05) !important;
 }
 [data-light] .hiw-faq-item:hover {
-  border-color: hsl(var(--foreground) / 0.13) !important;
+  border-color: hsl(var(--foreground) / 0.16) !important;
 }
 [data-light] .hiw-faq-q {
   color: hsl(var(--foreground) / 0.82) !important;
