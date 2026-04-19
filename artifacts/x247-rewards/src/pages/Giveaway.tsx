@@ -320,7 +320,7 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
             <h3 className="contest-card-title">{contest.name}</h3>
             <div className="contest-card-org">
               <Gift className="w-3 h-3 text-foreground/35" />
-              <span>{contest.prize}{contest.prizeValue ? ` · ${contest.prizeValue}` : ""}</span>
+              <span>{contest.prize}</span>
             </div>
 
             {/* Status pill row */}
@@ -335,17 +335,31 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
                 </span>
               ) : (
                 <span className="contest-card-pill contest-card-pill-active">
-                  <Zap className="w-2.5 h-2.5" /> Active
+                  <span className="contest-card-pill-live-dot" aria-hidden />
+                  Live Now
                 </span>
               )}
               <span className="contest-card-pill-dot">·</span>
               <span className="contest-card-pill contest-card-pill-meta">
                 Online
               </span>
+              {contest.prizeValue && !isUpcoming && (
+                <span className="contest-card-pill-prize" title="Prize value">
+                  {contest.prizeValue}
+                </span>
+              )}
             </div>
 
-            {/* Capacity micro-bar */}
+            {/* Capacity micro-bar with caption */}
             <div className="contest-card-capacity">
+              <div className="contest-card-capacity-head">
+                <span className="contest-card-capacity-label">
+                  {Math.round(percent)}% claimed
+                </span>
+                <span className="contest-card-capacity-spots">
+                  {fmt(taken)} / {fmt(contest.maxSpots)} spots
+                </span>
+              </div>
               <div className="contest-card-capacity-track">
                 <motion.div
                   className="contest-card-capacity-fill"
