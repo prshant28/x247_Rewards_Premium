@@ -58,11 +58,11 @@
   --foreground: 0 0% 95%;
   --border: 0 0% 12%;
   
-  --card: 0 0% 4%;
+  --card: 0 0% 8%;
   --card-foreground: 0 0% 90%;
   --card-border: 0 0% 12%;
 
-  --popover: 0 0% 4%;
+  --popover: 0 0% 8%;
   --popover-foreground: 0 0% 95%;
   --popover-border: 0 0% 12%;
 
@@ -125,11 +125,11 @@
   --foreground: 0 0% 95%;
   --border: 0 0% 12%;
   
-  --card: 0 0% 4%;
+  --card: 0 0% 8%;
   --card-foreground: 0 0% 90%;
   --card-border: 0 0% 12%;
 
-  --popover: 0 0% 4%;
+  --popover: 0 0% 8%;
   --popover-foreground: 0 0% 95%;
   --popover-border: 0 0% 12%;
 
