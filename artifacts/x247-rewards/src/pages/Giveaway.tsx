@@ -531,71 +531,55 @@ export default function Giveaway() {
 
       <main className="relative z-10 pt-[70px] pb-16 sm:pb-24">
 
-        {/* ── Centered Hero Box (title + stats + entry-check CTA) ── */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="container mx-auto px-4 max-w-3xl pt-8 sm:pt-12 pb-6">
-          <div
-            className="relative rounded-[28px] overflow-hidden"
-            style={{
-              background: "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.012) 100%)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 60px rgba(0,0,0,0.35)",
-            }}
-          >
-            {/* Decorative top wash */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-0 top-0 h-32 pointer-events-none"
-              style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)" }}
-            />
-            <div className="relative z-[2] px-5 sm:px-9 py-8 sm:py-10 text-center">
-              <div className="glass-pill-badge inline-flex mb-4">
-               
-              </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white mb-3 leading-[1.1] tracking-tight">Contest Hub</h1>
-              <p className="text-white/50 text-xs sm:text-sm font-light leading-relaxed max-w-xl mx-auto tracking-wide mb-7">
-                Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes.
-              </p>
-
-              {/* Inline stats strip — centered */}
-              <div className="grid grid-cols-4 gap-2 sm:gap-2.5 max-w-lg mx-auto mb-6">
-                {[
-                  { label: "Active", value: activeCount, icon: <Zap className="w-3 h-3" /> },
-                  { label: "Spots", value: totalSpots, icon: <Users className="w-3 h-3" /> },
-                  { label: "Entries", value: totalEntries, icon: <Trophy className="w-3 h-3" /> },
-                  { label: "Contests", value: contests.length, icon: <Target className="w-3 h-3" /> },
-                ].map((stat) => (
-                  <div key={stat.label} className="rounded-xl px-2.5 py-2.5 text-center" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                    <div className="text-white/35 mx-auto mb-1 flex justify-center">{stat.icon}</div>
-                    <AnimatedCounter value={stat.value} className="text-base sm:text-lg font-display font-light text-white block leading-none" />
-                    <div className="text-[8px] sm:text-[9px] text-white/35 uppercase tracking-[0.15em] font-display mt-1">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Check-entry CTA → separate page */}
-              <Link
-                href="/entry-check"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-display font-light text-white/85 transition-all hover:text-white"
-                style={{
-                  background: "linear-gradient(140deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 100%)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset",
-                }}
-              >
-                <Search className="w-3.5 h-3.5 text-white/55" />
-                Check Entry Code
-                <ChevronRight className="w-3.5 h-3.5 text-white/45" />
-              </Link>
-            </div>
-          </div>
-        </motion.div>
-
         {/* ── Section divider ── */}
         <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-4">
           <GlowLine />
 
           <section className="py-6 sm:py-10 relative">
             <div className="container mx-auto px-4 max-w-6xl">
+              
+              {/* ── Centered Hero Box (title + stats + entry-check CTA) ── */}
+              <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="container mx-auto px-4 max-w-3xl pt-8 sm:pt-12 pb-6">
+                <div
+                  className="relative rounded-[28px] overflow-hidden"
+                  style={{
+                    background: "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.012) 100%)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 60px rgba(0,0,0,0.35)",
+                  }}
+                >
+                  {/* Decorative top wash */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+                    style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)" }}
+                  />
+                  <div className="relative z-[2] px-5 sm:px-9 py-8 sm:py-10 text-center">
+                    <div className="glass-pill-badge inline-flex mb-4">
+
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-white mb-3 leading-[1.1] tracking-tight">Contest Hub</h1>
+                    <p className="text-white/50 text-xs sm:text-sm font-light leading-relaxed max-w-xl mx-auto tracking-wide mb-7">
+                      Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes.
+                    </p>
+
+                    {/* Check-entry CTA → separate page */}
+                    <Link
+                      href="/entry-check"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-display font-light text-white/85 transition-all hover:text-white"
+                      style={{
+                        background: "linear-gradient(140deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 100%)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset",
+                      }}
+                    >
+                      <Search className="w-3.5 h-3.5 text-white/55" />
+                      Check Entry Code
+                      <ChevronRight className="w-3.5 h-3.5 text-white/45" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
 
               {/* ── Unified Filter Bar (chips + advanced popover, no sidebar) ── */}
               <div className="mb-6">

@@ -2401,11 +2401,11 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
       <div className="dash-frame-glow" />
       <div className="dash-frame-inner">
 
-        {/* ── Minimal full-width banner (clean typography + stat boxes) ── */}
+        {/* ── Contest Hub-style centered glass hero ── */}
         <div className="dash-banner">
           <div className="dash-banner-bg-deco" aria-hidden="true" />
 
-          {/* Notification bell — anchored top-right */}
+          {/* Notification bell — absolute top-right */}
           <div className="dash-banner-bell-wrap" ref={notifContainerRef}>
             <button
               onClick={toggleNotifs}
@@ -2430,39 +2430,49 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
             </AnimatePresence>
           </div>
 
-          <div className="dash-banner-left">
-            <div className="dash-banner-eyebrow">
-              <span className={`dash-banner-tier-dot tier-dot-${user.membershipTier || "free"}`} />
-              <span>Member Area</span>
-            </div>
-            <h1 className="dash-banner-title">My Account</h1>
-            <div className="dash-banner-meta">
-              <span className="dash-banner-name">{user.fullName}</span>
-              {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-white/40 shrink-0" />}
-              <span className="dash-banner-sep">·</span>
-              <span className="dash-banner-tier-label">
-                {user.membershipTier === "black" ? "Elite Member" : user.membershipTier === "gold" ? "Gold Member" : user.membershipTier === "silver" ? "Silver Member" : "Free Member"}
-              </span>
-            </div>
-            <div className="dash-banner-since">Since {memberSince} · {user.email}</div>
-          </div>
+          {/* Centered glass hero card — matches Contest Hub aesthetic */}
+          <div className="dash-acct-hero-card">
+            <div className="dash-acct-hero-top-wash" aria-hidden="true" />
+            <div className="dash-acct-hero-shine" aria-hidden="true" />
+            <div className="dash-acct-hero-inner">
+              {/* Glass pill badge */}
+              <div className="glass-pill-badge inline-flex gap-2 mb-5" aria-label="Member Area">
+                <span className={`dash-banner-tier-dot tier-dot-${user.membershipTier || "free"}`} />
+                <span>Member Area</span>
+              </div>
+              {/* Page title */}
+              <h1 className="dash-acct-hero-title">My Account</h1>
+              {/* User identity line */}
+              <div className="dash-acct-hero-meta">
+                <span className="dash-acct-hero-name">{user.fullName}</span>
+                {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 shrink-0" aria-label="Verified" />}
+                <span className="dash-acct-hero-sep">·</span>
+                <span>
+                  {user.membershipTier === "black" ? "Elite Member" : user.membershipTier === "gold" ? "Gold Member" : user.membershipTier === "silver" ? "Silver Member" : "Free Member"}
+                </span>
+              </div>
+              <div className="dash-acct-hero-since">Since {memberSince} · {user.email}</div>
 
-          {/* Right side: 3 minimal stat boxes side-by-side */}
-          <div className="dash-banner-stats" aria-label="Account quick stats">
-            <div className="dash-stat-box">
-              <div className="dash-stat-icon"><Flame className="w-3.5 h-3.5" /></div>
-              <div className="dash-stat-value">{streak}</div>
-              <div className="dash-stat-label">Streak</div>
-            </div>
-            <div className="dash-stat-box">
-              <div className="dash-stat-icon"><Trophy className="w-3.5 h-3.5" /></div>
-              <div className="dash-stat-value">{entries.length}</div>
-              <div className="dash-stat-label">Entries</div>
-            </div>
-            <div className="dash-stat-box">
-              <div className="dash-stat-icon"><Star className="w-3.5 h-3.5" /></div>
-              <div className="dash-stat-value capitalize">{user.membershipTier || "free"}</div>
-              <div className="dash-stat-label">Tier</div>
+              {/* Inline quick-stats row */}
+              <div className="dash-acct-hero-stats" aria-label="Quick account stats">
+                <div className="dash-acct-chip">
+                  <Flame className="w-3 h-3" />
+                  <span className="dash-acct-chip-val">{streak}</span>
+                  <span className="dash-acct-chip-lbl">Streak</span>
+                </div>
+                <div className="dash-acct-chip-sep" />
+                <div className="dash-acct-chip">
+                  <Trophy className="w-3 h-3" />
+                  <span className="dash-acct-chip-val">{entries.length}</span>
+                  <span className="dash-acct-chip-lbl">Entries</span>
+                </div>
+                <div className="dash-acct-chip-sep" />
+                <div className="dash-acct-chip">
+                  <Star className="w-3 h-3" />
+                  <span className="dash-acct-chip-val capitalize">{user.membershipTier || "free"}</span>
+                  <span className="dash-acct-chip-lbl">Tier</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
