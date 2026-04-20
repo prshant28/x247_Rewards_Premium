@@ -280,8 +280,8 @@
 /* ── ChatBot FAB – positioned outside any layer so nothing can override it ── */
 .chatbot-fab {
   position: fixed !important;
-  bottom: 24px !important;
-  right: 24px !important;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  right: calc(24px + env(safe-area-inset-right, 0px)) !important;
   z-index: 9999 !important;
   width: 56px !important;
   height: 56px !important;
@@ -295,9 +295,29 @@
 
 .chatbot-panel {
   position: fixed !important;
-  bottom: 96px !important;
-  right: 24px !important;
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  right: calc(24px + env(safe-area-inset-right, 0px)) !important;
   z-index: 9998 !important;
+  /* Cap the panel height so it never escapes visible viewport on iOS Safari.
+     Uses dvh (dynamic viewport height) which respects browser chrome. */
+  max-height: calc(100dvh - 96px - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+}
+
+/* Mobile: anchor panel from top with safe-area; keep bottom above FAB */
+@media (max-width: 640px) {
+  .chatbot-fab {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+    right: calc(16px + env(safe-area-inset-right, 0px)) !important;
+  }
+  .chatbot-panel {
+    top: calc(12px + env(safe-area-inset-top, 0px)) !important;
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
 }
 
 @layer utilities {
@@ -20799,4 +20819,121 @@ button, [role="button"] {
 [data-theme="pristine-light"] .gv-filter-bar-wrap.is-stuck {
   background: hsl(var(--background) / 0.95);
   box-shadow: 0 6px 18px hsl(var(--foreground) / 0.08);
+}
+
+/* ────────────────────────────────────────────────
+   GIVEAWAY PAGE — Mobile responsive refinements
+   ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .gv-hero {
+    padding: 60px 0 50px;
+  }
+  .gv-hero-eyebrow {
+    font-size: 10px;
+    padding: 5px 12px;
+    margin-bottom: 22px;
+  }
+  .gv-hero-title {
+    font-size: clamp(36px, 11vw, 56px);
+    line-height: 1.0;
+    margin-bottom: 18px;
+  }
+  .gv-hero-sub {
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 28px;
+    padding: 0 4px;
+  }
+  .gv-hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .gv-hero-cta {
+    justify-content: center;
+    padding: 14px 22px;
+    width: 100%;
+  }
+  .gv-hero-orb { filter: blur(80px); width: 320px; height: 320px; opacity: 0.28; }
+
+  /* Filter bar — stack search + sort on top, chips below */
+  .gv-filter-bar-wrap {
+    top: 60px;
+    padding: 10px 0;
+  }
+  .gv-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    border-radius: 22px;
+    padding: 10px;
+  }
+  .gv-search { flex: 1 1 auto; min-width: 0; width: 100%; }
+  .gv-chips {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .gv-chips::-webkit-scrollbar { display: none; }
+  .gv-chip { flex-shrink: 0; }
+  .gv-sort { margin-left: 0; align-self: flex-end; }
+  .gv-sort-menu { right: 0; left: auto; }
+
+  /* Stats — tighter padding */
+  .gv-stat { padding: 22px 14px; }
+  .gv-stat-value { font-size: 22px; }
+
+  /* Block headers */
+  .gv-block { margin-bottom: 50px; }
+  .gv-block-head { margin-bottom: 20px; }
+  .gv-block-title { font-size: 22px; gap: 10px; }
+
+  /* Main content padding */
+  .gv-main { padding: 36px 0 70px; }
+
+  /* Featured spotlight — single column adjustments */
+  .gv-featured-visual { min-height: 220px; }
+  .gv-featured-info { padding: 22px 20px; }
+  .gv-featured-title { font-size: 22px; }
+  .gv-featured-desc { font-size: 13px; margin-bottom: 18px; }
+  .gv-featured-stats {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 14px 0;
+    margin-bottom: 16px;
+  }
+  .gv-featured-stat { padding-right: 6px; }
+  .gv-featured-stat + .gv-featured-stat { padding-left: 8px; }
+  .gv-featured-stat-value { font-size: 14px; }
+  .gv-featured-stat-label { font-size: 8px; letter-spacing: 0.18em; }
+  .gv-featured-foot { gap: 10px; }
+  .gv-featured-cta { padding: 10px 18px; font-size: 12.5px; }
+
+  /* Steps section */
+  .gv-steps-section { padding: 60px 0; }
+  .gv-steps-head { margin-bottom: 32px; }
+  .gv-step { padding: 24px 22px; }
+
+  /* Final CTA */
+  .gv-cta-section { padding: 0 0 70px; }
+  .gv-cta-buttons { flex-direction: column; align-items: stretch; max-width: 320px; margin-left: auto; margin-right: auto; }
+  .gv-cta-primary, .gv-cta-ghost { justify-content: center; }
+}
+
+/* Tiny phones (≤ 380px) — extra compression */
+@media (max-width: 380px) {
+  .gv-hero-title { font-size: 34px; }
+  .gv-featured-stats { gap: 0; }
+  .gv-featured-stat-value { font-size: 13px; }
+  .gv-featured-info { padding: 20px 16px; }
+}
+
+/* Tablet — slightly tighter sort dropdown */
+@media (min-width: 641px) and (max-width: 900px) {
+  .gv-filter-bar { gap: 10px; }
+  .gv-chips { gap: 5px; }
+  .gv-chip { padding: 7px 10px; font-size: 11.5px; }
 }
