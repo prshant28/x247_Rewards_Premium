@@ -88,13 +88,13 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
   return (
     <CardNav
       logo={
-        <div className="flex items-center gap-2.5">
-          <div className="sitenav-logo-icon">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <span className="sitenav-logo-text font-display text-base sm:text-lg tracking-wide font-normal">
-            X247
-          </span>
+        <div className="flex items-center">
+          <img
+            src="/x247-logo.png"
+            alt="X247 Labs"
+            className="h-8 w-8 sm:h-9 sm:w-9 rounded-[8px] object-cover select-none"
+            draggable={false}
+          />
         </div>
       }
       baseColor="var(--x-nav-bg)"
