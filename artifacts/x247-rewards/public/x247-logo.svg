@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="X247 Labs">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1a1a"/>
+      <stop offset="0.5" stop-color="#0a0a0a"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="bgEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a3a3a"/>
+      <stop offset="1" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5f5f5"/>
+      <stop offset="0.45" stop-color="#d8d8d8"/>
+      <stop offset="0.5" stop-color="#9a9a9a"/>
+      <stop offset="0.55" stop-color="#cfcfcf"/>
+      <stop offset="1" stop-color="#7a7a7a"/>
+    </linearGradient>
+    <linearGradient id="silverShadow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.4" r="0.8">
+      <stop offset="0" stop-color="#2a2a2a" stop-opacity="0.55"/>
+      <stop offset="0.7" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="emboss" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.4"/>
+      <feOffset dx="0" dy="2" result="off"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+      <feComposite in2="SourceAlpha" operator="out" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer edge frame -->
+  <rect x="8" y="8" width="496" height="496" rx="112" ry="112" fill="url(#bgEdge)"/>
+  <!-- Inner body -->
+  <rect x="14" y="14" width="484" height="484" rx="106" ry="106" fill="url(#bg)"/>
+  <!-- Subtle vignette glow -->
+  <rect x="14" y="14" width="484" height="484" rx="106" ry="106" fill="url(#vignette)"/>
+  <!-- Top highlight -->
+  <rect x="14" y="14" width="484" height="160" rx="106" ry="106" fill="#fff" fill-opacity="0.025"/>
+
+  <!-- Wordmark group -->
+  <g filter="url(#emboss)">
+    <text
+      x="256"
+      y="298"
+      text-anchor="middle"
+      font-family="'Syne','Poppins','Helvetica Neue',Arial,sans-serif"
+      font-weight="700"
+      font-size="180"
+      letter-spacing="-4"
+      fill="url(#silver)"
+      stroke="#1a1a1a"
+      stroke-width="2"
+      paint-order="stroke fill"
+    >x247</text>
+    <text
+      x="256"
+      y="378"
+      text-anchor="middle"
+      font-family="'Syne','Poppins','Helvetica Neue',Arial,sans-serif"
+      font-weight="600"
+      font-size="56"
+      letter-spacing="14"
+      fill="url(#silver)"
+      stroke="#1a1a1a"
+      stroke-width="1"
+      paint-order="stroke fill"
+    >LABS</text>
+  </g>
+</svg>
