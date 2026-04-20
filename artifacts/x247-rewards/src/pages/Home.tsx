@@ -602,12 +602,12 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
 }
 
 const rewardItems = [
-  { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
-  { tier: "Gift Cards", title: "₹500 – ₹2,000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/giftcards-visual.png" },
-  { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
-  { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-trophy.png" },
-  { tier: "Tech Prizes", title: "Wireless Earbuds", desc: "Premium wireless earbuds and tech gadgets — weekly drops for top entries.", icon: <Headphones className="w-5 h-5" />, img: "/images/reward-headphones.png" },
-  { tier: "Grand Prize", title: "₹10,000 Cash", desc: "Monthly grand draw for the ultimate reward. More entries = higher chances.", icon: <Trophy className="w-5 h-5" />, img: "/images/abstract-sphere.png" },
+  { tier: "Daily Draw", title: "Cash Prizes", desc: "Real cash rewards drawn daily — payouts straight to your account, no strings attached.", icon: <Trophy className="w-5 h-5" />, img: "/images/abstract-sphere.png" },
+  { tier: "Tech Drop", title: "Gadgets", desc: "Wireless earbuds, accessories, and premium tech — fresh drops for top entries every week.", icon: <Headphones className="w-5 h-5" />, img: "/images/reward-headphones.png" },
+  { tier: "Swag Kit", title: "Swags", desc: "Branded hoodies, tees, stickers, and exclusive X247 merch — shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
+  { tier: "Instant Use", title: "Gift Cards", desc: "Amazon, Flipkart, and Google Play vouchers — instant rewards delivered to your inbox.", icon: <Gift className="w-5 h-5" />, img: "/images/giftcards-visual.png" },
+  { tier: "VIP Access", title: "Event Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship from industry leaders.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
+  { tier: "Top Tier", title: "Grand Prizes", desc: "Monthly grand draw for the ultimate reward — more entries, higher chances of winning big.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-trophy.png" },
 ];
 
 function RewardsCarousel() {
