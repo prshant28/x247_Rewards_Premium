@@ -1,11 +1,11 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { Link } from "wouter";
 import {
-  Trophy, Users, ArrowRight, Gift, Clock, Star,
-  Zap, Crown, Target, Search, CheckCircle2, Copy, Shield,
-  ExternalLink, Camera, Award, ChevronRight,
-  SlidersHorizontal, X, Filter, Calendar, Layers,
+  Trophy, Users, ArrowRight, Gift, Clock, Star, Sparkles,
+  Zap, Search, CheckCircle2, ExternalLink, Award, ChevronRight,
+  X, Calendar, Layers, TrendingUp, Crown, ShieldCheck, Filter,
+  ArrowUpRight, ChevronDown,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getContests, type ContestData } from "@/lib/api";
@@ -13,241 +13,60 @@ import SiteFooter from "@/components/SiteFooter";
 import CountdownTimer from "@/components/CountdownTimer";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
+/* ═══════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════ */
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+  hidden: { opacity: 0, y: 22 },
+  visible: (i: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
 const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  visible: { transition: { staggerChildren: 0.09 } },
 };
 
-/* ─── Filter types ─── */
+/* ═══════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════ */
+const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${n}`);
+
+function parsePrizeNumeric(v: string | null): number {
+  if (!v) return 0;
+  const cleaned = v.replace(/[^\d.]/g, "");
+  return Number(cleaned) || 0;
+}
+
 type StatusFilter = "all" | "active" | "upcoming" | "completed";
-type DeadlineFilter = "this-week" | "this-month" | "no-deadline";
+type SortBy = "ending-soon" | "most-popular" | "newest" | "biggest-prize";
 
-interface Filters {
-  status: StatusFilter;
-  deadline: Set<DeadlineFilter>;
-  openOnly: boolean;
-  search: string;
-}
-
-const defaultFilters: Filters = {
-  status: "all",
-  deadline: new Set(),
-  openOnly: false,
-  search: "",
-};
-
-function countActiveFilters(f: Filters): number {
-  let n = 0;
-  if (f.status !== "all") n++;
-  n += f.deadline.size;
-  if (f.openOnly) n++;
-  return n;
-}
-
-/* ─── Filter Panel Component ─── */
-function FilterPanel({
-  filters,
-  onChange,
-  onClear,
-  activeCount,
-}: {
-  filters: Filters;
-  onChange: (f: Partial<Filters>) => void;
-  onClear: () => void;
-  activeCount: number;
-}) {
-  const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
-    { value: "all", label: "All contests" },
-    { value: "active", label: "Active & open" },
-    { value: "upcoming", label: "Coming soon" },
-    { value: "completed", label: "Completed / Full" },
-  ];
-
-  const DEADLINE_OPTIONS: { value: DeadlineFilter; label: string }[] = [
-    { value: "this-week", label: "Ends this week" },
-    { value: "this-month", label: "Ends this month" },
-    { value: "no-deadline", label: "No deadline" },
-  ];
-
-  function toggleDeadline(v: DeadlineFilter) {
-    const next = new Set(filters.deadline);
-    if (next.has(v)) next.delete(v); else next.add(v);
-    onChange({ deadline: next });
-  }
-
-  const sep = <div className="h-px my-5" style={{ background: "rgba(255,255,255,0.06)" }} />;
-
-  return (
-    <div className="space-y-0">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <span className="text-xs font-display text-foreground/60 tracking-wide">Filters</span>
-        {activeCount > 0 && (
-          <button
-            onClick={onClear}
-            className="flex items-center gap-1 text-[10px] text-foreground/35 hover:text-foreground/65 transition-colors"
-          >
-            <X className="w-3 h-3" />
-            Clear all
-          </button>
-        )}
-      </div>
-
-      {/* Status */}
-      <div>
-        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-foreground/25 mb-3">Status</div>
-        <div className="space-y-1">
-          {STATUS_OPTIONS.map((opt) => {
-            const active = filters.status === opt.value;
-            return (
-              <button
-                key={opt.value}
-                onClick={() => onChange({ status: opt.value })}
-                className="w-full flex items-center gap-2.5 py-1.5 px-1 rounded-lg transition-all text-left group"
-                style={{ background: active ? "rgba(255,255,255,0.06)" : "transparent" }}
-              >
-                <div
-                  className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all"
-                  style={{
-                    border: `1px solid ${active ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)"}`,
-                    background: active ? "rgba(255,255,255,0.12)" : "transparent",
-                  }}
-                >
-                  {active && <div className="w-1.5 h-1.5 rounded-full bg-white/80" />}
-                </div>
-                <span
-                  className="text-[13px] font-light transition-colors"
-                  style={{ color: active ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)" }}
-                >
-                  {opt.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {sep}
-
-      {/* Deadline */}
-      <div>
-        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-foreground/25 mb-3">Deadline</div>
-        <div className="space-y-1">
-          {DEADLINE_OPTIONS.map((opt) => {
-            const checked = filters.deadline.has(opt.value);
-            return (
-              <button
-                key={opt.value}
-                onClick={() => toggleDeadline(opt.value)}
-                className="w-full flex items-center gap-2.5 py-1.5 px-1 rounded-lg transition-all text-left"
-                style={{ background: checked ? "rgba(255,255,255,0.06)" : "transparent" }}
-              >
-                <div
-                  className="w-4 h-4 rounded flex items-center justify-center shrink-0 transition-all"
-                  style={{
-                    border: `1px solid ${checked ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)"}`,
-                    background: checked ? "rgba(255,255,255,0.15)" : "transparent",
-                  }}
-                >
-                  {checked && <CheckCircle2 className="w-2.5 h-2.5 text-foreground" />}
-                </div>
-                <span
-                  className="text-[13px] font-light transition-colors"
-                  style={{ color: checked ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)" }}
-                >
-                  {opt.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {sep}
-
-      {/* Availability */}
-      <div>
-        <div className="text-[9px] font-display font-medium uppercase tracking-[0.2em] text-foreground/25 mb-3">Availability</div>
-        <button
-          onClick={() => onChange({ openOnly: !filters.openOnly })}
-          className="w-full flex items-center gap-2.5 py-1.5 px-1 rounded-lg transition-all text-left"
-          style={{ background: filters.openOnly ? "rgba(255,255,255,0.06)" : "transparent" }}
-        >
-          <div
-            className="w-4 h-4 rounded flex items-center justify-center shrink-0 transition-all"
-            style={{
-              border: `1px solid ${filters.openOnly ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)"}`,
-              background: filters.openOnly ? "rgba(255,255,255,0.15)" : "transparent",
-            }}
-          >
-            {filters.openOnly && <CheckCircle2 className="w-2.5 h-2.5 text-foreground" />}
-          </div>
-          <span
-            className="text-[13px] font-light transition-colors"
-            style={{ color: filters.openOnly ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)" }}
-          >
-            Open spots only
-          </span>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Floating particles ─── */
-function FloatingParticles() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
-      {Array.from({ length: 15 }).map((_, i) => (
-        <div
-          key={i}
-          className="floating-particle"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 8}s`,
-            animationDuration: `${6 + Math.random() * 8}s`,
-            width: `${1 + Math.random() * 2}px`,
-            height: `${1 + Math.random() * 2}px`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function GlowLine() {
-  return (
-    <div className="section-glow-line">
-      <div className="section-glow-line-inner" />
-    </div>
-  );
-}
-
-/* ─── Status quick-filter chips config ─── */
 const STATUS_CHIPS: { value: StatusFilter; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { value: "all", label: "All", icon: Layers },
   { value: "active", label: "Active", icon: Zap },
   { value: "upcoming", label: "Upcoming", icon: Clock },
-  { value: "completed", label: "Completed", icon: CheckCircle2 },
+  { value: "completed", label: "Closed", icon: CheckCircle2 },
 ];
 
-/* ─── Contest Card (image banner + info, like attached reference) ─── */
+const SORT_OPTIONS: { value: SortBy; label: string }[] = [
+  { value: "ending-soon", label: "Ending soon" },
+  { value: "most-popular", label: "Most popular" },
+  { value: "biggest-prize", label: "Biggest prize" },
+  { value: "newest", label: "Newest" },
+];
+
+/* ═══════════════════════════════════════════════════
+   CONTEST CARD (regular)
+   ═══════════════════════════════════════════════════ */
 const ContestCard = React.memo(function ContestCard({ contest, index }: { contest: ContestData; index: number }) {
   const isUpcoming = contest.status === "upcoming";
   const isFull = contest.isFull;
   const taken = contest.maxSpots - contest.spotsRemaining;
   const percent = Math.min(100, (taken / Math.max(contest.maxSpots, 1)) * 100);
 
-  // Deterministic gradient pair for fallback when no imageUrl
   const seed = (contest.id * 9301 + 49297) % 233280;
   const hueShift = (seed / 233280) * 360;
   const fallbackBg = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 55%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(${135 + hueShift / 8}deg, rgba(40,40,46,0.95), rgba(10,10,12,1))`;
@@ -255,9 +74,6 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
   const dateLabel = contest.endsAt
     ? new Date(contest.endsAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
     : "Open";
-
-  // Format compact entry/spots count
-  const fmt = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${n}`;
 
   return (
     <motion.div
@@ -268,19 +84,13 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
       whileHover={{ y: -4, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }}
       className="h-full"
     >
-      <Link href={isUpcoming ? `/giveaway` : `/giveaway/${contest.slug}`} aria-label={isUpcoming ? `${contest.name} — coming soon` : `Enter ${contest.name}`}>
+      <Link href={`/giveaway/${contest.slug}`} aria-label={isUpcoming ? `${contest.name} — coming soon` : `Enter ${contest.name}`}>
         <div className={`contest-card-v2 group ${isUpcoming ? "is-upcoming" : ""} ${isFull ? "is-full" : ""} ${contest.imageUrl ? "has-banner" : "no-banner"}`}>
           <div className="contest-card-shine" />
 
-          {/* ── BANNER (only if image exists) ── */}
           {contest.imageUrl ? (
             <div className="contest-card-banner">
-              <img
-                src={contest.imageUrl}
-                alt={contest.name}
-                loading="lazy"
-                className="contest-card-banner-img"
-              />
+              <img src={contest.imageUrl} alt={contest.name} loading="lazy" className="contest-card-banner-img" />
               <div className="contest-card-banner-tag">
                 {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
               </div>
@@ -292,7 +102,6 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
               )}
             </div>
           ) : (
-            /* Rich image-style hero when no banner — deterministic gradient + big initial */
             <div className="contest-card-hero" style={{ background: fallbackBg }}>
               <div className="contest-card-hero-glow" aria-hidden />
               <div className="contest-card-hero-grid" aria-hidden />
@@ -314,16 +123,13 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
             </div>
           )}
 
-          {/* ── BODY ── */}
           <div className="contest-card-body">
-            {/* Title + Tagline */}
             <h3 className="contest-card-title">{contest.name}</h3>
             <div className="contest-card-org">
               <Gift className="w-3 h-3 text-foreground/35" />
               <span>{contest.prize}</span>
             </div>
 
-            {/* Status pill row */}
             <div className="contest-card-status-row">
               {isUpcoming ? (
                 <span className="contest-card-pill contest-card-pill-muted">
@@ -340,25 +146,16 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
                 </span>
               )}
               <span className="contest-card-pill-dot">·</span>
-              <span className="contest-card-pill contest-card-pill-meta">
-                Online
-              </span>
+              <span className="contest-card-pill contest-card-pill-meta">Online</span>
               {contest.prizeValue && !isUpcoming && (
-                <span className="contest-card-pill-prize" title="Prize value">
-                  {contest.prizeValue}
-                </span>
+                <span className="contest-card-pill-prize" title="Prize value">{contest.prizeValue}</span>
               )}
             </div>
 
-            {/* Capacity micro-bar with caption */}
             <div className="contest-card-capacity">
               <div className="contest-card-capacity-head">
-                <span className="contest-card-capacity-label">
-                  {Math.round(percent)}% claimed
-                </span>
-                <span className="contest-card-capacity-spots">
-                  {fmt(taken)} / {fmt(contest.maxSpots)} spots
-                </span>
+                <span className="contest-card-capacity-label">{Math.round(percent)}% claimed</span>
+                <span className="contest-card-capacity-spots">{fmt(taken)} / {fmt(contest.maxSpots)} spots</span>
               </div>
               <div className="contest-card-capacity-track">
                 <motion.div
@@ -370,7 +167,6 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
               </div>
             </div>
 
-            {/* 3-COL FOOTER (Attendees | Register by | Entry) */}
             <div className="contest-card-meta-grid">
               <div className="contest-card-meta-cell">
                 <div className="contest-card-meta-label">Attendees</div>
@@ -403,7 +199,6 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
               </div>
             </div>
 
-            {/* CTA + Countdown row */}
             {!isUpcoming && !isFull && (
               <div className="contest-card-cta-row">
                 {contest.endsAt && (
@@ -425,546 +220,649 @@ const ContestCard = React.memo(function ContestCard({ contest, index }: { contes
   );
 });
 
-/* ─── Active filter chip ─── */
-function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+/* ═══════════════════════════════════════════════════
+   FEATURED SPOTLIGHT CARD (large, editorial)
+   ═══════════════════════════════════════════════════ */
+function FeaturedSpotlight({ contest }: { contest: ContestData }) {
+  const taken = contest.maxSpots - contest.spotsRemaining;
+  const percent = Math.min(100, (taken / Math.max(contest.maxSpots, 1)) * 100);
+  const seed = (contest.id * 9301 + 49297) % 233280;
+  const hueShift = (seed / 233280) * 360;
+  const heroBg = `radial-gradient(circle at 25% 25%, hsl(var(--foreground) / 0.18), transparent 55%), radial-gradient(circle at 80% 70%, hsl(var(--foreground) / 0.08), transparent 60%), linear-gradient(${135 + hueShift / 8}deg, hsl(var(--foreground) / 0.06), hsl(var(--background)))`;
+
   return (
-    <button
-      type="button"
-      onClick={onRemove}
-      aria-label={`Remove filter: ${label}`}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-display text-foreground/60 transition-all cursor-pointer hover:text-foreground/85 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="gv-featured"
     >
-      {label}
-      <X className="w-2.5 h-2.5" />
-    </button>
-  );
-}
-
-/* ─── Main Page ─── */
-export default function Giveaway() {
-  const { data: contests = [], isLoading: loading } = useQuery({
-    queryKey: ["contests"],
-    queryFn: getContests,
-    refetchInterval: 30_000,
-    staleTime: 0,
-  });
-
-  // Filter state
-  const [filters, setFilters] = useState<Filters>(defaultFilters);
-
-  // Advanced filter popover state + click-outside
-  const [advFilterOpen, setAdvFilterOpen] = useState(false);
-  const advFilterRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!advFilterOpen) return;
-    function handleClick(e: MouseEvent) {
-      if (advFilterRef.current && !advFilterRef.current.contains(e.target as Node)) {
-        setAdvFilterOpen(false);
-      }
-    }
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setAdvFilterOpen(false);
-    }
-    document.addEventListener("mousedown", handleClick);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [advFilterOpen]);
-
-  const updateFilters = useCallback((patch: Partial<Filters>) => {
-    setFilters((prev) => ({ ...prev, ...patch }));
-  }, []);
-
-  const clearFilters = useCallback(() => setFilters(defaultFilters), []);
-
-  const activeFilterCount = countActiveFilters(filters);
-  // "Advanced" count = deadline + openOnly only (status is handled by visible chip bar)
-  const advFilterCount = filters.deadline.size + (filters.openOnly ? 1 : 0);
-
-  // Filtered + searched contest list
-  const filteredContests = useMemo(() => {
-    let list = [...contests];
-    const now = new Date();
-
-    // Status filter
-    if (filters.status === "active") list = list.filter((c) => c.status === "active" && !c.isFull);
-    else if (filters.status === "upcoming") list = list.filter((c) => c.status === "upcoming");
-    else if (filters.status === "completed") list = list.filter((c) => c.isFull || c.status === "completed" || c.status === "ended");
-
-    // Open spots only
-    if (filters.openOnly) list = list.filter((c) => !c.isFull && c.spotsRemaining > 0);
-
-    // Deadline filter (multi-select OR logic)
-    if (filters.deadline.size > 0) {
-      list = list.filter((c) => {
-        if (!c.endsAt) return filters.deadline.has("no-deadline");
-        const endsAt = new Date(c.endsAt);
-        const daysLeft = (endsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-        if (filters.deadline.has("this-week") && daysLeft >= 0 && daysLeft <= 7) return true;
-        if (filters.deadline.has("this-month") && daysLeft >= 0 && daysLeft <= 30) return true;
-        if (filters.deadline.has("no-deadline") && !c.endsAt) return true;
-        return false;
-      });
-    }
-
-    // Text search
-    if (filters.search.trim()) {
-      const q = filters.search.toLowerCase().trim();
-      list = list.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q) ||
-          c.prize.toLowerCase().includes(q)
-      );
-    }
-
-    return list;
-  }, [contests, filters]);
-
-  // Summary stats (always from full list)
-  const totalSpots = contests.reduce((s, c) => s + c.maxSpots, 0);
-  const totalEntries = contests.reduce((s, c) => s + c.totalEntries, 0);
-  const activeCount = contests.filter((c) => c.status === "active" && !c.isFull).length;
-
-  // Split filtered list into sections
-  const activeContests = filteredContests.filter((c) => c.status === "active" && !c.isFull);
-  const upcomingContests = filteredContests.filter((c) => c.status === "upcoming");
-  const completedContests = filteredContests.filter((c) => c.isFull || c.status === "completed" || c.status === "ended");
-
-  // Label map for active chip display
-  const DEADLINE_LABELS: Record<string, string> = {
-    "this-week": "Ends this week",
-    "this-month": "Ends this month",
-    "no-deadline": "No deadline",
-  };
-  const STATUS_LABELS: Record<string, string> = {
-    active: "Active & open",
-    upcoming: "Coming soon",
-    completed: "Completed / Full",
-  };
-
-  return (
-    <div className="min-h-screen bg-black text-foreground">
-      <div className="noise-overlay" />
-      <div className="vignette-overlay" />
-
-      <main className="relative z-10 pt-[70px] pb-16 sm:pb-24">
-
-        {/* ── Section divider ── */}
-        <div className="section-divider mx-2 sm:mx-3 md:mx-4 lg:mx-5 mb-4">
-          <GlowLine />
-
-          <section className="py-6 sm:py-10 relative">
-            <div className="container mx-auto px-4 max-w-6xl">
-              
-              {/* ── Centered Hero Box (title + stats + entry-check CTA) ── */}
-              <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="container mx-auto px-4 max-w-3xl pt-8 sm:pt-12 pb-6">
-                <div
-                  className="relative rounded-[28px] overflow-hidden"
-                  style={{
-                    background: "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.012) 100%)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 60px rgba(0,0,0,0.35)",
-                  }}
-                >
-                  {/* Decorative top wash */}
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-x-0 top-0 h-32 pointer-events-none"
-                    style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%)" }}
-                  />
-                  <div className="relative z-[2] px-5 sm:px-9 py-8 sm:py-10 text-center">
-                    <div className="glass-pill-badge inline-flex mb-4">
-
-                    </div>
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-light text-foreground mb-3 leading-[1.1] tracking-tight">Contest Hub</h1>
-                    <p className="text-foreground/50 text-xs sm:text-sm font-light leading-relaxed max-w-xl mx-auto tracking-wide mb-7">
-                      Choose a contest, complete partner registrations, and enter for a chance to win amazing prizes.
-                    </p>
-
-                    {/* Check-entry CTA → separate page */}
-                    <Link
-                      href="/entry-check"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-[13px] font-display font-light text-foreground/85 transition-all hover:text-foreground"
-                      style={{
-                        background: "linear-gradient(140deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 100%)",
-                        border: "1px solid rgba(255,255,255,0.12)",
-                        boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset",
-                      }}
-                    >
-                      <Search className="w-3.5 h-3.5 text-foreground/55" />
-                      Check Entry Code
-                      <ChevronRight className="w-3.5 h-3.5 text-foreground/45" />
-                    </Link>
+      <Link href={`/giveaway/${contest.slug}`} aria-label={`Enter featured contest ${contest.name}`}>
+        <div className="gv-featured-card group">
+          <div className="gv-featured-shine" />
+          <div className="gv-featured-grid">
+            {/* Visual */}
+            <div className="gv-featured-visual" style={{ background: contest.imageUrl ? undefined : heroBg }}>
+              {contest.imageUrl ? (
+                <img src={contest.imageUrl} alt={contest.name} className="gv-featured-img" />
+              ) : (
+                <>
+                  <div className="gv-featured-glow" aria-hidden />
+                  <div className="gv-featured-grid-tex" aria-hidden />
+                  <div className="gv-featured-initial" aria-hidden>
+                    {contest.name.trim().charAt(0).toUpperCase() || "X"}
                   </div>
+                </>
+              )}
+              <div className="gv-featured-tag-row">
+                <span className="gv-featured-live">
+                  <span className="contest-card-banner-pulse" />
+                  LIVE NOW
+                </span>
+                <span className="gv-featured-spotlight">
+                  <Crown className="w-3 h-3" />
+                  Spotlight
+                </span>
+              </div>
+              <div className="gv-featured-trophy"><Trophy className="w-4 h-4" /></div>
+            </div>
+
+            {/* Info */}
+            <div className="gv-featured-info">
+              <div className="gv-featured-eyebrow">
+                <Sparkles className="w-3 h-3" />
+                Featured Contest
+              </div>
+              <h2 className="gv-featured-title">{contest.name}</h2>
+              <p className="gv-featured-desc">{contest.description}</p>
+
+              <div className="gv-featured-stats">
+                <div className="gv-featured-stat">
+                  <div className="gv-featured-stat-label">Prize</div>
+                  <div className="gv-featured-stat-value">{contest.prizeValue || contest.prize}</div>
                 </div>
-              </motion.div>
-
-              {/* ── Unified Filter Bar (chips + advanced popover, no sidebar) ── */}
-              <div className="mb-6 ctx-filterbar">
-                {/* Search + Advanced filter button */}
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/40 pointer-events-none z-[1]" />
-                    <input
-                      type="text"
-                      value={filters.search}
-                      onChange={(e) => updateFilters({ search: e.target.value })}
-                      placeholder="Search contests, prizes..."
-                      aria-label="Search contests"
-                      className="ctx-search-input w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-light focus:outline-none transition-all text-foreground"
-                    />
-                  </div>
-
-                  <div className="relative" ref={advFilterRef}>
-                    <button
-                      type="button"
-                      onClick={() => setAdvFilterOpen((v) => !v)}
-                      aria-expanded={advFilterOpen}
-                      aria-haspopup="dialog"
-                      data-active={advFilterCount > 0 ? "true" : "false"}
-                      className="ctx-adv-btn flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-display font-light transition-all relative shrink-0"
-                    >
-                      <SlidersHorizontal className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">More</span>
-                      {advFilterCount > 0 && (
-                        <span className="ctx-adv-count w-4 h-4 rounded-full text-[9px] font-display flex items-center justify-center">
-                          {advFilterCount}
-                        </span>
-                      )}
-                    </button>
-
-                    {/* Advanced filters popover */}
-                    <AnimatePresence>
-                      {advFilterOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -6, scale: 0.98 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -6, scale: 0.98 }}
-                          transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                          role="dialog"
-                          aria-label="Advanced filters"
-                          className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl p-5 z-30"
-                          style={{
-                            background: "linear-gradient(160deg, rgba(20,20,24,0.98) 0%, rgba(10,10,12,0.98) 100%)",
-                            border: "1px solid rgba(255,255,255,0.10)",
-                            boxShadow: "0 24px 60px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06) inset",
-                            backdropFilter: "blur(12px)",
-                            WebkitBackdropFilter: "blur(12px)",
-                          }}
-                        >
-                          <FilterPanel
-                            filters={filters}
-                            onChange={updateFilters}
-                            onClear={clearFilters}
-                            activeCount={activeFilterCount}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                <div className="gv-featured-stat">
+                  <div className="gv-featured-stat-label">Entries</div>
+                  <div className="gv-featured-stat-value">{fmt(contest.totalEntries)}</div>
                 </div>
-
-                {/* Status chips bar — always visible quick toggles */}
-                <div
-                  role="radiogroup"
-                  aria-label="Filter contests by status"
-                  className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide"
-                >
-                  {STATUS_CHIPS.map((chip) => {
-                    const active = filters.status === chip.value;
-                    const Icon = chip.icon;
-                    return (
-                      <button
-                        key={chip.value}
-                        type="button"
-                        role="radio"
-                        aria-checked={active}
-                        aria-pressed={active}
-                        data-active={active ? "true" : "false"}
-                        onClick={() => updateFilters({ status: chip.value })}
-                        className="ctx-status-chip inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-display font-light transition-all whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40"
-                      >
-                        <Icon className="w-3 h-3" />
-                        {chip.label}
-                      </button>
-                    );
-                  })}
+                <div className="gv-featured-stat">
+                  <div className="gv-featured-stat-label">Spots Left</div>
+                  <div className="gv-featured-stat-value">{fmt(contest.spotsRemaining)}</div>
                 </div>
               </div>
 
-              {/* ── Main Contest Area (full width, no sidebar) ── */}
-              <div className="min-w-0">
-                  {/* Active filter chips */}
-                  {activeFilterCount > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-5">
-                      {filters.status !== "all" && (
-                        <FilterChip
-                          label={STATUS_LABELS[filters.status]}
-                          onRemove={() => updateFilters({ status: "all" })}
-                        />
-                      )}
-                      {Array.from(filters.deadline).map((d) => (
-                        <FilterChip
-                          key={d}
-                          label={DEADLINE_LABELS[d]}
-                          onRemove={() => {
-                            const next = new Set(filters.deadline);
-                            next.delete(d as DeadlineFilter);
-                            updateFilters({ deadline: next });
-                          }}
-                        />
-                      ))}
-                      {filters.openOnly && (
-                        <FilterChip label="Open spots only" onRemove={() => updateFilters({ openOnly: false })} />
-                      )}
-                    </div>
-                  )}
-
-                  {/* Results count */}
-                  {(activeFilterCount > 0 || filters.search) && (
-                    <div className="mb-5 text-[11px] text-foreground/30 font-light">
-                      {filteredContests.length} contest{filteredContests.length !== 1 ? "s" : ""} match{filteredContests.length === 1 ? "es" : ""} your filters
-                    </div>
-                  )}
-
-                  {/* Contest cards */}
-                  {loading ? (
-                    <div className="flex justify-center py-20">
-                      <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
-                    </div>
-                  ) : (
-                    <>
-                      {activeContests.length > 0 && (
-                        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="mb-12">
-                          <div className="flex items-center gap-3 mb-5">
-                            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/40 to-white/0" />
-                            <h2 className="text-base sm:text-lg font-display font-light text-foreground">Active Contests</h2>
-                            <span className="text-[10px] text-foreground/25 font-light">{activeContests.length} available</span>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            {activeContests.map((contest, i) => (
-                              <ContestCard key={contest.id} contest={contest} index={i + 3} />
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {upcomingContests.length > 0 && (
-                        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={4} className="mb-12">
-                          <div className="flex items-center gap-3 mb-5">
-                            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/25 to-white/0" />
-                            <h2 className="text-base sm:text-lg font-display font-light text-foreground/70">Upcoming</h2>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            {upcomingContests.map((contest, i) => (
-                              <ContestCard key={contest.id} contest={contest} index={i + 5} />
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {completedContests.length > 0 && (
-                        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={6} className="mb-12">
-                          <div className="flex items-center gap-3 mb-5">
-                            <div className="w-1 h-5 rounded-full bg-gradient-to-b from-white/15 to-white/0" />
-                            <h2 className="text-base sm:text-lg font-display font-light text-foreground/50">Completed</h2>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            {completedContests.map((contest, i) => (
-                              <ContestCard key={contest.id} contest={contest} index={i + 7} />
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {/* Empty state */}
-                      {filteredContests.length === 0 && !loading && (
-                        <div className="text-center py-20">
-                          {activeFilterCount > 0 || filters.search ? (
-                            <>
-                              <Filter className="w-10 h-10 text-foreground/10 mx-auto mb-4" />
-                              <h3 className="text-lg font-display font-light text-foreground/40 mb-2">No contests match</h3>
-                              <p className="text-sm text-foreground/25 font-light mb-5">Try adjusting your filters or search term</p>
-                              <button
-                                onClick={clearFilters}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-display font-light text-foreground/50 hover:text-foreground/75 transition-all"
-                                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
-                              >
-                                <X className="w-3.5 h-3.5" />
-                                Clear all filters
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <Trophy className="w-12 h-12 text-foreground/15 mx-auto mb-4" />
-                              <h3 className="text-xl font-display font-light text-foreground/50 mb-2">No Contests Yet</h3>
-                              <p className="text-sm text-foreground/30 font-light">Check back soon for exciting giveaway contests!</p>
-                            </>
-                          )}
-                        </div>
-                      )}
-                    </>
-                  )}
+              <div className="gv-featured-progress">
+                <div className="gv-featured-progress-head">
+                  <span>{Math.round(percent)}% claimed</span>
+                  <span>{fmt(taken)} / {fmt(contest.maxSpots)}</span>
                 </div>
-            </div>
-          </section>
-
-          <GlowLine />
-
-          {/* ── How to Enter ── */}
-          <section className="py-16 sm:py-24 relative">
-            <FloatingParticles />
-            <div className="container mx-auto px-4 max-w-4xl">
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-                variants={fadeUp}
-                custom={0}
-                className="text-center mb-14 sm:mb-20"
-              >
-                <div className="glass-pill-badge mb-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
-                  Step-by-Step Guide
+                <div className="gv-featured-progress-track">
+                  <motion.div
+                    className="gv-featured-progress-fill"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${percent}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                  />
                 </div>
-                <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-foreground mb-5 tracking-tight">How to Enter</h2>
-                <p className="text-foreground/40 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto">
-                  Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
-                </p>
-              </motion.div>
+              </div>
 
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="space-y-4 sm:space-y-5">
-                {[
-                  { step: "01", title: "Register with Partner Link", desc: "Click the provided partner registration link and complete the full registration on the partner profile. Every partner listed here requires registration — make sure it's successfully completed.", icon: <ExternalLink className="w-4 h-4" />, tip: "Required for all partners" },
-                  { step: "02", title: "Maximize Your Chances", desc: "Want to increase your winning probability? Register with additional partner links as well. Each completed registration earns you one extra entry into the draw.", icon: <Target className="w-4 h-4" />, tip: "Optional but recommended" },
-                  { step: "03", title: "Fill the Entry Form", desc: "Submit the giveaway entry form with all required details as mentioned. Include your name, email, phone, and city. If you have a referral code, enter it during submission.", icon: <Shield className="w-4 h-4" />, tip: null },
-                  { step: "04", title: "Upload Screenshot Proof", desc: "Take a screenshot of each completed partner registration and upload it as proof. This is mandatory to verify your entry — one screenshot per partner.", icon: <Camera className="w-4 h-4" />, tip: "Max 10 MB per screenshot" },
-                  { step: "05", title: "Get Your Entry Code", desc: "After successful submission, you'll receive a unique entry code (e.g., X247-XXXX-XXXX). Save this code — you'll need it to check your status and claim your prize if you win.", icon: <Copy className="w-4 h-4" />, tip: "Save your code!" },
-                  { step: "06", title: "Wait for Winners", desc: "Winners are announced within 24-48 hours after all spots are filled and entries verified. Check the Winners page or use your entry code to see if you've won.", icon: <Award className="w-4 h-4" />, tip: null },
-                ].map((item, i) => (
-                  <motion.div key={i} variants={fadeUp} custom={i}>
-                    <div className="glass-card p-5 sm:p-6 group">
-                      <div className="card-shine" />
-                      <div className="relative z-[2] flex gap-4 sm:gap-5">
-                        <div className="flex flex-col items-center gap-2 shrink-0">
-                          <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-foreground/40 group-hover:text-foreground/60 transition-colors">
-                            {item.icon}
-                          </div>
-                          <span className="text-[9px] font-display font-medium text-foreground/20 uppercase tracking-widest">{item.step}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                            <h4 className="text-sm sm:text-base font-display font-light text-foreground">{item.title}</h4>
-                            {item.tip && (
-                              <span className="px-2 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[9px] text-foreground/40 font-light">{item.tip}</span>
-                            )}
-                          </div>
-                          <p className="text-xs text-foreground/35 font-light leading-relaxed">{item.desc}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </div>
-          </section>
-
-          <GlowLine />
-
-          {/* ── Premium Rewards Visual Showcase ── */}
-          <section className="py-6 sm:py-10 relative overflow-hidden">
-            <div className="container mx-auto px-4 max-w-5xl">
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <div className="glass-card !shadow-none !p-0 overflow-hidden">
-                  <div className="rewards-showcase-card relative overflow-hidden">
-                    <img
-                      src="/images/hero-rewards-visual.png"
-                      alt="Premium rewards — trophies, gift cards, and tech prizes"
-                      className="w-full object-cover"
-                      style={{ maxHeight: 420, objectPosition: "center 30%" }}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5">
-                      <div>
-                        <div className="glass-pill-badge mb-3 inline-flex w-auto">
-                          <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
-                          Real Prizes. Daily Draws.
-                        </div>
-                        <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight drop-shadow-lg">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
-                        <p className="text-sm sm:text-base text-white/80 font-light max-w-md leading-relaxed drop-shadow">Gift cards, tech gadgets, swag kits &amp; cash prizes — drawn daily from all verified entries.</p>
-                      </div>
-                      <a href="#contests" className="showcase-enter-btn group shrink-0 inline-flex items-center justify-center gap-2 h-12 px-7 rounded-2xl font-medium text-sm tracking-wide transition-all duration-300 bg-white text-black border border-white/20 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
-                        <span>Browse Contests</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                      </a>
-                    </div>
+              <div className="gv-featured-foot">
+                {contest.endsAt && (
+                  <div className="gv-featured-countdown">
+                    <Clock className="w-3.5 h-3.5" />
+                    <CountdownTimer endsAt={contest.endsAt} compact />
                   </div>
+                )}
+                <div className="gv-featured-cta">
+                  <span>Enter Now</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
+   SKELETON CARD
+   ═══════════════════════════════════════════════════ */
+function SkeletonCard() {
+  return (
+    <div className="gv-skeleton">
+      <div className="gv-skeleton-banner" />
+      <div className="gv-skeleton-body">
+        <div className="gv-skeleton-line gv-skeleton-line--lg" />
+        <div className="gv-skeleton-line gv-skeleton-line--md" />
+        <div className="gv-skeleton-pills">
+          <div className="gv-skeleton-pill" />
+          <div className="gv-skeleton-pill" />
+        </div>
+        <div className="gv-skeleton-bar" />
+        <div className="gv-skeleton-grid">
+          <div className="gv-skeleton-cell" />
+          <div className="gv-skeleton-cell" />
+          <div className="gv-skeleton-cell" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
+   MAIN PAGE
+   ═══════════════════════════════════════════════════ */
+export default function Giveaway() {
+  const { data: contests = [], isLoading } = useQuery({
+    queryKey: ["contests"],
+    queryFn: getContests,
+  });
+
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<SortBy>("ending-soon");
+  const [sortOpen, setSortOpen] = useState(false);
+  const [stickyOn, setStickyOn] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+  const filterBarRef = useRef<HTMLDivElement>(null);
+
+  /* Detect sticky state for shadow */
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => setStickyOn(e.intersectionRatio < 1),
+      { threshold: [1] }
+    );
+    const sentinel = document.getElementById("gv-filter-sentinel");
+    if (sentinel) obs.observe(sentinel);
+    return () => obs.disconnect();
+  }, []);
+
+  /* Close sort dropdown on outside click */
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
+
+  /* ── DERIVED DATA ── */
+  const live = useMemo(() => contests.filter(c => c.status === "active" && !c.isFull), [contests]);
+  const upcoming = useMemo(() => contests.filter(c => c.status === "upcoming"), [contests]);
+  const closed = useMemo(() => contests.filter(c => c.status === "completed" || c.isFull), [contests]);
+
+  const totalPrizePool = useMemo(
+    () => contests.reduce((sum, c) => sum + parsePrizeNumeric(c.prizeValue), 0),
+    [contests]
+  );
+  const totalEntries = useMemo(
+    () => contests.reduce((sum, c) => sum + c.totalEntries, 0),
+    [contests]
+  );
+  const totalLive = live.length;
+  const totalContests = contests.length;
+
+  /* Featured = highest prize value among live (or first live) */
+  const featured = useMemo(() => {
+    if (live.length === 0) return null;
+    return [...live].sort((a, b) => parsePrizeNumeric(b.prizeValue) - parsePrizeNumeric(a.prizeValue))[0];
+  }, [live]);
+
+  /* Search + status filter applied to all */
+  const filtered = useMemo(() => {
+    let list = [...contests];
+    if (status === "active") list = list.filter(c => c.status === "active" && !c.isFull);
+    else if (status === "upcoming") list = list.filter(c => c.status === "upcoming");
+    else if (status === "completed") list = list.filter(c => c.status === "completed" || c.isFull);
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        c.prize.toLowerCase().includes(q) ||
+        (c.description || "").toLowerCase().includes(q)
+      );
+    }
+
+    list.sort((a, b) => {
+      switch (sortBy) {
+        case "ending-soon": {
+          const aTime = a.endsAt ? new Date(a.endsAt).getTime() : Infinity;
+          const bTime = b.endsAt ? new Date(b.endsAt).getTime() : Infinity;
+          return aTime - bTime;
+        }
+        case "most-popular":
+          return b.totalEntries - a.totalEntries;
+        case "biggest-prize":
+          return parsePrizeNumeric(b.prizeValue) - parsePrizeNumeric(a.prizeValue);
+        case "newest":
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+    });
+    return list;
+  }, [contests, status, search, sortBy]);
+
+  /* When status='all' and no search → split into sections; otherwise show flat */
+  const showSectioned = status === "all" && !search.trim();
+
+  const liveSorted = useMemo(() => {
+    return showSectioned
+      ? filtered.filter(c => c.status === "active" && !c.isFull && (!featured || c.id !== featured.id))
+      : [];
+  }, [filtered, showSectioned, featured]);
+
+  const upcomingSorted = useMemo(
+    () => (showSectioned ? filtered.filter(c => c.status === "upcoming") : []),
+    [filtered, showSectioned]
+  );
+
+  const closedSorted = useMemo(
+    () => (showSectioned ? filtered.filter(c => c.status === "completed" || c.isFull) : []),
+    [filtered, showSectioned]
+  );
+
+  const clearAll = useCallback(() => {
+    setStatus("all");
+    setSearch("");
+    setSortBy("ending-soon");
+  }, []);
+
+  const sortLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label ?? "Sort";
+
+  return (
+    <div className="gv-page">
+      {/* ── HERO ────────────────────────────────────── */}
+      <section className="gv-hero">
+        <div className="gv-hero-bg-grid" aria-hidden />
+        <div className="gv-hero-radial" aria-hidden />
+        <div className="gv-hero-orb gv-hero-orb-1" aria-hidden />
+        <div className="gv-hero-orb gv-hero-orb-2" aria-hidden />
+
+        <div className="container mx-auto px-4 max-w-6xl relative z-[2]">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="text-center"
+          >
+            <motion.div variants={fadeUp} className="gv-hero-eyebrow">
+              <Sparkles className="w-3 h-3" />
+              Contest Hub
+              <span className="gv-hero-eyebrow-dot" />
+              {totalLive > 0 ? `${totalLive} live now` : "Curated weekly"}
+            </motion.div>
+
+            <motion.h1 variants={fadeUp} className="gv-hero-title">
+              Win prizes worth<br />
+              <span className="gv-hero-title-accent">a lifetime.</span>
+            </motion.h1>
+
+            <motion.p variants={fadeUp} className="gv-hero-sub">
+              Premium giveaways from verified brands. Complete a few partner steps,
+              earn entries, and win curated prizes — straight from the source.
+            </motion.p>
+
+            <motion.div variants={fadeUp} className="gv-hero-ctas">
+              <button
+                onClick={() => {
+                  document.getElementById("gv-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className="gv-hero-cta gv-hero-cta-primary"
+              >
+                Browse Active
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <Link href="/entry-check" className="gv-hero-cta gv-hero-cta-ghost">
+                <ShieldCheck className="w-4 h-4" />
+                Check Entry Code
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── STATS STRIP ────────────────────────────── */}
+      <section className="gv-stats-section">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={stagger}
+            className="gv-stats"
+          >
+            {[
+              { label: "Total Prize Pool", value: totalPrizePool, prefix: "₹", suffix: "" },
+              { label: "Live Contests", value: totalLive, prefix: "", suffix: "" },
+              { label: "Total Entries", value: totalEntries, prefix: "", suffix: "" },
+              { label: "All-Time Contests", value: totalContests, prefix: "", suffix: "" },
+            ].map((s, i) => (
+              <motion.div key={s.label} variants={fadeUp} custom={i} className="gv-stat">
+                <div className="gv-stat-label">{s.label}</div>
+                <div className="gv-stat-value">
+                  <AnimatedCounter value={s.value} prefix={s.prefix} suffix={s.suffix} duration={1.6} />
                 </div>
               </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── STICKY FILTER BAR ─────────────────────── */}
+      <div id="gv-filter-sentinel" aria-hidden />
+      <div className={`gv-filter-bar-wrap ${stickyOn ? "is-stuck" : ""}`} ref={filterBarRef}>
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="gv-filter-bar">
+            {/* Search */}
+            <div className="gv-search">
+              <Search className="w-4 h-4 gv-search-icon" />
+              <input
+                type="text"
+                placeholder="Search contests, prizes…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Escape") setSearch(""); }}
+                className="gv-search-input"
+                aria-label="Search contests by name, prize, or description"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="gv-search-clear"
+                  aria-label="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
-          </section>
 
-          <GlowLine />
+            {/* Status chips */}
+            <div className="gv-chips">
+              {STATUS_CHIPS.map((chip) => {
+                const Icon = chip.icon;
+                const active = status === chip.value;
+                const count =
+                  chip.value === "all" ? totalContests :
+                  chip.value === "active" ? totalLive :
+                  chip.value === "upcoming" ? upcoming.length :
+                  closed.length;
+                return (
+                  <button
+                    key={chip.value}
+                    onClick={() => setStatus(chip.value)}
+                    className={`gv-chip ${active ? "is-active" : ""}`}
+                    aria-pressed={active}
+                  >
+                    <Icon className="w-3 h-3" />
+                    <span>{chip.label}</span>
+                    <span className="gv-chip-count">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-          {/* ── Trust section ── */}
-          <section className="py-14 sm:py-20">
-            <div className="container mx-auto px-4 max-w-4xl">
+            {/* Sort */}
+            <div className="gv-sort" ref={sortRef}>
+              <button
+                onClick={() => setSortOpen(!sortOpen)}
+                className="gv-sort-btn"
+                aria-expanded={sortOpen}
+                aria-haspopup="listbox"
+              >
+                <Filter className="w-3.5 h-3.5" />
+                <span>{sortLabel}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${sortOpen ? "rotate-180" : ""}`} />
+              </button>
+              <AnimatePresence>
+                {sortOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    className="gv-sort-menu"
+                    role="listbox"
+                  >
+                    {SORT_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => { setSortBy(opt.value); setSortOpen(false); }}
+                        className={`gv-sort-item ${sortBy === opt.value ? "is-active" : ""}`}
+                        role="option"
+                        aria-selected={sortBy === opt.value}
+                      >
+                        {opt.label}
+                        {sortBy === opt.value && <CheckCircle2 className="w-3.5 h-3.5" />}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── MAIN CONTENT ──────────────────────────── */}
+      <section className="gv-main" id="gv-grid">
+        <div className="container mx-auto px-4 max-w-6xl">
+          {/* Loading */}
+          {isLoading && (
+            <div className="gv-grid">
+              {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!isLoading && filtered.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="gv-empty"
+            >
+              <div className="gv-empty-icon">
+                <Search className="w-7 h-7" />
+              </div>
+              <h3 className="gv-empty-title">No contests match your filters</h3>
+              <p className="gv-empty-desc">
+                Try a different search or clear filters to see everything that's live.
+              </p>
+              <button onClick={clearAll} className="gv-empty-cta">
+                Clear all filters
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* Sectioned view (status=all, no search) */}
+          {!isLoading && filtered.length > 0 && showSectioned && (
+            <>
+              {featured && (
+                <div className="gv-block">
+                  <div className="gv-block-head">
+                    <div className="gv-block-eyebrow">
+                      <Crown className="w-3 h-3" />
+                      Spotlight
+                    </div>
+                    <h2 className="gv-block-title">Featured contest</h2>
+                  </div>
+                  <FeaturedSpotlight contest={featured} />
+                </div>
+              )}
+
+              {liveSorted.length > 0 && (
+                <div className="gv-block">
+                  <div className="gv-block-head">
+                    <div className="gv-block-eyebrow">
+                      <Zap className="w-3 h-3" />
+                      Live now
+                    </div>
+                    <h2 className="gv-block-title">
+                      Active contests
+                      <span className="gv-block-count">{liveSorted.length}</span>
+                    </h2>
+                  </div>
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-60px" }}
+                    variants={stagger}
+                    className="gv-grid"
+                  >
+                    {liveSorted.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
+                  </motion.div>
+                </div>
+              )}
+
+              {upcomingSorted.length > 0 && (
+                <div className="gv-block">
+                  <div className="gv-block-head">
+                    <div className="gv-block-eyebrow">
+                      <Clock className="w-3 h-3" />
+                      Coming soon
+                    </div>
+                    <h2 className="gv-block-title">
+                      Upcoming
+                      <span className="gv-block-count">{upcomingSorted.length}</span>
+                    </h2>
+                  </div>
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-60px" }}
+                    variants={stagger}
+                    className="gv-grid"
+                  >
+                    {upcomingSorted.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
+                  </motion.div>
+                </div>
+              )}
+
+              {closedSorted.length > 0 && (
+                <div className="gv-block">
+                  <div className="gv-block-head">
+                    <div className="gv-block-eyebrow">
+                      <CheckCircle2 className="w-3 h-3" />
+                      Hall of fame
+                    </div>
+                    <h2 className="gv-block-title">
+                      Closed contests
+                      <span className="gv-block-count">{closedSorted.length}</span>
+                    </h2>
+                  </div>
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-60px" }}
+                    variants={stagger}
+                    className="gv-grid"
+                  >
+                    {closedSorted.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
+                  </motion.div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Flat view (filter or search active) */}
+          {!isLoading && filtered.length > 0 && !showSectioned && (
+            <div className="gv-block">
+              <div className="gv-block-head">
+                <div className="gv-block-eyebrow">
+                  <TrendingUp className="w-3 h-3" />
+                  Results
+                </div>
+                <h2 className="gv-block-title">
+                  {filtered.length} {filtered.length === 1 ? "contest" : "contests"}
+                  {search && <> matching "<span className="gv-block-q">{search}</span>"</>}
+                </h2>
+              </div>
               <motion.div
                 initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={0}
-                className="text-center mb-10"
+                animate="visible"
+                variants={stagger}
+                className="gv-grid"
               >
-                <div className="glass-pill-badge mb-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
-                  Trust & Verification
-                </div>
-                <h2 className="text-xl sm:text-3xl font-display font-light text-foreground mb-4 tracking-tight">Fair & Transparent</h2>
-                <p className="text-foreground/40 text-sm font-light leading-relaxed max-w-xl mx-auto">
-                  Every entry is verified manually. Winners are selected randomly and announced transparently.
-                </p>
-              </motion.div>
-
-              <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-10">
-                {[
-                  { name: "SSL Secured", icon: <Shield className="w-5 h-5" /> },
-                  { name: "Verified Entries", icon: <CheckCircle2 className="w-5 h-5" /> },
-                  { name: "Random Draw", icon: <Star className="w-5 h-5" /> },
-                  { name: "Public Winners", icon: <Award className="w-5 h-5" /> },
-                ].map((item) => (
-                  <motion.div key={item.name} variants={fadeUp}>
-                    <div className="glass-card p-4 text-center">
-                      <div className="card-shine" />
-                      <div className="relative z-[2]">
-                        <div className="text-foreground/25 mx-auto mb-2 flex justify-center">{item.icon}</div>
-                        <div className="text-[10px] text-foreground/40 font-display uppercase tracking-widest">{item.name}</div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                {filtered.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
               </motion.div>
             </div>
-          </section>
+          )}
         </div>
+      </section>
 
-        <SiteFooter />
-      </main>
+      {/* ── HOW IT WORKS MINI ─────────────────────── */}
+      <section className="gv-steps-section">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="gv-steps-head">
+            <div className="gv-steps-eyebrow">How it works</div>
+            <h2 className="gv-steps-title">Three steps. One winner.</h2>
+          </div>
+          <div className="gv-steps-grid">
+            {[
+              { num: "01", icon: Search, title: "Pick a contest", desc: "Browse curated giveaways from verified brands. Filter by prize, deadline, or popularity." },
+              { num: "02", icon: ShieldCheck, title: "Complete partner steps", desc: "Each contest has a few quick partner registrations. Verified brands fund every prize pool." },
+              { num: "03", icon: Trophy, title: "Get your entry & win", desc: "Auto-generated entry code locks you in. Winners drawn fairly and announced publicly." },
+            ].map((s, i) => (
+              <motion.div
+                key={s.num}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="gv-step"
+              >
+                <div className="gv-step-num">{s.num}</div>
+                <div className="gv-step-icon"><s.icon className="w-5 h-5" /></div>
+                <h3 className="gv-step-title">{s.title}</h3>
+                <p className="gv-step-desc">{s.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {/* ── FINAL CTA ─────────────────────────────── */}
+      <section className="gv-cta-section">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="gv-cta-card"
+          >
+            <div className="gv-cta-shine" />
+            <div className="gv-cta-content">
+              <div className="gv-cta-eyebrow">
+                <Star className="w-3 h-3" />
+                Premium membership
+              </div>
+              <h2 className="gv-cta-title">Multiply your odds. Unlock every prize.</h2>
+              <p className="gv-cta-desc">
+                Members get bonus entries, exclusive contests, and priority access to limited drops.
+              </p>
+              <div className="gv-cta-buttons">
+                <Link href="/pricing" className="gv-cta-primary">
+                  See membership tiers
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+                <Link href="/how-it-works" className="gv-cta-ghost">
+                  How X247 works
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <SiteFooter />
     </div>
   );
 }
