@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence, type Variants } from "framer-motion";
 import { Link } from "wouter";
-import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import {
   UserPlus, Trophy, Gift, Sparkles, ArrowRight, Check,
@@ -184,8 +183,6 @@ function MechanicCard({ icon: Icon, title, desc, delay = 0 }: { icon: any; title
 export default function HowItWorks() {
   return (
     <div className="hiw-page">
-      <SiteNav activePage="how-it-works" />
-
       {/* ── Hero ── */}
       <section className="hiw-hero">
         <div className="hiw-hero-bg-grid" aria-hidden />

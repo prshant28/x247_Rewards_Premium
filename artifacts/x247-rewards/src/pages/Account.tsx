@@ -968,11 +968,7 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
           <AnimatedCounter value={user.followingCount ?? 0} className="acct-social-num" />
           <span className="acct-social-lbl">Following</span>
         </button>
-        <div className="acct-social-divider" />
-        <div className="acct-social-stat">
-          <AnimatedCounter value={entries.length} className="acct-social-num" />
-          <span className="acct-social-lbl">Entries</span>
-        </div>
+        
         <button
           className="acct-social-discover-btn ml-auto"
           onClick={() => navigate("/people")}
@@ -2464,13 +2460,13 @@ function Dashboard({ user: initialUser, entries, onLogout }: { user: any; entrie
                 <div className="dash-acct-chip">
                   <Flame className="w-3 h-3" />
                   <span className="dash-acct-chip-val">{streak}</span>
-                  <span className="dash-acct-chip-lbl">Streak</span>
+                  
                 </div>
                 <div className="dash-acct-chip-sep" />
                 <div className="dash-acct-chip">
                   <Trophy className="w-3 h-3" />
                   <span className="dash-acct-chip-val">{entries.length}</span>
-                  <span className="dash-acct-chip-lbl">Entries</span>
+                  
                 </div>
                 <div className="dash-acct-chip-sep" />
                 <div className="dash-acct-chip">

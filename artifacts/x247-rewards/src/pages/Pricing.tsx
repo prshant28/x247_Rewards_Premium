@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "wouter";
-import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import {
   Sparkles, Crown, Star, Diamond, Check, X, ArrowRight,
@@ -420,8 +419,6 @@ export default function Pricing() {
 
   return (
     <div className="pricing-page">
-      <SiteNav activePage="home" />
-
       <AnimatePresence>
         {toast && (
           <motion.div
