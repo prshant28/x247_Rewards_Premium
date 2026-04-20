@@ -578,10 +578,10 @@ export default function GiveawayEntry() {
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-sm text-foreground font-light">{partner.name}</span>
                                 {isRequired && (
-                                  <span className="px-1.5 py-0.5 rounded-full bg-red-500/15 border border-red-500/25 text-[8px] text-red-400 font-display">REQUIRED</span>
+                                  <span className="ge-badge ge-badge-required">REQUIRED</span>
                                 )}
                                 {partner.badgeSecondary && (
-                                  <span className="px-1.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.1] text-[8px] text-foreground/50 font-display">{partner.badgeSecondary}</span>
+                                  <span className="ge-badge ge-badge-secondary">{partner.badgeSecondary}</span>
                                 )}
                               </div>
                               <p className="text-[11px] text-foreground/30 font-light truncate mt-0.5">{partner.tagline}</p>

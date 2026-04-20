@@ -700,6 +700,30 @@
     color: rgba(255, 255, 255, 0.9);
   }
 
+  /* GiveawayEntry partner badges — theme-aware visibility */
+  .ge-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-family: 'Syne', sans-serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .ge-badge-required {
+    background: hsl(0 80% 55% / 0.18);
+    border: 1px solid hsl(0 80% 55% / 0.45);
+    color: hsl(0 85% 70%);
+  }
+  .ge-badge-secondary {
+    background: hsl(var(--foreground) / 0.10);
+    border: 1px solid hsl(var(--foreground) / 0.20);
+    color: hsl(var(--foreground) / 0.78);
+  }
+
   /* ── STAT CARD (home page stats) — unified with design tokens ────────── */
   .stat-card {
     @apply rounded-2xl p-4 sm:p-6 relative overflow-hidden;
@@ -8029,6 +8053,15 @@ a:focus-visible > .contest-card-v2 {
 [data-light] .premium-badge {
   background: hsl(var(--foreground) / 0.06) !important;
   border: 1px solid hsl(var(--foreground) / 0.1) !important;
+  color: hsl(var(--foreground) / 0.85) !important;
+}
+[data-light] .premium-badge-hot {
+  background: linear-gradient(135deg, hsl(var(--foreground) / 0.10) 0%, hsl(var(--foreground) / 0.04) 100%) !important;
+  border: 1px solid hsl(var(--foreground) / 0.18) !important;
+  color: hsl(var(--foreground) / 0.92) !important;
+}
+[data-light] .premium-badge-hot svg {
+  color: hsl(var(--foreground) / 0.85) !important;
 }
 [data-light] .text-gradient {
   background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--foreground) / 0.5) 50%, hsl(var(--foreground)) 100%) !important;
