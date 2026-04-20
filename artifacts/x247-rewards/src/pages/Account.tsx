@@ -23,6 +23,7 @@ import {
   getPartners, getReferralStats, getReferralProfile, changePassword
 } from "@/lib/api";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import AdminGateModal from "@/components/AdminGateModal";
 import X247BlackCard from "@/components/X247BlackCard";
 import { Sparkline, MiniBarChart, UsageGauge, ActivityHeatmap } from "@/components/MiniCharts";
 import { useTheme, THEMES, type ThemeId } from "@/contexts/ThemeContext";
@@ -1214,12 +1215,16 @@ function computeProfileCompletion(user: any, bio: string, avatarUrl: string, pro
   return { score: Math.round((done / checks.length) * 100), missing };
 }
 
+const ADMIN_EMAILS = ["ceo@x247.app"];
+
 function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void }) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [adminGateOpen, setAdminGateOpen] = useState(false);
+  const isAdminUser = !!user?.email && ADMIN_EMAILS.includes(String(user.email).toLowerCase());
   const [fullName, setFullName] = useState(user.fullName || "");
   const [bio, setBio] = useState(user.bio || "");
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
@@ -1462,6 +1467,35 @@ function ProfileTab({ user, onUpdate }: { user: any; onUpdate: (u: any) => void 
           )}
         </div>
       </div>
+
+      {isAdminUser && (
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <Shield className="w-4 h-4 text-foreground/40" />
+            <h3 className="text-base font-display font-light text-foreground">Admin Access</h3>
+          </div>
+          <button
+            onClick={() => setAdminGateOpen(true)}
+            className="w-full group relative overflow-hidden rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-4 sm:p-5 text-left transition-all hover:border-white/[0.18] hover:from-white/[0.09] hover:to-white/[0.04]"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 shrink-0 rounded-xl bg-white/[0.06] border border-white/[0.10] flex items-center justify-center text-foreground/70 group-hover:text-foreground transition-colors">
+                <Shield className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-display font-light text-foreground/90 mb-0.5">
+                  Open Admin Panel
+                </div>
+                <div className="text-[11px] text-foreground/45 font-light leading-snug">
+                  Privileged controls — partners, winners, entries, analytics. Admin password required.
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-foreground/30 group-hover:text-foreground/70 group-hover:translate-x-0.5 transition-all shrink-0" />
+            </div>
+          </button>
+          <AdminGateModal open={adminGateOpen} onClose={() => setAdminGateOpen(false)} />
+        </div>
+      )}
 
       <div>
         <div className="flex items-center gap-3 mb-4">
