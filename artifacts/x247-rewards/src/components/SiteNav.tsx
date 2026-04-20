@@ -90,9 +90,9 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
       logo={
         <div className="flex items-center">
           <img
-            src="/x247-logo.png"
+            src="/x247-wordmark.png"
             alt="X247 Labs"
-            className="h-8 w-8 sm:h-9 sm:w-9 rounded-[8px] object-cover select-none"
+            className="h-10 sm:h-12 w-auto object-contain select-none"
             draggable={false}
           />
         </div>
