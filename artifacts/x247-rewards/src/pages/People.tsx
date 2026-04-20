@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   Users, UserPlus, UserMinus, BadgeCheck, MapPin,
   Sparkles, Search, Loader2, Crown, Star, Diamond, Zap, ArrowLeft,
-  Award, TrendingUp, RefreshCw, SlidersHorizontal, ArrowRight,
-  ShieldCheck, CheckCircle2, BarChart3, UserCheck,
+  Award, TrendingUp, RefreshCw, ArrowRight,
+  ShieldCheck, CheckCircle2, BarChart3, UserCheck, ChevronDown, ChevronUp,
 } from "lucide-react";
 import BorderGlow from "@/components/BorderGlow";
 import SiteFooter from "@/components/SiteFooter";
@@ -23,7 +23,7 @@ const fadeUp: Variants = {
 
 const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } }
+  visible: { transition: { staggerChildren: 0.06 } }
 };
 
 /* ── Tier helpers ───────────────────────────────────── */
@@ -43,7 +43,7 @@ function formatCount(n: number) {
   return String(n);
 }
 
-/* ── Trust strip items (mirrors Partners "Verified & Secure" block) ── */
+/* ── Trust strip items ── */
 const trustItems = [
   { name: "Verified Members", icon: <BadgeCheck className="w-5 h-5" /> },
   { name: "Secure Connections", icon: <ShieldCheck className="w-5 h-5" /> },
@@ -51,7 +51,7 @@ const trustItems = [
   { name: "Community Audited", icon: <BarChart3 className="w-5 h-5" /> },
 ];
 
-/* ── Person card — Partners-DNA glass-card + card-top-accent + card-shine ── */
+/* ── Person card ── */
 function PersonCard({
   user,
   showMutual = false,
@@ -92,17 +92,13 @@ function PersonCard({
         <div className="card-shine" />
 
         <div className="relative z-[2] flex items-start gap-4">
-          {/* Avatar with BorderGlow */}
           <BorderGlow
             borderRadius={16}
             glowRadius={14}
             cardBg={tier.bg}
             className="w-16 h-16 shrink-0 flex items-center justify-center relative"
           >
-            <span
-              className="font-display font-light text-lg"
-              style={{ color: tier.color }}
-            >
+            <span className="font-display font-light text-lg" style={{ color: tier.color }}>
               {getInitials(user.fullName)}
             </span>
             {user.isVerified && (
@@ -112,7 +108,6 @@ function PersonCard({
             )}
           </BorderGlow>
 
-          {/* Info block */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1.5">
               <h3 className="text-base sm:text-lg font-display font-light text-foreground truncate">
@@ -126,7 +121,6 @@ function PersonCard({
               )}
             </div>
 
-            {/* Chips: Tier + Followers + City */}
             <div className="flex items-center gap-1.5 flex-wrap mb-3">
               <span
                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-display tracking-wide"
@@ -147,7 +141,6 @@ function PersonCard({
               )}
             </div>
 
-            {/* Selected badge line */}
             {user.selectedBadge && (
               <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-3">
                 <Award className="w-3 h-3 text-foreground/45 shrink-0" />
@@ -157,7 +150,6 @@ function PersonCard({
           </div>
         </div>
 
-        {/* Footer row: View link + Follow button */}
         <div className="relative z-[2] mt-4 pt-4 border-t border-white/[0.04] flex items-center justify-between">
           <div className="flex items-center text-foreground/30 group-hover:text-foreground/60 transition-colors text-xs font-display">
             <span>View Profile</span>
@@ -177,15 +169,9 @@ function PersonCard({
               {busy ? (
                 <Loader2 className="w-3 h-3 animate-spin" />
               ) : following ? (
-                <>
-                  <UserMinus className="w-3 h-3" />
-                  <span>Following</span>
-                </>
+                <><UserMinus className="w-3 h-3" /><span>Following</span></>
               ) : (
-                <>
-                  <UserPlus className="w-3 h-3" />
-                  <span>Follow</span>
-                </>
+                <><UserPlus className="w-3 h-3" /><span>Follow</span></>
               )}
             </button>
           )}
@@ -195,73 +181,181 @@ function PersonCard({
   );
 }
 
-/* ── Empty state ────────────────────────────────────── */
-function PeopleEmpty({ tab, query }: { tab: string; query: string }) {
-  const configs = {
-    followers: {
-      icon: Users,
-      title: "No followers yet",
-      sub: "Share your profile link to grow your network",
-    },
-    following: {
-      icon: UserPlus,
-      title: "Not following anyone yet",
-      sub: "Head to the Discover tab to find interesting people",
-    },
-    discover: {
-      icon: Sparkles,
-      title: "No suggestions right now",
-      sub: "More members joining soon — check back later",
-    },
-  };
-  const cfg = configs[tab as keyof typeof configs] ?? configs.discover;
-  const Icon = cfg.icon;
-
+/* ── Empty state inside a section ── */
+function SectionEmpty({ icon: Icon, title, sub }: { icon: React.FC<{ className?: string }>; title: string; sub: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-      className="glass-card p-10 sm:p-14 text-center col-span-full"
-    >
+    <div className="glass-card p-10 sm:p-12 text-center col-span-full">
       <div className="card-top-accent" />
       <div className="card-shine" />
       <div className="relative z-[2]">
         <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-4 text-foreground/45">
           <Icon className="w-6 h-6" />
         </div>
-        <p className="text-foreground/75 font-display text-base sm:text-lg font-light mb-2">
-          {query ? "No matches found" : cfg.title}
-        </p>
-        <p className="text-foreground/40 text-xs sm:text-sm font-light">
-          {query ? `No results for "${query}"` : cfg.sub}
-        </p>
+        <p className="text-foreground/75 font-display text-base sm:text-lg font-light mb-2">{title}</p>
+        <p className="text-foreground/40 text-xs sm:text-sm font-light">{sub}</p>
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+/* ── Sign-in inline CTA ── */
+function SignInInline({ kind }: { kind: "followers" | "following" }) {
+  return (
+    <div className="glass-card p-8 sm:p-12 text-center col-span-full">
+      <div className="card-top-accent" />
+      <div className="card-shine" />
+      <div className="relative z-[2]">
+        <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-5 text-foreground/55">
+          {kind === "followers" ? <Users className="w-6 h-6" /> : <UserCheck className="w-6 h-6" />}
+        </div>
+        <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">
+          Sign in to see your {kind === "followers" ? "followers" : "following"}
+        </h3>
+        <p className="text-foreground/40 text-xs sm:text-sm font-light max-w-md mx-auto mb-6 leading-relaxed">
+          Login karke apna network dekho — followers, following, aur mutual connections ek jagah.
+        </p>
+        <BorderGlow as={Link} href="/account" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group inline-flex">
+          <span className="relative z-[2]">Sign In</span>
+          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+        </BorderGlow>
+      </div>
+    </div>
+  );
+}
+
+/* ── Section block: header + grid + expand toggle ── */
+const SECTION_PREVIEW = 6;
+
+function SectionBlock({
+  id,
+  icon: Icon,
+  label,
+  title,
+  subtitle,
+  items,
+  loading,
+  showMutual = false,
+  emptyIcon,
+  emptyTitle,
+  emptySub,
+  signedOut = false,
+  signKind,
+  onChange,
+}: {
+  id: string;
+  icon: React.FC<{ className?: string }>;
+  label: string;
+  title: string;
+  subtitle: string;
+  items: FollowUserItem[];
+  loading: boolean;
+  showMutual?: boolean;
+  emptyIcon: React.FC<{ className?: string }>;
+  emptyTitle: string;
+  emptySub: string;
+  signedOut?: boolean;
+  signKind?: "followers" | "following";
+  onChange?: (next: FollowUserItem) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? items : items.slice(0, SECTION_PREVIEW);
+  const hasMore = items.length > SECTION_PREVIEW;
+
+  return (
+    <motion.section
+      id={id}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      variants={fadeUp}
+      className="mb-14 sm:mb-20 scroll-mt-24"
+    >
+      {/* Header */}
+      <div className="flex items-end justify-between gap-3 mb-5 sm:mb-6">
+        <div className="min-w-0">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] mb-3">
+            <Icon className="w-3 h-3 text-foreground/55" />
+            <span className="text-[10px] sm:text-[11px] uppercase tracking-widest font-display text-foreground/55">{label}</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-light text-foreground tracking-tight leading-tight">
+            {title}
+          </h2>
+          <p className="text-foreground/45 text-xs sm:text-sm font-light mt-2 max-w-xl tracking-wide">
+            {subtitle}
+          </p>
+        </div>
+        {!signedOut && items.length > 0 && (
+          <span className="shrink-0 inline-flex items-center justify-center min-w-[44px] h-8 px-3 rounded-full bg-white/[0.05] border border-white/[0.08] text-[11px] font-display text-foreground/65">
+            {formatCount(items.length)}
+          </span>
+        )}
+      </div>
+
+      {/* Grid */}
+      {loading && items.length === 0 ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
+        </div>
+      ) : signedOut && signKind ? (
+        <SignInInline kind={signKind} />
+      ) : (
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6"
+        >
+          <AnimatePresence mode="popLayout">
+            {visible.length === 0 ? (
+              <SectionEmpty icon={emptyIcon} title={emptyTitle} sub={emptySub} />
+            ) : (
+              visible.map((u) => (
+                <motion.div key={u.id} variants={fadeUp} layout>
+                  <PersonCard user={u} showMutual={showMutual} onChange={onChange} />
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
+
+      {/* Expand toggle */}
+      {!signedOut && hasMore && (
+        <div className="flex justify-center mt-6 sm:mt-8">
+          <button
+            onClick={() => setExpanded(v => !v)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-foreground/70 hover:bg-white/[0.08] hover:text-foreground transition-all text-[11px] sm:text-xs font-display tracking-wide"
+          >
+            {expanded ? (
+              <>Show less<ChevronUp className="w-3.5 h-3.5" /></>
+            ) : (
+              <>Show all {formatCount(items.length)}<ChevronDown className="w-3.5 h-3.5" /></>
+            )}
+          </button>
+        </div>
+      )}
+    </motion.section>
   );
 }
 
 /* ══ MAIN PAGE ══════════════════════════════════════════════════════════ */
-type Tab = "discover" | "followers" | "following";
-
 export default function People() {
   const searchParams = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
   const slugParam = searchParams.get("slug") ?? undefined;
-  const tabParam = (searchParams.get("tab") ?? "discover") as Tab;
 
-  const [tab, setTab] = useState<Tab>(tabParam);
   const [query, setQuery] = useState("");
   const [discover, setDiscover] = useState<FollowUserItem[]>([]);
   const [followers, setFollowers] = useState<FollowUserItem[]>([]);
   const [following, setFollowing] = useState<FollowUserItem[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingDiscover, setLoadingDiscover] = useState(true);
+  const [loadingFollowers, setLoadingFollowers] = useState(true);
+  const [loadingFollowing, setLoadingFollowing] = useState(true);
   const [profileName, setProfileName] = useState<string | undefined>(undefined);
-  const [loadedTabs, setLoadedTabs] = useState<Set<Tab>>(new Set());
   const [refreshing, setRefreshing] = useState(false);
+  const [currentSlug, setCurrentSlug] = useState<string | undefined>(slugParam);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const [currentSlug, setCurrentSlug] = useState<string | undefined>(slugParam);
-
+  /* Derive current slug from token if not viewing someone else */
   useEffect(() => {
     if (!slugParam) {
       const token = localStorage.getItem("user_token");
@@ -278,53 +372,83 @@ export default function People() {
     }
   }, [slugParam]);
 
-  const load = useCallback(async (t: Tab, slug?: string, force = false) => {
-    if (!force && !slug && (t === "followers" || t === "following")) return;
-    if (!force && loadedTabs.has(t)) return;
-    setLoading(true);
-    if (t === "discover") {
-      const users = await getSuggestedUsers(30);
-      setDiscover(users);
-    } else if (t === "followers" && slug) {
-      const { users } = await getFollowers(slug, 0, 50);
-      setFollowers(users);
-    } else if (t === "following" && slug) {
-      const { users } = await getFollowing(slug, 0, 50);
-      setFollowing(users);
+  const loadAll = useCallback(async (slug?: string) => {
+    setLoadingDiscover(true);
+    setLoadingFollowers(true);
+    setLoadingFollowing(true);
+
+    const tasks: Array<Promise<unknown>> = [
+      getSuggestedUsers(30)
+        .then(users => setDiscover(users))
+        .catch(() => setDiscover([]))
+        .finally(() => setLoadingDiscover(false)),
+    ];
+
+    if (slug) {
+      tasks.push(
+        getFollowers(slug, 0, 50)
+          .then(({ users }) => setFollowers(users))
+          .catch(() => setFollowers([]))
+          .finally(() => setLoadingFollowers(false)),
+        getFollowing(slug, 0, 50)
+          .then(({ users }) => setFollowing(users))
+          .catch(() => setFollowing([]))
+          .finally(() => setLoadingFollowing(false)),
+      );
+    } else {
+      setFollowers([]); setLoadingFollowers(false);
+      setFollowing([]); setLoadingFollowing(false);
     }
-    setLoadedTabs(prev => new Set(prev).add(t));
-    setLoading(false);
-  }, [loadedTabs]);
+    await Promise.allSettled(tasks);
+  }, []);
 
   useEffect(() => {
-    if (loadedTabs.has(tab)) return;
-    load(tab, currentSlug);
-  }, [tab, currentSlug, load, loadedTabs]);
+    loadAll(currentSlug);
+  }, [currentSlug, loadAll]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    setLoadedTabs(prev => {
-      const next = new Set(prev);
-      next.delete(tab);
-      return next;
-    });
-    await load(tab, currentSlug, true);
+    await loadAll(currentSlug);
     setRefreshing(false);
   };
 
-  const list = tab === "discover" ? discover : tab === "followers" ? followers : following;
-  const filtered = query.trim()
-    ? list.filter(u =>
-        u.fullName.toLowerCase().includes(query.toLowerCase()) ||
-        u.profileSlug.toLowerCase().includes(query.toLowerCase()) ||
-        (u.city ?? "").toLowerCase().includes(query.toLowerCase()))
-    : list;
+  /* Search filter */
+  const filterFn = useCallback((u: FollowUserItem) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      u.fullName.toLowerCase().includes(q) ||
+      u.profileSlug.toLowerCase().includes(q) ||
+      (u.city ?? "").toLowerCase().includes(q)
+    );
+  }, [query]);
 
-  const tabs: { id: Tab; label: string; icon: React.FC<{ className?: string }>; count: number }[] = [
-    { id: "discover",  label: "Discover",  icon: Sparkles, count: discover.length },
-    { id: "followers", label: "Followers", icon: Users,    count: followers.length },
+  const filteredDiscover = useMemo(() => discover.filter(filterFn), [discover, filterFn]);
+  const filteredFollowers = useMemo(() => followers.filter(filterFn), [followers, filterFn]);
+  const filteredFollowing = useMemo(() => following.filter(filterFn), [following, filterFn]);
+
+  const isViewingOther = !!slugParam;
+  const signedOut = !currentSlug;
+
+  /* Update handler — keep counts in sync if a user is followed/unfollowed in any section */
+  const syncUser = (next: FollowUserItem) => {
+    const apply = (u: FollowUserItem) => u.id === next.id ? { ...u, isFollowing: next.isFollowing } : u;
+    setDiscover(list => list.map(apply));
+    setFollowers(list => list.map(apply));
+    setFollowing(list => list.map(apply));
+  };
+
+  /* Quick-jump pills */
+  const jumps = [
+    { id: "discover", label: "Discover", icon: Sparkles, count: discover.length },
+    { id: "followers", label: "Followers", icon: Users, count: followers.length },
     { id: "following", label: "Following", icon: UserCheck, count: following.length },
   ];
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <div className="min-h-screen bg-black text-foreground">
@@ -333,26 +457,26 @@ export default function People() {
 
       <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
 
-        {/* ── Hero (Partners DNA) ── */}
+        {/* ── Hero ── */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center py-20 sm:py-28 px-4">
           <div className="glass-pill-badge inline-flex mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
-            {slugParam ? `${profileName ?? slugParam}'s Network` : "Community"}
+            {isViewingOther ? `${profileName ?? slugParam}'s Network` : "Community"}
           </div>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-light text-foreground mb-5 leading-tight tracking-tight">
-            {slugParam ? "Connections" : "Find People"}
+            {isViewingOther ? "Connections" : "Your Network"}
           </h1>
           <p className="text-foreground/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
-            {slugParam
+            {isViewingOther
               ? "Browse this member's followers and people they follow — discover shared connections."
-              : "Discover top members, grow your network, and track who follows you across X247."}
+              : "All your followers, the members you follow, and top people to discover — every connection in one place."}
           </p>
         </motion.div>
 
         <div className="container mx-auto px-4 max-w-5xl">
 
           {/* Back to profile (only when viewing a slug) */}
-          {slugParam && (
+          {isViewingOther && (
             <Link
               href={`/profile/${slugParam}`}
               className="inline-flex items-center gap-1.5 text-[11px] text-foreground/35 hover:text-foreground/65 transition-colors mb-6 font-display tracking-wide"
@@ -362,7 +486,7 @@ export default function People() {
             </Link>
           )}
 
-          {/* ── Stats overview card (mirrors Partners "Platform Stats") ── */}
+          {/* ── Network overview stats ── */}
           <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-6 sm:mb-8">
             <div className="glass-card p-4 sm:p-5">
               <div className="card-top-accent" />
@@ -372,83 +496,52 @@ export default function People() {
                   <span className="text-xs sm:text-sm text-foreground/50 font-light tracking-wide">Network Overview</span>
                 </div>
                 <div className="grid grid-cols-3 gap-0 w-full sm:w-auto sm:flex sm:items-center sm:gap-10">
-                  <div className="text-center sm:text-right border-r sm:border-r-0 border-white/[0.06] px-2 sm:px-0">
-                    <div className="text-lg sm:text-2xl font-display font-light text-foreground">{discover.length || "—"}</div>
-                    <div className="text-[9px] sm:text-[10px] text-foreground/30 uppercase tracking-widest font-display mt-0.5">Suggested</div>
-                  </div>
-                  <div className="hidden sm:block w-px h-8 bg-white/[0.06]" />
-                  <div className="text-center sm:text-right border-r sm:border-r-0 border-white/[0.06] px-2 sm:px-0">
+                  <button onClick={() => scrollToSection("followers")} className="text-center sm:text-right border-r sm:border-r-0 border-white/[0.06] px-2 sm:px-0 hover:opacity-80 transition-opacity">
                     <div className="text-lg sm:text-2xl font-display font-light text-foreground">{followers.length || "—"}</div>
                     <div className="text-[9px] sm:text-[10px] text-foreground/30 uppercase tracking-widest font-display mt-0.5">Followers</div>
-                  </div>
+                  </button>
                   <div className="hidden sm:block w-px h-8 bg-white/[0.06]" />
-                  <div className="text-center sm:text-right px-2 sm:px-0">
+                  <button onClick={() => scrollToSection("following")} className="text-center sm:text-right border-r sm:border-r-0 border-white/[0.06] px-2 sm:px-0 hover:opacity-80 transition-opacity">
                     <div className="text-lg sm:text-2xl font-display font-light text-foreground">{following.length || "—"}</div>
                     <div className="text-[9px] sm:text-[10px] text-foreground/30 uppercase tracking-widest font-display mt-0.5">Following</div>
-                  </div>
+                  </button>
+                  <div className="hidden sm:block w-px h-8 bg-white/[0.06]" />
+                  <button onClick={() => scrollToSection("discover")} className="text-center sm:text-right px-2 sm:px-0 hover:opacity-80 transition-opacity">
+                    <div className="text-lg sm:text-2xl font-display font-light text-foreground">{discover.length || "—"}</div>
+                    <div className="text-[9px] sm:text-[10px] text-foreground/30 uppercase tracking-widest font-display mt-0.5">Suggested</div>
+                  </button>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* ── Premium segmented tab nav (large, unmistakable) ── */}
+          {/* ── Quick-jump pills (replace tabs — they scroll to sections) ── */}
           <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-5 sm:mb-6">
             <div className="glass-card p-1.5 sm:p-2 relative overflow-hidden">
               <div className="card-top-accent" />
               <div className="relative z-[2] grid grid-cols-3 gap-1 sm:gap-1.5">
-                {tabs.map((t) => {
-                  const active = tab === t.id;
-                  return (
-                    <button
-                      key={t.id}
-                      onClick={() => setTab(t.id)}
-                      className={`relative flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3 rounded-xl text-[11px] sm:text-sm font-display tracking-wide transition-all overflow-hidden ${
-                        active
-                          ? "bg-white text-black shadow-[0_4px_20px_rgba(255,255,255,0.12)]"
-                          : "text-foreground/60 hover:text-foreground/90 hover:bg-white/[0.04]"
-                      }`}
-                      aria-pressed={active}
-                    >
-                      <t.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${active ? "text-black" : ""}`} />
-                      <span className="font-light">{t.label}</span>
-                      {t.count > 0 && (
-                        <span className={`hidden sm:inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-display ${
-                          active ? "bg-black/10 text-black/70" : "bg-white/[0.08] text-foreground/55"
-                        }`}>
-                          {formatCount(t.count)}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+                {jumps.map((j) => (
+                  <button
+                    key={j.id}
+                    onClick={() => scrollToSection(j.id)}
+                    className="relative flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3 rounded-xl text-[11px] sm:text-sm font-display tracking-wide transition-all overflow-hidden text-foreground/70 hover:text-foreground hover:bg-white/[0.05]"
+                  >
+                    <j.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    <span className="font-light">{j.label}</span>
+                    {j.count > 0 && (
+                      <span className="hidden sm:inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-display bg-white/[0.08] text-foreground/60">
+                        {formatCount(j.count)}
+                      </span>
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
           </motion.div>
 
-          {/* ── Sub-action bar: section label + refresh ── */}
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-4 sm:mb-5 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5 text-foreground/45 min-w-0">
-              <SlidersHorizontal className="w-3.5 h-3.5 shrink-0" />
-              <span className="text-[10px] sm:text-[11px] uppercase tracking-widest font-display truncate">
-                {tab === "discover" && "Suggested members for you"}
-                {tab === "followers" && (slugParam ? "Members following them" : "Members following you")}
-                {tab === "following" && (slugParam ? "Members they follow" : "Members you follow")}
-              </span>
-            </div>
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing || loading}
-              className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.08] text-foreground/55 hover:text-foreground/85 hover:bg-white/[0.07] transition-all disabled:opacity-40"
-              aria-label="Refresh"
-              title="Refresh"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`} />
-            </button>
-          </motion.div>
-
-          {/* ── Search (glass-card style) ── */}
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8 sm:mb-10">
-            <div className="glass-card p-3 sm:p-3.5">
+          {/* ── Search + global refresh ── */}
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-12 sm:mb-16 flex items-center gap-3">
+            <div className="glass-card p-3 sm:p-3.5 flex-1">
               <div className="card-top-accent" />
               <div className="relative z-[2] flex items-center gap-3 px-2">
                 <Search className="w-4 h-4 text-foreground/35 shrink-0" />
@@ -456,7 +549,7 @@ export default function People() {
                   ref={searchRef}
                   value={query}
                   onChange={e => setQuery(e.target.value)}
-                  placeholder={tab === "discover" ? "Search people by name, handle or city…" : `Search ${tab}…`}
+                  placeholder="Search across followers, following & discover…"
                   className="flex-1 bg-transparent border-0 outline-none text-sm text-foreground/85 placeholder:text-foreground/30 font-light"
                 />
                 {query && (
@@ -470,65 +563,76 @@ export default function People() {
                 )}
               </div>
             </div>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/[0.04] border border-white/[0.08] text-foreground/55 hover:text-foreground/85 hover:bg-white/[0.07] transition-all disabled:opacity-40"
+              aria-label="Refresh"
+              title="Refresh"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
           </motion.div>
 
-          {/* ── List grid (Partners 2-col DNA) ── */}
-          {loading && list.length === 0 ? (
-            <div className="flex items-center justify-center py-20 mb-16 sm:mb-24">
-              <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
-            </div>
-          ) : (tab === "followers" || tab === "following") && !currentSlug ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="glass-card p-8 sm:p-12 text-center mb-16 sm:mb-24"
-            >
-              <div className="card-top-accent" />
-              <div className="card-shine" />
-              <div className="relative z-[2]">
-                <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-5 text-foreground/55">
-                  {tab === "followers" ? <Users className="w-6 h-6" /> : <UserCheck className="w-6 h-6" />}
-                </div>
-                <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">
-                  Sign in to see your {tab === "followers" ? "followers" : "following"}
-                </h3>
-                <p className="text-foreground/40 text-xs sm:text-sm font-light max-w-md mx-auto mb-6 leading-relaxed">
-                  Login karke apna network dekho — followers, following, aur mutual connections ek jagah.
-                </p>
-                <BorderGlow as={Link} href="/account" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group inline-flex">
-                  <span className="relative z-[2]">Sign In</span>
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
-                </BorderGlow>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={stagger}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6 mb-16 sm:mb-24"
-            >
-              <AnimatePresence mode="popLayout">
-                {filtered.length === 0 ? (
-                  <PeopleEmpty key="empty" tab={tab} query={query} />
-                ) : (
-                  filtered.map((u) => (
-                    <motion.div key={u.id} variants={fadeUp}>
-                      <PersonCard
-                        user={u}
-                        showMutual={tab === "followers"}
-                      />
-                    </motion.div>
-                  ))
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )}
+          {/* ── Followers Section ── */}
+          <SectionBlock
+            id="followers"
+            icon={Users}
+            label={isViewingOther ? "Their Followers" : "Your Followers"}
+            title={isViewingOther ? "Members Following Them" : "Members Following You"}
+            subtitle={isViewingOther
+              ? "People who follow this member — including any mutual connections you share."
+              : "Real X247 members who follow your journey. Mutual followers get a special tag."}
+            items={filteredFollowers}
+            loading={loadingFollowers}
+            showMutual
+            emptyIcon={Users}
+            emptyTitle={query ? "No matches found" : "No followers yet"}
+            emptySub={query ? `No followers matching "${query}"` : "Share your profile link to grow your network."}
+            signedOut={signedOut}
+            signKind="followers"
+            onChange={syncUser}
+          />
 
-          {/* ── Trust strip (mirrors Partners "Verified & Secure") ── */}
+          {/* ── Following Section ── */}
+          <SectionBlock
+            id="following"
+            icon={UserCheck}
+            label={isViewingOther ? "They Follow" : "You Follow"}
+            title={isViewingOther ? "Members They Follow" : "Members You Follow"}
+            subtitle={isViewingOther
+              ? "Members in this profile's circle — see who they're inspired by."
+              : "Your curated circle. Their wins and updates show up in your feed."}
+            items={filteredFollowing}
+            loading={loadingFollowing}
+            emptyIcon={UserPlus}
+            emptyTitle={query ? "No matches found" : "Not following anyone yet"}
+            emptySub={query ? `No following matching "${query}"` : "Scroll down to discover top people worth following."}
+            signedOut={signedOut}
+            signKind="following"
+            onChange={syncUser}
+          />
+
+          {/* ── Discover Section ── */}
+          <SectionBlock
+            id="discover"
+            icon={Sparkles}
+            label="Discover"
+            title="Top People to Follow"
+            subtitle="Hand-picked premium members — top tier players, active winners, and verified profiles worth knowing."
+            items={filteredDiscover}
+            loading={loadingDiscover}
+            emptyIcon={Sparkles}
+            emptyTitle={query ? "No matches found" : "No suggestions right now"}
+            emptySub={query ? `No suggestions matching "${query}"` : "More members joining soon — check back later."}
+            onChange={syncUser}
+          />
+
+          {/* ── Trust strip ── */}
           <motion.div
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
             variants={fadeUp}
             className="mb-16 sm:mb-24"
           >
@@ -550,8 +654,9 @@ export default function People() {
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <div className="glass-card p-5 sm:p-6 text-center group">
                     <div className="card-top-accent" />
@@ -568,8 +673,8 @@ export default function People() {
             </div>
           </motion.div>
 
-          {/* ── Bottom CTA (Partners "How It Works" pattern) ── */}
-          <motion.div initial="hidden" animate="visible" variants={fadeUp}>
+          {/* ── Bottom CTA ── */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={fadeUp}>
             <div className="glass-card p-6 sm:p-10 text-center">
               <div className="card-top-accent" />
               <div className="card-shine" />
