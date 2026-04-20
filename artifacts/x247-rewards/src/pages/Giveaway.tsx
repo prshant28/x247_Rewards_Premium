@@ -1,868 +1,534 @@
-import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
-import { Link } from "wouter";
+import React, { useEffect, useRef, useState } from "react";
+import BorderGlow from "@/components/BorderGlow";
+import { motion, type Variants } from "framer-motion";
 import {
-  Trophy, Users, ArrowRight, Gift, Clock, Star, Sparkles,
-  Zap, Search, CheckCircle2, ExternalLink, Award, ChevronRight,
-  X, Calendar, Layers, TrendingUp, Crown, ShieldCheck, Filter,
-  ArrowUpRight, ChevronDown,
+  ArrowRight,
+  Gift,
+  Users,
+  ShieldCheck,
+  CheckCircle2,
+  Star,
+  BarChart3,
+  TrendingUp,
+  Trophy,
+  Sparkles,
+  SlidersHorizontal,
+  Clock,
+  Flame,
+  Lock,
+  Ticket,
+  Hourglass,
 } from "lucide-react";
+import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { getContests, type ContestData } from "@/lib/api";
 import SiteFooter from "@/components/SiteFooter";
 import CountdownTimer from "@/components/CountdownTimer";
-import AnimatedCounter from "@/components/AnimatedCounter";
 
-/* ═══════════════════════════════════════════════════
-   ANIMATIONS
-   ═══════════════════════════════════════════════════ */
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  visible: (i: number = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
-  }),
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
 };
 
 const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.09 } },
+  visible: { transition: { staggerChildren: 0.12 } },
 };
 
-/* ═══════════════════════════════════════════════════
-   HELPERS
-   ═══════════════════════════════════════════════════ */
-const fmt = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : `${n}`);
+const verifiedBy = [
+  { name: "SSL Secured", icon: <ShieldCheck className="w-5 h-5" /> },
+  { name: "Verified Brands", icon: <CheckCircle2 className="w-5 h-5" /> },
+  { name: "Real Winners", icon: <Users className="w-5 h-5" /> },
+  { name: "Daily Audited", icon: <BarChart3 className="w-5 h-5" /> },
+];
 
-function parsePrizeNumeric(v: string | null): number {
-  if (!v) return 0;
-  const cleaned = v.replace(/[^\d.]/g, "");
-  return Number(cleaned) || 0;
+function formatINR(value: string | null): string {
+  if (!value) return "TBA";
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return value;
+  return `₹${num.toLocaleString("en-IN")}`;
 }
 
-type StatusFilter = "all" | "active" | "upcoming" | "completed";
-type SortBy = "ending-soon" | "most-popular" | "newest" | "biggest-prize";
+function getContestStatusMeta(contest: ContestData): {
+  label: string;
+  category: string;
+  isLive: boolean;
+  isClosed: boolean;
+  badge: string | null;
+} {
+  const status = (contest.status || "").toLowerCase();
+  const isClosed = status === "closed" || status === "ended" || status === "completed" || contest.isFull;
+  const isUpcoming = status === "upcoming" || status === "draft" || status === "scheduled";
+  const isLive = !isClosed && !isUpcoming;
+  return {
+    label: isClosed ? "Closed" : isUpcoming ? "Upcoming" : "Live Now",
+    category: isClosed ? "Closed Contest" : isUpcoming ? "Upcoming Contest" : "Open Contest",
+    isLive,
+    isClosed,
+    badge: isLive && contest.spotsRemaining > 0 && contest.spotsRemaining <= 10 ? "Almost Full" : null,
+  };
+}
 
-const STATUS_CHIPS: { value: StatusFilter; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { value: "all", label: "All", icon: Layers },
-  { value: "active", label: "Active", icon: Zap },
-  { value: "upcoming", label: "Upcoming", icon: Clock },
-  { value: "completed", label: "Closed", icon: CheckCircle2 },
-];
+function parsePrize(prize: string): string[] {
+  return prize
+    .split(/[|•\n;]/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 2)
+    .slice(0, 5);
+}
 
-const SORT_OPTIONS: { value: SortBy; label: string }[] = [
-  { value: "ending-soon", label: "Ending soon" },
-  { value: "most-popular", label: "Most popular" },
-  { value: "biggest-prize", label: "Biggest prize" },
-  { value: "newest", label: "Newest" },
-];
+function ContestCard({ contest }: { contest: ContestData }) {
+  const meta = getContestStatusMeta(contest);
+  const prizeItems = parsePrize(contest.prize);
+  const filled = Math.max(0, contest.maxSpots - contest.spotsRemaining);
+  const fillPct = contest.maxSpots > 0 ? Math.min(100, Math.round((filled / contest.maxSpots) * 100)) : 0;
 
-/* ═══════════════════════════════════════════════════
-   CONTEST CARD (regular)
-   ═══════════════════════════════════════════════════ */
-const ContestCard = React.memo(function ContestCard({ contest, index }: { contest: ContestData; index: number }) {
-  const isUpcoming = contest.status === "upcoming";
-  const isFull = contest.isFull;
-  const taken = contest.maxSpots - contest.spotsRemaining;
-  const percent = Math.min(100, (taken / Math.max(contest.maxSpots, 1)) * 100);
+  const cardContent = (
+    <div className="glass-card p-6 sm:p-8 group relative overflow-hidden h-full">
+      <div className="card-top-accent" />
+      <div className="card-shine" />
 
-  const seed = (contest.id * 9301 + 49297) % 233280;
-  const hueShift = (seed / 233280) * 360;
-  const fallbackBg = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 55%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(${135 + hueShift / 8}deg, rgba(40,40,46,0.95), rgba(10,10,12,1))`;
+      {meta.isClosed && (
+        <>
+          <div className="absolute inset-0 z-[3] bg-black/30 backdrop-blur-[1px] rounded-[24px] pointer-events-none" />
+          <div className="absolute top-4 right-4 z-[4] flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 border border-white/[0.1] backdrop-blur-sm">
+            <Lock className="w-3 h-3 text-foreground/40" />
+            <span className="text-[10px] font-display font-light text-foreground/50 uppercase tracking-widest">Closed</span>
+          </div>
+        </>
+      )}
 
-  const dateLabel = contest.endsAt
-    ? new Date(contest.endsAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
-    : "Open";
-
-  return (
-    <motion.div
-      custom={index}
-      variants={fadeUp}
-      initial="hidden"
-      animate="visible"
-      whileHover={{ y: -4, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }}
-      className="h-full"
-    >
-      <Link href={`/giveaway/${contest.slug}`} aria-label={isUpcoming ? `${contest.name} — coming soon` : `Enter ${contest.name}`}>
-        <div className={`contest-card-v2 group ${isUpcoming ? "is-upcoming" : ""} ${isFull ? "is-full" : ""} ${contest.imageUrl ? "has-banner" : "no-banner"}`}>
-          <div className="contest-card-shine" />
-
-          {contest.imageUrl ? (
-            <div className="contest-card-banner">
-              <img src={contest.imageUrl} alt={contest.name} loading="lazy" className="contest-card-banner-img" />
-              <div className="contest-card-banner-tag">
-                {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
+      <div className="relative z-[2] flex flex-col h-full">
+        <div className="flex items-start justify-between mb-5">
+          <BorderGlow
+            borderRadius={14}
+            glowRadius={12}
+            cardBg="rgba(255,255,255,0.05)"
+            className="icon-circle w-14 h-14"
+          >
+            <Trophy className="w-6 h-6" />
+          </BorderGlow>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            {meta.isLive && (
+              <div className="premium-badge premium-badge-hot !text-[9px]">
+                <Flame className="w-2.5 h-2.5 mr-1" />
+                {meta.label}
               </div>
-              {!isUpcoming && !isFull && (
-                <div className="contest-card-banner-live">
-                  <span className="contest-card-banner-pulse" />
-                  LIVE
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="contest-card-hero" style={{ background: fallbackBg }}>
-              <div className="contest-card-hero-glow" aria-hidden />
-              <div className="contest-card-hero-grid" aria-hidden />
-              {!isUpcoming && !isFull && (
-                <div className="contest-card-hero-live">
-                  <span className="contest-card-banner-pulse" />
-                  LIVE
-                </div>
-              )}
-              <div className="contest-card-hero-tag">
-                {isUpcoming ? "COMING_SOON" : isFull ? "FULL" : "OPEN_NOW"}
-              </div>
-              <div className="contest-card-hero-initial" aria-hidden>
-                {contest.name.trim().charAt(0).toUpperCase() || "X"}
-              </div>
-              <div className="contest-card-hero-trophy" aria-hidden>
-                <Trophy className="w-3.5 h-3.5" />
-              </div>
-            </div>
-          )}
-
-          <div className="contest-card-body">
-            <h3 className="contest-card-title">{contest.name}</h3>
-            <div className="contest-card-org">
-              <Gift className="w-3 h-3 text-foreground/35" />
-              <span>{contest.prize}</span>
-            </div>
-
-            <div className="contest-card-status-row">
-              {isUpcoming ? (
-                <span className="contest-card-pill contest-card-pill-muted">
-                  <Clock className="w-2.5 h-2.5" /> Upcoming
-                </span>
-              ) : isFull ? (
-                <span className="contest-card-pill contest-card-pill-muted">
-                  <CheckCircle2 className="w-2.5 h-2.5" /> Closed
-                </span>
-              ) : (
-                <span className="contest-card-pill contest-card-pill-active">
-                  <span className="contest-card-pill-live-dot" aria-hidden />
-                  Live Now
-                </span>
-              )}
-              <span className="contest-card-pill-dot">·</span>
-              <span className="contest-card-pill contest-card-pill-meta">Online</span>
-              {contest.prizeValue && !isUpcoming && (
-                <span className="contest-card-pill-prize" title="Prize value">{contest.prizeValue}</span>
-              )}
-            </div>
-
-            <div className="contest-card-capacity">
-              <div className="contest-card-capacity-head">
-                <span className="contest-card-capacity-label">{Math.round(percent)}% claimed</span>
-                <span className="contest-card-capacity-spots">{fmt(taken)} / {fmt(contest.maxSpots)} spots</span>
-              </div>
-              <div className="contest-card-capacity-track">
-                <motion.div
-                  className="contest-card-capacity-fill"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${percent}%` }}
-                  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </div>
-            </div>
-
-            <div className="contest-card-meta-grid">
-              <div className="contest-card-meta-cell">
-                <div className="contest-card-meta-label">Attendees</div>
-                <div className="contest-card-meta-value">
-                  <div className="contest-card-avatars">
-                    {[0, 1, 2].map(i => (
-                      <span
-                        key={i}
-                        className="contest-card-avatar"
-                        style={{ background: `linear-gradient(135deg, rgba(255,255,255,${0.18 - i * 0.04}), rgba(255,255,255,${0.06 - i * 0.015}))` }}
-                      />
-                    ))}
-                  </div>
-                  <span className="contest-card-meta-num">{fmt(contest.totalEntries)}</span>
-                </div>
-              </div>
-              <div className="contest-card-meta-cell contest-card-meta-cell-divider">
-                <div className="contest-card-meta-label">{contest.endsAt ? "Ends by" : "Open"}</div>
-                <div className="contest-card-meta-value">
-                  <Calendar className="w-3 h-3 text-foreground/35" />
-                  <span className="contest-card-meta-num">{dateLabel}</span>
-                </div>
-              </div>
-              <div className="contest-card-meta-cell">
-                <div className="contest-card-meta-label">Spots Left</div>
-                <div className="contest-card-meta-value">
-                  <Users className="w-3 h-3 text-foreground/35" />
-                  <span className="contest-card-meta-num">{fmt(contest.spotsRemaining)}</span>
-                </div>
-              </div>
-            </div>
-
-            {!isUpcoming && !isFull && (
-              <div className="contest-card-cta-row">
-                {contest.endsAt && (
-                  <div className="contest-card-countdown">
-                    <Clock className="w-3 h-3 text-foreground/30" />
-                    <CountdownTimer endsAt={contest.endsAt} compact />
-                  </div>
-                )}
-                <div className="contest-card-cta">
-                  <span>Enter</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                </div>
+            )}
+            {meta.badge && (
+              <div
+                className="premium-badge !text-[9px]"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                }}
+              >
+                <Star className="w-2.5 h-2.5 mr-1 text-foreground/40" />
+                <span className="text-foreground/65">{meta.badge}</span>
               </div>
             )}
           </div>
         </div>
-      </Link>
-    </motion.div>
-  );
-});
 
-/* ═══════════════════════════════════════════════════
-   FEATURED SPOTLIGHT CARD (large, editorial)
-   ═══════════════════════════════════════════════════ */
-function FeaturedSpotlight({ contest }: { contest: ContestData }) {
-  const taken = contest.maxSpots - contest.spotsRemaining;
-  const percent = Math.min(100, (taken / Math.max(contest.maxSpots, 1)) * 100);
-  const seed = (contest.id * 9301 + 49297) % 233280;
-  const hueShift = (seed / 233280) * 360;
-  const heroBg = `radial-gradient(circle at 25% 25%, hsl(var(--foreground) / 0.18), transparent 55%), radial-gradient(circle at 80% 70%, hsl(var(--foreground) / 0.08), transparent 60%), linear-gradient(${135 + hueShift / 8}deg, hsl(var(--foreground) / 0.06), hsl(var(--background)))`;
+        <span className="text-[10px] font-display font-medium text-foreground/30 uppercase tracking-[0.15em] mb-1">
+          {meta.category}
+        </span>
+        <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-2">{contest.name}</h3>
+        <p className="text-foreground/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{contest.description}</p>
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="gv-featured"
-    >
-      <Link href={`/giveaway/${contest.slug}`} aria-label={`Enter featured contest ${contest.name}`}>
-        <div className="gv-featured-card group">
-          <div className="gv-featured-shine" />
-          <div className="gv-featured-grid">
-            {/* Visual */}
-            <div className="gv-featured-visual" style={{ background: contest.imageUrl ? undefined : heroBg }}>
-              {contest.imageUrl ? (
-                <img src={contest.imageUrl} alt={contest.name} className="gv-featured-img" />
-              ) : (
-                <>
-                  <div className="gv-featured-glow" aria-hidden />
-                  <div className="gv-featured-grid-tex" aria-hidden />
-                  <div className="gv-featured-initial" aria-hidden>
-                    {contest.name.trim().charAt(0).toUpperCase() || "X"}
-                  </div>
-                </>
-              )}
-              <div className="gv-featured-tag-row">
-                <span className="gv-featured-live">
-                  <span className="contest-card-banner-pulse" />
-                  LIVE NOW
-                </span>
-                <span className="gv-featured-spotlight">
-                  <Crown className="w-3 h-3" />
-                  Spotlight
-                </span>
-              </div>
-              <div className="gv-featured-trophy"><Trophy className="w-4 h-4" /></div>
-            </div>
-
-            {/* Info */}
-            <div className="gv-featured-info">
-              <div className="gv-featured-eyebrow">
-                <Sparkles className="w-3 h-3" />
-                Featured Contest
-              </div>
-              <h2 className="gv-featured-title">{contest.name}</h2>
-              <p className="gv-featured-desc">{contest.description}</p>
-
-              <div className="gv-featured-stats">
-                <div className="gv-featured-stat">
-                  <div className="gv-featured-stat-label">Prize</div>
-                  <div className="gv-featured-stat-value">{contest.prizeValue || contest.prize}</div>
+        {prizeItems.length > 0 && (
+          <div className="mb-3">
+            <p className="text-[9px] font-display uppercase tracking-[0.18em] text-foreground/25 mb-2">What You'll Win</p>
+            <div className="grid grid-cols-1 gap-1.5">
+              {prizeItems.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06]"
+                >
+                  <Gift className="w-3 h-3 text-foreground/50 shrink-0" />
+                  <span className="text-[11px] text-foreground/55 font-light leading-snug">{item}</span>
                 </div>
-                <div className="gv-featured-stat">
-                  <div className="gv-featured-stat-label">Entries</div>
-                  <div className="gv-featured-stat-value">{fmt(contest.totalEntries)}</div>
-                </div>
-                <div className="gv-featured-stat">
-                  <div className="gv-featured-stat-label">Spots Left</div>
-                  <div className="gv-featured-stat-value">{fmt(contest.spotsRemaining)}</div>
-                </div>
-              </div>
-
-              <div className="gv-featured-progress">
-                <div className="gv-featured-progress-head">
-                  <span>{Math.round(percent)}% claimed</span>
-                  <span>{fmt(taken)} / {fmt(contest.maxSpots)}</span>
-                </div>
-                <div className="gv-featured-progress-track">
-                  <motion.div
-                    className="gv-featured-progress-fill"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${percent}%` }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-                  />
-                </div>
-              </div>
-
-              <div className="gv-featured-foot">
-                {contest.endsAt && (
-                  <div className="gv-featured-countdown">
-                    <Clock className="w-3.5 h-3.5" />
-                    <CountdownTimer endsAt={contest.endsAt} compact />
-                  </div>
-                )}
-                <div className="gv-featured-cta">
-                  <span>Enter Now</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
+        )}
 
-/* ═══════════════════════════════════════════════════
-   SKELETON CARD
-   ═══════════════════════════════════════════════════ */
-function SkeletonCard() {
-  return (
-    <div className="gv-skeleton">
-      <div className="gv-skeleton-banner" />
-      <div className="gv-skeleton-body">
-        <div className="gv-skeleton-line gv-skeleton-line--lg" />
-        <div className="gv-skeleton-line gv-skeleton-line--md" />
-        <div className="gv-skeleton-pills">
-          <div className="gv-skeleton-pill" />
-          <div className="gv-skeleton-pill" />
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-4">
+          <Sparkles className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
+          <span className="text-[11px] text-foreground/50 font-light">
+            Prize value <strong className="text-foreground/70 font-medium">{formatINR(contest.prizeValue)}</strong>
+          </span>
         </div>
-        <div className="gv-skeleton-bar" />
-        <div className="gv-skeleton-grid">
-          <div className="gv-skeleton-cell" />
-          <div className="gv-skeleton-cell" />
-          <div className="gv-skeleton-cell" />
+
+        {contest.maxSpots > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[9px] font-display uppercase tracking-[0.18em] text-foreground/30">Capacity</span>
+              <span className="text-[10px] text-foreground/45 font-display">
+                {filled} / {contest.maxSpots}
+              </span>
+            </div>
+            <div className="w-full h-[3px] rounded-full bg-white/[0.05] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-foreground/40 transition-all duration-700"
+                style={{ width: `${fillPct}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {meta.isLive && contest.endsAt && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-5">
+            <Hourglass className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
+            <CountdownTimer endsAt={contest.endsAt} />
+          </div>
+        )}
+
+        <div className="mt-auto pt-4 border-t border-white/[0.04]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div>
+                <div className="text-sm font-display font-light text-foreground">{contest.totalEntries || 0}</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-widest">Entries</div>
+              </div>
+              <div className="w-px h-6 bg-white/[0.06]" />
+              <div>
+                <div className="text-sm font-display font-light text-foreground">{contest.spotsRemaining}</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-widest">Spots Left</div>
+              </div>
+            </div>
+            {meta.isLive && (
+              <div className="flex items-center text-foreground/30 group-hover:text-foreground/60 transition-colors text-xs font-display">
+                <span>Enter Now</span>
+                <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
+
+  if (meta.isLive) {
+    return (
+      <Link href={`/giveaway/${contest.slug}`} className="block">
+        {cardContent}
+      </Link>
+    );
+  }
+  return cardContent;
 }
 
-/* ═══════════════════════════════════════════════════
-   MAIN PAGE
-   ═══════════════════════════════════════════════════ */
 export default function Giveaway() {
-  const { data: contests = [], isLoading } = useQuery({
+  const [activeFilter, setActiveFilter] = useState<string>("All");
+
+  const { data: apiContests, isLoading } = useQuery({
     queryKey: ["contests"],
     queryFn: getContests,
+    staleTime: 30_000,
   });
 
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<SortBy>("ending-soon");
-  const [sortOpen, setSortOpen] = useState(false);
-  const [stickyOn, setStickyOn] = useState(false);
-  const sortRef = useRef<HTMLDivElement>(null);
-  const filterBarRef = useRef<HTMLDivElement>(null);
-
-  /* Detect sticky state for shadow */
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => setStickyOn(e.intersectionRatio < 1),
-      { threshold: [1] }
-    );
-    const sentinel = document.getElementById("gv-filter-sentinel");
-    if (sentinel) obs.observe(sentinel);
-    return () => obs.disconnect();
-  }, []);
-
-  /* Close sort dropdown on outside click */
-  useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
-        setSortOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, []);
-
-  /* ── DERIVED DATA ── */
-  const live = useMemo(() => contests.filter(c => c.status === "active" && !c.isFull), [contests]);
-  const upcoming = useMemo(() => contests.filter(c => c.status === "upcoming"), [contests]);
-  const closed = useMemo(() => contests.filter(c => c.status === "completed" || c.isFull), [contests]);
-
-  const totalPrizePool = useMemo(
-    () => contests.reduce((sum, c) => sum + parsePrizeNumeric(c.prizeValue), 0),
-    [contests]
+  const allContests: ContestData[] = React.useMemo(
+    () => (Array.isArray(apiContests) ? apiContests : []),
+    [apiContests],
   );
-  const totalEntries = useMemo(
-    () => contests.reduce((sum, c) => sum + c.totalEntries, 0),
-    [contests]
-  );
-  const totalLive = live.length;
-  const totalContests = contests.length;
 
-  /* Featured = highest prize value among live (or first live) */
-  const featured = useMemo(() => {
-    if (live.length === 0) return null;
-    return [...live].sort((a, b) => parsePrizeNumeric(b.prizeValue) - parsePrizeNumeric(a.prizeValue))[0];
-  }, [live]);
-
-  /* Search + status filter applied to all */
-  const filtered = useMemo(() => {
-    let list = [...contests];
-    if (status === "active") list = list.filter(c => c.status === "active" && !c.isFull);
-    else if (status === "upcoming") list = list.filter(c => c.status === "upcoming");
-    else if (status === "completed") list = list.filter(c => c.status === "completed" || c.isFull);
-
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        c.prize.toLowerCase().includes(q) ||
-        (c.description || "").toLowerCase().includes(q)
-      );
+  const counts = React.useMemo(() => {
+    let live = 0;
+    let upcoming = 0;
+    let closed = 0;
+    let totalEntries = 0;
+    let totalPrizePool = 0;
+    for (const c of allContests) {
+      const meta = getContestStatusMeta(c);
+      if (meta.isLive) live++;
+      else if (meta.isClosed) closed++;
+      else upcoming++;
+      totalEntries += c.totalEntries || 0;
+      const v = Number(c.prizeValue || 0);
+      if (Number.isFinite(v)) totalPrizePool += v;
     }
+    return { live, upcoming, closed, totalEntries, totalPrizePool, total: allContests.length };
+  }, [allContests]);
 
-    list.sort((a, b) => {
-      switch (sortBy) {
-        case "ending-soon": {
-          const aTime = a.endsAt ? new Date(a.endsAt).getTime() : Infinity;
-          const bTime = b.endsAt ? new Date(b.endsAt).getTime() : Infinity;
-          return aTime - bTime;
-        }
-        case "most-popular":
-          return b.totalEntries - a.totalEntries;
-        case "biggest-prize":
-          return parsePrizeNumeric(b.prizeValue) - parsePrizeNumeric(a.prizeValue);
-        case "newest":
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      }
+  const filterOptions = React.useMemo(() => {
+    const opts: string[] = ["All"];
+    if (counts.live > 0) opts.push("Active");
+    if (counts.upcoming > 0) opts.push("Upcoming");
+    if (counts.closed > 0) opts.push("Closed");
+    return opts;
+  }, [counts]);
+
+  const filteredContests = React.useMemo(() => {
+    if (activeFilter === "All") return allContests;
+    return allContests.filter((c) => {
+      const meta = getContestStatusMeta(c);
+      if (activeFilter === "Active") return meta.isLive;
+      if (activeFilter === "Upcoming") return !meta.isLive && !meta.isClosed;
+      if (activeFilter === "Closed") return meta.isClosed;
+      return true;
     });
-    return list;
-  }, [contests, status, search, sortBy]);
-
-  /* When status='all' and no search → split into sections; otherwise show flat */
-  const showSectioned = status === "all" && !search.trim();
-
-  const liveSorted = useMemo(() => {
-    return showSectioned
-      ? filtered.filter(c => c.status === "active" && !c.isFull && (!featured || c.id !== featured.id))
-      : [];
-  }, [filtered, showSectioned, featured]);
-
-  const upcomingSorted = useMemo(
-    () => (showSectioned ? filtered.filter(c => c.status === "upcoming") : []),
-    [filtered, showSectioned]
-  );
-
-  const closedSorted = useMemo(
-    () => (showSectioned ? filtered.filter(c => c.status === "completed" || c.isFull) : []),
-    [filtered, showSectioned]
-  );
-
-  const clearAll = useCallback(() => {
-    setStatus("all");
-    setSearch("");
-    setSortBy("ending-soon");
-  }, []);
-
-  const sortLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label ?? "Sort";
+  }, [allContests, activeFilter]);
 
   return (
-    <div className="gv-page">
-      {/* ── HERO ────────────────────────────────────── */}
-      <section className="gv-hero">
-        <div className="gv-hero-bg-grid" aria-hidden />
-        <div className="gv-hero-radial" aria-hidden />
-        <div className="gv-hero-orb gv-hero-orb-1" aria-hidden />
-        <div className="gv-hero-orb gv-hero-orb-2" aria-hidden />
+    <div className="min-h-screen bg-black text-foreground">
+      <div className="noise-overlay" />
+      <div className="vignette-overlay" />
 
-        <div className="container mx-auto px-4 max-w-6xl relative z-[2]">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="text-center"
-          >
-            <motion.div variants={fadeUp} className="gv-hero-eyebrow">
-              <Sparkles className="w-3 h-3" />
-              Contest Hub
-              <span className="gv-hero-eyebrow-dot" />
-              {totalLive > 0 ? `${totalLive} live now` : "Curated weekly"}
-            </motion.div>
-
-            <motion.h1 variants={fadeUp} className="gv-hero-title">
-              Win prizes worth<br />
-              <span className="gv-hero-title-accent">a lifetime.</span>
-            </motion.h1>
-
-            <motion.p variants={fadeUp} className="gv-hero-sub">
-              Premium giveaways from verified brands. Complete a few partner steps,
-              earn entries, and win curated prizes — straight from the source.
-            </motion.p>
-
-            <motion.div variants={fadeUp} className="gv-hero-ctas">
-              <button
-                onClick={() => {
-                  document.getElementById("gv-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-                className="gv-hero-cta gv-hero-cta-primary"
-              >
-                Browse Active
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <Link href="/entry-check" className="gv-hero-cta gv-hero-cta-ghost">
-                <ShieldCheck className="w-4 h-4" />
-                Check Entry Code
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── STATS STRIP ────────────────────────────── */}
-      <section className="gv-stats-section">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-            className="gv-stats"
-          >
-            {[
-              { label: "Total Prize Pool", value: totalPrizePool, prefix: "₹", suffix: "" },
-              { label: "Live Contests", value: totalLive, prefix: "", suffix: "" },
-              { label: "Total Entries", value: totalEntries, prefix: "", suffix: "" },
-              { label: "All-Time Contests", value: totalContests, prefix: "", suffix: "" },
-            ].map((s, i) => (
-              <motion.div key={s.label} variants={fadeUp} custom={i} className="gv-stat">
-                <div className="gv-stat-label">{s.label}</div>
-                <div className="gv-stat-value">
-                  <AnimatedCounter value={s.value} prefix={s.prefix} suffix={s.suffix} duration={1.6} />
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── STICKY FILTER BAR ─────────────────────── */}
-      <div id="gv-filter-sentinel" aria-hidden />
-      <div className={`gv-filter-bar-wrap ${stickyOn ? "is-stuck" : ""}`} ref={filterBarRef}>
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="gv-filter-bar">
-            {/* Search */}
-            <div className="gv-search">
-              <Search className="w-4 h-4 gv-search-icon" />
-              <input
-                type="text"
-                placeholder="Search contests, prizes…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Escape") setSearch(""); }}
-                className="gv-search-input"
-                aria-label="Search contests by name, prize, or description"
-              />
-              {search && (
-                <button
-                  onClick={() => setSearch("")}
-                  className="gv-search-clear"
-                  aria-label="Clear search"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            {/* Status chips */}
-            <div className="gv-chips">
-              {STATUS_CHIPS.map((chip) => {
-                const Icon = chip.icon;
-                const active = status === chip.value;
-                const count =
-                  chip.value === "all" ? totalContests :
-                  chip.value === "active" ? totalLive :
-                  chip.value === "upcoming" ? upcoming.length :
-                  closed.length;
-                return (
-                  <button
-                    key={chip.value}
-                    onClick={() => setStatus(chip.value)}
-                    className={`gv-chip ${active ? "is-active" : ""}`}
-                    aria-pressed={active}
-                  >
-                    <Icon className="w-3 h-3" />
-                    <span>{chip.label}</span>
-                    <span className="gv-chip-count">{count}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Sort */}
-            <div className="gv-sort" ref={sortRef}>
-              <button
-                onClick={() => setSortOpen(!sortOpen)}
-                className="gv-sort-btn"
-                aria-expanded={sortOpen}
-                aria-haspopup="listbox"
-              >
-                <Filter className="w-3.5 h-3.5" />
-                <span>{sortLabel}</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${sortOpen ? "rotate-180" : ""}`} />
-              </button>
-              <AnimatePresence>
-                {sortOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
-                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                    className="gv-sort-menu"
-                    role="listbox"
-                  >
-                    {SORT_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        onClick={() => { setSortBy(opt.value); setSortOpen(false); }}
-                        className={`gv-sort-item ${sortBy === opt.value ? "is-active" : ""}`}
-                        role="option"
-                        aria-selected={sortBy === opt.value}
-                      >
-                        {opt.label}
-                        {sortBy === opt.value && <CheckCircle2 className="w-3.5 h-3.5" />}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+      <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
+        {/* ── Giveaway Hero ── */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          custom={0}
+          className="text-center py-20 sm:py-28 px-4"
+        >
+          <div className="glass-pill-badge inline-flex mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
+            Live Giveaways
           </div>
-        </div>
-      </div>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-light text-foreground mb-5 leading-tight tracking-tight">
+            Win Premium Prizes
+          </h1>
+          <p className="text-foreground/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
+            Verified brand giveaways drawn daily. Enter the contests below — every completed registration boosts
+            your chances. Transparent draws, real winners.
+          </p>
+        </motion.div>
 
-      {/* ── MAIN CONTENT ──────────────────────────── */}
-      <section className="gv-main" id="gv-grid">
         <div className="container mx-auto px-4 max-w-6xl">
-          {/* Loading */}
-          {isLoading && (
-            <div className="gv-grid">
-              {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+          {/* ── Stats Strip ── */}
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-10 sm:mb-14">
+            <div className="glass-card p-4 sm:p-5">
+              <div className="card-top-accent" />
+              <div className="relative z-[2] flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="w-5 h-5 text-foreground/40" />
+                  <span className="text-sm text-foreground/50 font-light">Giveaway Stats</span>
+                </div>
+                <div className="flex items-center gap-6 sm:gap-10">
+                  <div className="text-center">
+                    <div className="text-xl sm:text-2xl font-display font-light text-foreground">
+                      {formatINR(String(counts.totalPrizePool))}
+                    </div>
+                    <div className="text-[10px] text-foreground/30 uppercase tracking-widest font-display">
+                      Prize Pool
+                    </div>
+                  </div>
+                  <div className="w-px h-8 bg-white/[0.06]" />
+                  <div className="text-center">
+                    <div className="text-xl sm:text-2xl font-display font-light text-foreground">{counts.live}</div>
+                    <div className="text-[10px] text-foreground/30 uppercase tracking-widest font-display">Live Now</div>
+                  </div>
+                  <div className="w-px h-8 bg-white/[0.06]" />
+                  <div className="text-center">
+                    <div className="text-xl sm:text-2xl font-display font-light text-foreground">
+                      {counts.totalEntries}
+                    </div>
+                    <div className="text-[10px] text-foreground/30 uppercase tracking-widest font-display">Entries</div>
+                  </div>
+                </div>
+              </div>
             </div>
-          )}
+          </motion.div>
 
-          {/* Empty state */}
-          {!isLoading && filtered.length === 0 && (
+          {/* ── Filter Bar ── */}
+          {!isLoading && filterOptions.length > 1 && (
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="gv-empty"
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              className="mb-8 sm:mb-10 ctx-filterbar"
             >
-              <div className="gv-empty-icon">
-                <Search className="w-7 h-7" />
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 mr-1 text-foreground/45">
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
+                  <span className="text-[10px] uppercase tracking-widest font-display">Filter</span>
+                </div>
+                {filterOptions.map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setActiveFilter(filter)}
+                    data-active={activeFilter === filter ? "true" : "false"}
+                    className="ctx-status-chip px-4 py-1.5 rounded-full text-[11px] font-display font-light tracking-wide transition-all"
+                  >
+                    {filter === "Active" && <span className="mr-1 opacity-60">●</span>}
+                    {filter}
+                  </button>
+                ))}
               </div>
-              <h3 className="gv-empty-title">No contests match your filters</h3>
-              <p className="gv-empty-desc">
-                Try a different search or clear filters to see everything that's live.
-              </p>
-              <button onClick={clearAll} className="gv-empty-cta">
-                Clear all filters
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
             </motion.div>
           )}
 
-          {/* Sectioned view (status=all, no search) */}
-          {!isLoading && filtered.length > 0 && showSectioned && (
-            <>
-              {featured && (
-                <div className="gv-block">
-                  <div className="gv-block-head">
-                    <div className="gv-block-eyebrow">
-                      <Crown className="w-3 h-3" />
-                      Spotlight
-                    </div>
-                    <h2 className="gv-block-title">Featured contest</h2>
-                  </div>
-                  <FeaturedSpotlight contest={featured} />
-                </div>
-              )}
-
-              {liveSorted.length > 0 && (
-                <div className="gv-block">
-                  <div className="gv-block-head">
-                    <div className="gv-block-eyebrow">
-                      <Zap className="w-3 h-3" />
-                      Live now
-                    </div>
-                    <h2 className="gv-block-title">
-                      Active contests
-                      <span className="gv-block-count">{liveSorted.length}</span>
-                    </h2>
-                  </div>
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-60px" }}
-                    variants={stagger}
-                    className="gv-grid"
-                  >
-                    {liveSorted.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
-                  </motion.div>
-                </div>
-              )}
-
-              {upcomingSorted.length > 0 && (
-                <div className="gv-block">
-                  <div className="gv-block-head">
-                    <div className="gv-block-eyebrow">
-                      <Clock className="w-3 h-3" />
-                      Coming soon
-                    </div>
-                    <h2 className="gv-block-title">
-                      Upcoming
-                      <span className="gv-block-count">{upcomingSorted.length}</span>
-                    </h2>
-                  </div>
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-60px" }}
-                    variants={stagger}
-                    className="gv-grid"
-                  >
-                    {upcomingSorted.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
-                  </motion.div>
-                </div>
-              )}
-
-              {closedSorted.length > 0 && (
-                <div className="gv-block">
-                  <div className="gv-block-head">
-                    <div className="gv-block-eyebrow">
-                      <CheckCircle2 className="w-3 h-3" />
-                      Hall of fame
-                    </div>
-                    <h2 className="gv-block-title">
-                      Closed contests
-                      <span className="gv-block-count">{closedSorted.length}</span>
-                    </h2>
-                  </div>
-                  <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-60px" }}
-                    variants={stagger}
-                    className="gv-grid"
-                  >
-                    {closedSorted.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
-                  </motion.div>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Flat view (filter or search active) */}
-          {!isLoading && filtered.length > 0 && !showSectioned && (
-            <div className="gv-block">
-              <div className="gv-block-head">
-                <div className="gv-block-eyebrow">
-                  <TrendingUp className="w-3 h-3" />
-                  Results
-                </div>
-                <h2 className="gv-block-title">
-                  {filtered.length} {filtered.length === 1 ? "contest" : "contests"}
-                  {search && <> matching "<span className="gv-block-q">{search}</span>"</>}
-                </h2>
-              </div>
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={stagger}
-                className="gv-grid"
-              >
-                {filtered.map((c, i) => <ContestCard key={c.id} contest={c} index={i} />)}
-              </motion.div>
+          {/* ── Contest Grid ── */}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS MINI ─────────────────────── */}
-      <section className="gv-steps-section">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="gv-steps-head">
-            <div className="gv-steps-eyebrow">How it works</div>
-            <h2 className="gv-steps-title">Three steps. One winner.</h2>
-          </div>
-          <div className="gv-steps-grid">
-            {[
-              { num: "01", icon: Search, title: "Pick a contest", desc: "Browse curated giveaways from verified brands. Filter by prize, deadline, or popularity." },
-              { num: "02", icon: ShieldCheck, title: "Complete partner steps", desc: "Each contest has a few quick partner registrations. Verified brands fund every prize pool." },
-              { num: "03", icon: Trophy, title: "Get your entry & win", desc: "Auto-generated entry code locks you in. Winners drawn fairly and announced publicly." },
-            ].map((s, i) => (
-              <motion.div
-                key={s.num}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="gv-step"
-              >
-                <div className="gv-step-num">{s.num}</div>
-                <div className="gv-step-icon"><s.icon className="w-5 h-5" /></div>
-                <h3 className="gv-step-title">{s.title}</h3>
-                <p className="gv-step-desc">{s.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FINAL CTA ─────────────────────────────── */}
-      <section className="gv-cta-section">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="gv-cta-card"
-          >
-            <div className="gv-cta-shine" />
-            <div className="gv-cta-content">
-              <div className="gv-cta-eyebrow">
-                <Star className="w-3 h-3" />
-                Premium membership
+          ) : filteredContests.length === 0 ? (
+            <div className="glass-card p-10 sm:p-14 text-center mb-16 sm:mb-24">
+              <div className="card-top-accent" />
+              <div className="relative z-[2]">
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-5 text-foreground/40">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">
+                  No contests in this view
+                </h3>
+                <p className="text-foreground/40 font-light text-sm leading-relaxed max-w-md mx-auto">
+                  Check back soon — new giveaways drop every week. Tap "All" to see everything available right now.
+                </p>
               </div>
-              <h2 className="gv-cta-title">Multiply your odds. Unlock every prize.</h2>
-              <p className="gv-cta-desc">
-                Members get bonus entries, exclusive contests, and priority access to limited drops.
+            </div>
+          ) : (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={stagger}
+              className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-16 sm:mb-24"
+            >
+              {filteredContests.map((contest) => (
+                <motion.div key={contest.slug || contest.id} variants={fadeUp}>
+                  <ContestCard contest={contest} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* ── Premium Rewards Visual Showcase ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-16 sm:mb-24"
+          >
+            <div className="glass-card !shadow-none !p-0 overflow-hidden">
+              <div className="rewards-showcase-card relative overflow-hidden">
+                <img
+                  src="/images/hero-rewards-visual.png"
+                  alt="Premium prizes — trophies, gift cards, and tech rewards"
+                  className="w-full object-cover"
+                  style={{ maxHeight: 420, objectPosition: "center 30%" }}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5">
+                  <div>
+                    <div className="glass-pill-badge mb-3 inline-flex w-auto">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                      Real Prizes. Daily Draws.
+                    </div>
+                    <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight drop-shadow-lg">
+                      Boost Your Chances.
+                      <br className="hidden sm:block" /> Register With Partners.
+                    </h3>
+                    <p className="text-sm sm:text-base text-white/80 font-light max-w-md leading-relaxed drop-shadow">
+                      Each completed partner registration adds extra entries to the daily draw — more entries, better
+                      odds.
+                    </p>
+                  </div>
+                  <Link
+                    href="/partners"
+                    className="showcase-enter-btn group shrink-0 inline-flex items-center justify-center gap-2 h-12 px-7 rounded-2xl font-medium text-sm tracking-wide transition-all duration-300 bg-white text-black border border-white/20 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                  >
+                    <span>View Partners</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ── Trust & Verified ── */}
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-16 sm:mb-24">
+            <div className="text-center mb-10 sm:mb-14">
+              <div className="glass-pill-badge mb-6 mx-auto">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
+                Trust & Security
+              </div>
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-display font-light mb-4 text-foreground tracking-tight">
+                Fair Draws. Real Winners.
+              </h2>
+              <p className="text-foreground/40 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
+                Every contest on X247 is audited end-to-end — entries are tracked transparently, draws are recorded,
+                and winners are announced publicly.
               </p>
-              <div className="gv-cta-buttons">
-                <Link href="/pricing" className="gv-cta-primary">
-                  See membership tiers
-                  <ArrowUpRight className="w-4 h-4" />
-                </Link>
-                <Link href="/how-it-works" className="gv-cta-ghost">
-                  How X247 works
-                </Link>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+              {verifiedBy.map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="glass-card p-5 sm:p-6 text-center group">
+                    <div className="card-top-accent" />
+                    <div className="card-shine" />
+                    <div className="relative z-[2]">
+                      <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-4 text-foreground/50 group-hover:text-foreground/70 transition-colors">
+                        {item.icon}
+                      </div>
+                      <h4 className="text-sm font-display font-light text-foreground/70">{item.name}</h4>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* ── Final CTA ── */}
+          <motion.div initial="hidden" animate="visible" variants={fadeUp}>
+            <div className="glass-card p-6 sm:p-10 text-center">
+              <div className="card-top-accent" />
+              <div className="card-shine" />
+              <div className="relative z-[2]">
+                <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-4">How To Enter</h3>
+                <p className="text-foreground/40 font-light text-sm leading-relaxed max-w-xl mx-auto mb-8">
+                  Pick a live contest above → tap Enter Now → complete the partner registration. Your entry is
+                  confirmed instantly. Already entered? Check your code below.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <BorderGlow
+                    as={Link}
+                    href="/entry-check"
+                    borderRadius={16}
+                    glowRadius={20}
+                    cardBg="rgba(6,6,6,0.95)"
+                    className="premium-btn premium-btn-lg glass-btn-effect group"
+                  >
+                    <Ticket className="w-4 h-4 mr-2 relative z-[2]" />
+                    <span className="relative z-[2]">Check Entry Code</span>
+                  </BorderGlow>
+                  <BorderGlow
+                    as={Link}
+                    href="/partners"
+                    borderRadius={16}
+                    glowRadius={20}
+                    cardBg="rgba(10,10,10,0.6)"
+                    className="premium-btn premium-btn-lg premium-btn-ghost glass-btn-effect group"
+                  >
+                    <span className="relative z-[2]">View Partners</span>
+                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                  </BorderGlow>
+                </div>
               </div>
             </div>
           </motion.div>
         </div>
-      </section>
+      </main>
 
-      <SiteFooter />
+      <SiteFooter
+        links={[
+          { label: "Home", href: "/" },
+          { label: "Partners", href: "/partners" },
+        ]}
+      />
     </div>
   );
 }
