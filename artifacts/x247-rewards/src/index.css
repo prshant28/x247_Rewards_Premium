@@ -11028,7 +11028,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-featured-badge-label {
   font-family: 'Syne', sans-serif;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(255,255,255,0.80);
   letter-spacing: 0.02em;
 }
@@ -11126,11 +11126,10 @@ a:focus-visible > .contest-card-v2 {
 .pub2-name {
   font-family: 'Syne', sans-serif;
   font-size: 26px;
-  font-weight: 700;
+  font-weight: 300;
   color: #fff;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  text-shadow: 0 0 40px rgba(255,255,255,0.12);
 }
 @media (min-width: 640px) { .pub2-name { font-size: 32px; } }
 
@@ -11172,7 +11171,7 @@ a:focus-visible > .contest-card-v2 {
   border-radius: 99px;
   font-size: 11px;
   font-family: 'Syne', sans-serif;
-  font-weight: 500;
+  font-weight: 300;
   color: rgba(255,255,255,0.7);
 }
 
@@ -11199,7 +11198,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-hero-stat-val {
   font-family: 'Syne', sans-serif;
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 300;
   color: rgba(255,255,255,0.88);
   line-height: 1;
   margin-bottom: 3px;
@@ -11407,7 +11406,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-level-num {
   font-family: 'Syne', sans-serif;
   font-size: 38px;
-  font-weight: 700;
+  font-weight: 300;
   letter-spacing: -0.02em;
   background: linear-gradient(180deg, #fff, rgba(255,255,255,0.5));
   -webkit-background-clip: text;
@@ -11422,7 +11421,7 @@ a:focus-visible > .contest-card-v2 {
   font-size: 9px;
   letter-spacing: 0.22em;
   color: rgba(255,255,255,0.35);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .pub2-level-meta {
@@ -11434,7 +11433,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-level-xp {
   font-family: 'Syne', sans-serif;
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 300;
   color: #fff;
   letter-spacing: -0.01em;
 }
@@ -11442,7 +11441,7 @@ a:focus-visible > .contest-card-v2 {
   font-size: 11px;
   color: rgba(255,255,255,0.4);
   letter-spacing: 0.18em;
-  font-weight: 500;
+  font-weight: 400;
   margin-left: 4px;
 }
 .pub2-level-next {
@@ -11638,7 +11637,7 @@ a:focus-visible > .contest-card-v2 {
   border-radius: 99px;
   font-family: 'Syne', sans-serif;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.12em;
   color: rgba(255,255,255,0.92);
   backdrop-filter: blur(6px);
@@ -11697,7 +11696,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-tcard-name {
   font-family: 'Syne', sans-serif;
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 300;
   color: #fff;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -11918,7 +11917,7 @@ a:focus-visible > .contest-card-v2 {
   flex: 1;
   font-family: 'Syne', sans-serif;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: rgba(255,255,255,0.45);
@@ -11926,7 +11925,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-card-count {
   font-family: 'Syne', sans-serif;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 400;
   color: rgba(255,255,255,0.30);
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.08);
@@ -12002,7 +12001,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-feat-badge-name {
   font-family: 'Syne', sans-serif;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 300;
   color: rgba(255,255,255,0.85);
 }
 .pub2-feat-badge-desc {
@@ -12059,7 +12058,7 @@ a:focus-visible > .contest-card-v2 {
 .pub2-stat-val {
   font-family: 'Syne', sans-serif;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 300;
   color: rgba(255,255,255,0.88);
   line-height: 1;
 }
@@ -12495,7 +12494,7 @@ a:focus-visible > .contest-card-v2 {
 .prof-id-name {
   font-family: 'Syne', sans-serif;
   font-size: clamp(20px, 4vw, 30px);
-  font-weight: 600;
+  font-weight: 300;
   color: #fff;
   letter-spacing: -0.02em;
   line-height: 1;
@@ -12626,7 +12625,7 @@ a:focus-visible > .contest-card-v2 {
 .prof-id-stat-val {
   font-family: 'Syne', sans-serif;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 300;
   color: #fff;
   letter-spacing: -0.02em;
   line-height: 1;
@@ -12737,7 +12736,7 @@ a:focus-visible > .contest-card-v2 {
 .pub-flip-back-name {
   font-family: 'Syne', sans-serif;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 400;
   color: rgba(255,255,255,0.80);
   text-align: center;
   line-height: 1.2;
