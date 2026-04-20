@@ -32,16 +32,6 @@ export default function SiteFooter({ links, children }: SiteFooterProps) {
         <div className="footer-gradient-line mb-12 sm:mb-16" />
         <div className="container mx-auto px-4 sm:px-6">
           {children}
-          <div className="flex justify-center mb-8 sm:mb-10">
-            <Link href="/" aria-label="X247 home" className="inline-block opacity-70 hover:opacity-100 transition-opacity">
-              <img
-                src="/x247-wordmark.png"
-                alt="X247"
-                className="h-9 sm:h-11 w-auto object-contain select-none"
-                draggable={false}
-              />
-            </Link>
-          </div>
           <div className="footer-bottom-border pt-6 sm:pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] sm:text-xs font-light footer-muted-text">
               <p>&copy; 2026 X247 Rewards Protocol. All rights reserved.</p>

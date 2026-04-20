@@ -1795,11 +1795,13 @@ export default function Home() {
           className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 mb-14 sm:mb-20"
         >
           <div>
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-foreground" />
-              </div>
-              <span className="text-xl font-display font-light text-foreground">X247 Rewards</span>
+            <div className="mb-5">
+              <img
+                src="/x247-wordmark.png"
+                alt="X247 Labs"
+                className="h-12 sm:h-14 w-auto object-contain select-none"
+                draggable={false}
+              />
             </div>
             <p className="text-sm text-foreground/40 font-light leading-relaxed max-w-xs">
               The premier gamified giveaway and referral platform for partner event participants. Register, enter, and win real rewards daily.
