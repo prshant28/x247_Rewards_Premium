@@ -968,11 +968,6 @@ function OverviewTab({ user, entries, streak, onChangeTab }: { user: any; entrie
           <AnimatedCounter value={user.followingCount ?? 0} className="acct-social-num" />
           <span className="acct-social-lbl">Following</span>
         </button>
-        <div className="acct-social-divider" />
-        <div className="acct-social-stat">
-          <AnimatedCounter value={entries.length} className="acct-social-num" />
-          <span className="acct-social-lbl">Entries</span>
-        </div>
         <button
           className="acct-social-discover-btn ml-auto"
           onClick={() => navigate("/people")}

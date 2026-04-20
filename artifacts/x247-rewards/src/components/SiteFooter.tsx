@@ -53,13 +53,7 @@ export default function SiteFooter({ links, children }: SiteFooterProps) {
                     {link.label}
                   </Link>
                 ))}
-                <button
-                  onClick={() => setAdminModalOpen(true)}
-                  className="footer-link flex items-center gap-1.5"
-                >
-                  <Shield className="w-3 h-3" />
-                  Admin Panel
-                </button>
+                
               </div>
             </div>
           </div>
