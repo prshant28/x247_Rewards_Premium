@@ -9210,15 +9210,25 @@ a:focus-visible > .contest-card-v2 {
 .pricing-table-wrap {
   border-radius: 22px;
   border: 1px solid rgba(255,255,255,0.08);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   background: rgba(255,255,255,0.015);
   backdrop-filter: blur(12px);
+  -webkit-overflow-scrolling: touch;
 }
 .pricing-table-header-row,
 .pricing-table-row {
   display: grid;
-  grid-template-columns: 1fr repeat(4, minmax(80px, 1fr));
+  grid-template-columns: 140px repeat(4, minmax(80px, 1fr));
   border-bottom: 1px solid rgba(255,255,255,0.04);
+  min-width: 540px;
+}
+@media (min-width: 640px) {
+  .pricing-table-header-row,
+  .pricing-table-row {
+    grid-template-columns: 1fr repeat(4, minmax(80px, 1fr));
+    min-width: 0;
+  }
 }
 .pricing-table-header-row { background: rgba(255,255,255,0.03); }
 .pricing-table-row:last-child { border-bottom: none; }
@@ -12079,7 +12089,7 @@ a:focus-visible > .contest-card-v2 {
   gap: 10px;
   overflow: visible;
 }
-@media (min-width: 400px) { .pub2-badges-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 640px) { .pub2-badges-grid { grid-template-columns: repeat(4, 1fr); } }
 
 .pub-flip-wrapper {
   perspective: 600px;
@@ -17671,7 +17681,7 @@ svg.lucide,
   .prof-id-stat-lbl { font-size: 8px; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 639.98px) {
   /* Trading card — don't restrict width on mobile */
   .pub2-tcard {
     max-width: 100%;
@@ -17686,7 +17696,7 @@ svg.lucide,
   .pub2-stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  /* Badges grid 2×n on very narrow */
+  /* Badges grid 2×n on phones (640px+ takes over with 4 cols) */
   .pub2-badges-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -17701,11 +17711,158 @@ svg.lucide,
   }
 }
 
-@media (min-width: 400px) and (max-width: 639px) {
-  .pub2-badges-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+/* phones always show 2-col badges; 4-col only at sm: breakpoint and above */
+
+/* ══════════════════════════════════════════════════════════════════════
+   PUBLIC PROFILE — LIGHT THEME OVERRIDES
+   The pub2-* and prof-id-* class families use rgba(255,255,255,X) which
+   becomes invisible on a light background. Map all critical text/border/bg
+   tokens to theme-aware hsl(var(--foreground) / X) for both [data-light]
+   and [data-theme="pristine-light"] roots.
+   ══════════════════════════════════════════════════════════════════════ */
+[data-light] .pub2-card,
+[data-theme="pristine-light"] .pub2-card,
+[data-light] .pub2-tcard,
+[data-theme="pristine-light"] .pub2-tcard {
+  background: hsl(var(--foreground) / 0.025);
+  border-color: hsl(var(--foreground) / 0.08);
 }
+[data-light] .pub2-card-title,
+[data-theme="pristine-light"] .pub2-card-title { color: hsl(var(--foreground) / 0.55); }
+[data-light] .pub2-card-count,
+[data-theme="pristine-light"] .pub2-card-count {
+  color: hsl(var(--foreground) / 0.45);
+  background: hsl(var(--foreground) / 0.06);
+  border-color: hsl(var(--foreground) / 0.08);
+}
+[data-light] .pub2-hero-stat-val,
+[data-theme="pristine-light"] .pub2-hero-stat-val,
+[data-light] .pub2-stat-val,
+[data-theme="pristine-light"] .pub2-stat-val,
+[data-light] .pub2-tcard-name,
+[data-theme="pristine-light"] .pub2-tcard-name,
+[data-light] .pub2-feat-badge-name,
+[data-theme="pristine-light"] .pub2-feat-badge-name { color: hsl(var(--foreground) / 0.92); }
+[data-light] .pub2-hero-stat-lbl,
+[data-theme="pristine-light"] .pub2-hero-stat-lbl,
+[data-light] .pub2-stat-lbl,
+[data-theme="pristine-light"] .pub2-stat-lbl { color: hsl(var(--foreground) / 0.45); }
+[data-light] .pub2-tier-pill,
+[data-theme="pristine-light"] .pub2-tier-pill {
+  color: hsl(var(--foreground) / 0.7);
+  background: hsl(var(--foreground) / 0.06);
+  border-color: hsl(var(--foreground) / 0.12);
+}
+[data-light] .pub2-level-num,
+[data-theme="pristine-light"] .pub2-level-num {
+  background: linear-gradient(180deg, hsl(var(--foreground)), hsl(var(--foreground) / 0.5));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+[data-light] .pub2-level-lbl,
+[data-theme="pristine-light"] .pub2-level-lbl,
+[data-light] .pub2-level-next,
+[data-theme="pristine-light"] .pub2-level-next { color: hsl(var(--foreground) / 0.45); }
+[data-light] .pub2-level-xp,
+[data-theme="pristine-light"] .pub2-level-xp { color: hsl(var(--foreground) / 0.95); }
+[data-light] .pub2-level-xp-unit,
+[data-theme="pristine-light"] .pub2-level-xp-unit { color: hsl(var(--foreground) / 0.45); }
+[data-light] .pub2-level-bar,
+[data-theme="pristine-light"] .pub2-level-bar { background: hsl(var(--foreground) / 0.07); }
+[data-light] .pub2-level-bar-fill,
+[data-theme="pristine-light"] .pub2-level-bar-fill { background: linear-gradient(90deg, hsl(var(--foreground) / 0.6), hsl(var(--foreground) / 0.85)); }
+[data-light] .pub2-level-pct,
+[data-theme="pristine-light"] .pub2-level-pct { color: hsl(var(--foreground) / 0.4); }
+[data-light] .pub2-bio-block,
+[data-theme="pristine-light"] .pub2-bio-block { color: hsl(var(--foreground) / 0.75); }
+[data-light] .pub2-tcard-initials,
+[data-theme="pristine-light"] .pub2-tcard-initials { color: hsl(var(--foreground)); }
+[data-light] .pub2-tcard-stat,
+[data-theme="pristine-light"] .pub2-tcard-stat { color: hsl(var(--foreground) / 0.7); }
+[data-light] .pub2-tcard-share,
+[data-theme="pristine-light"] .pub2-tcard-share {
+  background: hsl(var(--foreground) / 0.06);
+  border-color: hsl(var(--foreground) / 0.12);
+  color: hsl(var(--foreground) / 0.85);
+}
+[data-light] .pub2-tcard-tier-pill,
+[data-theme="pristine-light"] .pub2-tcard-tier-pill {
+  background: hsl(var(--foreground) / 0.85);
+  border-color: hsl(var(--foreground) / 0.15);
+  color: hsl(var(--background) / 0.95);
+}
+
+/* prof-id band — identity header */
+[data-light] .prof-id-band,
+[data-theme="pristine-light"] .prof-id-band {
+  background: hsl(var(--foreground) / 0.025);
+  border-color: hsl(var(--foreground) / 0.08);
+}
+[data-light] .prof-id-name,
+[data-theme="pristine-light"] .prof-id-name { color: hsl(var(--foreground)); }
+[data-light] .prof-id-meta-chip,
+[data-theme="pristine-light"] .prof-id-meta-chip {
+  background: hsl(var(--foreground) / 0.05);
+  border-color: hsl(var(--foreground) / 0.1);
+  color: hsl(var(--foreground) / 0.7);
+}
+[data-light] .prof-id-tier-pill,
+[data-theme="pristine-light"] .prof-id-tier-pill {
+  background: hsl(var(--foreground) / 0.07);
+  border-color: hsl(var(--foreground) / 0.12);
+  color: hsl(var(--foreground) / 0.85);
+}
+[data-light] .prof-id-stat-val,
+[data-theme="pristine-light"] .prof-id-stat-val { color: hsl(var(--foreground)); }
+[data-light] .prof-id-stat-lbl,
+[data-theme="pristine-light"] .prof-id-stat-lbl { color: hsl(var(--foreground) / 0.4); }
+[data-light] .prof-id-stat,
+[data-theme="pristine-light"] .prof-id-stat { border-color: hsl(var(--foreground) / 0.06); }
+[data-light] .prof-id-stats-strip,
+[data-theme="pristine-light"] .prof-id-stats-strip {
+  background: hsl(var(--foreground) / 0.025);
+  border-color: hsl(var(--foreground) / 0.06);
+}
+[data-light] .prof-id-follow-btn,
+[data-theme="pristine-light"] .prof-id-follow-btn {
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+[data-light] .prof-id-unfollow-btn,
+[data-theme="pristine-light"] .prof-id-unfollow-btn,
+[data-light] .prof-id-share-btn,
+[data-theme="pristine-light"] .prof-id-share-btn {
+  background: hsl(var(--foreground) / 0.06);
+  border-color: hsl(var(--foreground) / 0.12);
+  color: hsl(var(--foreground) / 0.85);
+}
+[data-light] .prof-id-followsyou-badge,
+[data-theme="pristine-light"] .prof-id-followsyou-badge {
+  background: hsl(var(--foreground) / 0.05);
+  border-color: hsl(var(--foreground) / 0.1);
+  color: hsl(var(--foreground) / 0.7);
+}
+[data-light] .prof-id-avatar,
+[data-theme="pristine-light"] .prof-id-avatar {
+  background: hsl(var(--foreground) / 0.08);
+  color: hsl(var(--foreground));
+}
+[data-light] .prof-id-avatar-initials,
+[data-theme="pristine-light"] .prof-id-avatar-initials { color: hsl(var(--foreground)); }
+[data-light] .pub-flip-front,
+[data-theme="pristine-light"] .pub-flip-front,
+[data-light] .pub-flip-back,
+[data-theme="pristine-light"] .pub-flip-back {
+  background: hsl(var(--foreground) / 0.04);
+  border-color: hsl(var(--foreground) / 0.1);
+}
+[data-light] .pub-flip-label,
+[data-theme="pristine-light"] .pub-flip-label,
+[data-light] .pub-flip-back-name,
+[data-theme="pristine-light"] .pub-flip-back-name { color: hsl(var(--foreground) / 0.85); }
+[data-light] .pub-flip-back-desc,
+[data-theme="pristine-light"] .pub-flip-back-desc { color: hsl(var(--foreground) / 0.6); }
 
 /* ══════════════════════════════════════════════════════════════════════
    GLOBAL FORM ELEMENT VISIBILITY FIX
