@@ -16666,6 +16666,49 @@ svg.lucide,
    SOCIAL STRIP — clickable Followers/Following stats + Find People btn
    ────────────────────────────────────────────────────────────────────── */
 
+.acct-social-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.acct-social-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 10px;
+}
+
+.acct-social-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.acct-social-lbl {
+  font-family: 'Syne', sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.acct-social-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
 .acct-social-stat--btn {
   display: flex;
   flex-direction: column;
