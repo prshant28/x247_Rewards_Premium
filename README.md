@@ -7,7 +7,7 @@
 <br/>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=42&pause=1200&color=FFFFFF&center=true&vCenter=true&width=700&lines=X247+REWARDS+PREMIUM;Ultra-Premium+Rewards+Platform;Compete.+Win.+Repeat." />
+  <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=42&pause=1200&color=FFFFFF&center=true&vCenter=true&width=700&lines=X247+REWARDS+PREMIUM;." />
   <source media="(prefers-color-scheme: light)" srcset="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=42&pause=1200&color=000000&center=true&vCenter=true&width=700&lines=X247+REWARDS+PREMIUM;Ultra-Premium+Rewards+Platform;Compete.+Win.+Repeat." />
   <img alt="X247 Rewards Premium" src="https://readme-typing-svg.demolab.com?font=Syne&weight=800&size=42&pause=1200&color=FFFFFF&center=true&vCenter=true&width=700&lines=X247+REWARDS+PREMIUM;Ultra-Premium+Rewards+Platform;Compete.+Win.+Repeat." />
 </picture>
