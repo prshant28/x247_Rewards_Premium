@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { winnersTable, contestsTable, adminSessionsTable } from "@workspace/db";
+import { winnersTable, contestsTable, adminSessionsTable, giveawayEntriesTable } from "@workspace/db";
 import { eq, desc } from "drizzle-orm";
-import { broadcastNotification } from "../lib/notifications";
+import { broadcastNotification, createNotification } from "../lib/notifications";
 
 async function requireAdmin(req: any, res: any, next: any) {
   const token = req.headers.authorization?.replace("Bearer ", "");
@@ -63,6 +63,28 @@ router.post("/admin/winners", requireAdmin, async (req, res) => {
     if (contestId) {
       const [contest] = await db.select().from(contestsTable).where(eq(contestsTable.id, contestId)).limit(1);
       if (contest) contestName = contest.name;
+    }
+
+    let winnerUserId: number | null = null;
+    if (entryCode) {
+      const [entry] = await db.select().from(giveawayEntriesTable)
+        .where(eq(giveawayEntriesTable.entryCode, entryCode)).limit(1);
+      if (entry?.userId) winnerUserId = entry.userId;
+    } else if (entryId) {
+      const [entry] = await db.select().from(giveawayEntriesTable)
+        .where(eq(giveawayEntriesTable.id, entryId)).limit(1);
+      if (entry?.userId) winnerUserId = entry.userId;
+    }
+
+    if (winnerUserId) {
+      createNotification({
+        userId: winnerUserId,
+        type: "winner",
+        icon: "trophy",
+        title: "🏆 You Won!",
+        body: `Congratulations! You just won ${prize} in ${contestName}. X247 will contact you shortly!`,
+        data: { url: "/account", prize, contestName, isPersonalWin: true },
+      }).catch(err => console.error("Personal win notification error:", err));
     }
 
     broadcastNotification({

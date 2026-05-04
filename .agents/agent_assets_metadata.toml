@@ -96,3 +96,21 @@ id = "4zaESUgI8SMa5HU-5uSpo"
 uri = "file://artifacts/x247-pitch-deck/public/slide-prize-bg.png"
 type = "image"
 title = "generated_image"
+
+[[generated]]
+id = "42mmcvnTZo5kKxOGfhDNb"
+uri = "file://artifacts/x247-rewards/public/images/hero-rewards-visual.png"
+type = "image"
+title = "dark premium rewards hero visual"
+
+[[generated]]
+id = "1dnUKXd-fmEEtThGsNYxb"
+uri = "file://artifacts/x247-rewards/public/images/giftcards-visual.png"
+type = "image"
+title = "premium gift cards dark product photo"
+
+[[generated]]
+id = "nF4bDzRI978b0MXCrDxC9"
+uri = "file://artifacts/x247-rewards/public/images/community-visual.png"
+type = "image"
+title = "dark community network abstract visual"

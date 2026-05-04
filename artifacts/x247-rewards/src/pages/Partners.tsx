@@ -100,8 +100,8 @@ function getSecondaryBadgeStyle(_accent: string) {
   return {
     bg: "linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 100%)",
     border: "rgba(255, 255, 255, 0.1)",
-    textClass: "text-white/65",
-    iconClass: "text-white/40",
+    textClass: "text-foreground/65",
+    iconClass: "text-foreground/40",
   };
 }
 
@@ -121,13 +121,13 @@ function parseWhatYouGet(text: string): string[] {
 
 function getBenefitIcon(text: string) {
   const t = text.toLowerCase();
-  if (/prize|cash|money|₹|\$|win|lakh|crore|reward/.test(t)) return <Trophy className="w-3 h-3 text-white/50 shrink-0" />;
-  if (/intern|job|career|opport|recruit|placement/.test(t)) return <Rocket className="w-3 h-3 text-white/50 shrink-0" />;
-  if (/cert|badge|award|recogni/.test(t)) return <BadgeCheck className="w-3 h-3 text-white/50 shrink-0" />;
-  if (/learn|course|train|skill|workshop|bootcamp|educat/.test(t)) return <BookOpen className="w-3 h-3 text-white/50 shrink-0" />;
-  if (/community|network|meet|connect|people/.test(t)) return <Users className="w-3 h-3 text-white/50 shrink-0" />;
-  if (/free|zero|no cost|compliment|gratis/.test(t)) return <Sparkles className="w-3 h-3 text-white/50 shrink-0" />;
-  return <Gift className="w-3 h-3 text-white/50 shrink-0" />;
+  if (/prize|cash|money|₹|\$|win|lakh|crore|reward/.test(t)) return <Trophy className="w-3 h-3 text-foreground/50 shrink-0" />;
+  if (/intern|job|career|opport|recruit|placement/.test(t)) return <Rocket className="w-3 h-3 text-foreground/50 shrink-0" />;
+  if (/cert|badge|award|recogni/.test(t)) return <BadgeCheck className="w-3 h-3 text-foreground/50 shrink-0" />;
+  if (/learn|course|train|skill|workshop|bootcamp|educat/.test(t)) return <BookOpen className="w-3 h-3 text-foreground/50 shrink-0" />;
+  if (/community|network|meet|connect|people/.test(t)) return <Users className="w-3 h-3 text-foreground/50 shrink-0" />;
+  if (/free|zero|no cost|compliment|gratis/.test(t)) return <Sparkles className="w-3 h-3 text-foreground/50 shrink-0" />;
+  return <Gift className="w-3 h-3 text-foreground/50 shrink-0" />;
 }
 
 function PartnerCard({ partner }: { partner: PartnerCardData }) {
@@ -171,8 +171,8 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
         <>
           <div className="absolute inset-0 z-[3] bg-black/30 backdrop-blur-[1px] rounded-[24px] pointer-events-none" />
           <div className="absolute top-4 right-4 z-[4] flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 border border-white/[0.1] backdrop-blur-sm">
-            <Lock className="w-3 h-3 text-white/40" />
-            <span className="text-[10px] font-display font-light text-white/50 uppercase tracking-widest">Coming Soon</span>
+            <Lock className="w-3 h-3 text-foreground/40" />
+            <span className="text-[10px] font-display font-light text-foreground/50 uppercase tracking-widest">Coming Soon</span>
           </div>
         </>
       )}
@@ -204,15 +204,15 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
           </div>
         </div>
 
-        <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.15em] mb-1">{partner.category}</span>
-        <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">{partner.name}</h3>
-        <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{partner.description}</p>
+        <span className="text-[10px] font-display font-medium text-foreground/30 uppercase tracking-[0.15em] mb-1">{partner.category}</span>
+        <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-2">{partner.name}</h3>
+        <p className="text-foreground/40 font-light text-xs sm:text-sm leading-relaxed mb-4">{partner.description}</p>
 
         {partner.whatYouGet && (() => {
           const items = parseWhatYouGet(partner.whatYouGet!);
           return (
             <div className="mb-3">
-              <p className="text-[9px] font-display uppercase tracking-[0.18em] text-white/25 mb-2">What You Get</p>
+              <p className="text-[9px] font-display uppercase tracking-[0.18em] text-foreground/25 mb-2">What You Get</p>
               <div className="grid grid-cols-1 gap-1.5">
                 {items.map((item, i) => (
                   <div
@@ -220,7 +220,7 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
                     className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06]"
                   >
                     {getBenefitIcon(item)}
-                    <span className="text-[11px] text-white/55 font-light leading-snug">{item}</span>
+                    <span className="text-[11px] text-foreground/55 font-light leading-snug">{item}</span>
                   </div>
                 ))}
               </div>
@@ -229,9 +229,9 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
         })()}
 
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] mb-5">
-          <Trophy className="w-3.5 h-3.5 text-white/40 shrink-0" />
-          <span className="text-[11px] text-white/50 font-light">
-            Earn <strong className="text-white/70 font-medium">{partner.entryPoints || 1} entry {(partner.entryPoints || 1) === 1 ? "point" : "points"}</strong> after completing registration
+          <Trophy className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
+          <span className="text-[11px] text-foreground/50 font-light">
+            Earn <strong className="text-foreground/70 font-medium">{partner.entryPoints || 1} entry {(partner.entryPoints || 1) === 1 ? "point" : "points"}</strong> after completing registration
           </span>
         </div>
 
@@ -239,17 +239,17 @@ function PartnerCard({ partner }: { partner: PartnerCardData }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div>
-                <div className="text-sm font-display font-light text-white">{partner.stats?.clicks || 0}</div>
-                <div className="text-[9px] text-white/25 uppercase tracking-widest">Clicks</div>
+                <div className="text-sm font-display font-light text-foreground">{partner.stats?.clicks || 0}</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-widest">Clicks</div>
               </div>
               <div className="w-px h-6 bg-white/[0.06]" />
               <div>
-                <div className="text-sm font-display font-light text-white">{partner.stats?.impressions || 0}</div>
-                <div className="text-[9px] text-white/25 uppercase tracking-widest">Views</div>
+                <div className="text-sm font-display font-light text-foreground">{partner.stats?.impressions || 0}</div>
+                <div className="text-[9px] text-foreground/25 uppercase tracking-widest">Views</div>
               </div>
             </div>
             {partner.isActive && (
-              <div className="flex items-center text-white/30 group-hover:text-white/60 transition-colors text-xs font-display">
+              <div className="flex items-center text-foreground/30 group-hover:text-foreground/60 transition-colors text-xs font-display">
                 <span>View Details</span>
                 <ArrowRight className="w-3 h-3 ml-1.5 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -315,30 +315,25 @@ export default function Partners() {
   const activeCount = allPartners.filter((p) => p.isActive).length;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-foreground">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
-      <main className="relative z-10 pt-32 sm:pt-40 pb-20 sm:pb-32">
-        <div className="container mx-auto px-4 max-w-6xl">
+      <main className="relative z-10 pt-[70px] pb-20 sm:pb-32">
 
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            className="text-center mb-16 sm:mb-24"
-          >
-            <div className="glass-pill-badge mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
-              Partner Registration
-            </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
-              Our Partners
-            </h1>
-            <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-              Register with our partner platforms to earn giveaway entries. Each completed registration = one entry into the daily prize draw. More partners coming soon.
-            </p>
-          </motion.div>
+        {/* ── Partners Hero ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center py-20 sm:py-28 px-4">
+          <div className="glass-pill-badge inline-flex mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block" />
+            Partner Registration
+          </div>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-light text-foreground mb-5 leading-tight tracking-tight">Our Partners</h1>
+          <p className="text-foreground/45 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
+            Register with our partner platforms to earn giveaway entries. Each completed registration = one entry into the daily prize draw. More partners coming soon.
+          </p>
+        </motion.div>
+
+        <div className="container mx-auto px-4 max-w-6xl">
 
           <motion.div
             initial="hidden"
@@ -350,23 +345,23 @@ export default function Partners() {
               <div className="card-top-accent" />
               <div className="relative z-[2] flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <TrendingUp className="w-5 h-5 text-white/40" />
-                  <span className="text-sm text-white/50 font-light">Platform Stats</span>
+                  <TrendingUp className="w-5 h-5 text-foreground/40" />
+                  <span className="text-sm text-foreground/50 font-light">Platform Stats</span>
                 </div>
                 <div className="flex items-center gap-6 sm:gap-10">
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-display font-light text-white">{totalClicks}</div>
-                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Total Clicks</div>
+                    <div className="text-xl sm:text-2xl font-display font-light text-foreground">{totalClicks}</div>
+                    <div className="text-[10px] text-foreground/30 uppercase tracking-widest font-display">Total Clicks</div>
                   </div>
                   <div className="w-px h-8 bg-white/[0.06]" />
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-display font-light text-white">{totalImpressions}</div>
-                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Impressions</div>
+                    <div className="text-xl sm:text-2xl font-display font-light text-foreground">{totalImpressions}</div>
+                    <div className="text-[10px] text-foreground/30 uppercase tracking-widest font-display">Impressions</div>
                   </div>
                   <div className="w-px h-8 bg-white/[0.06]" />
                   <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-display font-light text-white">{activeCount}</div>
-                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-display">Active Partners</div>
+                    <div className="text-xl sm:text-2xl font-display font-light text-foreground">{activeCount}</div>
+                    <div className="text-[10px] text-foreground/30 uppercase tracking-widest font-display">Active Partners</div>
                   </div>
                 </div>
               </div>
@@ -374,9 +369,9 @@ export default function Partners() {
           </motion.div>
 
           {!isLoading && (
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8 sm:mb-10">
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8 sm:mb-10 ctx-filterbar">
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="flex items-center gap-1.5 mr-1 text-white/25">
+                <div className="flex items-center gap-1.5 mr-1 text-foreground/45">
                   <SlidersHorizontal className="w-3.5 h-3.5" />
                   <span className="text-[10px] uppercase tracking-widest font-display">Filter</span>
                 </div>
@@ -384,11 +379,8 @@ export default function Partners() {
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
-                    className={`px-4 py-1.5 rounded-full text-[11px] font-display font-light tracking-wide border transition-all ${
-                      activeFilter === filter
-                        ? "bg-white/[0.1] border-white/[0.2] text-white"
-                        : "bg-white/[0.02] border-white/[0.06] text-white/40 hover:text-white/60 hover:bg-white/[0.04]"
-                    }`}
+                    data-active={activeFilter === filter ? "true" : "false"}
+                    className="ctx-status-chip px-4 py-1.5 rounded-full text-[11px] font-display font-light tracking-wide transition-all"
                   >
                     {filter === "Featured" && <span className="mr-1 opacity-60">★</span>}
                     {filter}
@@ -417,6 +409,44 @@ export default function Partners() {
             </motion.div>
           )}
 
+          {/* ── Premium Rewards Visual Showcase ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-16 sm:mb-24"
+          >
+            <div className="glass-card !shadow-none !p-0 overflow-hidden">
+              <div className="rewards-showcase-card relative overflow-hidden">
+                <img
+                  src="/images/hero-rewards-visual.png"
+                  alt="Premium rewards — trophies, gift cards, and tech prizes"
+                  className="w-full object-cover"
+                  style={{ maxHeight: 420, objectPosition: "center 30%" }}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5">
+                  <div>
+                    <div className="glass-pill-badge mb-3 inline-flex w-auto">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                      Real Prizes. Daily Draws.
+                    </div>
+                    <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight drop-shadow-lg">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
+                    <p className="text-sm sm:text-base text-white/80 font-light max-w-md leading-relaxed drop-shadow">Register with our partners → earn extra entries → win premium prizes drawn daily.</p>
+                  </div>
+                  <Link href="/giveaway" className="showcase-enter-btn group shrink-0 inline-flex items-center justify-center gap-2 h-12 px-7 rounded-2xl font-medium text-sm tracking-wide transition-all duration-300 bg-white text-black border border-white/20 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
+                    <span>Enter Now</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
           <motion.div
             initial="hidden"
             animate="visible"
@@ -428,10 +458,10 @@ export default function Partners() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Trust & Security
               </div>
-              <h2 className="text-xl sm:text-3xl md:text-4xl font-display font-light mb-4 text-white tracking-tight">
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-display font-light mb-4 text-foreground tracking-tight">
                 Verified & Secure
               </h2>
-              <p className="text-white/40 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
+              <p className="text-foreground/40 text-sm sm:text-base font-light leading-relaxed max-w-xl mx-auto tracking-wide">
                 Every partner on X247 is vetted and verified. Your data is protected, registrations are audited, and winners are selected transparently.
               </p>
             </div>
@@ -448,10 +478,10 @@ export default function Partners() {
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-4 text-white/50 group-hover:text-white/70 transition-colors">
+                      <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-4 text-foreground/50 group-hover:text-foreground/70 transition-colors">
                         {item.icon}
                       </div>
-                      <h4 className="text-sm font-display font-light text-white/70">{item.name}</h4>
+                      <h4 className="text-sm font-display font-light text-foreground/70">{item.name}</h4>
                     </div>
                   </div>
                 </motion.div>
@@ -468,8 +498,8 @@ export default function Partners() {
               <div className="card-top-accent" />
               <div className="card-shine" />
               <div className="relative z-[2]">
-                <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-4">How It Works</h3>
-                <p className="text-white/40 font-light text-sm leading-relaxed max-w-xl mx-auto mb-8">
+                <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-4">How It Works</h3>
+                <p className="text-foreground/40 font-light text-sm leading-relaxed max-w-xl mx-auto mb-8">
                   Each partner card will have a registration link. Complete the registration → fill the entry form → your entry is confirmed. It's that simple.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

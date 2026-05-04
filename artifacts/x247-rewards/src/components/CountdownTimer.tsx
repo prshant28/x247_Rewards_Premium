@@ -30,7 +30,7 @@ export default function CountdownTimer({ endsAt, compact = false }: CountdownTim
 
   if (expired) {
     return (
-      <span className="text-[10px] text-white/30 font-display uppercase tracking-wider">Ended</span>
+      <span className="text-[10px] text-foreground/30 font-display uppercase tracking-wider">Ended</span>
     );
   }
 
@@ -43,10 +43,10 @@ export default function CountdownTimer({ endsAt, compact = false }: CountdownTim
           { val: timeLeft.minutes, label: "m" },
         ].map((unit, i) => (
           <React.Fragment key={unit.label}>
-            {i > 0 && <span className="text-white/15 text-[10px]">:</span>}
-            <span className="text-xs font-display font-light text-white/60 tabular-nums">
+            {i > 0 && <span className="text-foreground/15 text-[10px]">:</span>}
+            <span className="text-xs font-display font-light text-foreground/60 tabular-nums">
               {String(unit.val).padStart(2, "0")}
-              <span className="text-[9px] text-white/30 ml-0.5">{unit.label}</span>
+              <span className="text-[9px] text-foreground/30 ml-0.5">{unit.label}</span>
             </span>
           </React.Fragment>
         ))}
@@ -63,12 +63,12 @@ export default function CountdownTimer({ endsAt, compact = false }: CountdownTim
         { val: timeLeft.seconds, label: "Sec" },
       ].map((unit, i) => (
         <React.Fragment key={unit.label}>
-          {i > 0 && <span className="text-white/10 text-sm font-light">:</span>}
+          {i > 0 && <span className="text-foreground/10 text-sm font-light">:</span>}
           <div className="flex flex-col items-center">
-            <span className="text-lg sm:text-xl font-display font-light text-white tabular-nums leading-none">
+            <span className="text-lg sm:text-xl font-display font-light text-foreground tabular-nums leading-none">
               {String(unit.val).padStart(2, "0")}
             </span>
-            <span className="text-[8px] text-white/25 font-display uppercase tracking-wider mt-1">
+            <span className="text-[8px] text-foreground/25 font-display uppercase tracking-wider mt-1">
               {unit.label}
             </span>
           </div>

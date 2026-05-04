@@ -1,8 +1,8 @@
+import React, { useEffect, useMemo, lazy, Suspense } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useEffect, useMemo, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "@/pages/Home";
 import PageLoader from "@/components/PageLoader";
@@ -17,6 +17,7 @@ const AdminLogin = lazy(() => import("@/pages/AdminLogin"));
 const AdminPanel = lazy(() => import("@/pages/AdminPanel"));
 const GiveawayEntry = lazy(() => import("@/pages/GiveawayEntry"));
 const Giveaway = lazy(() => import("@/pages/Giveaway"));
+const EntryCheck = lazy(() => import("@/pages/EntryCheck"));
 const Winners = lazy(() => import("@/pages/Winners"));
 const Account = lazy(() => import("@/pages/Account"));
 const Community = lazy(() => import("@/pages/Community"));
@@ -25,6 +26,8 @@ const ReferralDashboard = lazy(() => import("@/pages/ReferralDashboard"));
 const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
 const NotFound = lazy(() => import("@/pages/not-found"));
 const Pricing = lazy(() => import("@/pages/Pricing"));
+const HowItWorks = lazy(() => import("@/pages/HowItWorks"));
+const People = lazy(() => import("@/pages/People"));
 
 const queryClient = new QueryClient();
 
@@ -100,6 +103,9 @@ function Router() {
           <Route path="/giveaway">
             <AnimatedRoute component={Giveaway} />
           </Route>
+          <Route path="/entry-check">
+            <AnimatedRoute component={EntryCheck} />
+          </Route>
           <Route path="/winners">
             <AnimatedRoute component={Winners} />
           </Route>
@@ -120,6 +126,12 @@ function Router() {
           </Route>
           <Route path="/pricing">
             <AnimatedRoute component={Pricing} />
+          </Route>
+          <Route path="/how-it-works">
+            <AnimatedRoute component={HowItWorks} />
+          </Route>
+          <Route path="/people">
+            <AnimatedRoute component={People} />
           </Route>
           <Route path="/x247-admin-login">
             <AnimatedRoute component={AdminLogin} />
@@ -146,8 +158,8 @@ function App() {
             <PageLoader>
               <Router />
             </PageLoader>
+            <ChatBotGate />
           </WouterRouter>
-          <ChatBotGate />
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>

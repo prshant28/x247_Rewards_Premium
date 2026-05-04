@@ -20,13 +20,28 @@ import {
 import { getCurrentUser, logoutUser, isUserLoggedIn } from "@/lib/api";
 
 interface SiteNavProps {
-  activePage?: "home" | "partners" | "offers" | "partner-detail" | "giveaway" | "winners" | "account" | "community" | "referral";
+  activePage?:
+    | "home"
+    | "partners"
+    | "offers"
+    | "partner-detail"
+    | "giveaway"
+    | "winners"
+    | "account"
+    | "community"
+    | "referral"
+    | "how-it-works";
 }
 
 export default function SiteNav({ activePage = "home" }: SiteNavProps) {
   const isHome = activePage === "home";
   const [, navigate] = useLocation();
-  const [user, setUser] = useState<{ fullName: string; email: string; membershipTier?: string | null; isVerified?: boolean } | null>(null);
+  const [user, setUser] = useState<{
+    fullName: string;
+    email: string;
+    membershipTier?: string | null;
+    isVerified?: boolean;
+  } | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const checkAuth = () => {
@@ -34,7 +49,13 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
     setLoggedIn(logged);
     if (logged) {
       getCurrentUser().then((u) => {
-        if (u) setUser({ fullName: u.fullName, email: u.email, membershipTier: (u as any).membershipTier, isVerified: (u as any).isVerified });
+        if (u)
+          setUser({
+            fullName: u.fullName,
+            email: u.email,
+            membershipTier: (u as any).membershipTier,
+            isVerified: (u as any).isVerified,
+          });
         else {
           setLoggedIn(false);
           setUser(null);
@@ -67,11 +88,13 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
   return (
     <CardNav
       logo={
-        <div className="flex items-center gap-2.5">
-          <div className="sitenav-logo-icon">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <span className="sitenav-logo-text font-display text-base sm:text-lg tracking-wide font-normal">X247</span>
+        <div className="flex items-center">
+          <img
+            src="/x247-wordmark.png"
+            alt="X247 Labs"
+            className="h-10 sm:h-12 w-auto object-contain select-none"
+            draggable={false}
+          />
         </div>
       }
       baseColor="var(--x-nav-bg)"
@@ -86,7 +109,9 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
         navigate("/account");
       }}
       renderLink={(href, children, className) => (
-        <Link href={href} className={className}>{children}</Link>
+        <Link href={href} className={className}>
+          {children}
+        </Link>
       )}
       items={[
         {
@@ -95,12 +120,30 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           bgColor: "rgba(255, 255, 255, 0.03)",
           textColor: "#fff",
           links: [
-            { label: "Home", href: "/", spa: true, icon: <Sparkles className="w-3.5 h-3.5" /> },
-            { label: "Partners", href: "/partners", spa: true, icon: <ExternalLink className="w-3.5 h-3.5" /> },
-            { label: "Giveaways", href: "/giveaway", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
-            { label: "Offers", href: "/offers", spa: true, icon: <Gift className="w-3.5 h-3.5" /> },
-            { label: "Winners", href: "/winners", spa: true, icon: <Star className="w-3.5 h-3.5" /> },
-          
+            {
+              label: "Home",
+              href: "/",
+              spa: true,
+              icon: <Sparkles className="w-3.5 h-3.5" />,
+            },
+            {
+              label: "Partners",
+              href: "/partners",
+              spa: true,
+              icon: <ExternalLink className="w-3.5 h-3.5" />,
+            },
+            {
+              label: "Giveaways",
+              href: "/giveaway",
+              spa: true,
+              icon: <Trophy className="w-3.5 h-3.5" />,
+            },
+            {
+              label: "Offers",
+              href: "/offers",
+              spa: true,
+              icon: <Gift className="w-3.5 h-3.5" />,
+            },
           ],
         },
         {
@@ -109,11 +152,28 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           bgColor: "rgba(255, 255, 255, 0.03)",
           textColor: "#fff",
           links: [
-            { label: "Dashboard", href: isHome ? "/referral/dashboard" : "referral/dashboard", icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
-            { label: "How it Works", href: isHome ? "#how-it-works" : "/#how-it-works", icon: <Target className="w-3.5 h-3.5" /> },
-            { label: "Rewards", href: isHome ? "#rewards" : "/#rewards", icon: <Trophy className="w-3.5 h-3.5" /> },
-            { label: "Community", href: "/community", spa: true, icon: <Users className="w-3.5 h-3.5" /> },
-            { label: "FAQ", href: isHome ? "#faq" : "/#faq", icon: <HelpCircle className="w-3.5 h-3.5" /> },
+            {
+              label: "Dashboard",
+              href: isHome ? "/referral/dashboard" : "referral/dashboard",
+              icon: <LayoutDashboard className="w-3.5 h-3.5" />,
+            },
+            {
+              label: "How it Works",
+              href: "/how-it-works",
+              spa: true,
+              icon: <Target className="w-3.5 h-3.5" />,
+            },
+            {
+              label: "Rewards",
+              href: isHome ? "#rewards" : "/#rewards",
+              icon: <Trophy className="w-3.5 h-3.5" />,
+            },
+            {
+              label: "Community",
+              href: "/community",
+              spa: true,
+              icon: <Users className="w-3.5 h-3.5" />,
+            },
           ],
         },
         {
@@ -123,14 +183,37 @@ export default function SiteNav({ activePage = "home" }: SiteNavProps) {
           textColor: "#fff",
           links: loggedIn
             ? [
-                { label: "My Account", href: "/account", spa: true, icon: <UserPlus className="w-3.5 h-3.5" /> },
-                { label: "My Entries", href: "/account", spa: true, icon: <Trophy className="w-3.5 h-3.5" /> },
-                { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
-              { label: "Referral", href: "/referral", spa: true, icon: <Share2 className="w-3.5 h-3.5" /> },
+                {
+                  label: "My Account",
+                  href: "/account",
+                  spa: true,
+                  icon: <UserPlus className="w-3.5 h-3.5" />,
+                },
+                {
+                  label: "My Entries",
+                  href: "/account",
+                  spa: true,
+                  icon: <Trophy className="w-3.5 h-3.5" />,
+                },
+                {
+                  label: "Referral",
+                  href: "/referral",
+                  spa: true,
+                  icon: <Share2 className="w-3.5 h-3.5" />,
+                },
               ]
             : [
-                { label: "Get Started", href: "/account", spa: false, icon: <UserPlus className="w-3.5 h-3.5" /> },
-                { label: "Support", href: isHome ? "#faq" : "/#faq", icon: <Headphones className="w-3.5 h-3.5" /> },
+                {
+                  label: "Get Started",
+                  href: "/account",
+                  spa: false,
+                  icon: <UserPlus className="w-3.5 h-3.5" />,
+                },
+                {
+                  label: "Support",
+                  href: isHome ? "#faq" : "/#faq",
+                  icon: <Headphones className="w-3.5 h-3.5" />,
+                },
               ],
         },
       ]}

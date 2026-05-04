@@ -64,6 +64,7 @@ export interface PartnerData {
   description: string;
   category: string;
   registrationUrl: string;
+  trackingUrl?: string | null;
   accent: string;
   badge: string | null;
   badgeSecondary: string | null;
@@ -380,6 +381,9 @@ export function getUserTokenValue(): string | null {
 }
 
 export async function updateProfile(data: {
+  fullName?: string;
+  phone?: string;
+  city?: string;
   bio?: string;
   avatarUrl?: string;
   profileSlug?: string;
@@ -406,11 +410,93 @@ export async function updateProfile(data: {
 
 export async function getPublicProfile(slug: string): Promise<any | null> {
   try {
-    const res = await fetch(`${API_BASE}/users/profile/${slug}`);
+    const token = getUserToken();
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}/users/profile/${slug}`, { headers });
     if (!res.ok) return null;
     return res.json();
   } catch {
     return null;
+  }
+}
+
+export async function followUser(slug: string): Promise<{ success: boolean; action?: string }> {
+  const token = getUserToken();
+  if (!token) return { success: false };
+  try {
+    const res = await fetch(`${API_BASE}/users/profile/${slug}/follow`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    });
+    if (!res.ok) return { success: false };
+    return res.json();
+  } catch {
+    return { success: false };
+  }
+}
+
+export async function unfollowUser(slug: string): Promise<{ success: boolean }> {
+  const token = getUserToken();
+  if (!token) return { success: false };
+  try {
+    const res = await fetch(`${API_BASE}/users/profile/${slug}/follow`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return { success: false };
+    return res.json();
+  } catch {
+    return { success: false };
+  }
+}
+
+export interface FollowUserItem {
+  id: number;
+  fullName: string;
+  profileSlug: string;
+  city: string | null;
+  isVerified: boolean;
+  membershipTier: string;
+  selectedBadge: string | null;
+  followersCount: number;
+  isFollowing: boolean;
+  isSelf: boolean;
+}
+
+async function fetchUserList(url: string): Promise<{ users: FollowUserItem[]; total: number }> {
+  const token = getUserToken();
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  try {
+    const res = await fetch(url, { headers });
+    if (!res.ok) return { users: [], total: 0 };
+    const data = await res.json();
+    return { users: data.users ?? [], total: data.total ?? (data.users?.length ?? 0) };
+  } catch {
+    return { users: [], total: 0 };
+  }
+}
+
+export async function getFollowers(slug: string, offset = 0, limit = 20) {
+  return fetchUserList(`${API_BASE}/users/profile/${slug}/followers?offset=${offset}&limit=${limit}`);
+}
+
+export async function getFollowing(slug: string, offset = 0, limit = 20) {
+  return fetchUserList(`${API_BASE}/users/profile/${slug}/following?offset=${offset}&limit=${limit}`);
+}
+
+export async function getSuggestedUsers(limit = 8): Promise<FollowUserItem[]> {
+  const token = getUserToken();
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  try {
+    const res = await fetch(`${API_BASE}/users/suggestions?limit=${limit}`, { headers });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.users ?? [];
+  } catch {
+    return [];
   }
 }
 
@@ -695,6 +781,25 @@ export async function getVapidPublicKey(): Promise<string> {
   if (!res.ok) return "";
   const data = await res.json();
   return data.publicKey || "";
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  const token = getUserToken();
+  if (!token) return { success: false, error: "Not authenticated" };
+  try {
+    const res = await fetch(`${API_BASE}/users/me/change-password`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      return { success: false, error: err.error || "Update failed" };
+    }
+    return { success: true };
+  } catch {
+    return { success: false, error: "Network error" };
+  }
 }
 
 export async function generateContestAI(input: { theme?: string; prize?: string; description?: string }): Promise<{ name: string; slug: string; description: string; prize: string; prizeValue: string; maxSpots: number }> {

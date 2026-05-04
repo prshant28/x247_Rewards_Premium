@@ -69,7 +69,7 @@ function FloatingIcon({ icon, delay = 0, className = "" }: { icon: React.ReactNo
   if (reducedMotion) return null;
   return (
     <motion.div
-      className={`absolute pointer-events-none text-white/[0.04] ${className}`}
+      className={`absolute pointer-events-none text-foreground/[0.04] ${className}`}
       animate={{
         y: [0, -15, 0],
         rotate: [0, 5, -5, 0],
@@ -124,6 +124,8 @@ const heroBannerSlides = [
     features: ["Daily Prize Draws", "Zero Cost Entry", "Real Rewards"],
     cta: "Get Started",
     href: "/giveaway",
+    img: "/images/hero-rewards-visual.png",
+    imgAlt: "Premium rewards — trophies and prizes",
   },
   {
     badge: "How It Works",
@@ -133,6 +135,8 @@ const heroBannerSlides = [
     features: ["Partner Signups", "Verified Entries", "Auto Draw System"],
     cta: "Enter Now",
     href: "#partners",
+    img: "/images/reward-trophy.png",
+    imgAlt: "Trophy — enter and win",
   },
   {
     badge: "Live Rewards",
@@ -142,6 +146,8 @@ const heroBannerSlides = [
     features: ["Gift Cards", "Tech Gadgets", "Exclusive Merch"],
     cta: "View Rewards",
     href: "#rewards",
+    img: "/images/reward-headphones.png",
+    imgAlt: "Wireless headphones prize",
   },
   {
     badge: "Partner Program",
@@ -151,6 +157,8 @@ const heroBannerSlides = [
     features: ["Live Analytics", "Milestone Bonuses", "Leaderboard Ranks"],
     cta: "Open Dashboard",
     href: "/referral/dashboard",
+    img: "/images/community-visual.png",
+    imgAlt: "Community and partner network",
   },
   {
     badge: "What's New",
@@ -160,6 +168,8 @@ const heroBannerSlides = [
     features: ["Flash Giveaways", "Bonus Events", "Limited Drops"],
     cta: "See Winners",
     href: "/winners",
+    img: "/images/reward-gift.png",
+    imgAlt: "Gift reward drop",
   },
 ];
 
@@ -190,29 +200,25 @@ const testimonialRowThree = [
 function HeroBannerSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const totalSlides = heroBannerSlides.length;
 
   useEffect(() => {
-    if (isHovered || reducedMotion) return;
+    if (isHovered || reducedMotion || isDragging) return;
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isHovered, reducedMotion, totalSlides]);
+  }, [isHovered, reducedMotion, isDragging, totalSlides]);
 
   const goTo = useCallback((idx: number) => {
-    setCurrentSlide(idx);
-  }, []);
-
-  const goPrev = useCallback(() => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setCurrentSlide(((idx % totalSlides) + totalSlides) % totalSlides);
   }, [totalSlides]);
 
-  const goNext = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
-  }, [totalSlides]);
+  const goPrev = useCallback(() => setCurrentSlide((p) => (p - 1 + totalSlides) % totalSlides), [totalSlides]);
+  const goNext = useCallback(() => setCurrentSlide((p) => (p + 1) % totalSlides), [totalSlides]);
 
   return (
     <motion.div
@@ -223,84 +229,192 @@ function HeroBannerSlider() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative rounded-2xl overflow-hidden hero-banner-container">
+      {/* ── Draggable card wrapper ── */}
+      <motion.div
+        className="relative rounded-2xl overflow-hidden hero-banner-container"
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.1}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={(_, { offset, velocity }) => {
+          setIsDragging(false);
+          if (offset.x < -55 || velocity.x < -350) goNext();
+          else if (offset.x > 55 || velocity.x > 350) goPrev();
+        }}
+        whileDrag={{ scale: 0.988, cursor: "grabbing" }}
+        style={{ cursor: "grab", userSelect: "none" }}
+      >
         <div className="absolute inset-0 hero-banner-glow pointer-events-none" />
 
+        {/* Slide track */}
         <div
           ref={trackRef}
           className="hero-banner-track"
           style={{
             transform: `translate3d(-${currentSlide * 100}%, 0, 0)`,
-            transition: reducedMotion ? "none" : "transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+            transition: isDragging ? "none" : (reducedMotion ? "none" : "transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)"),
           }}
         >
           {heroBannerSlides.map((slide, i) => {
             const isInternal = slide.href.startsWith("/");
+            const isActive = i === currentSlide;
+
+            const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+              if (isDragging) { e.preventDefault(); return; }
+              if (slide.href.startsWith("#")) {
+                e.preventDefault();
+                document.querySelector(slide.href)?.scrollIntoView({ behavior: "smooth" });
+              }
+            };
+
+            const CtaInner = (
+              <>
+                <span>{slide.cta}</span>
+                <ArrowRight className="w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+              </>
+            );
+
             return (
-              <div
-                key={i}
-                className="hero-banner-slide"
-                aria-hidden={i !== currentSlide}
-              >
+              <div key={i} className="hero-banner-slide" aria-hidden={!isActive}>
                 <div className="absolute inset-0 hero-banner-slide-bg pointer-events-none" />
-                <div className="absolute -top-8 -right-8 w-64 h-64 sm:w-80 sm:h-80 opacity-[0.03] pointer-events-none">
-                  <div className="w-full h-full flex items-center justify-center">
-                    {React.cloneElement(slide.icon as React.ReactElement, { className: "w-full h-full" })}
-                  </div>
-                </div>
                 <div className="absolute bottom-0 left-0 w-40 h-40 opacity-[0.015] pointer-events-none blur-3xl bg-white rounded-full" />
                 <div className="absolute top-0 right-0 w-24 h-24 opacity-[0.015] pointer-events-none blur-2xl bg-white rounded-full" />
 
-                <div className="relative z-[2] p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col justify-center min-h-[260px] sm:min-h-[300px]">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="glass-pill-badge !text-[10px]">
+                {/* ══ MOBILE LAYOUT (< 640px) ══ */}
+                <div className="sm:hidden flex flex-col p-5 pt-6 pb-5" style={{ minHeight: 320 }}>
+
+                  {/* Row 1 — Badge + slide counter */}
+                  <div className="flex items-center justify-between mb-3.5">
+                    <div className="glass-pill-badge !text-[10px] inline-flex">
                       <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
                       {slide.badge}
                     </div>
-                    <span className="text-[10px] text-white/30 font-mono tracking-wider">{String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}</span>
+                    <span className="text-[10px] text-foreground/30 font-mono tracking-widest tabular-nums">
+                      {String(i + 1).padStart(2, "0")}&nbsp;/&nbsp;{String(totalSlides).padStart(2, "0")}
+                    </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-display font-light text-white mb-3 tracking-tight leading-tight">
-                    {slide.title}
-                  </h3>
+                  {/* Row 2 — Title + Image side by side */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <h3 className="flex-1 text-[1.45rem] font-display font-light text-foreground tracking-tight leading-[1.25] min-w-0">
+                      {slide.title}
+                    </h3>
+                    {slide.img && (
+                      <div
+                        className="w-[84px] h-[84px] shrink-0 flex items-center justify-center"
+                        style={{
+                          filter: "drop-shadow(0 8px 20px rgba(255,255,255,0.08)) drop-shadow(0 2px 8px rgba(0,0,0,0.7))",
+                        }}
+                      >
+                        <img
+                          src={slide.img}
+                          alt={slide.imgAlt}
+                          className="w-full h-full object-contain select-none"
+                          style={{ opacity: 0.9 }}
+                          loading={i === 0 ? "eager" : "lazy"}
+                          draggable={false}
+                        />
+                      </div>
+                    )}
+                  </div>
 
-                  <p className="text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-lg">
+                  {/* Row 3 — Description */}
+                  <p className="text-[13px] text-foreground/55 font-light leading-relaxed mb-4">
                     {slide.desc}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  {/* Row 4 — Feature pills */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
                     {slide.features.map((feat, fi) => (
-                      <span
-                        key={fi}
-                        className="hero-banner-pill"
-                      >
-                        {feat}
-                      </span>
+                      <span key={fi} className="hero-banner-pill">{feat}</span>
                     ))}
+                  </div>
 
-                    <span className="hidden sm:block w-px h-5 bg-white/[0.08] mx-1" />
+                  {/* Row 5 — Full-width CTA */}
+                  {isInternal ? (
+                    <Link
+                      href={slide.href}
+                      className="mobile-banner-cta group"
+                      style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                    >
+                      {CtaInner}
+                    </Link>
+                  ) : (
+                    <a
+                      href={slide.href}
+                      onClick={handleHashClick}
+                      className="mobile-banner-cta group"
+                      style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                    >
+                      {CtaInner}
+                    </a>
+                  )}
 
-                    {isInternal ? (
-                      <Link href={slide.href} className="hero-banner-cta group">
-                        <span>{slide.cta}</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                      </Link>
-                    ) : (
-                      <a
-                        href={slide.href}
-                        onClick={(e) => {
-                          if (slide.href.startsWith("#")) {
-                            e.preventDefault();
-                            document.querySelector(slide.href)?.scrollIntoView({ behavior: "smooth" });
-                          }
-                        }}
-                        className="hero-banner-cta group"
-                      >
-                        <span>{slide.cta}</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                      </a>
+                  {/* Row 6 — Progress bar (inside card on mobile) */}
+                  <div className="hero-banner-progress mt-4">
+                    {isActive && (
+                      <div
+                        className="hero-banner-progress-bar"
+                        key={`mb-${currentSlide}`}
+                        style={{ animationPlayState: isHovered || isDragging ? "paused" : "running" }}
+                      />
                     )}
                   </div>
+                </div>
+
+                {/* ══ DESKTOP LAYOUT (640px+) ══ */}
+                <div className="hidden sm:flex items-center gap-6 md:gap-8 min-h-[300px] p-8 md:p-10 lg:p-12">
+                  <div className="flex-1 flex flex-col justify-center min-w-0">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="glass-pill-badge !text-[10px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                        {slide.badge}
+                      </div>
+                      <span className="text-[10px] text-foreground/30 font-mono tracking-wider tabular-nums">
+                        {String(i + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl lg:text-4xl font-display font-light text-foreground mb-3 tracking-tight leading-tight">
+                      {slide.title}
+                    </h3>
+                    <p className="text-sm sm:text-base text-foreground/60 font-light leading-relaxed mb-6 max-w-lg">
+                      {slide.desc}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                      {slide.features.map((feat, fi) => (
+                        <span key={fi} className="hero-banner-pill">{feat}</span>
+                      ))}
+                      <span className="w-px h-5 bg-foreground/[0.08] mx-1" />
+                      {isInternal ? (
+                        <Link
+                          href={slide.href}
+                          className="hero-banner-cta group"
+                          style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                        >
+                          {CtaInner}
+                        </Link>
+                      ) : (
+                        <a
+                          href={slide.href}
+                          onClick={handleHashClick}
+                          className="hero-banner-cta group"
+                        >
+                          {CtaInner}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  {slide.img && (
+                    <div className="hero-slide-img-wrap shrink-0">
+                      <img
+                        src={slide.img}
+                        alt={slide.imgAlt}
+                        className="hero-slide-img"
+                        loading={i === 0 ? "eager" : "lazy"}
+                        draggable={false}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -308,12 +422,14 @@ function HeroBannerSlider() {
         </div>
 
         <div className="hero-image-shimmer" />
-      </div>
+      </motion.div>
 
+      {/* Nav arrows — positioned at mid-card height */}
       <button
         onClick={goPrev}
         aria-label="Previous slide"
         className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 hero-banner-arrow"
+        style={{ pointerEvents: isDragging ? "none" : "auto" }}
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -321,10 +437,12 @@ function HeroBannerSlider() {
         onClick={goNext}
         aria-label="Next slide"
         className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 hero-banner-arrow"
+        style={{ pointerEvents: isDragging ? "none" : "auto" }}
       >
         <ChevronRight className="w-4 h-4" />
       </button>
 
+      {/* Dots */}
       <div className="flex items-center justify-center gap-2 mt-5">
         {heroBannerSlides.map((_, i) => (
           <button
@@ -336,7 +454,8 @@ function HeroBannerSlider() {
         ))}
       </div>
 
-      <div className="hero-banner-progress mt-3">
+      {/* Desktop progress bar (mobile has it inside the card) */}
+      <div className="hidden sm:block hero-banner-progress mt-3">
         <div
           className="hero-banner-progress-bar"
           style={{
@@ -386,13 +505,13 @@ function ScrollProgressLine({ containerRef, totalSteps }: { containerRef: React.
 
   return (
     <>
-      <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-white/[0.04]" />
+      <div className="absolute left-[23px] sm:left-[27px] top-0 bottom-0 w-px bg-foreground/[0.06]" />
       <motion.div
         className="absolute left-[22px] sm:left-[26px] top-0 w-[2px] rounded-full origin-top z-[1]"
         style={{
           height,
-          background: "linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.06) 25%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.06) 75%, rgba(255, 255, 255, 0.1) 100%)",
-          boxShadow: "0 0 8px 1px rgba(255, 255, 255, 0.08), 0 0 16px 2px rgba(255, 255, 255, 0.04)",
+          background: "linear-gradient(180deg, hsl(var(--foreground)/0.16) 0%, hsl(var(--foreground)/0.06) 25%, hsl(var(--foreground)/0.12) 50%, hsl(var(--foreground)/0.06) 75%, hsl(var(--foreground)/0.10) 100%)",
+          boxShadow: "0 0 8px 1px hsl(var(--foreground)/0.08), 0 0 16px 2px hsl(var(--foreground)/0.04)",
           opacity: glowOpacity,
         }}
       />
@@ -400,8 +519,8 @@ function ScrollProgressLine({ containerRef, totalSteps }: { containerRef: React.
         className="absolute left-[20px] sm:left-[24px] w-[6px] h-[6px] rounded-full z-[3]"
         style={{
           top: height,
-          background: "radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%)",
-          boxShadow: "0 0 10px 3px rgba(255, 255, 255, 0.12), 0 0 20px 5px rgba(255, 255, 255, 0.06)",
+          background: "radial-gradient(circle, hsl(var(--foreground)/0.60) 0%, hsl(var(--foreground)/0.30) 100%)",
+          boxShadow: "0 0 10px 3px hsl(var(--foreground)/0.12), 0 0 20px 5px hsl(var(--foreground)/0.06)",
           opacity: glowOpacity,
         }}
       />
@@ -418,18 +537,18 @@ function StepIcon({ icon, index, containerRef }: { icon: React.ReactNode; index:
   const threshold = index / (totalSteps - 1);
   const borderColor = useTransform(scrollYProgress, (v) => {
     if (v >= threshold - 0.02) {
-      return `rgba(255, 255, 255, 0.2)`;
+      return `hsl(var(--foreground) / 0.22)`;
     }
-    return "rgba(255, 255, 255, 0.06)";
+    return "hsl(var(--foreground) / 0.08)";
   });
   const shadowColor = useTransform(scrollYProgress, (v) => {
     if (v >= threshold - 0.02) {
-      return `0 0 12px 1px rgba(255, 255, 255, 0.06), 0 0 24px 2px rgba(255, 255, 255, 0.03)`;
+      return `0 0 12px 1px hsl(var(--foreground) / 0.06), 0 0 24px 2px hsl(var(--foreground) / 0.03)`;
     }
     return "none";
   });
   const iconColor = useTransform(scrollYProgress, (v) =>
-    v >= threshold - 0.02 ? "rgba(255, 255, 255, 0.85)" : "rgba(255, 255, 255, 0.3)"
+    v >= threshold - 0.02 ? "hsl(var(--foreground) / 0.88)" : "hsl(var(--foreground) / 0.30)"
   );
 
   return (
@@ -483,12 +602,12 @@ function TiltCard({ children, className = "" }: { children: React.ReactNode; cla
 }
 
 const rewardItems = [
-  { tier: "Daily Drop", title: "Premium Swag Kit", desc: "11 winners every day. Branded hoodies, tech accessories shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
-  { tier: "Gift Cards", title: "₹500 – ₹2,000", desc: "Amazon, Flipkart, or Google Play gift cards given out daily.", icon: <Gift className="w-5 h-5" />, img: "/images/reward-gift.png" },
-  { tier: "Event Access", title: "VIP Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
-  { tier: "Partner Perks", title: "Monthly Payouts", desc: "Join as a partner — unlock payouts, merch, and early access.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-trophy.png" },
-  { tier: "Tech Prizes", title: "Wireless Earbuds", desc: "Premium wireless earbuds and tech gadgets — weekly drops for top entries.", icon: <Headphones className="w-5 h-5" />, img: "/images/reward-headphones.png" },
-  { tier: "Grand Prize", title: "₹10,000 Cash", desc: "Monthly grand draw for the ultimate reward. More entries = higher chances.", icon: <Trophy className="w-5 h-5" />, img: "/images/abstract-sphere.png" },
+  { tier: "Daily Draw", title: "Cash Prizes", desc: "Real cash rewards drawn daily — payouts straight to your account, no strings attached.", icon: <Trophy className="w-5 h-5" />, img: "/images/abstract-sphere.png" },
+  { tier: "Tech Drop", title: "Gadgets", desc: "Wireless earbuds, accessories, and premium tech — fresh drops for top entries every week.", icon: <Headphones className="w-5 h-5" />, img: "/images/reward-headphones.png" },
+  { tier: "Swag Kit", title: "Swags", desc: "Branded hoodies, tees, stickers, and exclusive X247 merch — shipped worldwide.", icon: <Package className="w-5 h-5" />, img: "/images/reward-gift.png" },
+  { tier: "Instant Use", title: "Gift Cards", desc: "Amazon, Flipkart, and Google Play vouchers — instant rewards delivered to your inbox.", icon: <Gift className="w-5 h-5" />, img: "/images/giftcards-visual.png" },
+  { tier: "VIP Access", title: "Event Passes", desc: "Invite-only hackathons, workshops, and tech events with mentorship from industry leaders.", icon: <Ticket className="w-5 h-5" />, img: "/images/shield-emblem.png" },
+  { tier: "Top Tier", title: "Grand Prizes", desc: "Monthly grand draw for the ultimate reward — more entries, higher chances of winning big.", icon: <Gem className="w-5 h-5" />, img: "/images/reward-trophy.png" },
 ];
 
 function RewardsCarousel() {
@@ -604,35 +723,37 @@ function RewardsCarousel() {
                   <div className="card-top-accent" />
                   <div className="card-shine" />
                   <div className="relative z-[2] flex flex-col h-full">
-                    <div className="relative h-36 sm:h-44 overflow-hidden">
+                    <div className="relative h-40 sm:h-48 overflow-hidden reward-img-frame">
                       <img
                         src={item.img}
                         alt={`${item.tier}: ${item.title}`}
-                        className="w-full h-full object-cover opacity-40 reward-card-image"
+                        className="w-full h-full object-cover reward-card-image"
                         loading="eager"
                         decoding="async"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(6,6,6,0.98)] via-[rgba(6,6,6,0.5)] to-transparent" />
-                      <div className="absolute top-3 right-3">
+                      <div className="reward-img-spot" />
+                      <div className="reward-img-fade" />
+                      <div className="absolute top-3 right-3 z-[3]">
                         <BorderGlow borderRadius={10} glowRadius={8} cardBg="rgba(0,0,0,0.6)" className="icon-circle icon-circle-sm backdrop-blur-sm">
                           {item.icon}
                         </BorderGlow>
                       </div>
                       {isActive && (
-                        <div className="absolute top-3 left-3">
-                          <span className="px-2.5 py-1 rounded-full bg-white/[0.08] backdrop-blur-md text-[9px] uppercase tracking-widest text-white/60 font-display border border-white/[0.06]">
+                        <div className="absolute top-3 left-3 z-[3]">
+                          <span className="reward-featured-pill">
+                            <span className="reward-featured-dot" />
                             Featured
                           </span>
                         </div>
                       )}
                     </div>
                     <div className="p-5 sm:p-6 pt-3 flex-1 flex flex-col">
-                      <h4 className="text-[10px] sm:text-xs font-medium text-white/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
-                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                      <p className="text-white/40 font-light text-xs sm:text-sm leading-relaxed flex-1">{item.desc}</p>
+                      <h4 className="text-[10px] sm:text-xs font-medium text-foreground/50 mb-1.5 uppercase tracking-widest font-display">{item.tier}</h4>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">{item.title}</h3>
+                      <p className="text-foreground/40 font-light text-xs sm:text-sm leading-relaxed flex-1">{item.desc}</p>
                       <a
                         href="#rewards"
-                        className="mt-4 flex items-center text-white/30 text-xs font-display group-hover:text-white/50 transition-colors"
+                        className="mt-4 flex items-center text-foreground/30 text-xs font-display group-hover:text-foreground/50 transition-colors"
                         onClick={(e) => {
                           e.preventDefault();
                           document.getElementById("rewards")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -652,14 +773,14 @@ function RewardsCarousel() {
 
       <button
         onClick={prev}
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
+        className="carousel-nav-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-foreground/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:border-foreground/[0.15] hover:bg-black/80 transition-all duration-300 group"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-0.5 transition-transform" />
       </button>
       <button
         onClick={next}
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:border-white/[0.15] hover:bg-black/80 transition-all duration-300 group"
+        className="carousel-nav-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-foreground/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:border-foreground/[0.15] hover:bg-black/80 transition-all duration-300 group"
         aria-label="Next slide"
       >
         <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-0.5 transition-transform" />
@@ -678,19 +799,19 @@ function RewardsCarousel() {
             <div
               className={`h-1 rounded-full transition-all duration-500 ease-out ${
                 idx === current
-                  ? "w-8 bg-white/40 shadow-[0_0_8px_rgba(255,255,255,0.1)]"
-                  : "w-2 bg-white/[0.1] group-hover:bg-white/20"
+                  ? "w-8 bg-foreground/35 shadow-[0_0_8px_rgba(128,128,128,0.15)]"
+                  : "w-2 bg-foreground/[0.12] group-hover:bg-foreground/[0.22]"
               }`}
             />
           </button>
         ))}
       </div>
 
-      <div className="flex items-center justify-center mt-4 gap-3 text-white/20 text-[10px] font-display tracking-widest uppercase">
+      <div className="flex items-center justify-center mt-4 gap-3 text-foreground/30 text-[10px] font-display tracking-widest uppercase">
         <span>{String(current + 1).padStart(2, "0")}</span>
-        <div className="w-8 h-px bg-white/10 relative overflow-hidden">
+        <div className="w-8 h-px bg-foreground/[0.1] relative overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-white/30 carousel-progress"
+            className="absolute inset-y-0 left-0 bg-foreground/30 carousel-progress"
             key={current}
             style={{
               animationPlayState: isPaused ? "paused" : "running",
@@ -788,10 +909,10 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.1] tracking-tight text-white relative z-[1]">
+              <h1 className="text-[1.85rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.12] tracking-tight text-foreground relative z-[1] break-words">
                 <span className="text-gradient">Win Real Rewards Every Single Day</span>
               </h1>
-              <div aria-hidden="true" className="hero-text-stroke text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.1] tracking-tight">
+              <div aria-hidden="true" className="hero-text-stroke text-[1.85rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-light leading-[1.12] tracking-tight break-words">
                 Win Real Rewards Every Single Day
               </div>
             </motion.div>
@@ -800,7 +921,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-sm sm:text-base md:text-lg lg:text-xl text-white/55 mb-12 max-w-2xl mx-auto font-light leading-relaxed tracking-wide"
+              className="text-sm sm:text-base md:text-lg lg:text-xl text-foreground/55 mb-12 max-w-2xl mx-auto font-light leading-relaxed tracking-wide"
             >
               Sign up through our partner links below, fill the entry form, and you're in. Every completed registration = one giveaway entry. Winners are picked daily — gift cards, premium swag, gadgets & more.
             </motion.p>
@@ -822,21 +943,21 @@ export default function Home() {
 
             <HeroBannerSlider />
 
-            <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-white/[0.04] bg-white/[0.01] rounded-2xl">
+            <div className="w-full overflow-hidden py-6 sm:py-8 border-y border-foreground/[0.06] bg-foreground/[0.01] rounded-2xl">
               <div className="marquee-container">
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m1-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/20 text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-foreground/40 uppercase tracking-wider">{text}</span>
+                      <span className="text-foreground/20 text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
                 <div className="marquee-content">
                   {["Daily Swag Drops", "Gift Cards", "Wireless Earbuds", "Hackathon Passes", "Partner Perks", "Tech Gadgets", "Exclusive Merch", "Workshop Access", "Premium Hoodies"].map((text, i) => (
                     <div key={`m2-${i}`} className="flex items-center gap-8 whitespace-nowrap">
-                      <span className="text-lg sm:text-2xl font-display font-light text-white/40 uppercase tracking-wider">{text}</span>
-                      <span className="text-white/20 text-xl font-light">✦</span>
+                      <span className="text-lg sm:text-2xl font-display font-light text-foreground/40 uppercase tracking-wider">{text}</span>
+                      <span className="text-foreground/20 text-xl font-light">✦</span>
                     </div>
                   ))}
                 </div>
@@ -868,8 +989,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step-by-Step Guide
               </div>
-              <h2 className="text-2xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="How to Enter" /></h2>
-              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
+              <h2 className="text-2xl sm:text-5xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight"><TextReveal text="How to Enter" /></h2>
+              <p className="text-foreground/55 text-base sm:text-lg font-display font-light leading-relaxed tracking-wide max-w-2xl mx-auto">
                 Follow each step carefully to enter the giveaway. Complete the full process to confirm your entry.
               </p>
             </motion.div>
@@ -942,13 +1063,13 @@ export default function Home() {
                     </div>
                     <div className="relative z-[2] pt-1 flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-[11px] font-display font-medium text-white/30 tracking-widest">{item.step}</span>
+                        <span className="text-[11px] font-display font-medium text-foreground/30 tracking-widest">{item.step}</span>
                         {item.tip && (
-                          <span className="text-[10px] font-display font-medium text-white/55 bg-white/[0.04] border border-white/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
+                          <span className="text-[10px] font-display font-medium text-foreground/55 bg-foreground/[0.04] border border-foreground/[0.06] rounded-full px-2.5 py-0.5 tracking-wide">{item.tip}</span>
                         )}
                       </div>
-                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">{item.title}</h3>
-                      <p className="text-white/55 font-light leading-relaxed text-sm">
+                      <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">{item.title}</h3>
+                      <p className="text-foreground/55 font-light leading-relaxed text-sm">
                         {item.desc}
                       </p>
                     </div>
@@ -956,6 +1077,49 @@ export default function Home() {
                 ))}
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        <GlowLine />
+
+        {/* ── Rewards Visual Showcase ── */}
+        <section className="py-4 sm:py-8 relative overflow-hidden">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="glass-card !shadow-none !p-0 overflow-hidden">
+                <div className="rewards-showcase-card relative overflow-hidden">
+                  <img
+                    src="/images/hero-rewards-visual.png"
+                    alt="Premium rewards — trophies, gift cards, and tech prizes"
+                    className="w-full object-cover"
+                    style={{ maxHeight: 420, objectPosition: "center 30%" }}
+                    loading="eager"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5">
+                    <div>
+                      <div className="glass-pill-badge mb-3 inline-flex w-auto">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/80 mr-2 inline-block animate-pulse" />
+                        Real Prizes. Daily Draws.
+                      </div>
+                      <h3 className="text-xl sm:text-3xl md:text-4xl font-display font-light text-white mb-2 tracking-tight leading-tight drop-shadow-lg">Premium Rewards.<br className="hidden sm:block" /> Every Single Day.</h3>
+                      <p className="text-sm sm:text-base text-white/80 font-light max-w-md leading-relaxed drop-shadow">Gift cards, tech gadgets, swag kits &amp; cash prizes — drawn daily from all verified entries.</p>
+                    </div>
+                    <Link href="/giveaway" className="showcase-enter-btn group shrink-0 inline-flex items-center justify-center gap-2 h-12 px-7 rounded-2xl font-medium text-sm tracking-wide transition-all duration-300 bg-white text-black border border-white/20 hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap">
+                      <span>Enter Now</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -975,8 +1139,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Step 1 — Register
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Complete Partner Registration" /></h2>
-              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight"><TextReveal text="Complete Partner Registration" /></h2>
+              <p className="text-foreground/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 This is how you enter the giveaway — register with our partner links below. Each completed registration earns you one entry into the daily prize draw.
               </p>
             </motion.div>
@@ -991,8 +1155,8 @@ export default function Home() {
                   <BorderGlow borderRadius={14} glowRadius={12} cardBg="rgba(255,255,255,0.05)" className="icon-circle w-16 h-16 mb-6">
                     <ExternalLink className="w-7 h-7" />
                   </BorderGlow>
-                  <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">View All Partner Registrations</h3>
-                  <p className="text-white/55 font-light text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
+                  <h3 className="text-2xl sm:text-3xl font-display font-light text-foreground mb-3">View All Partner Registrations</h3>
+                  <p className="text-foreground/55 font-light text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
                     Browse all available partner links, check which registrations are live, and complete them to earn your giveaway entries.
                   </p>
                   <BorderGlow as={Link} href="/partners" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group/btn">
@@ -1014,23 +1178,23 @@ export default function Home() {
                 <div className="relative z-[2] flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                      <span className="text-xs font-display text-white/60">1</span>
+                      <span className="text-xs font-display text-foreground/60">1</span>
                     </div>
-                    <span className="text-sm text-white/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Register with partners</span>
+                    <span className="text-sm text-foreground/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Register with partners</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-white/20 hidden sm:block" />
+                  <ArrowRight className="w-4 h-4 text-foreground/20 hidden sm:block" />
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                      <span className="text-xs font-display text-white/60">2</span>
+                      <span className="text-xs font-display text-foreground/60">2</span>
                     </div>
-                    <span className="text-sm text-white/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Fill entry form</span>
+                    <span className="text-sm text-foreground/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Fill entry form</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-white/20 hidden sm:block" />
+                  <ArrowRight className="w-4 h-4 text-foreground/20 hidden sm:block" />
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                      <span className="text-xs font-display text-white/60">3</span>
+                      <span className="text-xs font-display text-foreground/60">3</span>
                     </div>
-                    <span className="text-sm text-white/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Win daily prizes</span>
+                    <span className="text-sm text-foreground/55 font-light" style={{ fontFamily: "'Alegreya Sans SC', 'Syne', sans-serif", letterSpacing: '0.04em' }}>Win daily prizes</span>
                   </div>
                 </div>
               </TiltCard>
@@ -1057,8 +1221,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Prizes & Rewards
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What You Can Win" /></h2>
-              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight"><TextReveal text="What You Can Win" /></h2>
+              <p className="text-foreground/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real rewards, no gimmicks. Every entry gives you a shot at these prizes — from daily swag drops to premium tech, gift cards, and exclusive event access.
               </p>
             </motion.div>
@@ -1086,8 +1250,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Partner Analytics
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="Track Everything" /></h2>
-              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight"><TextReveal text="Track Everything" /></h2>
+              <p className="text-foreground/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Monitor your referral performance in real-time. Track link clicks, verified signups, giveaway entries, and conversion rates.
               </p>
             </motion.div>
@@ -1102,8 +1266,8 @@ export default function Home() {
                 <div className="relative z-[2] flex flex-col h-full">
                   <div className="flex items-start justify-between mb-6">
                     <div>
-                      <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">Real-Time Analytics</h3>
-                      <p className="text-sm text-white/50 font-light max-w-sm">Monitor every click, signup, and conversion as it happens. Your performance data, always live.</p>
+                      <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-2">Real-Time Analytics</h3>
+                      <p className="text-sm text-foreground/50 font-light max-w-sm">Monitor every click, signup, and conversion as it happens. Your performance data, always live.</p>
                     </div>
                     <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle shrink-0">
                       <Activity className="w-5 h-5" />
@@ -1134,16 +1298,16 @@ export default function Home() {
                   <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
                     <BarChart3 className="w-5 h-5" />
                   </BorderGlow>
-                  <h3 className="text-lg font-display font-light text-white mb-2">Performance Trends</h3>
-                  <p className="text-xs text-white/50 font-light mb-5">Daily & weekly breakdowns of your referral metrics.</p>
+                  <h3 className="text-lg font-display font-light text-foreground mb-2">Performance Trends</h3>
+                  <p className="text-xs text-foreground/50 font-light mb-5">Daily & weekly breakdowns of your referral metrics.</p>
                   <div className="mt-auto grid grid-cols-2 gap-2">
                     {[
                       { label: "Clicks", value: "2.4K" },
                       { label: "Conv.", value: "17%" },
                     ].map((s, i) => (
                       <div key={i} className="stat-card text-center py-3">
-                        <div className="text-lg font-display font-light text-white">{s.value}</div>
-                        <div className="text-[8px] text-white/40 uppercase tracking-widest font-display mt-1">{s.label}</div>
+                        <div className="text-lg font-display font-light text-foreground">{s.value}</div>
+                        <div className="text-[8px] text-foreground/40 uppercase tracking-widest font-display mt-1">{s.label}</div>
                       </div>
                     ))}
                   </div>
@@ -1157,15 +1321,15 @@ export default function Home() {
                   <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
                     <Trophy className="w-5 h-5" />
                   </BorderGlow>
-                  <h3 className="text-lg font-display font-light text-white mb-2">Milestones</h3>
-                  <p className="text-xs text-white/50 font-light mb-5">Automated progress tracking with milestone rewards.</p>
+                  <h3 className="text-lg font-display font-light text-foreground mb-2">Milestones</h3>
+                  <p className="text-xs text-foreground/50 font-light mb-5">Automated progress tracking with milestone rewards.</p>
                   <div className="mt-auto space-y-3">
                     <div>
                       <div className="flex justify-between text-xs mb-1.5">
-                        <span className="text-white/45 font-light">Milestone I</span>
-                        <span className="text-white/60 font-display">18/20</span>
+                        <span className="text-foreground/45 font-light">Milestone I</span>
+                        <span className="text-foreground/60 font-display">18/20</span>
                       </div>
-                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-foreground/[0.06] rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: "90%" }}
@@ -1180,10 +1344,10 @@ export default function Home() {
                     </div>
                     <div>
                       <div className="flex justify-between text-xs mb-1.5">
-                        <span className="text-white/45 font-light">Milestone II</span>
-                        <span className="text-white/60 font-display">5/50</span>
+                        <span className="text-foreground/45 font-light">Milestone II</span>
+                        <span className="text-foreground/60 font-display">5/50</span>
                       </div>
-                      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-foreground/[0.06] rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           whileInView={{ width: "10%" }}
@@ -1207,17 +1371,17 @@ export default function Home() {
                   <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle mb-5">
                     <Users className="w-5 h-5" />
                   </BorderGlow>
-                  <h3 className="text-lg font-display font-light text-white mb-2">Share & Earn</h3>
-                  <p className="text-xs text-white/50 font-light mb-5">Distribute your link across WhatsApp, Telegram, and social platforms.</p>
+                  <h3 className="text-lg font-display font-light text-foreground mb-2">Share & Earn</h3>
+                  <p className="text-xs text-foreground/50 font-light mb-5">Distribute your link across WhatsApp, Telegram, and social platforms.</p>
                   <div className="mt-auto flex items-center gap-3">
                     {[SiWhatsapp, SiTelegram, SiInstagram].map((Icon, i) => (
                       <motion.div
                         key={i}
-                        className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center"
+                        className="w-10 h-10 rounded-xl bg-foreground/[0.04] border border-foreground/[0.07] flex items-center justify-center"
                         animate={{ y: [0, -3, 0] }}
                         transition={{ duration: 3, delay: i * 0.6, repeat: Infinity, ease: "easeInOut" }}
                       >
-                        <Icon className="w-4 h-4 text-white/50" />
+                        <Icon className="w-4 h-4 text-foreground/50" />
                       </motion.div>
                     ))}
                   </div>
@@ -1229,16 +1393,16 @@ export default function Home() {
                 <div className="card-shine" />
                 <div className="relative z-[2] flex flex-col sm:flex-row items-center justify-between gap-6">
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-2">Ready to start earning?</h3>
-                    <p className="text-sm text-white/50 font-light">Join the partner program and unlock your personal analytics dashboard.</p>
+                    <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-2">Ready to start earning?</h3>
+                    <p className="text-sm text-foreground/50 font-light">Join the partner program and unlock your personal analytics dashboard.</p>
                   </div>
-                  <div className="flex gap-3 shrink-0">
-                    <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group">
-                      <BarChart3 className="w-4 h-4 mr-2 relative z-[2]" />
+                  <div className="flex flex-wrap gap-2 sm:gap-3 shrink-0 w-full sm:w-auto">
+                    <BorderGlow as={Link} href="/referral/dashboard" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group flex-1 sm:flex-initial whitespace-nowrap">
+                      <BarChart3 className="w-4 h-4 mr-2 relative z-[2] shrink-0" />
                       <span className="relative z-[2]">Open Dashboard</span>
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2] shrink-0" />
                     </BorderGlow>
-                    <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-md premium-btn-ghost glass-btn-effect group hidden sm:flex">
+                    <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(10,10,10,0.6)" className="premium-btn premium-btn-md premium-btn-ghost glass-btn-effect group flex-1 sm:flex-initial whitespace-nowrap">
                       <span className="relative z-[2]">Become a Partner</span>
                     </BorderGlow>
                   </div>
@@ -1258,29 +1422,29 @@ export default function Home() {
               <TiltCard className="glass-card p-6 sm:p-10 border-white/10 relative overflow-hidden">
                 <div className="card-top-accent" />
                 <div className="card-shine" />
-                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-white/30 via-white/10 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-foreground/25 via-foreground/[0.08] to-transparent"></div>
                 <div className="relative z-[2]">
-                  <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-white">Verification Protocol</h3>
-                  <p className="text-white/55 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
+                  <h3 className="text-xl sm:text-2xl font-display font-light mb-4 sm:mb-6 text-foreground">Verification Protocol</h3>
+                  <p className="text-foreground/55 font-light leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">
                     To maintain the integrity of the ecosystem, strict verification measures are in place. Fraudulent referrals will result in permanent disqualification.
                   </p>
                   
                   <div className="grid md:grid-cols-2 gap-6 sm:gap-8 pt-6 border-t border-white/[0.04]">
                     <div>
-                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white mb-4 flex items-center">
-                        <CheckCircle2 className="w-4 h-4 mr-2 text-white/60" /> Authorized
+                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-foreground mb-4 flex items-center">
+                        <CheckCircle2 className="w-4 h-4 mr-2 text-foreground/60" /> Authorized
                       </h4>
-                      <ul className="space-y-3 text-xs sm:text-sm text-white/55 font-light">
+                      <ul className="space-y-3 text-xs sm:text-sm text-foreground/55 font-light">
                         <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Real attendees</li>
                         <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Completed registrations</li>
                         <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Valid contact details</li>
                       </ul>
                     </div>
                     <div>
-                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-white/55 mb-4 flex items-center">
-                        <ShieldCheck className="w-4 h-4 mr-2 text-white/50" /> Disqualified
+                      <h4 className="text-xs sm:text-sm font-display uppercase tracking-widest text-foreground/55 mb-4 flex items-center">
+                        <ShieldCheck className="w-4 h-4 mr-2 text-foreground/50" /> Disqualified
                       </h4>
-                      <ul className="space-y-3 text-xs sm:text-sm text-white/55 font-light">
+                      <ul className="space-y-3 text-xs sm:text-sm text-foreground/55 font-light">
                         <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Bot/Script traffic</li>
                         <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Duplicate IPs</li>
                         <li className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-white/40" /> Fake registrations</li>
@@ -1308,8 +1472,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Inner Circle
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="The Ecosystem" /></h2>
-              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight"><TextReveal text="The Ecosystem" /></h2>
+              <p className="text-foreground/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Beyond giveaways — access a growing network of builders, mentors, and exclusive partner events.
               </p>
             </motion.div>
@@ -1328,10 +1492,10 @@ export default function Home() {
                         <BorderGlow borderRadius={12} glowRadius={10} cardBg="rgba(255,255,255,0.04)" className="icon-circle">
                           <Globe className="w-5 h-5" />
                         </BorderGlow>
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-display">Network</span>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/40 font-display">Network</span>
                       </div>
-                      <h3 className="text-2xl sm:text-3xl font-display font-light text-white mb-3">A Community Built Different</h3>
-                      <p className="text-sm sm:text-base text-white/50 font-light leading-relaxed mb-6">
+                      <h3 className="text-2xl sm:text-3xl font-display font-light text-foreground mb-3">A Community Built Different</h3>
+                      <p className="text-sm sm:text-base text-foreground/50 font-light leading-relaxed mb-6">
                         X247 isn't just a rewards platform — it's an ecosystem of builders, early adopters, and tech enthusiasts who believe in growing together.
                       </p>
                       <div className="flex gap-6">
@@ -1347,15 +1511,15 @@ export default function Home() {
                             viewport={{ once: true }}
                             transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
                           >
-                            <div className="text-xl sm:text-2xl font-display font-light text-white">{stat.value}</div>
-                            <div className="text-[9px] text-white/40 uppercase tracking-widest font-display mt-1">{stat.label}</div>
+                            <div className="text-xl sm:text-2xl font-display font-light text-foreground">{stat.value}</div>
+                            <div className="text-[9px] text-foreground/40 uppercase tracking-widest font-display mt-1">{stat.label}</div>
                           </motion.div>
                         ))}
                       </div>
                     </div>
                     <div className="lg:w-[280px] w-full shrink-0">
                       <div className="relative rounded-2xl overflow-hidden aspect-square max-w-[220px] mx-auto border border-white/[0.06]">
-                        <img src="/images/abstract-sphere.png" alt="" className="w-full h-full object-cover opacity-25" loading="lazy" />
+                        <img src="/images/community-visual.png" alt="Community network" className="w-full h-full object-cover opacity-40" loading="lazy" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
                         <div className="absolute inset-0 flex items-center justify-center">
                           <motion.div
@@ -1363,7 +1527,7 @@ export default function Home() {
                             animate={{ y: [0, -6, 0], rotate: [0, 3, -3, 0] }}
                             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                           >
-                            <Sparkles className="w-7 h-7 text-white/50" />
+                            <Sparkles className="w-7 h-7 text-foreground/50" />
                           </motion.div>
                         </div>
                       </div>
@@ -1416,14 +1580,14 @@ export default function Home() {
                         </BorderGlow>
                       </motion.div>
                       <div className="text-right">
-                        <div className="text-lg font-display font-light text-white">{item.metric}</div>
-                        <div className="text-[8px] text-white/40 uppercase tracking-widest font-display">{item.metricLabel}</div>
+                        <div className="text-lg font-display font-light text-foreground">{item.metric}</div>
+                        <div className="text-[8px] text-foreground/40 uppercase tracking-widest font-display">{item.metricLabel}</div>
                       </div>
                     </div>
-                    <h3 className="text-lg font-display font-light text-white mb-2">{item.title}</h3>
-                    <p className="text-xs text-white/50 font-light leading-relaxed">{item.desc}</p>
+                    <h3 className="text-lg font-display font-light text-foreground mb-2">{item.title}</h3>
+                    <p className="text-xs text-foreground/50 font-light leading-relaxed">{item.desc}</p>
                     <div className="mt-auto pt-5">
-                      <div className="h-px w-full bg-gradient-to-r from-white/[0.06] via-white/[0.12] to-white/[0.06]" />
+                      <div className="h-px w-full bg-gradient-to-r from-foreground/[0.06] via-foreground/[0.12] to-foreground/[0.06]" />
                     </div>
                   </div>
                 </motion.div>
@@ -1438,19 +1602,19 @@ export default function Home() {
                       {["AK", "SR", "VP", "MJ", "DP"].map((initials, i) => (
                         <motion.div
                           key={i}
-                          className="w-9 h-9 rounded-xl bg-white/[0.06] border-2 border-black flex items-center justify-center"
+                          className="w-9 h-9 rounded-xl bg-foreground/[0.06] border-2 border-background flex items-center justify-center"
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: 0.3 + i * 0.08, duration: 0.5 }}
                         >
-                          <span className="text-[8px] font-display font-bold text-white/50">{initials}</span>
+                          <span className="text-[8px] font-display font-bold text-foreground/50">{initials}</span>
                         </motion.div>
                       ))}
                     </div>
                     <div>
-                      <h3 className="text-lg sm:text-xl font-display font-light text-white">Join 2,400+ members</h3>
-                      <p className="text-xs text-white/45 font-light">Be part of the fastest-growing rewards community</p>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-foreground">Join 2,400+ members</h3>
+                      <p className="text-xs text-foreground/45 font-light">Be part of the fastest-growing rewards community</p>
                     </div>
                   </div>
                   <BorderGlow as="a" href="#register" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-md glass-btn-effect group shrink-0">
@@ -1481,8 +1645,8 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Testimonials
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight"><TextReveal text="What Our Winners Say" /></h2>
-              <p className="text-white/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+              <h2 className="winners-heading text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight"><TextReveal text="What Our Winners Say" /></h2>
+              <p className="winners-subtitle text-foreground/55 text-base sm:text-lg font-display font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
                 Real feedback from real winners. Hear what our community has to say about the X247 experience.
               </p>
             </motion.div>
@@ -1494,17 +1658,17 @@ export default function Home() {
                 {[...testimonialRowOne, ...testimonialRowOne].map((t, i) => (
                   <div key={`r1-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-display font-bold text-white/60">{t.avatar}</span>
+                      <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] border border-foreground/[0.07] flex items-center justify-center shrink-0">
+                        <span className="text-[10px] font-display font-bold text-foreground/60">{t.avatar}</span>
                       </div>
                       <div>
-                        <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
-                        <span className="text-[10px] text-white/35 font-mono">{t.handle}</span>
+                        <h4 className="text-sm font-display font-light text-foreground">{t.name}</h4>
+                        <span className="text-[10px] text-foreground/35 font-mono">{t.handle}</span>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">{t.text}</p>
+                    <p className="text-xs sm:text-sm text-foreground/60 font-light leading-relaxed">{t.text}</p>
                     {t.prize && (
-                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/45 font-display">
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-foreground/45 font-display">
                         <Trophy className="w-3 h-3" />
                         <span>Won: {t.prize}</span>
                       </div>
@@ -1519,17 +1683,17 @@ export default function Home() {
                 {[...testimonialRowTwo, ...testimonialRowTwo].map((t, i) => (
                   <div key={`r2-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-display font-bold text-white/60">{t.avatar}</span>
+                      <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] border border-foreground/[0.07] flex items-center justify-center shrink-0">
+                        <span className="text-[10px] font-display font-bold text-foreground/60">{t.avatar}</span>
                       </div>
                       <div>
-                        <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
-                        <span className="text-[10px] text-white/35 font-mono">{t.handle}</span>
+                        <h4 className="text-sm font-display font-light text-foreground">{t.name}</h4>
+                        <span className="text-[10px] text-foreground/35 font-mono">{t.handle}</span>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">{t.text}</p>
+                    <p className="text-xs sm:text-sm text-foreground/60 font-light leading-relaxed">{t.text}</p>
                     {t.prize && (
-                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/45 font-display">
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-foreground/45 font-display">
                         <Trophy className="w-3 h-3" />
                         <span>Won: {t.prize}</span>
                       </div>
@@ -1544,17 +1708,17 @@ export default function Home() {
                 {[...testimonialRowThree, ...testimonialRowThree].map((t, i) => (
                   <div key={`r3-${i}`} className="testimonial-card">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-display font-bold text-white/60">{t.avatar}</span>
+                      <div className="w-9 h-9 rounded-xl bg-foreground/[0.06] border border-foreground/[0.07] flex items-center justify-center shrink-0">
+                        <span className="text-[10px] font-display font-bold text-foreground/60">{t.avatar}</span>
                       </div>
                       <div>
-                        <h4 className="text-sm font-display font-light text-white">{t.name}</h4>
-                        <span className="text-[10px] text-white/35 font-mono">{t.handle}</span>
+                        <h4 className="text-sm font-display font-light text-foreground">{t.name}</h4>
+                        <span className="text-[10px] text-foreground/35 font-mono">{t.handle}</span>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">{t.text}</p>
+                    <p className="text-xs sm:text-sm text-foreground/60 font-light leading-relaxed">{t.text}</p>
                     {t.prize && (
-                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-white/45 font-display">
+                      <div className="mt-3 flex items-center gap-1.5 text-[10px] text-foreground/45 font-display">
                         <Trophy className="w-3 h-3" />
                         <span>Won: {t.prize}</span>
                       </div>
@@ -1581,7 +1745,7 @@ export default function Home() {
                 <span className="w-1.5 h-1.5 rounded-full bg-white/60 mr-2 inline-block"></span>
                 Intel
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-white tracking-tight">FAQ</h2>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-light text-foreground tracking-tight">FAQ</h2>
             </motion.div>
 
             <motion.div 
@@ -1603,10 +1767,10 @@ export default function Home() {
                       { q: "How do I become a partner?", a: "Fill the Partner Program form to join as an official X247 partner. Partners get monthly payouts, exclusive merch, early access to new giveaways, and direct support from our team." }
                     ].map((faq, i) => (
                       <AccordionItem key={i} value={`item-${i}`} className="border-b border-white/[0.06] last:border-0 px-0 sm:px-2">
-                        <AccordionTrigger className="text-left font-display font-light text-base sm:text-lg text-white/80 hover:text-white py-5 sm:py-6">
+                        <AccordionTrigger className="text-left font-display font-light text-base sm:text-lg text-foreground/80 hover:text-foreground py-5 sm:py-6">
                           {faq.q}
                         </AccordionTrigger>
-                        <AccordionContent className="text-white/60 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
+                        <AccordionContent className="text-foreground/60 font-light leading-relaxed pb-5 sm:pb-6 text-sm sm:text-base">
                           {faq.a}
                         </AccordionContent>
                       </AccordionItem>
@@ -1631,18 +1795,20 @@ export default function Home() {
           className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 mb-14 sm:mb-20"
         >
           <div>
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-xl font-display font-light text-white">X247 Rewards</span>
+            <div className="mb-5">
+              <img
+                src="/x247-wordmark.png"
+                alt="X247 Labs"
+                className="h-12 sm:h-14 w-auto object-contain select-none"
+                draggable={false}
+              />
             </div>
-            <p className="text-sm text-white/40 font-light leading-relaxed max-w-xs">
+            <p className="text-sm text-foreground/40 font-light leading-relaxed max-w-xs">
               The premier gamified giveaway and referral platform for partner event participants. Register, enter, and win real rewards daily.
             </p>
           </div>
           <div>
-            <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Quick Links</h4>
+            <h4 className="text-xs font-display font-medium uppercase tracking-widest text-foreground/55 mb-5">Quick Links</h4>
             <ul className="space-y-3">
               {[
                 { label: "How it Works", href: "#how-it-works" },
@@ -1651,7 +1817,7 @@ export default function Home() {
                 { label: "FAQ", href: "#faq" },
               ].map((link, i) => (
                 <li key={i}>
-                  <a href={link.href} className="text-sm text-white/45 font-light hover:text-white/70 transition-colors duration-300 flex items-center gap-2 group">
+                  <a href={link.href} className="text-sm text-foreground/45 font-light hover:text-foreground/70 transition-colors duration-300 flex items-center gap-2 group">
                     <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                     {link.label}
                   </a>
@@ -1660,12 +1826,12 @@ export default function Home() {
             </ul>
           </div>
           <div>
-            <h4 className="text-xs font-display font-medium uppercase tracking-widest text-white/55 mb-5">Program Info</h4>
-            <ul className="space-y-3 text-sm text-white/50 font-light">
-              <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-white/30" /> Global Availability</li>
-              <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-white/30" /> 24/7 Tracking</li>
-              <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-white/30" /> Verified Referrals Only</li>
-              <li className="flex items-center gap-2"><Award className="w-3.5 h-3.5 text-white/30" /> Real Rewards, No Gimmicks</li>
+            <h4 className="text-xs font-display font-medium uppercase tracking-widest text-foreground/55 mb-5">Program Info</h4>
+            <ul className="space-y-3 text-sm text-foreground/50 font-light">
+              <li className="flex items-center gap-2"><Globe className="w-3.5 h-3.5 text-foreground/30" /> Global Availability</li>
+              <li className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-foreground/30" /> 24/7 Tracking</li>
+              <li className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-foreground/30" /> Verified Referrals Only</li>
+              <li className="flex items-center gap-2"><Award className="w-3.5 h-3.5 text-foreground/30" /> Real Rewards, No Gimmicks</li>
             </ul>
           </div>
         </motion.div>

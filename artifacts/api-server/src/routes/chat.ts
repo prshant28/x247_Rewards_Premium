@@ -57,10 +57,11 @@ X247 Rewards is an ultra-premium gamified giveaway and referral platform. Users 
 ## Response Format
 When mentioning a partner, include a JSON block that the frontend will render as a card preview. Use this format:
 \`\`\`partner-card
-{"slug":"partner-slug","name":"Partner Name","tagline":"Tagline","category":"Category","badge":"Badge","badgeSecondary":"Second Badge","accent":"navy"}
+{"slug":"partner-slug","name":"Partner Name","tagline":"Tagline","category":"Category","badge":"Badge","badgeSecondary":"Second Badge","accent":"navy","trackingUrl":"TRACKING_URL_HERE"}
 \`\`\`
 
-Always include the partner card when discussing a specific partner so users can easily navigate to it.
+IMPORTANT: Always use the partner's Tracking URL (dub link) for trackingUrl in the card. If no tracking URL exists, use the Registration URL. Never include raw URLs in your text — only in the partner card JSON block.
+Always include the partner card when discussing a specific partner so users can click through directly.
 
 ## Current Partners Data
 {PARTNERS_DATA}
@@ -81,6 +82,7 @@ async function getPartnersContext(): Promise<string> {
         p.badgeSecondary ? `  Restriction: ${p.badgeSecondary}.` : "",
         p.isRequired ? `  REQUIRED — must be completed first.` : "",
         `  ${benefit}`,
+        `  Tracking URL (dub link — use this in trackingUrl field): ${p.trackingUrl || p.registrationUrl}`,
         `  Registration URL: ${p.registrationUrl}`,
       ].filter(Boolean).join("\n");
     }).join("\n\n");

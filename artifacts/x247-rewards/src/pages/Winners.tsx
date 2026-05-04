@@ -40,33 +40,33 @@ function DrawCountdown() {
     <div className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm px-6 py-5 mb-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-0 sm:justify-between">
       <div className="flex flex-col items-center sm:items-start gap-1">
         <div className="flex items-center gap-1.5 mb-1">
-          <Clock className="w-3 h-3 text-white/30" />
-          <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Next Draw In</span>
+          <Clock className="w-3 h-3 text-foreground/30" />
+          <span className="text-[10px] text-foreground/35 uppercase tracking-[0.2em] font-body">Next Draw In</span>
         </div>
         <div className="flex items-end gap-1">
-          <span className="text-3xl font-display font-black text-white tabular-nums leading-none">{hh}</span>
-          <span className="text-white/25 text-xl font-light pb-0.5">h</span>
-          <span className="text-3xl font-display font-black text-white tabular-nums leading-none ml-1">{mm}</span>
-          <span className="text-white/25 text-xl font-light pb-0.5">m</span>
-          <span className="text-3xl font-display font-black text-white tabular-nums leading-none ml-1">{ss}</span>
-          <span className="text-white/25 text-xl font-light pb-0.5">s</span>
+          <span className="text-3xl font-display font-black text-foreground tabular-nums leading-none">{hh}</span>
+          <span className="text-foreground/25 text-xl font-light pb-0.5">h</span>
+          <span className="text-3xl font-display font-black text-foreground tabular-nums leading-none ml-1">{mm}</span>
+          <span className="text-foreground/25 text-xl font-light pb-0.5">m</span>
+          <span className="text-3xl font-display font-black text-foreground tabular-nums leading-none ml-1">{ss}</span>
+          <span className="text-foreground/25 text-xl font-light pb-0.5">s</span>
         </div>
       </div>
 
       <div className="hidden sm:block w-px h-10 bg-white/[0.07]" />
 
       <div className="flex flex-col items-center gap-0.5">
-        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Live Entries</span>
-        <span className="text-3xl font-display font-black text-white tabular-nums leading-none">{entries.toLocaleString("en-IN")}</span>
-        <span className="text-[10px] text-white/25 font-body mt-0.5">and counting</span>
+        <span className="text-[10px] text-foreground/35 uppercase tracking-[0.2em] font-body">Live Entries</span>
+        <span className="text-3xl font-display font-black text-foreground tabular-nums leading-none">{entries.toLocaleString("en-IN")}</span>
+        <span className="text-[10px] text-foreground/25 font-body mt-0.5">and counting</span>
       </div>
 
       <div className="hidden sm:block w-px h-10 bg-white/[0.07]" />
 
       <div className="flex flex-col items-center gap-0.5">
-        <span className="text-[10px] text-white/35 uppercase tracking-[0.2em] font-body">Winners Today</span>
-        <span className="text-3xl font-display font-black text-white tabular-nums leading-none">11</span>
-        <span className="text-[10px] text-white/25 font-body mt-0.5">prizes claimed</span>
+        <span className="text-[10px] text-foreground/35 uppercase tracking-[0.2em] font-body">Winners Today</span>
+        <span className="text-3xl font-display font-black text-foreground tabular-nums leading-none">11</span>
+        <span className="text-[10px] text-foreground/25 font-body mt-0.5">prizes claimed</span>
       </div>
     </div>
   );
@@ -91,36 +91,36 @@ function WinnerCard({ winner, index }: { winner: WinnerData; index: number }) {
         <div className="relative z-[2] p-5 sm:p-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0">
-              <Crown className="w-6 h-6 text-white/40" />
+              <Crown className="w-6 h-6 text-foreground/40" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-base sm:text-lg font-display font-light text-white truncate">{winner.winnerName}</h3>
-                <Trophy className="w-4 h-4 text-white/25 shrink-0" />
+                <h3 className="text-base sm:text-lg font-display font-light text-foreground truncate">{winner.winnerName}</h3>
+                <Trophy className="w-4 h-4 text-foreground/25 shrink-0" />
               </div>
 
               {winner.winnerCity && (
                 <div className="flex items-center gap-1.5 mb-2">
-                  <MapPin className="w-3 h-3 text-white/20" />
-                  <span className="text-[11px] text-white/30 font-light">{winner.winnerCity}</span>
+                  <MapPin className="w-3 h-3 text-foreground/20" />
+                  <span className="text-[11px] text-foreground/30 font-light">{winner.winnerCity}</span>
                 </div>
               )}
 
               <div className="flex items-center gap-2 mb-3 p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.05]">
-                <Gift className="w-3.5 h-3.5 text-white/40 shrink-0" />
-                <span className="text-sm text-white/60 font-light">{winner.prize}</span>
+                <Gift className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
+                <span className="text-sm text-foreground/60 font-light">{winner.prize}</span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-[10px] text-white/25 font-light">{winner.contestName}</span>
+                <span className="text-[10px] text-foreground/25 font-light">{winner.contestName}</span>
                 <div className="flex items-center gap-1.5">
-                  <Calendar className="w-3 h-3 text-white/20" />
-                  <span className="text-[10px] text-white/25 font-light">{formattedDate}</span>
+                  <Calendar className="w-3 h-3 text-foreground/20" />
+                  <span className="text-[10px] text-foreground/25 font-light">{formattedDate}</span>
                 </div>
               </div>
 
               {winner.entryCode && (
-                <div className="mt-2 text-[10px] text-white/20 font-mono">
+                <div className="mt-2 text-[10px] text-foreground/20 font-mono">
                   {winner.entryCode}
                 </div>
               )}
@@ -144,7 +144,7 @@ export default function Winners() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-foreground">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -153,13 +153,13 @@ export default function Winners() {
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-center mb-16 sm:mb-24">
             <div className="glass-pill-badge mb-6">
-              <Trophy className="w-3 h-3 text-white/50 mr-2" />
+              <Trophy className="w-3 h-3 text-foreground/50 mr-2" />
               Hall of Fame
             </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-white tracking-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-6xl font-display font-light mb-6 text-foreground tracking-tight">
               Winners
             </h1>
-            <p className="text-white/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
+            <p className="text-foreground/50 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
               Celebrating our lucky winners. Complete partner registrations and enter contests for your chance to be featured here!
             </p>
           </motion.div>
@@ -182,13 +182,13 @@ export default function Winners() {
                 <div className="card-shine" />
                 <div className="relative z-[2]">
                   <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-6">
-                    <Star className="w-7 h-7 text-white/20" />
+                    <Star className="w-7 h-7 text-foreground/20" />
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3">No Winners Yet</h3>
-                  <p className="text-white/35 font-light text-sm leading-relaxed max-w-md mx-auto mb-6">
+                  <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-3">No Winners Yet</h3>
+                  <p className="text-foreground/35 font-light text-sm leading-relaxed max-w-md mx-auto mb-6">
                     Winners will be announced within 24-48 hours after verification, when a contest fills up. Enter now for your chance!
                   </p>
-                  <Link href="/giveaway" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white/70 font-light hover:bg-white/[0.08] transition-all">
+                  <Link href="/giveaway" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-foreground/70 font-light hover:bg-white/[0.08] transition-all">
                     <Sparkles className="w-4 h-4" />
                     Enter a Contest
                     <ArrowRight className="w-4 h-4" />
@@ -202,9 +202,9 @@ export default function Winners() {
             <div className="glass-card p-6 sm:p-8">
               <div className="card-shine" />
               <div className="relative z-[2] text-center">
-                <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">Want to Be Next?</h3>
-                <p className="text-xs text-white/35 font-light mb-4">Join our active contests and you could be our next winner!</p>
-                <Link href="/giveaway" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-white/70 font-light hover:bg-white/[0.08] transition-all">
+                <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">Want to Be Next?</h3>
+                <p className="text-xs text-foreground/35 font-light mb-4">Join our active contests and you could be our next winner!</p>
+                <Link href="/giveaway" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/[0.06] border border-white/[0.08] rounded-xl text-sm text-foreground/70 font-light hover:bg-white/[0.08] transition-all">
                   <Trophy className="w-4 h-4" />
                   Browse Contests
                   <ArrowRight className="w-4 h-4" />

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@workspace/db";
-import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable, userBadgesTable } from "@workspace/db";
-import { eq, sql, and } from "drizzle-orm";
+import { usersTable, userSessionsTable, giveawayEntriesTable, contestsTable, userBadgesTable, userFollowsTable, notificationsTable, winnersTable } from "@workspace/db";
+import { eq, sql, and, count, desc, ne, notInArray, inArray } from "drizzle-orm";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 
@@ -88,6 +88,17 @@ function getActiveTier(user: any): string {
   return user.membershipTier;
 }
 
+function generateProfileSlug(fullName: string): string {
+  const base = fullName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .slice(0, 20);
+  const suffix = crypto.randomBytes(3).toString("hex").slice(0, 5);
+  return `${base}-${suffix}`;
+}
+
 router.post("/users/register", async (req, res) => {
   try {
     const { fullName, email, phone, password, city } = req.body;
@@ -102,12 +113,15 @@ router.post("/users/register", async (req, res) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
+    const autoSlug = generateProfileSlug(fullName);
     const [user] = await db.insert(usersTable).values({
       fullName,
       email,
       phone: phone || null,
       passwordHash,
       city: city || null,
+      profileSlug: autoSlug,
+      isPublic: true,
     }).returning();
 
     const token = generateToken();
@@ -179,15 +193,28 @@ router.get("/users/me", async (req, res) => {
       return res.status(401).json({ error: "Session expired" });
     }
 
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+    let [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.profileSlug) {
+      const autoSlug = generateProfileSlug(user.fullName);
+      const [updated] = await db.update(usersTable)
+        .set({ profileSlug: autoSlug, isPublic: true })
+        .where(eq(usersTable.id, user.id))
+        .returning();
+      if (updated) user = updated;
     }
 
     const activeTier = getActiveTier(user);
     const plan = MEMBERSHIP_PLANS.find(p => p.id === activeTier);
 
-    const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id));
+    const [badges, followersResult, followingResult] = await Promise.all([
+      db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id)),
+      db.select({ count: count() }).from(userFollowsTable).where(eq(userFollowsTable.followingId, user.id)),
+      db.select({ count: count() }).from(userFollowsTable).where(eq(userFollowsTable.followerId, user.id)),
+    ]);
 
     return res.json({
       id: user.id,
@@ -206,6 +233,8 @@ router.get("/users/me", async (req, res) => {
       membershipTier: activeTier,
       membershipExpiresAt: user.membershipExpiresAt,
       membershipLimits: plan?.limits || MEMBERSHIP_PLANS[0].limits,
+      followersCount: Number(followersResult[0]?.count ?? 0),
+      followingCount: Number(followingResult[0]?.count ?? 0),
     });
   } catch (err) {
     console.error("User me error:", err);
@@ -229,6 +258,8 @@ router.get("/users/me/entries", async (req, res) => {
 
     const entries = await db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.userId, session.userId));
 
+    const allWinners = await db.select().from(winnersTable);
+
     const entriesWithContest = await Promise.all(
       entries.map(async (entry) => {
         let contestName = "General Giveaway";
@@ -236,6 +267,10 @@ router.get("/users/me/entries", async (req, res) => {
           const [contest] = await db.select().from(contestsTable).where(eq(contestsTable.id, entry.contestId)).limit(1);
           if (contest) contestName = contest.name;
         }
+        const matchedWinner = allWinners.find(
+          w => (entry.entryCode && w.entryCode && w.entryCode === entry.entryCode) ||
+               (w.entryId && w.entryId === entry.id)
+        );
         return {
           id: entry.id,
           entryCode: entry.entryCode,
@@ -244,6 +279,9 @@ router.get("/users/me/entries", async (req, res) => {
           contestId: entry.contestId,
           partnersCompleted: (entry.completedPartners as number[]).length,
           submittedAt: entry.createdAt,
+          status: matchedWinner ? "won" : "pending",
+          prize: matchedWinner?.prize ?? null,
+          announcedAt: matchedWinner?.announcedAt ?? null,
         };
       })
     );
@@ -292,7 +330,7 @@ router.put("/users/me/profile", async (req, res) => {
       return res.status(401).json({ error: "Session expired" });
     }
 
-    const { bio, avatarUrl, profileSlug, isPublic, selectedBadge } = req.body;
+    const { bio, avatarUrl, profileSlug, isPublic, selectedBadge, fullName, phone, city } = req.body;
 
     if (profileSlug !== undefined) {
       const slug = profileSlug.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30);
@@ -307,6 +345,9 @@ router.put("/users/me/profile", async (req, res) => {
     }
 
     const updateData: any = {};
+    if (fullName !== undefined) updateData.fullName = fullName.trim().slice(0, 80);
+    if (phone !== undefined) updateData.phone = phone.trim().slice(0, 20) || null;
+    if (city !== undefined) updateData.city = city.trim().slice(0, 50) || null;
     if (bio !== undefined) updateData.bio = bio.slice(0, 200);
     if (avatarUrl !== undefined) updateData.avatarUrl = avatarUrl;
     if (profileSlug !== undefined) updateData.profileSlug = profileSlug.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30);
@@ -344,6 +385,31 @@ router.put("/users/me/profile", async (req, res) => {
   }
 });
 
+router.put("/users/me/change-password", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) return res.status(401).json({ error: "Not authenticated" });
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+    if (!session || new Date(session.expiresAt) < new Date()) return res.status(401).json({ error: "Session expired" });
+
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) return res.status(400).json({ error: "Both fields are required" });
+    if (newPassword.length < 6) return res.status(400).json({ error: "New password must be at least 6 characters" });
+
+    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) return res.status(400).json({ error: "Current password is incorrect" });
+
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await db.update(usersTable).set({ passwordHash: newHash }).where(eq(usersTable.id, session.userId));
+    return res.json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
 router.get("/users/profile/:slug", async (req, res) => {
   try {
     const { slug } = req.params;
@@ -353,10 +419,55 @@ router.get("/users/profile/:slug", async (req, res) => {
       return res.status(404).json({ error: "Profile not found" });
     }
 
-    const badges = await db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id));
+    const authHeader = req.headers.authorization;
+    let viewerId: number | null = null;
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.substring(7);
+      const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+      if (session && new Date(session.expiresAt) > new Date()) {
+        viewerId = session.userId;
+      }
+    }
 
-    const entries = await db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.userId, user.id));
+    const [badges, entries, followersResult, followingResult] = await Promise.all([
+      db.select().from(userBadgesTable).where(eq(userBadgesTable.userId, user.id)),
+      db.select().from(giveawayEntriesTable).where(eq(giveawayEntriesTable.userId, user.id)),
+      db.select({ count: count() }).from(userFollowsTable).where(eq(userFollowsTable.followingId, user.id)),
+      db.select({ count: count() }).from(userFollowsTable).where(eq(userFollowsTable.followerId, user.id)),
+    ]);
+
+    let isFollowing = false;
+    let followsYou = false;
+    if (viewerId && viewerId !== user.id) {
+      const [existingFollow, reverseFollow] = await Promise.all([
+        db.select().from(userFollowsTable)
+          .where(and(eq(userFollowsTable.followerId, viewerId), eq(userFollowsTable.followingId, user.id)))
+          .limit(1),
+        db.select().from(userFollowsTable)
+          .where(and(eq(userFollowsTable.followerId, user.id), eq(userFollowsTable.followingId, viewerId)))
+          .limit(1),
+      ]);
+      isFollowing = existingFollow.length > 0;
+      followsYou = reverseFollow.length > 0;
+    }
+
     const totalEntries = entries.reduce((sum, e) => sum + (e.entryCount || 0), 0);
+    const contestsWithDetails = await db
+      .select({ contestId: giveawayEntriesTable.contestId, entryCount: giveawayEntriesTable.entryCount, createdAt: giveawayEntriesTable.createdAt })
+      .from(giveawayEntriesTable)
+      .where(eq(giveawayEntriesTable.userId, user.id))
+      .limit(100);
+
+    const tier = getActiveTier(user);
+    const memberSinceDate = new Date(user.createdAt ?? Date.now());
+    const daysSinceMember = Math.floor((Date.now() - memberSinceDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    const toDateStr = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+    const activityDates: string[] = contestsWithDetails
+      .filter(e => e.createdAt)
+      .map(e => toDateStr(new Date(e.createdAt!)));
 
     return res.json({
       fullName: user.fullName,
@@ -365,15 +476,253 @@ router.get("/users/profile/:slug", async (req, res) => {
       isVerified: user.isVerified,
       selectedBadge: user.selectedBadge,
       badges: badges.map(b => b.badgeId),
-      membershipTier: getActiveTier(user),
+      membershipTier: tier,
+      city: user.city ?? null,
+      followersCount: Number(followersResult[0]?.count ?? 0),
+      followingCount: Number(followingResult[0]?.count ?? 0),
+      isFollowing,
+      followsYou,
+      isOwnProfile: viewerId === user.id,
       stats: {
         entries: totalEntries,
         contestsJoined: entries.length,
+        badgesEarned: badges.length,
+        daysActive: daysSinceMember,
       },
+      activityDates,
+      recentContests: contestsWithDetails.slice(0, 6).map(e => ({
+        contestId: e.contestId,
+        entries: e.entryCount,
+        enteredAt: e.createdAt,
+      })),
       memberSince: user.createdAt,
+      profileSlug: user.profileSlug,
     });
   } catch (err) {
     console.error("Public profile error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/users/profile/:slug/follow", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) return res.status(401).json({ error: "Not authenticated" });
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+    if (!session || new Date(session.expiresAt) < new Date()) return res.status(401).json({ error: "Session expired" });
+
+    const { slug } = req.params;
+    const [target] = await db.select().from(usersTable).where(eq(usersTable.profileSlug, slug)).limit(1);
+    if (!target) return res.status(404).json({ error: "User not found" });
+    if (target.id === session.userId) return res.status(400).json({ error: "Cannot follow yourself" });
+
+    const [existing] = await db.select().from(userFollowsTable)
+      .where(and(eq(userFollowsTable.followerId, session.userId), eq(userFollowsTable.followingId, target.id)))
+      .limit(1);
+    if (existing) return res.json({ success: true, action: "already_following" });
+
+    await db.insert(userFollowsTable).values({ followerId: session.userId, followingId: target.id });
+
+    // Notify the user who got followed
+    try {
+      const [follower] = await db.select().from(usersTable).where(eq(usersTable.id, session.userId)).limit(1);
+      if (follower) {
+        await db.insert(notificationsTable).values({
+          userId: target.id,
+          type: "follow",
+          icon: "user-plus",
+          title: "New follower",
+          body: `${follower.fullName} started following you`,
+          data: { followerSlug: follower.profileSlug, followerName: follower.fullName, followerId: follower.id },
+        });
+      }
+    } catch (e) { console.error("Follow notification error:", e); }
+
+    return res.json({ success: true, action: "followed" });
+  } catch (err) {
+    console.error("Follow error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* ─── List followers / following / suggestions ───────────────────────── */
+async function getViewerId(req: any): Promise<number | null> {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) return null;
+  const token = authHeader.substring(7);
+  const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+  if (!session || new Date(session.expiresAt) < new Date()) return null;
+  return session.userId;
+}
+
+async function decorateUsers(rows: any[], viewerId: number | null) {
+  if (rows.length === 0) return [];
+  const ids = rows.map(r => r.id);
+  let followingIds = new Set<number>();
+  if (viewerId) {
+    const myFollows = await db.select({ id: userFollowsTable.followingId })
+      .from(userFollowsTable)
+      .where(and(eq(userFollowsTable.followerId, viewerId), inArray(userFollowsTable.followingId, ids)));
+    followingIds = new Set(myFollows.map(f => f.id));
+  }
+  // followers count for each
+  const counts = await db
+    .select({ id: userFollowsTable.followingId, c: count() })
+    .from(userFollowsTable)
+    .where(inArray(userFollowsTable.followingId, ids))
+    .groupBy(userFollowsTable.followingId);
+  const countMap = new Map(counts.map(c => [c.id, Number(c.c)]));
+  return rows.map(u => ({
+    id: u.id,
+    fullName: u.fullName,
+    profileSlug: u.profileSlug,
+    city: u.city,
+    isVerified: u.isVerified,
+    membershipTier: getActiveTier(u),
+    selectedBadge: u.selectedBadge,
+    followersCount: countMap.get(u.id) ?? 0,
+    isFollowing: followingIds.has(u.id),
+    isSelf: viewerId === u.id,
+  }));
+}
+
+router.get("/users/profile/:slug/followers", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const limit = Math.min(50, Math.max(1, parseInt((req.query.limit as string) || "20")));
+    const offset = Math.max(0, parseInt((req.query.offset as string) || "0"));
+    const [target] = await db.select().from(usersTable).where(eq(usersTable.profileSlug, slug)).limit(1);
+    if (!target) return res.status(404).json({ error: "User not found" });
+    const viewerId = await getViewerId(req);
+
+    const rows = await db
+      .select({
+        id: usersTable.id, fullName: usersTable.fullName, profileSlug: usersTable.profileSlug,
+        city: usersTable.city, isVerified: usersTable.isVerified, selectedBadge: usersTable.selectedBadge,
+        membershipTier: usersTable.membershipTier, membershipExpiresAt: usersTable.membershipExpiresAt,
+        createdAt: userFollowsTable.createdAt,
+      })
+      .from(userFollowsTable)
+      .innerJoin(usersTable, eq(usersTable.id, userFollowsTable.followerId))
+      .where(eq(userFollowsTable.followingId, target.id))
+      .orderBy(desc(userFollowsTable.createdAt))
+      .limit(limit).offset(offset);
+
+    const [{ total }] = await db.select({ total: count() }).from(userFollowsTable)
+      .where(eq(userFollowsTable.followingId, target.id));
+
+    const users = await decorateUsers(rows, viewerId);
+    return res.json({ users, total: Number(total), limit, offset });
+  } catch (err) {
+    console.error("List followers error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/users/profile/:slug/following", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const limit = Math.min(50, Math.max(1, parseInt((req.query.limit as string) || "20")));
+    const offset = Math.max(0, parseInt((req.query.offset as string) || "0"));
+    const [target] = await db.select().from(usersTable).where(eq(usersTable.profileSlug, slug)).limit(1);
+    if (!target) return res.status(404).json({ error: "User not found" });
+    const viewerId = await getViewerId(req);
+
+    const rows = await db
+      .select({
+        id: usersTable.id, fullName: usersTable.fullName, profileSlug: usersTable.profileSlug,
+        city: usersTable.city, isVerified: usersTable.isVerified, selectedBadge: usersTable.selectedBadge,
+        membershipTier: usersTable.membershipTier, membershipExpiresAt: usersTable.membershipExpiresAt,
+        createdAt: userFollowsTable.createdAt,
+      })
+      .from(userFollowsTable)
+      .innerJoin(usersTable, eq(usersTable.id, userFollowsTable.followingId))
+      .where(eq(userFollowsTable.followerId, target.id))
+      .orderBy(desc(userFollowsTable.createdAt))
+      .limit(limit).offset(offset);
+
+    const [{ total }] = await db.select({ total: count() }).from(userFollowsTable)
+      .where(eq(userFollowsTable.followerId, target.id));
+
+    const users = await decorateUsers(rows, viewerId);
+    return res.json({ users, total: Number(total), limit, offset });
+  } catch (err) {
+    console.error("List following error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* Suggested users — top by follower count, excluding self & those already followed */
+router.get("/users/suggestions", async (req, res) => {
+  try {
+    const viewerId = await getViewerId(req);
+    const limit = Math.min(20, Math.max(1, parseInt((req.query.limit as string) || "8")));
+
+    let excludeIds: number[] = [];
+    if (viewerId) {
+      const myFollows = await db.select({ id: userFollowsTable.followingId })
+        .from(userFollowsTable)
+        .where(eq(userFollowsTable.followerId, viewerId));
+      excludeIds = [viewerId, ...myFollows.map(f => f.id)];
+    }
+
+    // top users by follower count, must be public
+    const topRows = await db
+      .select({
+        id: usersTable.id, fullName: usersTable.fullName, profileSlug: usersTable.profileSlug,
+        city: usersTable.city, isVerified: usersTable.isVerified, selectedBadge: usersTable.selectedBadge,
+        membershipTier: usersTable.membershipTier, membershipExpiresAt: usersTable.membershipExpiresAt,
+        followers: count(userFollowsTable.id),
+      })
+      .from(usersTable)
+      .leftJoin(userFollowsTable, eq(userFollowsTable.followingId, usersTable.id))
+      .where(
+        excludeIds.length > 0
+          ? and(eq(usersTable.isPublic, true), notInArray(usersTable.id, excludeIds))
+          : eq(usersTable.isPublic, true)
+      )
+      .groupBy(usersTable.id)
+      .orderBy(desc(count(userFollowsTable.id)), desc(usersTable.createdAt))
+      .limit(limit);
+
+    const users = topRows.map(u => ({
+      id: u.id,
+      fullName: u.fullName,
+      profileSlug: u.profileSlug,
+      city: u.city,
+      isVerified: u.isVerified,
+      selectedBadge: u.selectedBadge,
+      membershipTier: getActiveTier(u as any),
+      followersCount: Number(u.followers ?? 0),
+      isFollowing: false,
+      isSelf: false,
+    }));
+
+    return res.json({ users });
+  } catch (err) {
+    console.error("Suggestions error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.delete("/users/profile/:slug/follow", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) return res.status(401).json({ error: "Not authenticated" });
+    const token = authHeader.substring(7);
+    const [session] = await db.select().from(userSessionsTable).where(eq(userSessionsTable.token, token)).limit(1);
+    if (!session || new Date(session.expiresAt) < new Date()) return res.status(401).json({ error: "Session expired" });
+
+    const { slug } = req.params;
+    const [target] = await db.select().from(usersTable).where(eq(usersTable.profileSlug, slug)).limit(1);
+    if (!target) return res.status(404).json({ error: "User not found" });
+
+    await db.delete(userFollowsTable)
+      .where(and(eq(userFollowsTable.followerId, session.userId), eq(userFollowsTable.followingId, target.id)));
+    return res.json({ success: true, action: "unfollowed" });
+  } catch (err) {
+    console.error("Unfollow error:", err);
     return res.status(500).json({ error: "Server error" });
   }
 });

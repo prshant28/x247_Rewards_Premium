@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "wouter";
-import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import {
   Sparkles, Crown, Star, Diamond, Check, X, ArrowRight,
@@ -9,6 +8,7 @@ import {
   Mic, BadgeCheck, Users, Rocket, Phone, CreditCard, Globe,
 } from "lucide-react";
 import { purchaseMembership } from "@/lib/api";
+import X247BlackCard from "@/components/X247BlackCard";
 
 const TIERS = [
   {
@@ -198,6 +198,13 @@ function PlanCard({ tier, index, activeTier, onPurchase, purchasing }: {
       {isBlack && <div className="pricing-black-shimmer" />}
       <div className="pricing-card-glow" />
 
+      {/* Black: physical card preview at top of card */}
+      {isBlack && (
+        <div className="pricing-black-card-preview">
+          <X247BlackCard variant="compact" />
+        </div>
+      )}
+
       {tier.popular && !isCurrent && (
         <div className="pricing-ribbon">
           <Star className="w-2.5 h-2.5" />
@@ -223,7 +230,7 @@ function PlanCard({ tier, index, activeTier, onPurchase, purchasing }: {
           {isBlack && <div className="pricing-icon-pulse" />}
         </div>
 
-        <h2 className="pricing-card-name">{tier.name}</h2>
+        <h2 className={`pricing-card-name ${isBlack ? "pricing-card-name--black" : ""}`}>{tier.name}</h2>
         <p className="pricing-card-tagline">{tier.tagline}</p>
         <p className="pricing-card-tagline-detail">{tier.taglineDetail}</p>
 
@@ -412,8 +419,6 @@ export default function Pricing() {
 
   return (
     <div className="pricing-page">
-      <SiteNav activePage="home" />
-
       <AnimatePresence>
         {toast && (
           <motion.div
@@ -455,6 +460,57 @@ export default function Pricing() {
             <div className="pricing-hero-pill"><Shield className="w-3 h-3" /><span>Cancel anytime</span></div>
             <div className="pricing-hero-pill"><Zap className="w-3 h-3" /><span>Instant activation</span></div>
             <div className="pricing-hero-pill"><Gift className="w-3 h-3" /><span>Real prizes</span></div>
+          </div>
+        </motion.div>
+
+        {/* ── X247 BLACK Showcase ── */}
+        <motion.div
+          className="pricing-black-showcase"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="pricing-black-showcase-glow" aria-hidden />
+          <div className="pricing-black-showcase-grid" aria-hidden />
+          <div className="pricing-bsc-inner">
+            <div className="pricing-bsc-card-wrap">
+              <X247BlackCard variant="full" />
+            </div>
+            <div className="pricing-bsc-info">
+              <div className="pricing-bsc-badge">
+                <Diamond className="w-3 h-3" />
+                <span>X247 Black Elite</span>
+              </div>
+              <h2 className="pricing-bsc-title">
+                The pinnacle of<br />
+                <span className="pricing-bsc-black-word">membership</span>
+              </h2>
+              <p className="pricing-bsc-desc">
+                Black members receive an actual premium embossed physical card, 
+                a personal account manager, concierge support, and exclusive access 
+                to members-only events. The most exclusive tier in X247.
+              </p>
+              <div className="pricing-bsc-perks">
+                {["Physical Black VIP Card", "Personal Account Manager", "Concierge Service", "Early winner announcements", "Birthday 3× bonus entries", "Black-only members events"].map((p, i) => (
+                  <div key={i} className="pricing-bsc-perk">
+                    <Check className="w-3 h-3 shrink-0" />
+                    <span>{p}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                className="pricing-bsc-cta"
+                onClick={() => activeTier !== "black" && handlePurchase("black")}
+                disabled={activeTier === "black" || !!purchasing}
+              >
+                {activeTier === "black" ? (
+                  <><Check className="w-4 h-4" /> You're a Black Member</>
+                ) : (
+                  <>Get Black — ₹999/mo <ArrowRight className="w-4 h-4" /></>
+                )}
+              </button>
+            </div>
           </div>
         </motion.div>
 

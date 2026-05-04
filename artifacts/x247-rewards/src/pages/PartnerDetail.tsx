@@ -48,21 +48,21 @@ function parseWhatYouGet(text: string): string[] {
 
 function getBenefitIcon(text: string): React.ReactNode {
   const t = text.toLowerCase();
-  if (/prize|cash|money|₹|\$|win|lakh|crore|reward/.test(t)) return <Trophy className="w-5 h-5 text-white/50" />;
-  if (/intern|job|career|opport|recruit|placement/.test(t)) return <Rocket className="w-5 h-5 text-white/50" />;
-  if (/cert|badge|award|recogni/.test(t)) return <BadgeCheck className="w-5 h-5 text-white/50" />;
-  if (/learn|course|train|skill|workshop|bootcamp|educat/.test(t)) return <BookOpen className="w-5 h-5 text-white/50" />;
-  if (/community|network|meet|connect|people/.test(t)) return <Users className="w-5 h-5 text-white/50" />;
-  if (/free|zero|no cost|compliment|gratis/.test(t)) return <Sparkles className="w-5 h-5 text-white/50" />;
-  if (/growth|build|launch|start|scale/.test(t)) return <TrendingUp className="w-5 h-5 text-white/50" />;
-  return <Gift className="w-5 h-5 text-white/50" />;
+  if (/prize|cash|money|₹|\$|win|lakh|crore|reward/.test(t)) return <Trophy className="w-5 h-5 text-foreground/50" />;
+  if (/intern|job|career|opport|recruit|placement/.test(t)) return <Rocket className="w-5 h-5 text-foreground/50" />;
+  if (/cert|badge|award|recogni/.test(t)) return <BadgeCheck className="w-5 h-5 text-foreground/50" />;
+  if (/learn|course|train|skill|workshop|bootcamp|educat/.test(t)) return <BookOpen className="w-5 h-5 text-foreground/50" />;
+  if (/community|network|meet|connect|people/.test(t)) return <Users className="w-5 h-5 text-foreground/50" />;
+  if (/free|zero|no cost|compliment|gratis/.test(t)) return <Sparkles className="w-5 h-5 text-foreground/50" />;
+  if (/growth|build|launch|start|scale/.test(t)) return <TrendingUp className="w-5 h-5 text-foreground/50" />;
+  return <Gift className="w-5 h-5 text-foreground/50" />;
 }
 
 /* ─── helpers ─── */
 function getPartnerIcon(accent: string) {
-  if (accent === "navy") return <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
-  if (accent === "red") return <Star className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
-  return <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-white/60" />;
+  if (accent === "navy") return <ExternalLink className="w-7 h-7 sm:w-8 sm:h-8 text-foreground/60" />;
+  if (accent === "red") return <Star className="w-7 h-7 sm:w-8 sm:h-8 text-foreground/60" />;
+  return <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-foreground/60" />;
 }
 function getBannerGradient(_accent: string) {
   return "linear-gradient(145deg, rgba(40,40,40,0.4) 0%, rgba(10,10,10,0.95) 100%)";
@@ -77,7 +77,7 @@ function Checklist({ steps }: { steps: string[] }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[10px] uppercase tracking-widest text-white/30 font-display">Progress</p>
+        <p className="text-[10px] uppercase tracking-widest text-foreground/30 font-display">Progress</p>
         <div className="flex items-center gap-2">
           <div className="h-1 w-32 rounded-full bg-white/[0.06] overflow-hidden">
             <motion.div
@@ -86,7 +86,7 @@ function Checklist({ steps }: { steps: string[] }) {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
-          <span className="text-[10px] text-white/30 font-display">{done}/{steps.length}</span>
+          <span className="text-[10px] text-foreground/30 font-display">{done}/{steps.length}</span>
         </div>
       </div>
       {steps.map((text, i) => (
@@ -96,9 +96,9 @@ function Checklist({ steps }: { steps: string[] }) {
           className="w-full flex items-start gap-3 text-left group"
         >
           <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 mt-0.5 transition-all duration-200 ${checked[i] ? "bg-white/20 border-white/40" : "border-white/15 group-hover:border-white/30"}`}>
-            {checked[i] ? <CheckSquare className="w-3.5 h-3.5 text-white" /> : <Square className="w-3.5 h-3.5 text-white/20" />}
+            {checked[i] ? <CheckSquare className="w-3.5 h-3.5 text-foreground" /> : <Square className="w-3.5 h-3.5 text-foreground/20" />}
           </div>
-          <p className={`text-sm font-light leading-relaxed transition-colors ${checked[i] ? "text-white/30 line-through" : "text-white/55"}`}>{text}</p>
+          <p className={`text-sm font-light leading-relaxed transition-colors ${checked[i] ? "text-foreground/30 line-through" : "text-foreground/55"}`}>{text}</p>
         </button>
       ))}
     </div>
@@ -119,7 +119,7 @@ function useShare(partner: PartnerData) {
     }
   };
   const copyRegUrl = async () => {
-    await navigator.clipboard.writeText(partner.registrationUrl);
+    await navigator.clipboard.writeText(partner.trackingUrl || partner.registrationUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -308,23 +308,23 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
       >
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
-            <MessageSquare className="w-4 h-4 text-white/60" />
+            <MessageSquare className="w-4 h-4 text-foreground/60" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <p className="text-sm font-display font-light text-white">Ask AI about {partner.name}</p>
-              <span className="hidden sm:inline-flex items-center gap-1 text-[8.5px] font-display uppercase tracking-[0.18em] px-1.5 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.1] text-white/55">
+              <p className="text-sm font-display font-light text-foreground">Ask AI about {partner.name}</p>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[8.5px] font-display uppercase tracking-[0.18em] px-1.5 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.1] text-foreground/55">
                 <Crown className="w-2.5 h-2.5" /> Voice
               </span>
             </div>
-            <p className="text-[10px] text-white/35 font-light truncate">Eligibility, prizes, how to enter — typed or spoken</p>
+            <p className="text-[10px] text-foreground/35 font-light truncate">Eligibility, prizes, how to enter — typed or spoken</p>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {messages.length > 0 && (
-            <span className="hidden sm:inline text-[9px] font-display text-white/25 uppercase tracking-widest">{messages.filter(m => m.role === "user").length} asked</span>
+            <span className="hidden sm:inline text-[9px] font-display text-foreground/25 uppercase tracking-widest">{messages.filter(m => m.role === "user").length} asked</span>
           )}
-          <ChevronRight className={`w-4 h-4 text-white/30 transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`} />
+          <ChevronRight className={`w-4 h-4 text-foreground/30 transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`} />
         </div>
       </button>
 
@@ -342,7 +342,7 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.04]">
                 <div className="flex items-center gap-2">
                   <div className={`w-1.5 h-1.5 rounded-full ${voiceEnabled ? "bg-white/80 animate-pulse" : "bg-white/15"}`} />
-                  <span className="text-[10px] font-display uppercase tracking-[0.18em] text-white/40">
+                  <span className="text-[10px] font-display uppercase tracking-[0.18em] text-foreground/40">
                     {voiceEnabled ? "Voice replies on" : "Voice replies off"}
                   </span>
                 </div>
@@ -350,7 +350,7 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                   {isSpeaking && (
                     <button
                       onClick={stopSpeaking}
-                      className="text-[9px] px-2 py-1 rounded-md border border-white/[0.08] text-white/55 hover:text-white/80 hover:border-white/[0.15] transition-all font-display uppercase tracking-wider"
+                      className="text-[9px] px-2 py-1 rounded-md border border-white/[0.08] text-foreground/55 hover:text-foreground/80 hover:border-white/[0.15] transition-all font-display uppercase tracking-wider"
                     >
                       Stop
                     </button>
@@ -359,8 +359,8 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                     onClick={() => { const next = !voiceEnabled; setVoiceEnabled(next); if (!next) stopSpeaking(); }}
                     className={`flex items-center gap-1.5 text-[10px] px-2.5 py-1 rounded-md border transition-all font-display ${
                       voiceEnabled
-                        ? "border-white/[0.18] bg-white/[0.06] text-white/85"
-                        : "border-white/[0.08] text-white/45 hover:text-white/70 hover:border-white/[0.13]"
+                        ? "border-white/[0.18] bg-white/[0.06] text-foreground/85"
+                        : "border-white/[0.08] text-foreground/45 hover:text-foreground/70 hover:border-white/[0.13]"
                     }`}
                     title="Premium AI voice via ElevenLabs"
                   >
@@ -372,13 +372,13 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
 
               {messages.length === 0 && (
                 <div className="mb-4">
-                  <p className="text-[9px] font-display uppercase tracking-widest text-white/25 mb-3">Suggested Questions</p>
+                  <p className="text-[9px] font-display uppercase tracking-widest text-foreground/25 mb-3">Suggested Questions</p>
                   <div className="flex flex-wrap gap-2">
                     {suggestions.map((q, i) => (
                       <button
                         key={i}
                         onClick={() => sendMessage(q)}
-                        className="text-[11px] px-3 py-1.5 rounded-lg border border-white/[0.07] bg-white/[0.02] text-white/45 hover:text-white/70 hover:border-white/[0.13] hover:bg-white/[0.05] transition-all font-light text-left"
+                        className="text-[11px] px-3 py-1.5 rounded-lg border border-white/[0.07] bg-white/[0.02] text-foreground/45 hover:text-foreground/70 hover:border-white/[0.13] hover:bg-white/[0.05] transition-all font-light text-left"
                       >
                         {q}
                       </button>
@@ -393,13 +393,13 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                     <div key={i} className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                       {msg.role === "assistant" && (
                         <div className="w-5 h-5 rounded-md bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0 mt-0.5">
-                          <Sparkles className="w-2.5 h-2.5 text-white/50" />
+                          <Sparkles className="w-2.5 h-2.5 text-foreground/50" />
                         </div>
                       )}
                       <div className={`max-w-[88%] text-xs font-light leading-relaxed rounded-xl px-3.5 py-2.5 ${
                         msg.role === "user"
-                          ? "bg-white/[0.07] border border-white/[0.1] text-white/80"
-                          : "bg-white/[0.03] border border-white/[0.05] text-white/60"
+                          ? "bg-white/[0.07] border border-white/[0.1] text-foreground/80"
+                          : "bg-white/[0.03] border border-white/[0.05] text-foreground/60"
                       }`}>
                         {msg.role === "assistant" && isLoading && i === messages.length - 1 && msg.content === "" ? (
                           <span className="flex gap-1 items-center h-3">
@@ -422,7 +422,7 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                       key={i}
                       onClick={() => sendMessage(q)}
                       disabled={isLoading}
-                      className="text-[10px] px-2.5 py-1 rounded-lg border border-white/[0.06] text-white/35 hover:text-white/55 hover:border-white/[0.12] transition-all font-light disabled:opacity-30"
+                      className="text-[10px] px-2.5 py-1 rounded-lg border border-white/[0.06] text-foreground/35 hover:text-foreground/55 hover:border-white/[0.12] transition-all font-light disabled:opacity-30"
                     >
                       {q}
                     </button>
@@ -431,16 +431,16 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
               )}
 
               {voiceError && (
-                <p className="text-[10px] text-white/45 font-light mb-2">{voiceError}</p>
+                <p className="text-[10px] text-foreground/45 font-light mb-2">{voiceError}</p>
               )}
               {micState === "listening" && (
-                <p className="text-[10px] text-white/55 font-light mb-2 flex items-center gap-1.5">
+                <p className="text-[10px] text-foreground/55 font-light mb-2 flex items-center gap-1.5">
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
                   Listening… tap mic again to send
                 </p>
               )}
               {micState === "transcribing" && (
-                <p className="text-[10px] text-white/45 font-light mb-2 flex items-center gap-1.5">
+                <p className="text-[10px] text-foreground/45 font-light mb-2 flex items-center gap-1.5">
                   <Loader2 className="w-2.5 h-2.5 animate-spin" /> Transcribing…
                 </p>
               )}
@@ -452,7 +452,7 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                   onChange={e => setInput(e.target.value)}
                   placeholder={`Ask about ${partner.name}…`}
                   disabled={isLoading || micState !== "idle"}
-                  className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-white/70 placeholder-white/20 font-light focus:outline-none focus:border-white/[0.15] focus:bg-white/[0.05] transition-all disabled:opacity-50"
+                  className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-foreground/70 placeholder-white/20 font-light focus:outline-none focus:border-white/[0.15] focus:bg-white/[0.05] transition-all disabled:opacity-50"
                 />
                 <button
                   type="button"
@@ -461,8 +461,8 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                   title={isRecording ? "Stop recording" : "Speak your question"}
                   className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
                     isRecording
-                      ? "bg-white/[0.12] border-white/[0.22] text-white animate-pulse"
-                      : "bg-white/[0.06] border-white/[0.1] text-white/50 hover:text-white/80 hover:bg-white/[0.09]"
+                      ? "bg-white/[0.12] border-white/[0.22] text-foreground animate-pulse"
+                      : "bg-white/[0.06] border-white/[0.1] text-foreground/50 hover:text-foreground/80 hover:bg-white/[0.09]"
                   } disabled:opacity-30 disabled:cursor-not-allowed`}
                 >
                   {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
@@ -470,7 +470,7 @@ function PartnerAIChat({ partner }: { partner: PartnerData }) {
                 <button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-white/50 hover:text-white/80 hover:bg-white/[0.09] transition-all disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                  className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center text-foreground/50 hover:text-foreground/80 hover:bg-white/[0.09] transition-all disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
                 >
                   {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 </button>
@@ -513,7 +513,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-foreground">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
 
@@ -523,12 +523,12 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
 
           {/* breadcrumb */}
           <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-6">
-            <div className="flex items-center gap-1.5 text-sm text-white/30 font-light">
-              <Link href="/" className="hover:text-white/60 transition-colors">Home</Link>
+            <div className="flex items-center gap-1.5 text-sm text-foreground/30 font-light">
+              <Link href="/" className="hover:text-foreground/60 transition-colors">Home</Link>
               <ChevronRight className="w-3.5 h-3.5" />
-              <Link href="/partners" className="hover:text-white/60 transition-colors">Partners</Link>
+              <Link href="/partners" className="hover:text-foreground/60 transition-colors">Partners</Link>
               <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-white/50 truncate max-w-[160px]">{partner.name}</span>
+              <span className="text-foreground/50 truncate max-w-[160px]">{partner.name}</span>
             </div>
           </motion.div>
 
@@ -548,7 +548,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       transition={{ duration: 0.5, delay: 0.12 }}
                       className="flex items-center gap-2.5 mb-2 flex-wrap"
                     >
-                      <span className="text-[10px] font-display font-medium text-white/30 uppercase tracking-[0.15em]">{partner.category}</span>
+                      <span className="text-[10px] font-display font-medium text-foreground/30 uppercase tracking-[0.15em]">{partner.category}</span>
                       {partner.badge && (
                         <div className="premium-badge premium-badge-hot !text-[9px]">
                           <Zap className="w-2.5 h-2.5 mr-1" />{partner.badge}
@@ -561,14 +561,14 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       )}
                       {partner.badgeSecondary && (
                         <div className="premium-badge !text-[9px]" style={{ background: "var(--x-badge-bg)", border: "1px solid var(--x-badge-border)" }}>
-                          <Star className="w-2.5 h-2.5 mr-1 text-white/50" />
-                          <span className="text-white/60">{partner.badgeSecondary}</span>
+                          <Star className="w-2.5 h-2.5 mr-1 text-foreground/50" />
+                          <span className="text-foreground/60">{partner.badgeSecondary}</span>
                         </div>
                       )}
                       {partner.isRequired && (
                         <div className="premium-badge !text-[9px]" style={{ background: "var(--x-badge-bg)", border: "1px solid var(--x-badge-border)" }}>
-                          <AlertCircle className="w-2.5 h-2.5 mr-1 text-white/60" />
-                          <span className="text-white/60">Required</span>
+                          <AlertCircle className="w-2.5 h-2.5 mr-1 text-foreground/60" />
+                          <span className="text-foreground/60">Required</span>
                         </div>
                       )}
                     </motion.div>
@@ -576,11 +576,11 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.18 }}
-                      className="text-2xl sm:text-3xl md:text-4xl font-display font-light text-white mb-1"
+                      className="text-2xl sm:text-3xl md:text-4xl font-display font-light text-foreground mb-1"
                     >
                       {partner.name}
                     </motion.h1>
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.28 }} className="text-sm text-white/40 font-light">
+                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.28 }} className="text-sm text-foreground/40 font-light">
                       {partner.tagline}
                     </motion.p>
                   </div>
@@ -596,24 +596,24 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       <button
                         onClick={copyRegUrl}
                         title="Copy registration link"
-                        className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-white/[0.09] transition-all"
+                        className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:bg-white/[0.09] transition-all"
                       >
-                        {copied ? <CheckCircle2 className="w-4 h-4 text-white/60" /> : <Copy className="w-4 h-4" />}
+                        {copied ? <CheckCircle2 className="w-4 h-4 text-foreground/60" /> : <Copy className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={share}
                         title="Share this partner"
-                        className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-white/[0.09] transition-all"
+                        className="w-9 h-9 rounded-xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-foreground/40 hover:text-foreground/70 hover:bg-white/[0.09] transition-all"
                       >
                         <Share2 className="w-4 h-4" />
                       </button>
                       {partner.registrationUrl && (
                         <a
-                          href={partner.registrationUrl}
+                          href={partner.trackingUrl || partner.registrationUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={handleRegisterClick}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.08] border border-white/[0.14] text-white text-sm font-display font-light hover:bg-white/[0.12] transition-all"
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.08] border border-white/[0.14] text-foreground text-sm font-display font-light hover:bg-white/[0.12] transition-all"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                           Register
@@ -641,12 +641,12 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                         transition={{ delay: 0.3 + i * 0.07 }}
                         className="flex items-center gap-1.5"
                       >
-                        <span className="text-white/25">{stat.icon}</span>
+                        <span className="text-foreground/25">{stat.icon}</span>
                         <div>
                           {stat.value !== null && (
-                            <span className="text-sm font-display font-light text-white mr-1">{stat.value}</span>
+                            <span className="text-sm font-display font-light text-foreground mr-1">{stat.value}</span>
                           )}
-                          <span className="text-[10px] text-white/30 font-display uppercase tracking-widest">{stat.label}</span>
+                          <span className="text-[10px] text-foreground/30 font-display uppercase tracking-widest">{stat.label}</span>
                         </div>
                       </motion.div>
                     </React.Fragment>
@@ -658,8 +658,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     transition={{ delay: 0.55 }}
                     className="ml-auto flex items-center gap-1.5"
                   >
-                    <ShieldCheck className="w-3.5 h-3.5 text-white/30" />
-                    <span className="text-[10px] text-white/30 font-display uppercase tracking-widest">Verified Partner</span>
+                    <ShieldCheck className="w-3.5 h-3.5 text-foreground/30" />
+                    <span className="text-[10px] text-foreground/30 font-display uppercase tracking-widest">Verified Partner</span>
                   </motion.div>
                 </div>
               </div>
@@ -674,10 +674,10 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                 <div className="card-shine" />
                 <div className="relative z-[2]">
                   <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-6">
-                    <Lock className="w-7 h-7 text-white/30" />
+                    <Lock className="w-7 h-7 text-foreground/30" />
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-display font-light text-white mb-3">Registration Not Yet Available</h3>
-                  <p className="text-white/40 font-light text-sm leading-relaxed max-w-md mx-auto mb-6">
+                  <h3 className="text-xl sm:text-2xl font-display font-light text-foreground mb-3">Registration Not Yet Available</h3>
+                  <p className="text-foreground/40 font-light text-sm leading-relaxed max-w-md mx-auto mb-6">
                     This partner hasn't launched yet. Join our community to be the first to know when registration opens.
                   </p>
                   <BorderGlow as={Link} href="/partners" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
@@ -698,8 +698,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   onClick={() => setActiveTab(t.key)}
                   className={`flex-1 flex items-center justify-center gap-2 py-3 px-3 rounded-xl text-sm font-display font-light transition-all duration-300 ${
                     activeTab === t.key
-                      ? "bg-white/[0.07] text-white border border-white/[0.09] shadow-sm"
-                      : "text-white/40 hover:text-white/60"
+                      ? "bg-white/[0.07] text-foreground border border-white/[0.09] shadow-sm"
+                      : "text-foreground/40 hover:text-foreground/60"
                   }`}
                 >
                   {t.icon}
@@ -720,11 +720,11 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% -20%, var(--x-glow-soft) 0%, transparent 65%)" }} />
                     <div className="relative z-[2] flex items-center gap-4">
                       <motion.div variants={scaleIn} className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shrink-0">
-                        <Gift className="w-6 h-6 text-white/60" />
+                        <Gift className="w-6 h-6 text-foreground/60" />
                       </motion.div>
                       <div>
-                        <p className="text-[9px] font-display uppercase tracking-[0.22em] text-white/30 mb-1">Benefits &amp; Rewards</p>
-                        <p className="text-base sm:text-lg font-display font-light text-white leading-snug">
+                        <p className="text-[9px] font-display uppercase tracking-[0.22em] text-foreground/30 mb-1">Benefits &amp; Rewards</p>
+                        <p className="text-base sm:text-lg font-display font-light text-foreground leading-snug">
                           Register with {partner.name} to unlock all of the below
                         </p>
                       </div>
@@ -744,7 +744,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                                 {getBenefitIcon(item)}
                               </div>
                               <div className="flex-1 min-w-0 pt-0.5">
-                                <p className="text-sm text-white font-light leading-relaxed">{item}</p>
+                                <p className="text-sm text-foreground font-light leading-relaxed">{item}</p>
                               </div>
                             </div>
                           </motion.div>
@@ -759,15 +759,15 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, var(--x-glow-grad) 0%, transparent 60%)" }} />
                     <div className="relative z-[2] flex items-center gap-4">
                       <div className="w-12 h-12 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
-                        <span className="text-lg font-display font-light text-white leading-none">+{partner.entryPoints ?? 1}</span>
-                        <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">{(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}</span>
+                        <span className="text-lg font-display font-light text-foreground leading-none">+{partner.entryPoints ?? 1}</span>
+                        <span className="text-[8px] text-foreground/30 uppercase tracking-widest font-display mt-0.5">{(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}</span>
                       </div>
                       <div>
-                        <p className="text-[9px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">X247 Bonus</p>
-                        <p className="text-sm text-white font-light leading-snug">
+                        <p className="text-[9px] font-display uppercase tracking-[0.18em] text-foreground/30 mb-1">X247 Bonus</p>
+                        <p className="text-sm text-foreground font-light leading-snug">
                           Earn {partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"} into X247 Rewards daily giveaway
                         </p>
-                        <p className="text-[11px] text-white/35 font-light mt-1">More partners = more entries = higher winning chances.</p>
+                        <p className="text-[11px] text-foreground/35 font-light mt-1">More partners = more entries = higher winning chances.</p>
                       </div>
                     </div>
                   </motion.div>
@@ -777,7 +777,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <h3 className="text-base sm:text-lg font-display font-light text-white mb-5">Why Register?</h3>
+                      <h3 className="text-base sm:text-lg font-display font-light text-foreground mb-5">Why Register?</h3>
                       <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-3">
                         {[
                           `Complete ${partner.name} registration to unlock the prize`,
@@ -788,9 +788,9 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                         ].map((text, i) => (
                           <motion.div key={i} variants={itemFade} className="flex items-start gap-3">
                             <div className="w-5 h-5 rounded-md bg-white/[0.05] border border-white/[0.09] flex items-center justify-center shrink-0 mt-0.5">
-                              <BadgeCheck className="w-3 h-3 text-white/45" />
+                              <BadgeCheck className="w-3 h-3 text-foreground/45" />
                             </div>
-                            <p className="text-sm text-white/55 font-light leading-relaxed">{text}</p>
+                            <p className="text-sm text-foreground/55 font-light leading-relaxed">{text}</p>
                           </motion.div>
                         ))}
                       </motion.div>
@@ -801,7 +801,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
-                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <BorderGlow as="a" href={partner.trackingUrl || partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
                             <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
                             <span className="relative z-[2]">Register &amp; Claim</span>
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
@@ -829,20 +829,20 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="relative z-[2] flex flex-col sm:flex-row items-start sm:items-center gap-6">
                       <div className="flex items-center gap-4 flex-1">
                         <div className="w-14 h-14 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex flex-col items-center justify-center shrink-0">
-                          <span className="text-2xl font-display font-light text-white leading-none">+{partner.entryPoints ?? 1}</span>
-                          <span className="text-[8px] text-white/30 uppercase tracking-widest font-display mt-0.5">{(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}</span>
+                          <span className="text-2xl font-display font-light text-foreground leading-none">+{partner.entryPoints ?? 1}</span>
+                          <span className="text-[8px] text-foreground/30 uppercase tracking-widest font-display mt-0.5">{(partner.entryPoints ?? 1) === 1 ? "Entry" : "Entries"}</span>
                         </div>
                         <div>
-                          <p className="text-[10px] font-display uppercase tracking-[0.18em] text-white/30 mb-1">Your Benefit</p>
-                          <p className="text-white font-light text-sm sm:text-base leading-snug">
+                          <p className="text-[10px] font-display uppercase tracking-[0.18em] text-foreground/30 mb-1">Your Benefit</p>
+                          <p className="text-foreground font-light text-sm sm:text-base leading-snug">
                             Earn <span className="font-normal">{partner.entryPoints ?? 1} prize draw {(partner.entryPoints ?? 1) === 1 ? "entry" : "entries"}</span> after completing registration
                           </p>
-                          <p className="text-white/35 font-light text-xs mt-1">Each entry = one chance to win in the daily prize draw</p>
+                          <p className="text-foreground/35 font-light text-xs mt-1">Each entry = one chance to win in the daily prize draw</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] shrink-0">
-                        <Trophy className="w-3 h-3 text-white/40" />
-                        <span className="text-[10px] font-display text-white/40 uppercase tracking-widest">Daily Draw</span>
+                        <Trophy className="w-3 h-3 text-foreground/40" />
+                        <span className="text-[10px] font-display text-foreground/40 uppercase tracking-widest">Daily Draw</span>
                       </div>
                     </div>
                   </div>
@@ -852,8 +852,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-4">About This Partner</h3>
-                      <p className="text-white/45 font-light text-sm leading-relaxed">{partner.description}</p>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-4">About This Partner</h3>
+                      <p className="text-foreground/45 font-light text-sm leading-relaxed">{partner.description}</p>
                     </div>
                   </div>
 
@@ -863,8 +863,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       <div className="card-top-accent" />
                       <div className="card-shine" />
                       <div className="relative z-[2]">
-                        <h3 className="text-base font-display font-light text-white mb-4 flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 text-white/40" />
+                        <h3 className="text-base font-display font-light text-foreground mb-4 flex items-center gap-2">
+                          <ShieldCheck className="w-4 h-4 text-foreground/40" />
                           Key Info
                         </h3>
                         <motion.ul variants={stagger} initial="hidden" animate="visible" className="space-y-3">
@@ -875,8 +875,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                             "Free to register",
                             "Winners in 24–48 hrs",
                           ].map((text, i) => (
-                            <motion.li key={i} variants={itemFade} className="flex items-start gap-2.5 text-sm text-white/50 font-light">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-white/25 shrink-0 mt-0.5" />
+                            <motion.li key={i} variants={itemFade} className="flex items-start gap-2.5 text-sm text-foreground/50 font-light">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-foreground/25 shrink-0 mt-0.5" />
                               {text}
                             </motion.li>
                           ))}
@@ -888,8 +888,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       <div className="card-top-accent" />
                       <div className="card-shine" />
                       <div className="relative z-[2]">
-                        <h3 className="text-base font-display font-light text-white mb-4 flex items-center gap-2">
-                          <Target className="w-4 h-4 text-white/40" />
+                        <h3 className="text-base font-display font-light text-foreground mb-4 flex items-center gap-2">
+                          <Target className="w-4 h-4 text-foreground/40" />
                           Who Can Register
                         </h3>
                         <div className="space-y-3">
@@ -899,7 +899,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                             "Valid email address required",
                             "One entry per person per contest",
                           ].map((text, i) => (
-                            <div key={i} className="flex items-start gap-2.5 text-sm text-white/50 font-light">
+                            <div key={i} className="flex items-start gap-2.5 text-sm text-foreground/50 font-light">
                               <div className="w-1 h-1 rounded-full bg-white/25 shrink-0 mt-2" />
                               {text}
                             </div>
@@ -915,22 +915,22 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                       <div className="card-shine" />
                       <div className="relative z-[2] flex items-center gap-3">
                         <div className="flex-1 min-w-0">
-                          <p className="text-[10px] font-display uppercase tracking-widest text-white/25 mb-1">Registration URL</p>
-                          <p className="text-xs text-white/50 font-light truncate">{partner.registrationUrl}</p>
+                          <p className="text-[10px] font-display uppercase tracking-widest text-foreground/25 mb-1">{partner.trackingUrl ? "Partner Link" : "Registration URL"}</p>
+                          <p className="text-xs text-foreground/50 font-light truncate">{partner.trackingUrl || partner.registrationUrl}</p>
                         </div>
                         <button
                           onClick={copyRegUrl}
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/50 text-xs font-display font-light hover:bg-white/[0.09] transition-all shrink-0"
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.05] border border-white/[0.08] text-foreground/50 text-xs font-display font-light hover:bg-white/[0.09] transition-all shrink-0"
                         >
                           {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                           {copied ? "Copied!" : "Copy"}
                         </button>
                         <a
-                          href={partner.registrationUrl}
+                          href={partner.trackingUrl || partner.registrationUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={handleRegisterClick}
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white/50 text-xs font-display font-light hover:bg-white/[0.09] transition-all shrink-0"
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.05] border border-white/[0.08] text-foreground/50 text-xs font-display font-light hover:bg-white/[0.09] transition-all shrink-0"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                           Open
@@ -943,7 +943,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
-                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <BorderGlow as="a" href={partner.trackingUrl || partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
                             <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
                             <span className="relative z-[2]">Register Now</span>
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
@@ -969,8 +969,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <h3 className="text-lg sm:text-xl font-display font-light text-white mb-2">Registration Checklist</h3>
-                      <p className="text-xs text-white/35 font-light mb-6">Tap each step to track your progress</p>
+                      <h3 className="text-lg sm:text-xl font-display font-light text-foreground mb-2">Registration Checklist</h3>
+                      <p className="text-xs text-foreground/35 font-light mb-6">Tap each step to track your progress</p>
                       <Checklist steps={checklistSteps} />
                     </div>
                   </div>
@@ -980,8 +980,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="card-top-accent" />
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <h3 className="text-base font-display font-light text-white mb-5 flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-white/40" />
+                      <h3 className="text-base font-display font-light text-foreground mb-5 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-foreground/40" />
                         Pro Tips
                       </h3>
                       <motion.div variants={stagger} initial="hidden" animate="visible" className="space-y-3">
@@ -994,9 +994,9 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                         ].map((tip, i) => (
                           <motion.div key={i} variants={itemFade} className="flex items-start gap-3 px-3 py-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
                             <div className="w-5 h-5 rounded-md bg-white/[0.05] border border-white/[0.08] flex items-center justify-center shrink-0 mt-0.5">
-                              <span className="text-[9px] font-display text-white/40">{String(i + 1).padStart(2, "0")}</span>
+                              <span className="text-[9px] font-display text-foreground/40">{String(i + 1).padStart(2, "0")}</span>
                             </div>
-                            <p className="text-xs text-white/50 font-light leading-relaxed">{tip}</p>
+                            <p className="text-xs text-foreground/50 font-light leading-relaxed">{tip}</p>
                           </motion.div>
                         ))}
                       </motion.div>
@@ -1007,8 +1007,8 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                   <div className="glass-card p-6 sm:p-7">
                     <div className="card-shine" />
                     <div className="relative z-[2]">
-                      <h3 className="text-base font-display font-light text-white mb-4 flex items-center gap-2">
-                        <Camera className="w-4 h-4 text-white/40" />
+                      <h3 className="text-base font-display font-light text-foreground mb-4 flex items-center gap-2">
+                        <Camera className="w-4 h-4 text-foreground/40" />
                         Screenshot Guide
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1017,10 +1017,10 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                           { label: "Avoid", items: ["Cropped / partial screens", "Blurry or dark images", "Screenshots of screenshots", "Edited / altered images"] },
                         ].map((col) => (
                           <div key={col.label} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                            <p className="text-[10px] font-display uppercase tracking-widest text-white/30 mb-3">{col.label}</p>
+                            <p className="text-[10px] font-display uppercase tracking-widest text-foreground/30 mb-3">{col.label}</p>
                             <ul className="space-y-1.5">
                               {col.items.map((item) => (
-                                <li key={item} className="flex items-center gap-2 text-xs text-white/50 font-light">
+                                <li key={item} className="flex items-center gap-2 text-xs text-foreground/50 font-light">
                                   <div className="w-1 h-1 rounded-full bg-white/25 shrink-0" />
                                   {item}
                                 </li>
@@ -1036,7 +1036,7 @@ function PartnerDetailContent({ partner }: { partner: PartnerData }) {
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row justify-center gap-3">
                         {partner.registrationUrl && (
-                          <BorderGlow as="a" href={partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
+                          <BorderGlow as="a" href={partner.trackingUrl || partner.registrationUrl} target="_blank" rel="noopener noreferrer" onClick={handleRegisterClick} borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group">
                             <ExternalLink className="w-4 h-4 mr-2 relative z-[2]" />
                             <span className="relative z-[2]">Register Now</span>
                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
@@ -1080,7 +1080,7 @@ export default function PartnerDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-black text-foreground flex items-center justify-center">
         <div className="w-6 h-6 border border-white/20 border-t-white/60 rounded-full animate-spin" />
       </div>
     );
@@ -1088,10 +1088,10 @@ export default function PartnerDetail() {
 
   if (!partner || error) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-black text-foreground flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-display font-light mb-4">Partner Not Found</h1>
-          <Link href="/partners" className="text-white/50 hover:text-white transition-colors">← Back to Partners</Link>
+          <Link href="/partners" className="text-foreground/50 hover:text-foreground transition-colors">← Back to Partners</Link>
         </div>
       </div>
     );

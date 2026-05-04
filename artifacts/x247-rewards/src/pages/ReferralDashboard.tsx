@@ -85,12 +85,12 @@ function ShareButtons({ code, referralLink }: { code: string; referralLink: stri
             type="text"
             value={referralLink}
             readOnly
-            className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl text-xs text-white/60 font-mono focus:outline-none focus:border-white/[0.12] transition-colors"
+            className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.06] rounded-xl text-xs text-foreground/60 font-mono focus:outline-none focus:border-white/[0.12] transition-colors"
           />
           <div className="absolute right-1 top-1 bottom-1">
             <button
               onClick={copyLink}
-              className="flex items-center gap-1.5 h-full px-4 bg-white/[0.06] border border-white/[0.08] rounded-lg text-xs text-white/60 hover:bg-white/[0.12] transition-all"
+              className="flex items-center gap-1.5 h-full px-4 bg-white/[0.06] border border-white/[0.08] rounded-lg text-xs text-foreground/60 hover:bg-white/[0.12] transition-all"
             >
               {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? "Copied!" : "Copy"}
@@ -114,7 +114,7 @@ function ShareButtons({ code, referralLink }: { code: string; referralLink: stri
                 setTimeout(() => setCopied(false), 2000);
               }
             }}
-            className="flex items-center justify-center gap-2 px-3 py-3 bg-white/[0.02] border border-white/[0.06] rounded-xl text-xs text-white/35 hover:bg-white/[0.06] hover:text-white/60 hover:border-white/[0.1] transition-all group"
+            className="flex items-center justify-center gap-2 px-3 py-3 bg-white/[0.02] border border-white/[0.06] rounded-xl text-xs text-foreground/35 hover:bg-white/[0.06] hover:text-foreground/60 hover:border-white/[0.1] transition-all group"
           >
             <span className="group-hover:scale-110 transition-transform">{s.icon}</span>
             <span className="font-light">{s.name}</span>
@@ -137,14 +137,14 @@ function StatsCard({ icon, value, label, suffix, delay = 0 }: { icon: React.Reac
       <div className="card-shine" />
       <div className="relative z-[2]">
         <motion.div
-          className="text-white/25 mx-auto mb-3 flex justify-center"
+          className="text-foreground/25 mx-auto mb-3 flex justify-center"
           animate={reducedMotion ? {} : { y: [0, -3, 0] }}
           transition={{ duration: 4, delay: delay * 2, repeat: Infinity, ease: "easeInOut" }}
         >
           {icon}
         </motion.div>
-        <AnimatedCounter value={value} suffix={suffix} className="text-2xl sm:text-3xl font-display font-light text-white" />
-        <div className="text-[9px] text-white/20 uppercase tracking-widest font-display mt-1.5">{label}</div>
+        <AnimatedCounter value={value} suffix={suffix} className="text-2xl sm:text-3xl font-display font-light text-foreground" />
+        <div className="text-[9px] text-foreground/20 uppercase tracking-widest font-display mt-1.5">{label}</div>
       </div>
     </motion.div>
   );
@@ -193,16 +193,16 @@ export default function ReferralDashboard() {
 
   if (!loggedIn) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen bg-black text-foreground flex items-center justify-center relative overflow-hidden">
         <div className="noise-overlay" />
         <div className="vignette-overlay" />
         <GlowOrb className="top-1/3 left-1/4" size={300} opacity={0.03} />
         <div className="text-center relative z-10">
           <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-6">
-            <Users className="w-7 h-7 text-white/20" />
+            <Users className="w-7 h-7 text-foreground/20" />
           </div>
-          <h2 className="text-xl font-display font-light text-white mb-2">Sign In Required</h2>
-          <p className="text-sm text-white/35 font-light mb-6 max-w-xs mx-auto">Access your referral dashboard by signing into your account</p>
+          <h2 className="text-xl font-display font-light text-foreground mb-2">Sign In Required</h2>
+          <p className="text-sm text-foreground/35 font-light mb-6 max-w-xs mx-auto">Access your referral dashboard by signing into your account</p>
           <BorderGlow as={Link} href="/account" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group inline-flex">
             <span className="relative z-[2]">Sign In</span>
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform relative z-[2]" />
@@ -214,7 +214,7 @@ export default function ReferralDashboard() {
 
   if (profileLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-black text-foreground flex items-center justify-center">
         <div className="noise-overlay" />
         <div className="w-8 h-8 border border-white/15 border-t-white/50 rounded-full animate-spin" />
       </div>
@@ -223,18 +223,18 @@ export default function ReferralDashboard() {
 
   if (!partner || partner.status !== "approved") {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen bg-black text-foreground flex items-center justify-center relative overflow-hidden">
         <div className="noise-overlay" />
         <div className="vignette-overlay" />
         <GlowOrb className="top-1/3 right-1/4" size={250} opacity={0.03} />
         <div className="text-center max-w-md px-4 relative z-10">
           <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center mx-auto mb-6">
-            <Share2 className="w-7 h-7 text-white/20" />
+            <Share2 className="w-7 h-7 text-foreground/20" />
           </div>
-          <h2 className="text-xl font-display font-light text-white mb-2">
+          <h2 className="text-xl font-display font-light text-foreground mb-2">
             {!partner ? "Become a Referral Partner" : "Application Under Review"}
           </h2>
-          <p className="text-sm text-white/35 font-light mb-6">
+          <p className="text-sm text-foreground/35 font-light mb-6">
             {!partner ? "Apply to become a referral partner and unlock your tracking dashboard." : "Your application is being reviewed. We'll notify you once approved."}
           </p>
           <BorderGlow as={Link} href="/referral" borderRadius={16} glowRadius={20} cardBg="rgba(6,6,6,0.95)" className="premium-btn premium-btn-lg glass-btn-effect group inline-flex">
@@ -255,7 +255,7 @@ export default function ReferralDashboard() {
   const conversionData = statsData?.dailyConversions?.map((d: any) => d.total || 0) || [];
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-black text-foreground relative overflow-hidden">
       <div className="noise-overlay" />
       <div className="vignette-overlay" />
       <GlowOrb className="top-40 right-[5%] hidden lg:block" size={300} opacity={0.025} />
@@ -265,7 +265,7 @@ export default function ReferralDashboard() {
         <div className="container mx-auto px-4 max-w-5xl">
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0} className="mb-3">
-            <Link href="/" className="inline-flex items-center gap-2 text-xs text-white/25 hover:text-white/50 transition-colors font-light mb-6">
+            <Link href="/" className="inline-flex items-center gap-2 text-xs text-foreground/25 hover:text-foreground/50 transition-colors font-light mb-6">
               <ArrowRight className="w-3 h-3 rotate-180" />
               Back to Home
             </Link>
@@ -278,7 +278,7 @@ export default function ReferralDashboard() {
               <div className="relative z-[2]">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                   <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center shrink-0 relative">
-                    <span className="text-lg font-display font-bold text-white/40">
+                    <span className="text-lg font-display font-bold text-foreground/40">
                       {partner.name?.split(" ").map((w: string) => w[0]).slice(0, 2).join("").toUpperCase()}
                     </span>
                     <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-white/20 border border-white/30 flex items-center justify-center">
@@ -287,16 +287,16 @@ export default function ReferralDashboard() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-1">
-                      <h2 className="text-xl sm:text-2xl font-display font-light text-white">{partner.name}</h2>
+                      <h2 className="text-xl sm:text-2xl font-display font-light text-foreground">{partner.name}</h2>
                       {partner.isVerified && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-[9px] text-white/40 font-display uppercase tracking-wider">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-[9px] text-foreground/40 font-display uppercase tracking-wider">
                           <CheckCircle2 className="w-2.5 h-2.5" /> Verified
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-white/25 font-light">
-                      <span className="font-mono text-white/35 bg-white/[0.03] px-2 py-0.5 rounded-md border border-white/[0.05]">{partner.code}</span>
-                      <span className="text-white/10">•</span>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-foreground/25 font-light">
+                      <span className="font-mono text-foreground/35 bg-white/[0.03] px-2 py-0.5 rounded-md border border-white/[0.05]">{partner.code}</span>
+                      <span className="text-foreground/10">•</span>
                       <span className="flex items-center gap-1.5">
                         <Clock className="w-3 h-3" />
                         Partner since {new Date(partner.approvedAt || partner.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })}
@@ -330,11 +330,11 @@ export default function ReferralDashboard() {
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                        <BarChart3 className="w-4 h-4 text-white/35" />
+                        <BarChart3 className="w-4 h-4 text-foreground/35" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-display font-light text-white">Click Trends</h3>
-                        <p className="text-[10px] text-white/20 font-light">Last 7 days</p>
+                        <h3 className="text-sm font-display font-light text-foreground">Click Trends</h3>
+                        <p className="text-[10px] text-foreground/20 font-light">Last 7 days</p>
                       </div>
                     </div>
                     <div className="glass-pill-badge !text-[9px] !py-1 !px-2.5">
@@ -344,7 +344,7 @@ export default function ReferralDashboard() {
                   <MiniBarChart data={dailyData.length >= 7 ? dailyData.slice(-7) : [3, 5, 2, 8, 6, 12, 9]} delay={0.4} />
                   <div className="flex justify-between mt-2">
                     {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
-                      <span key={i} className="flex-1 text-center text-[8px] text-white/15 font-display">{d}</span>
+                      <span key={i} className="flex-1 text-center text-[8px] text-foreground/15 font-display">{d}</span>
                     ))}
                   </div>
                 </div>
@@ -359,19 +359,19 @@ export default function ReferralDashboard() {
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                        <Target className="w-4 h-4 text-white/35" />
+                        <Target className="w-4 h-4 text-foreground/35" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-display font-light text-white">Conversions</h3>
-                        <p className="text-[10px] text-white/20 font-light">Last 7 days</p>
+                        <h3 className="text-sm font-display font-light text-foreground">Conversions</h3>
+                        <p className="text-[10px] text-foreground/20 font-light">Last 7 days</p>
                       </div>
                     </div>
-                    <span className="text-xs text-white/25 font-light font-display">{conversionRate}%</span>
+                    <span className="text-xs text-foreground/25 font-light font-display">{conversionRate}%</span>
                   </div>
                   <MiniBarChart data={conversionData.length >= 7 ? conversionData.slice(-7) : [1, 2, 0, 3, 2, 5, 4]} delay={0.5} />
                   <div className="flex justify-between mt-2">
                     {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
-                      <span key={i} className="flex-1 text-center text-[8px] text-white/15 font-display">{d}</span>
+                      <span key={i} className="flex-1 text-center text-[8px] text-foreground/15 font-display">{d}</span>
                     ))}
                   </div>
                 </div>
@@ -386,11 +386,11 @@ export default function ReferralDashboard() {
               <div className="relative z-[2]">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                    <Link2 className="w-4 h-4 text-white/35" />
+                    <Link2 className="w-4 h-4 text-foreground/35" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-display font-light text-white">Your Referral Link</h3>
-                    <p className="text-[10px] text-white/20 font-light">Share this link to earn referral conversions</p>
+                    <h3 className="text-sm font-display font-light text-foreground">Your Referral Link</h3>
+                    <p className="text-[10px] text-foreground/20 font-light">Share this link to earn referral conversions</p>
                   </div>
                 </div>
                 <ShareButtons code={partner.code} referralLink={referralLink} />
@@ -406,11 +406,11 @@ export default function ReferralDashboard() {
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                      <Award className="w-4 h-4 text-white/35" />
+                      <Award className="w-4 h-4 text-foreground/35" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-display font-light text-white">Milestones</h3>
-                      <p className="text-[10px] text-white/20 font-light">Unlock rewards by hitting targets</p>
+                      <h3 className="text-sm font-display font-light text-foreground">Milestones</h3>
+                      <p className="text-[10px] text-foreground/20 font-light">Unlock rewards by hitting targets</p>
                     </div>
                   </div>
                 </div>
@@ -428,14 +428,14 @@ export default function ReferralDashboard() {
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
                             <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${unlocked ? "bg-white/[0.1] border border-white/[0.15]" : "bg-white/[0.03] border border-white/[0.06]"}`}>
-                              <span className={unlocked ? "text-white/60" : "text-white/20"}>{m.icon}</span>
+                              <span className={unlocked ? "text-foreground/60" : "text-foreground/20"}>{m.icon}</span>
                             </div>
                             <div>
-                              <span className="text-xs font-display text-white/70 font-light">{m.name}</span>
-                              <span className="text-[9px] text-white/20 font-light ml-2">→ {m.reward}</span>
+                              <span className="text-xs font-display text-foreground/70 font-light">{m.name}</span>
+                              <span className="text-[9px] text-foreground/20 font-light ml-2">→ {m.reward}</span>
                             </div>
                           </div>
-                          <span className="text-[10px] text-white/30 font-display font-light">
+                          <span className="text-[10px] text-foreground/30 font-display font-light">
                             {unlocked ? "Unlocked" : `${stats.totalConversions} / ${m.target}`}
                           </span>
                         </div>
@@ -465,11 +465,11 @@ export default function ReferralDashboard() {
               <div className="relative z-[2]">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                    <Activity className="w-4 h-4 text-white/35" />
+                    <Activity className="w-4 h-4 text-foreground/35" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-display font-light text-white">Recent Conversions</h3>
-                    <p className="text-[10px] text-white/20 font-light">Your latest referral activity</p>
+                    <h3 className="text-sm font-display font-light text-foreground">Recent Conversions</h3>
+                    <p className="text-[10px] text-foreground/20 font-light">Your latest referral activity</p>
                   </div>
                 </div>
 
@@ -478,16 +478,16 @@ export default function ReferralDashboard() {
                     {statsData.recentConversions.map((c: any) => (
                       <div key={c.id} className="flex items-center p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] transition-colors group">
                         <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mr-3 shrink-0 group-hover:bg-white/[0.06] transition-colors">
-                          {c.type === "signup" ? <UserPlus className="w-3.5 h-3.5 text-white/30" /> : <Gift className="w-3.5 h-3.5 text-white/30" />}
+                          {c.type === "signup" ? <UserPlus className="w-3.5 h-3.5 text-foreground/30" /> : <Gift className="w-3.5 h-3.5 text-foreground/30" />}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <span className="text-xs text-white/55 font-light block truncate">{c.userName || "Anonymous"}</span>
-                          {c.userCity && <span className="text-[10px] text-white/20 font-light">{c.userCity}</span>}
+                          <span className="text-xs text-foreground/55 font-light block truncate">{c.userName || "Anonymous"}</span>
+                          {c.userCity && <span className="text-[10px] text-foreground/20 font-light">{c.userCity}</span>}
                         </div>
-                        <span className="px-2 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.06] text-[9px] text-white/30 font-display uppercase tracking-wider mr-3 shrink-0">
+                        <span className="px-2 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.06] text-[9px] text-foreground/30 font-display uppercase tracking-wider mr-3 shrink-0">
                           {c.type}
                         </span>
-                        <span className="text-[10px] text-white/15 font-light shrink-0">
+                        <span className="text-[10px] text-foreground/15 font-light shrink-0">
                           {new Date(c.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                         </span>
                       </div>
@@ -496,10 +496,10 @@ export default function ReferralDashboard() {
                 ) : (
                   <div className="py-10 text-center">
                     <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-4">
-                      <Trophy className="w-6 h-6 text-white/10" />
+                      <Trophy className="w-6 h-6 text-foreground/10" />
                     </div>
-                    <p className="text-sm text-white/25 font-light mb-1">No conversions yet</p>
-                    <p className="text-xs text-white/15 font-light">Share your referral link to start earning</p>
+                    <p className="text-sm text-foreground/25 font-light mb-1">No conversions yet</p>
+                    <p className="text-xs text-foreground/15 font-light">Share your referral link to start earning</p>
                   </div>
                 )}
               </div>
