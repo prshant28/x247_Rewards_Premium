@@ -3,6 +3,10 @@ import { partnersTable, contestsTable, winnersTable } from "@workspace/db";
 import { sql } from "drizzle-orm";
 import { logger } from "./logger";
 
+async function pingDatabase() {
+  await db.execute(sql`SELECT 1`);
+}
+
 async function ensureSchema() {
   try {
     await db.execute(sql`ALTER TABLE partners ADD COLUMN IF NOT EXISTS what_you_get text`);
@@ -44,10 +48,11 @@ async function ensureSchema() {
 }
 
 export async function seedDatabase() {
-  try {
-    await ensureSchema();
+  await pingDatabase();
+  await ensureSchema();
 
-    let seedPartnerIds: number[] = [];
+  let seedPartnerIds: number[] = [];
+  try {
     const [partnerCount] = await db.select({ count: sql<number>`count(*)` }).from(partnersTable);
     const [contestCount] = await db.select({ count: sql<number>`count(*)` }).from(contestsTable);
 
@@ -172,6 +177,6 @@ export async function seedDatabase() {
       }
     }
   } catch (err) {
-    logger.error({ err }, "Seed error (non-fatal)");
+    throw err;
   }
 }
