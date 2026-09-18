@@ -356,6 +356,13 @@ pnpm typecheck
 pnpm build
 ```
 
+### GitHub Pages
+
+This repository includes a GitHub Actions workflow at `/home/runner/work/x247_Rewards_Premium/x247_Rewards_Premium/.github/workflows/deploy-github-pages.yml` that deploys the frontend to GitHub Pages on every push to `main`.
+
+- Project pages URL: `https://<github-username>.github.io/x247_Rewards_Premium/`
+- User/organization pages URL (repo named `<owner>.github.io`): `https://<owner>.github.io/`
+
 ---
 
 ## ◈ Environment Variables
